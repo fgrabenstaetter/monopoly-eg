@@ -1,0 +1,36 @@
+{
+  "name": "Monopoly-EG",
+  "version": "0.0.0",
+  "description": "Monopoly game made by EG team",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "socket.io": "^2.3.0",
+    "bcrypt": "^3.0.7"
+  },
+  "engines": {
+    "node": "^12.14.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.unistra.fr/fgrabenstaetter/monopoly-eg"
+  },
+  "author": "EG team",
+  "contributors": [
+    "Benjamin FREELING <benjaminfreeling@gmail.com>",
+    "Boris FLESCH <boris.flesch@gmail.com>",
+    "Côme FRAPPÉ—VIALATOUX <cfrappevialatoux@gmail.com>",
+    "Danyl EL-KABIR  <elkabirdanyl@gmail.com>",
+    "Dorin GUTU <doringutsu@gmail.com>",
+    "Edouard GU <gu.edouard67@gmail.com>",
+    "Florian FALKNER <falknerflorian@hotmail.fr>",
+    "François GRABENSTAETTER <francoisgrabenstaetter@gmail.com>",
+    "Matthias FOYER <matthias.foyer@gmail.com>",
+    "Xavier FARGEAS <xavier.fargeas@gmail.com>"
+  ],
+  "license": "GPL-3.0"
+}
