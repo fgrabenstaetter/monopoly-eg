@@ -36,7 +36,7 @@
 
             const socket = io('http://localhost:' + port);
             socket.on('connectionRes', (res) => {
-                console.log('Réponse socket.io, res = ' + res);
+                console.log('Réponse socket.io, je suis connecté (pseudo + mdp) = ' + res);
                 // false => non connecté (pseudo + mdp) au serveur
             });
         }

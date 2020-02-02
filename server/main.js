@@ -1,31 +1,35 @@
-function findArg (num) { // num >= 1, ne compte pas les args de base
-    if (process.argc < num + 1)
-        return null;
-    return process.argv[num + 1];
+function foundArg (arg) {
+    return process.argv.indexOf(arg) != -1;
 }
 
 const app = require('express')();
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session)
+const cookie = require('cookie');
+const cookieSignature = require('cookie-signature');
 
 const db = new (require('./utils/db.js'))();
-const users = new (require('./utils/users.js'))();
 const Party = require('./game/party.js');
 const Player = require('./game/player.js');
-// users = clients connectés (par pseudo + mdp)
-// stocker l'IP et le port sert à connaître si un client est connecté ou non (utile surtout pour la connexion au socket)
 
-let production = false;
 let server;
+let production = false;
+if (foundArg('production'))
+    production = true;
 
-const arg1 = findArg(1);
-if (arg1 != null) {
-    if (arg1 === 'production')
-        production = true;
-    else {
-        console.error('Argument incorrect: ' + arg1);
-        process.exit(1);
+let sessionConfig = {
+    store: new MemoryStore({ checkPeriod: 3600000 }), // 1h
+    secret: 'iA"8I3&p', // secret (random) pour signer le cookie de session ID (sécurité)
+    unset: 'destroy', // efface l'instance de session lors de instance = null
+    resave: false,
+    saveUninitialized: true, // garder la même instance de session durant toute sa durée
+    cookie: {
+        maxAge: 21600000, // 6h
+        httpOnly: true, // rendre inaccessible le cookie de session ID au côté client (sécurité)
+        secure: false // default pour mode dev, mis à true pour mode prod
     }
 }
 
@@ -43,6 +47,7 @@ if (production) {
         secureOptions: constants.SSL_OP_NO_TLSv1
     };
 
+    sessionConfig.cookie.secure = true; // empêche les cookies de circuler hors HTTPS
     server = https.createServer(options, app).listen(securePort);
 
     // Redirection du port 'redirectionPort' vers le port 'securePort'
@@ -59,12 +64,15 @@ if (production) {
     server = http.createServer(app).listen(port);
 }
 
+app.use(session(sessionConfig));
 const io = require('socket.io')(server);
 
 app.get('/', (req, res) => {
+    // pour test
     res.send(`<h1>Bonjour</h1>
               <b>IP:</b> ` + req.socket.remoteAddress + `<br />
-              <b>Port:</b> ` + req.socket.remotePort + `
+              <b>Port:</b> ` + req.socket.remotePort + `<br />
+              <b>express session ID:</b> ` + req.sessionID + `<br />
               <a href="/tests">tests console</a>`
     );
 });
@@ -80,7 +88,7 @@ app.post('/login', (req, res) => {
 //         if (success) {
 //             res.send(true);
 //             // vérifier que le client n'est pas déjà connecté
-//             users.add(req.body.pseudo);
+    //         req.session.pseudo = req.body.pseudo; // sauvegarder le pseudo en session (si session.pseudo != null => le client est connecté (pseudo + mdp)
 //         } else
 //             res.send(false);
 //     });
@@ -109,18 +117,34 @@ const partyMinPlayersNb = 2;
 io.on('connection', (socket) => {
     // si le client n'est pas connecté, refuser la connexion au socket
     // demande de connexion au socket = demande de rejoindre une partie
-    // PROBLÈME: faire le lien entre le client connecté (pseudo + mdp) avec ce socket (voir sessions express.js)
 
-    console.log('Connexion socket ACCEPTÉE');
+    // petit trick pour récuperer la session express depuis le cookie connect.sid
+    const cookieVal = cookie.parse(socket.handshake.headers.cookie)['connect.sid'];
+    const unsignedSessionID = cookieSignature.unsign(cookieVal.replace('s:', ''), sessionConfig.secret);
+    console.log('Socket.io connection (express session ID = ' + unsignedSessionID);
+
+    let session = null;
+    sessionConfig.store.get(unsignedSessionID, (err, expressSession) => {
+        if (err != null || expressSession == null) {
+            socket.emit('connectionRes', false);
+            return;
+        }
+        session = expressSession;
+    });
+
+    if (session == null || session.pseudo == null) {
+        socket.emit('connectionRes', false);
+        return;
+    }
+
+    // le client est bien connecté (pseudo + mdp)
     socket.emit('connectionRes', true);
+    waitingPlayers.push(new Player(session.pseudo, socket));
 
-    waitingPlayers.push(new Player('pseudoTest', socket));
     // si nb de joueurs en attente > nb minimum pour une partie, démarrer une nouvelle partie
     if (waitingPlayers.length === partyMinPlayersNb) {
-        // démarrer la partie
         parties.push(new Party(waitingPlayers, io));
-        // retirer tous les jours de la file d'attente
-        waitingPlayers = [];
+        waitingPlayers = []; // retirer tous les jours de la file d'attente
     }
     // sinon attendre qu'un nouveau joueur "enclanche" le démarrage de partie
 });
