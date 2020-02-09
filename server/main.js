@@ -10,10 +10,15 @@ const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const cookie = require('cookie');
 const cookieSignature = require('cookie-signature');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
-const db = new (require('./utils/db.js'))();
-const Party = require('./game/party.js');
-const Player = require('./game/player.js');
+
+const User = require('./models/user');
+
+// const db = new (require('./utils/db.js'))();
+// const Party = require('./game/party.js');
+// const Player = require('./game/player.js');
 
 let server;
 let production = false;
@@ -83,15 +88,6 @@ app.post('/login', (req, res) => {
         res.send(false);
         return;
     }
-
-//     db.login(req.body.pseudo, req.body.password, (success) => {
-//         if (success) {
-//             res.send(true);
-//             // vérifier que le client n'est pas déjà connecté
-    //         req.session.pseudo = req.body.pseudo; // sauvegarder le pseudo en session (si session.pseudo != null => le client est connecté (pseudo + mdp)
-//         } else
-//             res.send(false);
-//     });
 });
 
 app.post('/register', (req, res) => {
@@ -99,13 +95,6 @@ app.post('/register', (req, res) => {
         res.send(false);
         return;
     }
-
-    // db.register(req.body.pseudo, req.body.password, (success) => {
-    //     if (success)
-    //         res.send(true);
-    //     else
-    //         res.send(false);
-    // });
 });
 
 // tableau des données de jeu principales
@@ -149,7 +138,47 @@ io.on('connection', (socket) => {
     // sinon attendre qu'un nouveau joueur "enclanche" le démarrage de partie
 });
 
+
+////////////////
+// TESTS ZONE //
+////////////////
+
 // pour les tests (dans ./tests/) uniquement
 app.get('/tests', (req, res) => {
     res.sendFile(process.env.PWD + '/tests/index.html');
+});
+
+
+app.get('/add-user-in-db/:username/:email', (req, res) => {
+    var newUser = new User({
+        nickname: req.params.username,
+        email: req.params.email,
+        password: '$[hash]'
+    });
+
+    newUser.save((err, result) => {
+        if (err)
+            res.send('Une erreur est survenue :/');
+        else
+            res.send('Utilisateur ajouté dans la base de données !');
+    });
+});
+
+app.get('/get-users-from-db', (req, res) => {
+    User.find((err, users) => {
+        var html = '';
+        for (var i = 0; i < users.length; i++) {
+            html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
+        }
+        res.send(html);
+    });
+});
+
+app.get('/delete-users-from-db', (req, res) => {
+    User.remove({}, (err, result) => {
+        if (err)
+            res.send('Une erreur est survenue :/');
+        else
+            res.send('Tous les utilisateurs ont bien été supprimés de la base de données !');
+    });
 });

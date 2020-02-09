@@ -1,5 +1,5 @@
 {
-  "name": "Monopoly-EG",
+  "name": "monopoly-eg",
   "version": "0.0.0",
   "description": "Monopoly game made by EG team",
   "main": "main.js",
@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "memorystore": "^1.6.1",
+    "mongoose": "^5.8.11",
     "mysql": "^2.18.1",
     "socket.io": "^2.3.0"
   },
