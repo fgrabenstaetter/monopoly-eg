@@ -32,6 +32,8 @@ Team EG
 
 (Testé avec nodejs LTS 12.14.1)
 
+0. Avoir installé Node 13.7.0 et MongoDB 4.2.3 sur sa machine (et avoir le service MongoDB en cours d'exécution) 
+
 1. Changer de répertoire
 
 ```bash
