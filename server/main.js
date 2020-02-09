@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true
 
 
 const User = require('./models/user');
+const Cell = require('./models/cell');
 
 // const db = new (require('./utils/db.js'))();
 // const Party = require('./game/party.js');
@@ -150,7 +151,7 @@ app.get('/tests', (req, res) => {
 
 
 app.get('/add-user-in-db/:username/:email', (req, res) => {
-    var newUser = new User({
+    let newUser = new User({
         nickname: req.params.username,
         email: req.params.email,
         password: '$[hash]'
@@ -166,8 +167,8 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
 
 app.get('/get-users-from-db', (req, res) => {
     User.find((err, users) => {
-        var html = '';
-        for (var i = 0; i < users.length; i++) {
+        let html = '';
+        for (let i = 0; i < users.length; i++) {
             html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
         }
         res.send(html);
