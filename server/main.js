@@ -13,7 +13,7 @@ const cookieSignature = require('cookie-signature');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
-
+const Constants = require('./lib/constants');
 const User = require('./models/user');
 const Cell = require('./models/cell');
 
@@ -182,4 +182,17 @@ app.get('/delete-users-from-db', (req, res) => {
         else
             res.send('Tous les utilisateurs ont bien été supprimés de la base de données !');
     });
+});
+
+app.get('/cell-test', (req, res) => {
+    let cells = [
+        new Cell(Constants.CELL_TYPE.PARC, null),
+        new Cell(Constants.CELL_TYPE.PRISON, null),
+        new Cell(-1, null),
+        new Cell(Constants.CELL_TYPE.CHANCE_CARD, null)
+    ];
+
+    console.log(cells);
+
+    res.send('Voir debug dans la console NodeJS // ' + cells[0].name);
 });
