@@ -62,7 +62,7 @@ if (production) {
 
 } else {
     // mode développement
-    const port = 8080;
+    const port = 3000;
     console.log('Démarrage en mode [ DÉVELOPPEMENT ]');
 
     server = http.createServer(app).listen(port);
