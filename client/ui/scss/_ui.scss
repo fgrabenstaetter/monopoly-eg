@@ -97,8 +97,7 @@
   } */
 
   .box {
-    width: 250px;
-    margin-bottom: 200px;
+    width: 220px;
   }
 
   .btn {
@@ -117,7 +116,7 @@
 
   .container:nth-child(2) {
     position: absolute;
-    bottom: 100px;
+    bottom: 5%;
     left: 50%;
     transform: translate(-50%, 0);
   }
@@ -139,13 +138,14 @@
       background-color: $box_header;
       font-family: 'LilitaOne', sans-serif;
       color: white;
-      font-size: 20px;
+      font-size: 17px;
     }
 
     .card-body {
       border-radius: 0;
       background-color: $box_body;
       color: white;
+      font-size: 14px;
     }
 
     input {
@@ -154,6 +154,7 @@
       border: none;
       background-color: rgba($color: black, $alpha: 0.3);
       color: rgba($color: white, $alpha: 0.7);
+      font-size: 13px;
     }
   }
 
