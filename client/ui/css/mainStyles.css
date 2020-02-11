@@ -231,4 +231,29 @@
   font-size: 0.8em;
   color: #b0dfe5;
 }
+
+.arrow-right {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  padding: 0;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+
+  border-left:17px solid #f4b1b1;
+}
+
+.arrow-left {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  padding: 0;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right:17px solid #f4b1b1;
+}
 /*# sourceMappingURL=mainStyles.css.map */
