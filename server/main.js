@@ -91,7 +91,7 @@ app.get('/', (req, res) => {
 ///////////////////
 // API ENDPOINTS //
 ///////////////////
-app.post('/register', [
+app.post('/api/register', [
     check('nickname', 'Pseudo invalide').isLength({min: 2}),
     check('email', 'Email invalide').isEmail(),
     check('password', 'Mot de passe invalide (4 caractères minimum)').isLength({min: 4})
@@ -134,7 +134,7 @@ app.post('/register', [
     });
 });
 
-app.post('/login', [
+app.post('/api/login', [
     check('email', 'Email invalide').isEmail(),
     check('password', 'Mot de passe invalide').isLength({min: 4})
 ], (req, res) => {
