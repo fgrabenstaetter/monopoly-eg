@@ -1,17 +1,16 @@
 const Constants = require('./../lib/constants');
-let cellId = 0; // Génération automatique de l'ID de chaque cellule
 
 /**
  * Représente une case du plateau de jeu
  */
 class Cell {
-
     /**
+     * @param id ID de la case
      * @param type Type de case (voir CELL_TYPE)
      * @param property Propriété associée à la case (le cas échéant)
      */
-    constructor (type, property) {
-        this.id = cellId++;
+    constructor (id, type, property) {
+        this.id = id;
         this.type = type;
         this.property = property;
     }

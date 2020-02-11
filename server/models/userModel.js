@@ -10,8 +10,12 @@ let userSchema = new Schema({
     level: {type: Number, default: 1, required: true}
 });
 
+<<<<<<< HEAD:server/models/user.js
 userSchema.methods.encryptPassword = (password) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 };
 
 module.exports = mongoose.model('User', userSchema);
+=======
+module.exports = mongoose.model('UserModel', schema);
+>>>>>>> 9c82e79588234cd87ac839d30db5edfa778f3d48:server/models/userModel.js
