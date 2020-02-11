@@ -117,8 +117,7 @@
 }
 
 .lobby-ui-container .box {
-  width: 250px;
-  margin-bottom: 200px;
+  width: 220px;
 }
 
 .lobby-ui-container .btn {
@@ -160,13 +159,14 @@
   background-color: #2dc8dc;
   font-family: 'LilitaOne', sans-serif;
   color: white;
-  font-size: 20px;
+  font-size: 17px;
 }
 
 .card.box .card-body {
   border-radius: 0;
   background-color: #0da6b8;
   color: white;
+  font-size: 14px;
 }
 
 .card.box input {
@@ -175,6 +175,7 @@
   border: none;
   background-color: rgba(0, 0, 0, 0.3);
   color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
 }
 
 .card.window {
