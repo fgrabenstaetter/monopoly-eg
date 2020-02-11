@@ -5,6 +5,12 @@ module.exports = Object.freeze({
         PROPERTY: 2,
         CHANCE_CARD: 3,
         COMMUNITY_CARD: 4
+    },
+
+    PROPERTY_TYPE: {
+        TRAINSTATION: 0,
+        STREET: 1,
+        PUBLICCOMPANY: 2,
     }
     //, ...
 });
