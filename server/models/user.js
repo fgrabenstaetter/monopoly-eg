@@ -1,7 +1,8 @@
 let mongoose = require('mongoose');
+let bcrypt = require('bcrypt');
 let Schema = mongoose.Schema;
 
-let schema = new Schema({
+let userSchema = new Schema({
     nickname: {type: String, required: true},
     email: {type: String, required: true},
     password: {type: String, required: true},
@@ -9,4 +10,8 @@ let schema = new Schema({
     level: {type: Number, default: 1, required: true}
 });
 
-module.exports = mongoose.model('User', schema);
+userSchema.methods.encryptPassword = (password) => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
+};
+
+module.exports = mongoose.model('User', userSchema);

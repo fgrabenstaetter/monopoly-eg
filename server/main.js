@@ -6,10 +6,12 @@ const app = require('express')();
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const express = require('express');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session)
+const MemoryStore = require('memorystore')(session);
 const cookie = require('cookie');
 const cookieSignature = require('cookie-signature');
+const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -73,6 +75,12 @@ if (production) {
 app.use(session(sessionConfig));
 const io = require('socket.io')(server);
 
+// Parse le contenu "URL-encoded" (i.e. formulaires HTML)
+app.use(express.urlencoded({ extended: true }));
+// Parse le contenu JSON (i.e. clients de l'API)
+app.use(express.json());
+
+
 app.get('/', (req, res) => {
     // pour test
     res.send(`<h1>Bonjour</h1>
@@ -83,20 +91,62 @@ app.get('/', (req, res) => {
     );
 });
 
-// routage
+
+///////////////////
+// API ENDPOINTS //
+///////////////////
+app.post('/register', [
+    check('nickname', 'Pseudo invalide').isLength({min: 2}),
+    check('email', 'Email invalide').isEmail(),
+    check('password', 'Mot de passe invalide (4 caractères minimum)').isLength({min: 4})
+], (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const extractedErrors = []
+        errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }))
+        
+        return res.status(422).json({ success: false, msg: 'Erreur de validation', data: extractedErrors });
+    }
+
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (err)
+            return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
+
+        if (user)
+            return res.status(409).json({ success: false, msg: 'Email déjà utilisé', data: [] });
+
+        User.findOne({ nickname: req.body.nickname }, (err, user) => {
+            if (err)
+                return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
+    
+            if (user)
+                return res.status(409).json({ success: false, msg: 'Pseudo déjà utilisé', data: [] });
+
+            let newUser = User();
+            newUser.nickname = req.body.nickname;
+            newUser.email = req.body.email;
+            newUser.password = newUser.encryptPassword(req.body.password);
+
+            newUser.save((err) => {
+                if (err)
+                    return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
+                
+                return res.status(200).json({ success: true, msg: 'Utilisateur créé', data: newUser});
+            });
+        });
+    });
+});
+
 app.post('/login', (req, res) => {
     if (req.body == null) {
         res.send(false);
         return;
     }
 });
-
-app.post('/register', (req, res) => {
-    if (req.body == null) {
-        res.send(false);
-        return;
-    }
-});
+///////////////////////
+// FIN API ENDPOINTS //
+///////////////////////
 
 // tableau des données de jeu principales
 let waitingPlayers = []; // joueurs en attente de partie
