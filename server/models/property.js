@@ -1,40 +1,41 @@
-const Constants = require('../lib/constants.js');
-const Properties = require('../lib/properties.js');
+const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
 
-
+/**
+ * Représente une propriété (rue, gare ou compagnie)
+ */
 class Property {
-    constructor (id) {
+    /*
+     * @param id (>= 0) ID de la propriété => permet de trouver les données associées
+     * @param owner Propriétaire de la propriété
+     */
+    constructor (id, owner) {
         this.id = id;
         this.isMortgaged = false;
-        this.load();
+        this.owner = owner;
+        // implémenté chez les classes filles uniquement
+        this.load(this.data);
     }
 
-    load () {
-        const prop = Properties[this.id];
-        //faire test
-        this.name = prop.name;
-        this.type = prop.type;
-        this.description = prop.description;
-        this.rentalPrices = prop.rentalPrices;
-        this.mortgagePrice = prop.mortgagePrice;
-    }
-    //Faire méthodes getRealRentalPrice par rapport aux types sans passer par des sous-classes
-
-    get realRentalPrice () {
-        switch (this.type) {
-            case Constants.PROPERTY_TYPE.STREET:
-                break;
-
-            case Constants.PROPERTY_TYPE.TRAINSTATION:
-                break;
-
-            case Constants.PROPERTY_TYPE.PUBLICCOMPANY:
-                break;
+    /**
+     * @return L'objet correspondant aux données de l'ID
+     */
+    get data () {
+        let num = this.id;
+        if (num < Properties.TRAIN_STATION.length) {
+            this.type = Constants.PROPRERTY_TYPE.TRAIN_STATION;
+            return Properties.TRAIN_STATION[num];
         }
-    }
 
-    get mortgagePrice () {
+        num -= Properties.TRAIN_STATION.length;
+        if (num < Properties.STREET.length) {
+            this.type = Constants.PROPRERTY_TYPE.STREET;
+            return Properties.STREET[num];
+        }
 
+        num -= Properties.PUBLIC_COMPANY.length;
+        this.type = Constants.PROPRERTY_TYPE.PUBLIC_COMPANY;
+        return Properties.PUBLIC_COMPANY[num];
     }
 }
 

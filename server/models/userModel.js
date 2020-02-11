@@ -9,4 +9,4 @@ let schema = new Schema({
     level: {type: Number, default: 1, required: true}
 });
 
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('UserModel', schema);

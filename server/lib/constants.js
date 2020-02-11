@@ -1,16 +1,23 @@
 module.exports = Object.freeze({
+    // CELL
     CELL_TYPE: {
-        PARC: 0,
-        PRISON: 1,
-        PROPERTY: 2,
-        CHANCE_CARD: 3,
-        COMMUNITY_CARD: 4
+        PARC:      0,
+        PRISON:    1,
+        PROPERTY:  2,
+        CHANCE:    3,
+        COMMUNITY: 4
     },
 
+    // PROPERTY
     PROPERTY_TYPE: {
-        TRAINSTATION: 0,
-        STREET: 1,
-        PUBLICCOMPANY: 2,
+        TRAINSTATION:   0,
+        STREET:         1,
+        PUBLIC_COMPANY: 2,
+    },
+    PROPERTY_COLOR: {
+        RED:   0,
+        GREEN: 1,
+        BLUE:  2,
+        PINK:  3
     }
-    //, ...
 });

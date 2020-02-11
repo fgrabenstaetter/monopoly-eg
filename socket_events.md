@@ -275,7 +275,7 @@
         * *Données:*
         ```javascript
         {
-            "overbidID": int,
+            "bidID": int,
             "price": int
         }
          ```

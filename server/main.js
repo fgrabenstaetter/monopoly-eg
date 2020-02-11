@@ -14,12 +14,8 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Constants = require('./lib/constants');
-const User = require('./models/user');
+const UserModel = require('./models/userModel');
 const Cell = require('./models/cell');
-
-// const db = new (require('./utils/db.js'))();
-// const Party = require('./game/party.js');
-// const Player = require('./game/player.js');
 
 let server;
 let production = false;
@@ -151,13 +147,13 @@ app.get('/tests', (req, res) => {
 
 
 app.get('/add-user-in-db/:username/:email', (req, res) => {
-    let newUser = new User({
+    let newUserModel = new UserModel({
         nickname: req.params.username,
         email: req.params.email,
         password: '$[hash]'
     });
 
-    newUser.save((err, result) => {
+    newUserModel.save((err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
@@ -166,7 +162,7 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
 });
 
 app.get('/get-users-from-db', (req, res) => {
-    User.find((err, users) => {
+    UserModel.find((err, users) => {
         let html = '';
         for (let i = 0; i < users.length; i++) {
             html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
@@ -176,7 +172,7 @@ app.get('/get-users-from-db', (req, res) => {
 });
 
 app.get('/delete-users-from-db', (req, res) => {
-    User.remove({}, (err, result) => {
+    UserModel.remove({}, (err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
