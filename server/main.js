@@ -16,7 +16,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Constants = require('./lib/constants');
-const UserModel = require('./models/userModel');
+const User = require('./models/userModel');
 const Cell = require('./models/cell');
 
 let server;
@@ -134,11 +134,19 @@ app.post('/register', [
     });
 });
 
-app.post('/login', (req, res) => {
-    if (req.body == null) {
-        res.send(false);
-        return;
-    }
+app.post('/login', [
+    check('email', 'Email invalide').isEmail(),
+    check('password', 'Mot de passe invalide').isLength({min: 4})
+], (req, res) => {
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (err)
+            return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
+
+        if (!user || !user.validPassword(req.body.password))
+            return res.status(400).json({ success: false, msg: 'Identifiants de connexion invalides', data: [] });
+
+        return res.status(200).json({ success: true, msg: 'Connexion réussie', data: user })
+    });
 });
 ///////////////////////
 // FIN API ENDPOINTS //
@@ -197,13 +205,13 @@ app.get('/tests', (req, res) => {
 
 
 app.get('/add-user-in-db/:username/:email', (req, res) => {
-    let newUserModel = new UserModel({
+    let newUser = new User({
         nickname: req.params.username,
         email: req.params.email,
         password: '$[hash]'
     });
 
-    newUserModel.save((err, result) => {
+    newUser.save((err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
@@ -212,7 +220,7 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
 });
 
 app.get('/get-users-from-db', (req, res) => {
-    UserModel.find((err, users) => {
+    User.find((err, users) => {
         let html = '';
         for (let i = 0; i < users.length; i++) {
             html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
@@ -222,7 +230,7 @@ app.get('/get-users-from-db', (req, res) => {
 });
 
 app.get('/delete-users-from-db', (req, res) => {
-    UserModel.remove({}, (err, result) => {
+    User.remove({}, (err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
