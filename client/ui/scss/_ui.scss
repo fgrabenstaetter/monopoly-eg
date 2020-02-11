@@ -25,6 +25,56 @@
   height: 100%;
 }
 
+.options-overlay-container {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  padding-top: 20px;
+
+  i {
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 20px;
+    padding-top: 10px;
+    background-color: rgba($color: black, $alpha: 0.3);
+    color: white;
+    border-radius: 100%;
+  }
+}
+
+.profile-overlay-container {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  padding-top: 20px;
+
+  img {
+    margin-right: 50px;
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+    border: 4px solid white;
+    box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+  }
+}
+
+.resolution-overlay-container {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background-color: $mp_orange;
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .resolution-overlay-container {
+    display: block;
+  }
+}
+
 .welcome-screen {
   .btn {
     position: absolute;
@@ -39,6 +89,40 @@
   }
 }
 
+.lobby-ui-container {
+  width: 100%;
+
+  /* {
+    border: black 1px dotted;
+  } */
+
+  .box {
+    width: 250px;
+    margin-bottom: 200px;
+  }
+
+  .btn {
+    height: 50px;
+    border-radius: 25px;
+    font-size: 20px;
+    padding: 6px 30px;
+  }
+
+  .container:first-child {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .container:nth-child(2) {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
+
 .ingame-ui-container {
   position: absolute;
   z-index: 1;
@@ -46,12 +130,36 @@
 }
 
 .card {
+  &.box {
+    border-radius: 0;
+    border: none;
 
-  border-radius: 15px;
-  background-color: transparent;
+    .card-header {
+      border-radius: 0;
+      background-color: $box_header;
+      font-family: 'LilitaOne', sans-serif;
+      color: white;
+      font-size: 20px;
+    }
+
+    .card-body {
+      border-radius: 0;
+      background-color: $box_body;
+      color: white;
+    }
+
+    input {
+      height: 30px;
+      border-radius: 15px;
+      border: none;
+      background-color: rgba($color: black, $alpha: 0.3);
+      color: rgba($color: white, $alpha: 0.7);
+    }
+  }
 
   &.window {
-
+    border-radius: 15px;
+    background-color: transparent;
     border: none;
     text-align: center;
     position: absolute;

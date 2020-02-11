@@ -45,6 +45,57 @@
   height: 100%;
 }
 
+.options-overlay-container {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  padding-top: 20px;
+}
+
+.options-overlay-container i {
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+  padding-top: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border-radius: 100%;
+}
+
+.profile-overlay-container {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  padding-top: 20px;
+}
+
+.profile-overlay-container img {
+  margin-right: 50px;
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+  border: 4px solid white;
+  -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.resolution-overlay-container {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background-color: #fd8000;
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .resolution-overlay-container {
+    display: block;
+  }
+}
+
 .welcome-screen .btn {
   position: absolute;
   bottom: 20%;
@@ -58,18 +109,77 @@
   padding: 6px 0;
 }
 
+.lobby-ui-container {
+  width: 100%;
+  /* {
+    border: black 1px dotted;
+  } */
+}
+
+.lobby-ui-container .box {
+  width: 250px;
+  margin-bottom: 200px;
+}
+
+.lobby-ui-container .btn {
+  height: 50px;
+  border-radius: 25px;
+  font-size: 20px;
+  padding: 6px 30px;
+}
+
+.lobby-ui-container .container:first-child {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+
+.lobby-ui-container .container:nth-child(2) {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+
 .ingame-ui-container {
   position: absolute;
   z-index: 1;
   font-family: 'Roboto', sans-serif;
 }
 
-.card {
+.card.box {
+  border-radius: 0;
+  border: none;
+}
+
+.card.box .card-header {
+  border-radius: 0;
+  background-color: #2dc8dc;
+  font-family: 'LilitaOne', sans-serif;
+  color: white;
+  font-size: 20px;
+}
+
+.card.box .card-body {
+  border-radius: 0;
+  background-color: #0da6b8;
+  color: white;
+}
+
+.card.box input {
+  height: 30px;
   border-radius: 15px;
-  background-color: transparent;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .card.window {
+  border-radius: 15px;
+  background-color: transparent;
   border: none;
   text-align: center;
   position: absolute;
