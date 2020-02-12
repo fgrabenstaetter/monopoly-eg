@@ -11,13 +11,13 @@ const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 const cookie = require('cookie');
 const cookieSignature = require('cookie-signature');
-const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Constants = require('./lib/constants');
-const User = require('./models/userModel');
-const Cell = require('./models/cell');
+const UserModel = require('./models/user');
+const User = require('./game/user');
+const Cell = require('./game/cell');
 
 let server;
 let production = false;
@@ -64,7 +64,6 @@ if (production) {
     // mode développement
     const port = 3000;
     console.log('Démarrage en mode [ DÉVELOPPEMENT ]');
-
     server = http.createServer(app).listen(port);
 }
 
@@ -76,7 +75,6 @@ app.use(express.urlencoded({ extended: true }));
 // Parse le contenu JSON (i.e. clients de l'API)
 app.use(express.json());
 
-
 app.get('/', (req, res) => {
     // pour test
     res.send(`<h1>Bonjour</h1>
@@ -87,65 +85,25 @@ app.get('/', (req, res) => {
     );
 });
 
-
 ///////////////////
 // API ENDPOINTS //
 ///////////////////
-app.post('/api/register', [
-    check('nickname', 'Pseudo invalide').isLength({min: 2}),
-    check('email', 'Email invalide').isEmail(),
-    check('password', 'Mot de passe invalide (4 caractères minimum)').isLength({min: 4})
-], (req, res) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const extractedErrors = []
-        errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }))
-        
-        return res.status(422).json({ success: false, msg: 'Erreur de validation', data: extractedErrors });
-    }
-
-    User.findOne({ email: req.body.email }, (err, user) => {
-        if (err)
-            return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
-
-        if (user)
-            return res.status(409).json({ success: false, msg: 'Email déjà utilisé', data: [] });
-
-        User.findOne({ nickname: req.body.nickname }, (err, user) => {
-            if (err)
-                return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
-    
-            if (user)
-                return res.status(409).json({ success: false, msg: 'Pseudo déjà utilisé', data: [] });
-
-            let newUser = User();
-            newUser.nickname = req.body.nickname;
-            newUser.email = req.body.email;
-            newUser.password = newUser.encryptPassword(req.body.password);
-
-            newUser.save((err) => {
-                if (err)
-                    return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
-                
-                return res.status(200).json({ success: true, msg: 'Utilisateur créé', data: newUser});
-            });
-        });
+app.post('/api/register', (req, res) => {
+    let newUserModel = UserModel();
+    newUserModel.register(req.body.nickname, req.body.email, req.body.password, (code) => {
+        res.json({ error: code });
     });
 });
 
-app.post('/api/login', [
-    check('email', 'Email invalide').isEmail(),
-    check('password', 'Mot de passe invalide').isLength({min: 4})
-], (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-        if (err)
-            return res.status(424).json({ success: false, msg: 'Erreur MongoDB', data: err });
+app.post('/api/login', (req, res) => {
+    let userModel = UserModel();
+    userModel.login(req.body.nickname, req.body.password, (code) => {
+        if (code === Constants.USER_REGISTER_ERROR_CODE.SUCCESS) {
+            // succès
+            req.session.user = User(userModel);
 
-        if (!user || !user.validPassword(req.body.password))
-            return res.status(400).json({ success: false, msg: 'Identifiants de connexion invalides', data: [] });
-
-        return res.status(200).json({ success: true, msg: 'Connexion réussie', data: user })
+        }
+        res.json({ error: code });
     });
 });
 ///////////////////////
@@ -205,13 +163,13 @@ app.get('/tests', (req, res) => {
 
 
 app.get('/add-user-in-db/:username/:email', (req, res) => {
-    let newUser = new User({
+    let newUserModel = new UserModel({
         nickname: req.params.username,
         email: req.params.email,
         password: '$[hash]'
     });
 
-    newUser.save((err, result) => {
+    newUserModel.save((err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
@@ -220,7 +178,7 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
 });
 
 app.get('/get-users-from-db', (req, res) => {
-    User.find((err, users) => {
+    UserModel.find((err, users) => {
         let html = '';
         for (let i = 0; i < users.length; i++) {
             html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
@@ -230,7 +188,7 @@ app.get('/get-users-from-db', (req, res) => {
 });
 
 app.get('/delete-users-from-db', (req, res) => {
-    User.remove({}, (err, result) => {
+    UserModel.remove({}, (err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else

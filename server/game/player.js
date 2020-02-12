@@ -9,8 +9,10 @@ class Player {
      * @param user L'utilisateur associé au joueur
      * @param money L'argent de base accordé
      */
-    constructor (id, user, money) {
-        this.cellId = id;
+    constructor (id, gameboard, user, money) {
+        this.id = id;
+        this.cellId = 0;
+        this.gameboard = gameboard;
         this.user = user;
         this.money = money;
         this.properties = [];
