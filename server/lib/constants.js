@@ -10,7 +10,7 @@ module.exports = Object.freeze({
 
     // PROPERTY
     PROPERTY_TYPE: {
-        TRAINSTATION:   0,
+        TRAIN_STATION:   0,
         STREET:         1,
         PUBLIC_COMPANY: 2,
     },

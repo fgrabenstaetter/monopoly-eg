@@ -31,7 +31,7 @@ class Player {
     get trainStationsNb () {
         let nb = 0;
         for (const prop of this.properties) {
-            if (pop.type === Constants.PROPRERTY_TYPE.TRAIN_STATION)
+            if (prop.type === Constants.PROPRERTY_TYPE.TRAIN_STATION)
                 nb ++;
         }
 

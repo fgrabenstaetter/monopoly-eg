@@ -9,6 +9,12 @@ const Properties = {
             description: 'Quelle magnifique gare !',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
+        },
+        {
+            name: 'Gare de Mulhouse',
+            description: 'Gare perdue',
+            price: 200,
+            rentalPrices: [25, 50, 100, 200]
         }
     ],
 
@@ -36,6 +42,12 @@ const Properties = {
             description: 'En libre service, venez donc',
             price: 430,
             rentalPrice: 25
+        },
+        {
+            name: 'UFR de math Info',
+            description: 'Math info top niveau',
+            price: 530,
+            rentalPrice: 45
         }
     ]
 }

@@ -2,6 +2,7 @@ const Property = require('./property');
 
 /**
  * Représente une carte "rue"
+ * Classe fille de la classe Propriété
  */
 class Street extends Property {
 
