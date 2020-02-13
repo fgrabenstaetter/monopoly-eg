@@ -1,16 +1,20 @@
 module.exports = Object.freeze({
-    // USER
+    // GLOBAL ERRORS
     SUCCESS: 0,
+    INTERNAL_ERROR: 1000,
+    MISSING_FIELD: 1001,
+
+    // LOGIN ERRORS
     LOGIN: {
-        FAILED: 1,
-        MISSING_FIELD: 2,
-        INTERNAL_ERROR: 3
+        INVALID_CREDENTIALS: 1
     },
+    
+    // REGISTER ERRORS
     REGISTER: {
-        EMAIL_EXISTS: 1,
-        NICKNAME_EXISTS: 2,
-        ERR_FORMAT: 3,
-        MISSING_FIELD: 4,
-        INTERNAL_ERROR: 5
+        EMAIL_TAKEN: 1,
+        NICKNAME_TAKEN: 2,
+        ERR_EMAIL_FORMAT: 3,
+        ERR_NICKNAME_LEN: 4,
+        ERR_PASSWORD_LEN: 5
     }
 });

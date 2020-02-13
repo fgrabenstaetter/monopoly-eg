@@ -27,28 +27,21 @@ class UserManager { // abstract
      * En cas de succès, l'objet est mis à jour avec les attributs de l'utilisateur auquel la connexion à réussie
      */
     static login (nickname, rawPassword, cb) {
-        if (!nickname || !rawPassword) {
-            cb(Errors.LOGIN.MISSING_FIELD);
-            return;
-        } else if (nickname.length < 4 || rawPassword.length < 4) {
-            cb(Errors.LOGIN.FAILED);
-            return;
-        }
+        if (!nickname || !rawPassword)
+            return cb(Errors.LOGIN.MISSING_FIELD);
 
         UserSchema.findOne({ nickname: nickname }, (err, user) => {
-            if (err) {
-                cb(Errors.LOGIN.INTERNAL_ERROR);
-                return;
-            } else if (!user) {
-                cb(Errors.LOGIN.FAILED);
-                return;
-            }
+            if (err)
+                return cb(Errors.INTERNAL_ERROR);
+            
+            if (!user)
+                return cb(Errors.LOGIN.INVALID_CREDENTIALS);
 
             UserManager.validPassword(rawPassword, user.password, (success) => {
                 if (success)
-                    cb(Errors.SUCCESS, user);
+                    return cb(Errors.SUCCESS, user);
                 else
-                    cb(Errors.LOGIN.FAILED);
+                    return cb(Errors.LOGIN.INVALID_CREDENTIALS);
             });
         });
     }
@@ -61,48 +54,47 @@ class UserManager { // abstract
      * @callback-return code d'erreur (Errors.REGISTER, voir errors.js)
      */
     static register (nickname, email, rawPassword, cb) {
-        if (!nickname || !email || !rawPassword) {
-            cb(Errors.REGISTER.MISSING_FIELD)
-            return;
-        } else if (nickname.length < 4 || rawPassword.length < 4 || !UserManager.isEmail(email)) {
-            cb(Errors.REGISTER.ERR_FORMAT);
-            return;
-        }
+        if (!nickname || !email || !rawPassword)
+            return cb(Errors.REGISTER.MISSING_FIELD);
+        
+        if (nickname.length < 4)
+            return cb(Errors.REGISTER.ERR_NICKNAME_LEN);
+        
+        if (rawPassword.length < 4)
+            return cb(Errors.REGISTER.ERR_PASSWORD_LEN);
+        
+        if (!UserManager.isEmail(email))
+            return cb(Errors.REGISTER.ERR_EMAIL_FORMAT);
 
         UserSchema.findOne({ email: email }, (err, user) => {
-            if (err) {
-                cb(Errors.REGISTER.INTERNAL_ERROR);
-                return;
-            } else if (user) {
-                cb(Errors.REGISTER.EMAIL_EXISTS);
-                return;
-            }
+            if (err)
+                return cb(Errors.INTERNAL_ERROR);
+            
+            if (user)
+                return cb(Errors.REGISTER.EMAIL_TAKEN);
 
             UserSchema.findOne({ nickname: nickname }, (err, user) => {
-                if (err) {
-                    cb(Errors.REGISTER.INTERNAL_ERROR);
-                    return;
-                } else if (user) {
-                    cb(Errors.REGISTER.NICKNAME_EXISTS);
-                    return;
-                }
+                if (err)
+                    return cb(Errors.INTERNAL_ERROR);
+                
+                if (user)
+                    return cb(Errors.REGISTER.NICKNAME_TAKEN);
 
                 UserManager.encryptPassword(rawPassword, (hash) => {
                     if (!hash)
-                        cb(Errors.REGISTER.INTERNAL_ERROR);
-                    else {
-                        let newUser = UserSchema();
-                        newUser.nickname = nickname;
-                        newUser.email = email;
-                        newUser.password = hash;
+                        return cb(Errors.INTERNAL_ERROR);
 
-                        newUser.save( (err) => {
-                            if (err)
-                                cb(Errors.REGISTER.INTERNAL_ERROR);
-                            else
-                                cb(Errors.SUCCESS);
-                        });
-                    }
+                    let newUser = UserSchema();
+                    newUser.nickname = nickname;
+                    newUser.email = email;
+                    newUser.password = hash;
+
+                    newUser.save((err) => {
+                        if (err)
+                            return cb(Errors.INTERNAL_ERROR);
+                        else
+                            return cb(Errors.SUCCESS);
+                    });
                 });
             });
         });
@@ -116,11 +108,10 @@ class UserManager { // abstract
     static encryptPassword (rawPassword, cb) {
         const saltRounds = 10;
         bcrypt.hash(rawPassword, saltRounds, (err, hash) => {
-            if (err != null) {
-                cb(null);
-                return;
-            }
-            cb(hash);
+            if (err != null)
+                return cb(null);
+            
+            return cb(hash);
         });
     }
 
