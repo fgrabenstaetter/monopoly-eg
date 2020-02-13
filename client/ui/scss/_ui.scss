@@ -75,6 +75,75 @@
   }
 }
 
+.tchat-container {
+  width: 100%;
+  max-width: 240px;
+
+  .msg-me {
+    position: relative;
+    background: #00e54f;
+    padding: 5px 10px;
+    color: white;
+    font-size: 13px;
+    text-align: right;
+    margin: 10px 0;
+  }
+  
+  .msg-me:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-left-color: #00e54f;
+    border-right: 0;
+    margin-top: -6px;
+    margin-right: -6px;
+  }
+
+  .msg-other {
+    position: relative;
+    background: rgba($color: black, $alpha: 0.3);;
+    padding: 5px 10px;
+    color: white;
+    font-size: 13px;
+    text-align: left;
+    margin: 10px 0;
+  }
+  
+  .msg-other:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-right-color: rgba($color: black, $alpha: 0.3);;
+    border-left: 0;
+    margin-top: -6px;
+    margin-left: -6px;
+  }
+
+  .input-group input,
+  .input-group-text {
+    height: 35px;
+    border: none;
+    border-radius: 0;
+    background: rgba($color: white, $alpha: 0.7);
+  }
+
+  .input-group input {
+    font-size: 14px;
+  }
+
+  .input-group-append {
+    margin: 0;
+  }
+}
+
 .welcome-screen {
   .btn {
     position: absolute;
@@ -119,6 +188,48 @@
     bottom: 5%;
     left: 50%;
     transform: translate(-50%, 0);
+
+    .nb-joueurs-container {
+      position: relative;
+
+      #nbJoueurs {
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+        padding: 0;
+      }
+    
+      div:first-of-type {
+        position: absolute; bottom: 0; right: 0; margin-right: 15px;
+      }
+    
+      .stylized {
+        border-color: #5fddeb;
+        background-color: #0ab6cc;
+      }
+
+      .arrow-right, .arrow-left {
+        position: absolute;
+        top: 15px;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+      }
+
+      .arrow-right {
+        left: 55px;
+        border-left:17px solid rgba($color: white, $alpha: 0.5);
+      }
+      
+      .arrow-left {
+        right: 55px;
+        border-right:17px solid rgba($color: white, $alpha: 0.5);
+      }
+    }
   }
 }
 
