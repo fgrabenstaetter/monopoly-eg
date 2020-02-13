@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="col-md-6">
-
+      
     </div>
     <div class="col-md-3">
       <div class="card box" style="float: right;">
@@ -31,7 +31,7 @@
           QUÊTES
         </div>
         <div class="card-body">
-
+          
         </div>
       </div>
     </div>
@@ -39,19 +39,28 @@
 </div>
 <div class="container">
   <div class="row">
-    <div class="col-md-3">
-      <img src="img/ui/tchat.png" width="250px">
-    </div>
-    <div class="col-md-6 text-center">
-      <div style="display: inline-block;">
-        <div>
-        <script src="js/gNbJoueur.js"></script><!--a replacer dans le code-->
-        <button class="arrow-left" id="leftNbJ"></button>
-        <button class="btn btn-primary stylized" id="nbJoueurs" style="padding-left: 16px; padding-right: 16px;">1</button>
-        <button class="arrow-right" id="rightNbJ"></button>
+    <div class="col-md-4">
+      <div class="tchat-container">
+        <div class="msg-other">Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre</div>
+        <div class="msg-me">Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe</div>
+        <div class="input-group">
+          <input class="form-control" type="text" placeholder="Votre message...">
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="fa fa-paper-plane"></i></span>
+          </div>
         </div>
       </div>
-      <div style="display: inline-block;">
+    </div>
+    <div class="col-md-2 nb-joueurs-container">
+      <div>
+        <script src="js/gNbJoueur.js"></script>
+        <button class="arrow-left" id="leftNbJ"></button>
+        <button class="btn btn-primary stylized" id="nbJoueurs">1</button>
+        <button class="arrow-right" id="rightNbJ"></button>
+      </div>
+    </div>
+    <div class="col-md-2 text-center" style="position: relative;">
+      <div style="position: absolute; bottom: 0; left: 0; margin-left: 15px;">
         <a class="btn btn-primary stylized" href="#">JOUER</a>
       </div>
     </div>
