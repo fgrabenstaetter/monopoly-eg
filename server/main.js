@@ -15,7 +15,8 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Constants = require('./lib/constants');
-const UserModel = require('./models/user');
+const Errors = require('./lib/errors');
+const { UserSchema, UserManager } = require('./models/user');
 const User = require('./game/user');
 const Cell = require('./game/cell');
 
@@ -89,20 +90,19 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 app.post('/api/register', (req, res) => {
-    let newUserModel = UserModel();
-    newUserModel.register(req.body.nickname, req.body.email, req.body.password, (code) => {
+    UserManager.register(req.body.nickname, req.body.email, req.body.password, (code) => {
+        if (code !== Errors.SUCCESS)
+            res.status(400);
         res.json({ error: code });
     });
 });
 
 app.post('/api/login', (req, res) => {
-    let userModel = UserModel();
-    userModel.login(req.body.nickname, req.body.password, (code) => {
-        if (code === Constants.USER_REGISTER_ERROR_CODE.SUCCESS) {
-            // succès
-            req.session.user = User(userModel);
-
-        }
+    UserManager.login(req.body.nickname, req.body.password, (code, userSchema) => {
+        if (code === Errors.SUCCESS)
+            req.session.user = new User(userSchema);
+        else
+            res.status(400);
         res.json({ error: code });
     });
 });
@@ -163,13 +163,13 @@ app.get('/tests', (req, res) => {
 
 
 app.get('/add-user-in-db/:username/:email', (req, res) => {
-    let newUserModel = new UserModel({
+    let newUserSchema = new UserSchema({
         nickname: req.params.username,
         email: req.params.email,
         password: '$[hash]'
     });
 
-    newUserModel.save((err, result) => {
+    newUserSchema.save((err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
@@ -178,7 +178,7 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
 });
 
 app.get('/get-users-from-db', (req, res) => {
-    UserModel.find((err, users) => {
+    UserSchema.find((err, users) => {
         let html = '';
         for (let i = 0; i < users.length; i++) {
             html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
@@ -188,7 +188,7 @@ app.get('/get-users-from-db', (req, res) => {
 });
 
 app.get('/delete-users-from-db', (req, res) => {
-    UserModel.remove({}, (err, result) => {
+    UserSchema.deleteMany({}, (err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
         else
