@@ -338,6 +338,7 @@
 }
 
 .card.window .card-body .btn.btn-secondary {
+  padding-top: 8px;
   background: #066875;
 }
 
