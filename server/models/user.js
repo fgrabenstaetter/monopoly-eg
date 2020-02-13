@@ -28,7 +28,7 @@ class UserManager { // abstract
      */
     static login (nickname, rawPassword, cb) {
         if (!nickname || !rawPassword)
-            return cb(Errors.LOGIN.MISSING_FIELD);
+            return cb(Errors.MISSING_FIELD);
 
         UserSchema.findOne({ nickname: nickname }, (err, user) => {
             if (err)
@@ -55,7 +55,7 @@ class UserManager { // abstract
      */
     static register (nickname, email, rawPassword, cb) {
         if (!nickname || !email || !rawPassword)
-            return cb(Errors.REGISTER.MISSING_FIELD);
+            return cb(Errors.MISSING_FIELD);
         
         if (nickname.length < 4)
             return cb(Errors.REGISTER.ERR_NICKNAME_LEN);
