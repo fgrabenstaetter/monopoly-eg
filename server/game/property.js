@@ -4,7 +4,7 @@ const Properties = require('../lib/properties');
 /**
  * Représente une propriété (rue, gare ou compagnie)
  */
-class Property {
+class Property { // classe abstraite
     /*
      * @param id (>= 0) ID de la propriété => permet de trouver les données associées
      * @param owner Propriétaire de la propriété
@@ -14,7 +14,7 @@ class Property {
         this.isMortgaged = false;
         this.owner = owner;
         // implémenté chez les classes filles uniquement
-        //this.load(this.data);
+        this.load(this.data);
     }
 
     /**
@@ -41,30 +41,5 @@ class Property {
         return Properties.PUBLIC_COMPANY[num];
     }
 }
-
-/*PETITS TESTS RAPIDE*/
-/*const toto = new Property (0, "François");
-let varr = toto.data;
-
-const tata = new Property (1, "Danyl");
-let varr2 = tata.data;
-
-const tutu = new Property (2, "BenJ");
-let varr3 = tutu.data;
-
-const titi = new Property (3, "Hello");
-let varr4 = titi.data;
-
-const tete = new Property (4, "World");
-let varr5 = tete.data;
-
-let tab = [toto, tata, tutu, titi, tete];
-let tab2 = [];
-
-for (i = 0; i < 5; i++) {
-    tab2[i] = tab[i].data;
-    console.log(tab2[i]);
-    console.log(tab[i].id)
-}*/
 
 module.exports = Property;
