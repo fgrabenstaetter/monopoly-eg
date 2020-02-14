@@ -13,7 +13,7 @@ class Lobby {
             this.maxPlayersNb = 8;
         else
             this.maxPlayersNb = maxPlayersNb;
-        // Il y aura un seul objet matchmaking qui sera un attribut de chaque objet Lobby pour simplifier 
+        // Il y aura un seul objet matchmaking qui sera un attribut de chaque objet Lobby pour simplifier
         this.matchmaking = matchmaking;
     }
 
