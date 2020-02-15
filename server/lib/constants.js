@@ -19,5 +19,11 @@ module.exports = Object.freeze({
         GREEN: 1,
         BLUE:  2,
         PINK:  3
+    },
+
+    // CHAT
+    CHAT_MESSAGE_TYPE: {
+        TEXT: 0,
+        OFFER: 1
     }
 });
