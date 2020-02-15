@@ -1,4 +1,5 @@
-const Lobby = require('./lobby.js');
+const Lobby = require('./lobby');
+
 /**
  * Représente un matchmaking (recherche de partie)
  */
@@ -27,11 +28,10 @@ class Matchmaking {
      */
     addLobby (lobby) {
         // On lance la partie directement si le nombre de joueurs correspond au nombre de joueurs attendus pour la partie
-        if (lobby.targetUsersNb === lobby.nbUsers) {
+        if (lobby.targetUsersNb === lobby.users.length) {
             // objet game à compléter après implémentation de la classe de ce dernier
             /* const game = new Gameboard(lobby.users);
             this.games.push(game);*/
-            console.log("YIKES");
         }
         // Sinon on l'insère dans la bonne file d'attente
         else {
@@ -54,10 +54,10 @@ class Matchmaking {
         for (let i = 0; i < 7; i++) {
             let nbMax = i+2;
             for (let j = 0; j < this.playersWaiting[i].length; j++) {
-                let sum = this.playersWaiting[i][j].nbUsers;
+                let sum = this.playersWaiting[i][j].users.length;
                 let fusion = [];
                 for (let k = 0; k < this.playersWaiting[i].length; k++) {
-                    sum += this.playersWaiting[i][k].nbUsers;
+                    sum += this.playersWaiting[i][k].users.length;
                     if (k !== j) {
                         if (sum < nbMax) {
                             if (fusion.indexOf(j) === -1)
@@ -66,7 +66,7 @@ class Matchmaking {
                                 fusion.push(j);
                         }
                         else if (sum > nbMax)
-                            sum -= this.playersWaiting[i][k].nbUsers;
+                            sum -= this.playersWaiting[i][k].users.length;
                         else {
                             if (fusion.indexOf(j) === -1)
                                 fusion.push(j);
@@ -81,7 +81,6 @@ class Matchmaking {
                                 this.delLobby(this.playersWaiting[i][f]);
                             }
                             // Ici il faudra instancier un Gameboard et l'ajouter au tableau games de matchmaking, après l'implémentation de la classe Gameboard
-                            console.log("Lobbys fusionnés!");
                         }
                     }
                 }
@@ -90,44 +89,4 @@ class Matchmaking {
     }
 }
 
-// TEST de la fusion des lobbys -- A SUPPRIMER!
-let match = new Matchmaking(0);
-let lob1 = new Lobby(0, {}, match);
-let lob2 = new Lobby(1, {}, match);
-let lob3 = new Lobby(2, {}, match);
-let lob4 = new Lobby(3, {}, match);
-let lob5 = new Lobby(4, {}, match);
-let lob6 = new Lobby(5, {}, match);
-lob1.addUser({});
-lob1.addUser({});
-lob1.addUser({});
-lob2.addUser({});
-lob3.addUser({});
-lob3.addUser({});
-lob3.addUser({});
-lob3.addUser({});
-lob3.addUser({});
-lob5.addUser({});
-lob5.addUser({});
-lob6.addUser({});
-lob6.addUser({});
-lob6.addUser({});
-lob6.addUser({});
-lob6.addUser({});
-lob1.changeMaxPlayersNb(5);
-lob2.changeMaxPlayersNb(5);
-lob3.changeMaxPlayersNb(5);
-lob4.changeMaxPlayersNb(5);
-lob5.changeMaxPlayersNb(5);
-lob6.changeMaxPlayersNb(6);
-match.addLobby(lob1);
-match.addLobby(lob2);
-match.addLobby(lob3);
-match.addLobby(lob4);
-match.addLobby(lob5);
-match.addLobby(lob6);
-console.log(lob1.nbUsers);
-console.log(lob2.nbUsers);
-console.log(lob3.nbUsers);
-console.log(lob4.nbUsers);
-console.log(lob5.nbUsers);
+module.exports = Matchmaking;

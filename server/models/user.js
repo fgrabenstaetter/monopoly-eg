@@ -5,12 +5,13 @@ const User = require('../game/user.js');
 const Errors = require('../lib/errors');
 
 let userSchema = new Schema({
-    nickname: {type: String, required: true},
-    email: {type: String, required: true},
-    password: {type: String, required: true},
-    inscriptionDate: {type: Date, default: Date.now, required: true},
-    level: {type: Number, default: 1, required: true},
-    exp: {type: Number, default: 0, required: true}
+    nickname: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    inscriptionDate: { type: Date, default: Date.now, required: true },
+    level: { type: Number, default: 1, required: true },
+    exp: { type: Number, default: 0, required: true },
+    friends: { type: [String], default: [], required: false }
 });
 
 const UserSchema = mongoose.model('User', userSchema);
