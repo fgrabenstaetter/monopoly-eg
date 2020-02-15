@@ -99,6 +99,9 @@
 .tchat-container {
   width: 100%;
   max-width: 240px;
+  max-height: 230px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .tchat-container .msg-me {
