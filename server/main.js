@@ -71,7 +71,7 @@ if (production) {
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         next();
     });
-    
+
     console.log('Démarrage en mode [ DÉVELOPPEMENT ]');
     server = http.createServer(app).listen(port);
 }
@@ -98,20 +98,20 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 app.post('/api/register', (req, res) => {
-    UserManager.register(req.body.nickname, req.body.email, req.body.password, (code) => {
-        if (code !== Errors.SUCCESS)
+    UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
+        if (err.code !== Errors.SUCCESS.code)
             res.status(400);
-        res.json({ error: code });
+        res.json({ error: err.code, status: err.status });
     });
 });
 
 app.post('/api/login', (req, res) => {
-    UserManager.login(req.body.nickname, req.body.password, (code, userSchema) => {
-        if (code === Errors.SUCCESS)
+    UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
+        if (err.code === Errors.SUCCESS.code)
             req.session.user = new User(userSchema);
         else
             res.status(400);
-        res.json({ error: code });
+        res.json({ error: err.code, status: err.status });
     });
 });
 ///////////////////////

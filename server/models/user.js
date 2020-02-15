@@ -33,7 +33,7 @@ class UserManager { // abstract
         UserSchema.findOne({ nickname: nickname }, (err, user) => {
             if (err)
                 return cb(Errors.INTERNAL_ERROR);
-            
+
             if (!user)
                 return cb(Errors.LOGIN.INVALID_CREDENTIALS);
 
@@ -56,27 +56,27 @@ class UserManager { // abstract
     static register (nickname, email, rawPassword, cb) {
         if (!nickname || !email || !rawPassword)
             return cb(Errors.MISSING_FIELD);
-        
+
         if (nickname.length < 4)
             return cb(Errors.REGISTER.ERR_NICKNAME_LEN);
-        
+
         if (rawPassword.length < 4)
             return cb(Errors.REGISTER.ERR_PASSWORD_LEN);
-        
+
         if (!UserManager.isEmail(email))
             return cb(Errors.REGISTER.ERR_EMAIL_FORMAT);
 
         UserSchema.findOne({ email: email }, (err, user) => {
             if (err)
                 return cb(Errors.INTERNAL_ERROR);
-            
+
             if (user)
                 return cb(Errors.REGISTER.EMAIL_TAKEN);
 
             UserSchema.findOne({ nickname: nickname }, (err, user) => {
                 if (err)
                     return cb(Errors.INTERNAL_ERROR);
-                
+
                 if (user)
                     return cb(Errors.REGISTER.NICKNAME_TAKEN);
 
@@ -110,7 +110,7 @@ class UserManager { // abstract
         bcrypt.hash(rawPassword, saltRounds, (err, hash) => {
             if (err != null)
                 return cb(null);
-            
+
             return cb(hash);
         });
     }
