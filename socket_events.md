@@ -6,11 +6,11 @@
 > Les données sont à passer en argument lors de l'envoi via socket
 
 **Res = réponse serveur -> client (pas forcément après un Req)**
-> Les données sont reçus en argument de la fonction callback de l'event socket
+> Les données sont reçues en argument de la fonction callback de l'event socket
 
 - Pour avoir accès à la connexion socket.io, être connecté (session express.js)
 - Socket => gérer le lobby, matchmaking, parties de jeu
-- Dans une réponse, **error** est égal à **0** lorsqu'il s'agit d'un succès, sinon contient un code d'erreur **> 0**. Tous les types d'erreurs et messages correspondants à un code d'erreur sont définis dans le fichier **constants.js**.
+- Dans une réponse, **error** est égal à **0** lorsqu'il s'agit d'un succès, sinon contient un code d'erreur **> 0**. Tous les types d'erreurs sont définis dans le fichier **server/lib/errors.js**. **status** contient toujours le message lié à ce code d'erreur.
 
 ## Lobby
 
@@ -33,7 +33,7 @@
         * *Données:*
         ```javascript
         {
-            "friendPseudo": string
+            friendNickname: string
         }
         ```
 
@@ -41,7 +41,8 @@
         * *Données:*
         ```javascript
         {
-            "error": int
+            error: int,
+            status: string
         }
         ```
 
@@ -50,9 +51,9 @@
         * *Données:*
         ```javascript
         {
-            "invitationID": int,
-            "senderFriendPseudo": string,
-            "nbPlayersInLobby": string
+            invitationID: int,
+            senderFriendNickname: string,
+            nbPlayersInLobby: int
         }
          ```
 
@@ -61,14 +62,15 @@
         * *Données:*
         ```javascript
         {
-            "invitationID": int
+            invitationID: int
         }
          ```
     * **Réponse:** lobbyFriendAcceptInvitationRes
         * *Données:*
         ```javascript
         {
-            "error": int
+            error: int,
+            status: string
         }
         ```
 
@@ -77,7 +79,16 @@
         * *Données:*
         ```javascript
         {
-            "playerToKickPseudo": string
+            playerToKickNickname: string
+        }
+        ```
+
+    * **Réponse:** lobbyKickRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
         }
         ```
 
@@ -87,16 +98,18 @@
         * *Données:*
         ```javascript
         {
-            "text": string
+            text: string
         }
         ```
     * **Réponse:** lobbyChatMessageRes
         * *Données:*
         ```javascript
         {
-            "senderPseudo": string,
-            "text": string,
-            "createdTime": timestamp
+            error: int,
+            status: string,
+            senderNickname: string,
+            text: string,
+            createdTime: timestamp
         }
         ```
 
@@ -107,16 +120,34 @@
         * *Données:*
         ```javascript
         {
-            "pseudos": array of string,
-            "pions": array of int
+            nicknames: array of string,
+            pions: array of int
+            players: [
+                {
+                    nickname: string,
+                    pawn: int
+                }, ...
+            ]
         }
          ```
     * **Réponse:** lobbyPlayRes
+        > Lors d'un succès, est envoyé à tous les joueurs du lobby
+
         * *Données:*
         ```javascript
         {
-            "error": int
+            error: int,
+            status: string
         }
+        ```
+
+- **Kické du lobby**
+    > Le joueur a été kické du lobby courrant
+
+    * **Réponse:** lobbyKickedRes
+        * *Données:*
+        ```javascript
+        null
         ```
 
 ## Game
@@ -128,10 +159,69 @@
         * *Données:*
         ```javascript
         {
-            "pseudos": array of string,
-            "pions": array of int,
-            "gameTimeout": timestamp, // date de fin de partie forcée
-            "turnMaxDuration": int // temps maximum d'un tour (secondes)
+            gameTimeout: timestamp, // timestamp de fin de partie (limite)
+            turnMaxDuration: int, // temps maximum d'un tour (secondes)
+            players: [
+                {
+                    nickname: string,
+                    pawn: int
+                }, ...
+            ],
+            cells: [
+                {
+                    id: int,
+                    type: string, // property | parc | prison | card
+                    typeObjID: int | null // null ou ID d'objet (property ou card) selon le type
+                }, ...
+            ],
+            properties: [
+                {
+                    id: int,
+                    type: string, // street | trainStation | publicCompany
+                    name: string,
+                    description: string,
+                    customData: selon le type (voir ci-dessous)
+                }, ...
+            ],
+            cards: [
+                {
+                    id: int,
+                    type: string, // chance | commnunity
+                    name: string,
+                    description: string
+                }, ...
+            ]
+        }
+
+        ```
+        **customData** dans *properties* peut être:
+        ```javascript
+        // si type = street
+        {
+            color: int,
+            prices: {
+                empty: int,
+                house: int,
+                hostel: int
+            },
+            rentalPrices: {
+                empty: int,
+                house: [ maison1 (int), maison2 (int), maison2 (int) ],
+                hostel: int
+            }
+
+        }
+
+        // si type = trainStation
+        {
+           price: int,
+           rentalPrices: [ 1gare (int), 2gare (int), 3gare (int), 4gare (int) ]
+        }
+
+        // Si type = publicCompany
+        {
+            price: int,
+            rentalPrice: int
         }
         ```
 
@@ -142,7 +232,7 @@
         * *Données:*
         ```javascript
         {
-            "pseudo": string
+            nickname: string
         }
         ```
 
@@ -158,25 +248,27 @@
     * **Réponse:** gameRollDiceRes
         > Contient le résultat des dés ET toutes les infos à mettre à jour (action de jeu)
 
-        * *"actionType"* peut signifier (rien, peutAcheter, doitPayerLoyer, peutConstruireMaison, peutConstruireHotel)
+        * *actionType* peut signifier (rien, peutAcheter, doitPayerLoyer, peutConstruireMaison, peutConstruireHotel)
         * *Données:*
         ```javascript
         {
-            "playerPseudo": string,
-            "dicesRes": [int, int],
-            "cellPos": int,
-            "gameMessage": string, // message de l'action
-            "actionType:" int,
-            "updateMoney":
+            playerNickname: string,
+            dicesRes: [ int, int ],
+            cellID: int,
+            gameMessage: string, // message de l'action
+            actionType: int,
+            updateMoney:
             [
                 // peut être vide (dynamique)
-                "pseudo": int, // nouveau solde
+                nickname: int, // nouveau solde
                 ...
             ],
-            "extra":
-            [
-                // contient 0 ou 1 seul de ces éléments
-                "newCardJailEscape" // nouvelle carte prison
+            extra: [
+                {
+                    // contient 0 ou 1 seul de ces éléments
+                    newCardJailEscape: null, // nouvelle carte prison
+                    newCard: int, // ID de la carte chance ou community
+                }, ...
             ]
         }
         ```
@@ -202,22 +294,27 @@
         * *Données:*
         ```javascript
         {
-            "text": string
+            text: string
         }
         ```
 
     * **Réponse:** gameChatMessageRes
-        > Pas forcément un message text brut, peut être par exemple une proposition de vente
+        > Pas forcément un message text brut, peut aussi être une offre (d'achat)
 
         * *Données:*
         ```javascript
         {
-            "messID": int,
-            "type": int,
-            "pseudoSrc": string,
-            "pseudoDest": string | null,
-            "text": string,
-            "customData": selon type
+            messID: int,
+            type: string, // text | offer
+            nickname: string,
+            text: string,
+            offer: { // ou null si type !== offer
+                id, // ID de l'offre (utile pour l'accepter)
+                receiver: string,
+                property: int, // ID de la propriété
+                amount: int,
+                datetimeOffer: datetime
+            }
         }
         ```
 
@@ -227,9 +324,9 @@
         * *Données:*
         ```javascript
         {
-            "type": int,
-            "pseudoDst": string | null,
-            "customData": selon type
+            receiver: string,
+            property: int, // ID de la propriété qu'on souhaite acheter
+            amount: int
         }
         ```
 
@@ -245,7 +342,7 @@
         * *Données:*
         ```javascript
         {
-            "offreID": int
+            offerID: int
         }
          ```
 
@@ -253,19 +350,23 @@
         * *Données:*
         ```javascript
         {
-            "error": int
+            error: int,
+            status: string
         }
         ```
 
-- **Une enchère a démarrée**
+- **Une enchère a démarrée/changée/terminée**
+    > Peut être reçue plusieurs fois (si sur-enchérissement) pour update le prix (alors même bidID)
+        Également reçue lorsque l'enchère est terminée (nom du vainqueur dans text et price = null)
 
     * **Réponse:** gameBidRes
         * *Données:*
         ```javascript
         {
-            "bidID": int,
-            "playerPseudo": string,
-            "text": string
+            bidID: int,
+            playerNickname: string,
+            text: string,
+            price: int | null // null si l'enchère a terminée
         }
         ```
 
@@ -275,8 +376,8 @@
         * *Données:*
         ```javascript
         {
-            "bidID": int,
-            "price": int
+            bidID: int,
+            price: int
         }
          ```
 
@@ -284,7 +385,8 @@
         * *Données:*
         ```javascript
         {
-            "error": int
+            error: int,
+            status: string
         }
         ```
 
@@ -294,8 +396,14 @@
         * *Données:*
         ```javascript
         {
-            "propertyID": int
+            propertyID: int
         }
+        ```
+
+    * **Réponse:** gameMortageRes
+        * *Données:*
+        ```javascript
+        null
         ```
 
 - **Abandonner la partie**
@@ -313,7 +421,7 @@
         * *Données:*
         ```javascript
         {
-            "playerPseudo": string
+            playerNickname: string
         }
         ```
 
@@ -324,6 +432,6 @@
         * *Données:*
         ```javascript
         {
-            "questID": int
+            questID: int
         }
         ```
