@@ -151,14 +151,14 @@ io.on('connection', (socket) => {
 
     let session = null;
     sessionConfig.store.get(unsignedSessionID, (err, expressSession) => {
-        if (err != null || expressSession == null) {
+        if (err || !expressSession) {
             console.log('[IO CONNEXION] ÉCHEC. Impossible de récuperer une session correspondant au socket');
             return;
         }
         session = expressSession;
     });
 
-    if (session.user == null) {
+    if (!session || !session.user) {
         console.log('[IO CONNEXION] ÉCHEC. La session est trouvée, mais le le client correspondant au socket n\'est pas connecté (/ap/login)');
         return;
     }
