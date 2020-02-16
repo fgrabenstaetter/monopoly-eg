@@ -8,7 +8,6 @@ class Chat {
      */
     constructor () {
         // tableau d'objets (voir format fonction addMessage)
-        //
         this.messages = [];
         this.maxMessages = 100;
     }
@@ -22,10 +21,10 @@ class Chat {
      */
     addMessage (senderUser, content, type, offer = null) {
         this.messages.push({
-            senderUser: senderUser,
-            content: content,
-            type: type,
-            offer: offer,
+            senderUser: senderUser, // obj User
+            content: content, // text
+            type: type, // CHAT_MESSAGE_TYPE
+            offer: offer, // obj Offer ou null
             createdTime: Date.now()
         });
 

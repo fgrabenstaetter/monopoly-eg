@@ -22,14 +22,7 @@ class Network {
         this.matchmaking = matchmaking;
     }
 
-    userNoLobbyListen (user) {
-
-        // lobbyCreate
-        user.socket.on('lobbyCreateReq', (data) => {
-            // ne peut échouer ?
-            this.lobbies.push(new Lobby(0, this, user, this.matchmaking));
-            user.socket.emit('lobbyCreateRes');
-        });
+    lobbyUserListen (user, lobby) {
 
         // lobbyFriendAcceptInvitation
         user.socket.on('lobbyFriendAcceptInvitationReq', (data) => {
@@ -46,19 +39,16 @@ class Network {
                     err = Errors.UNKNOW;
                 else {
                     for (const lobby of this.lobbies) {
-                        for (const usr of lobby.users) {
-                            if (usr.nickname === invitObj.from) {
-                                friendLobby = lobby;
-                                break;
-                            }
-                        }
-                        if (friendLobby)
+                        const usr = lobby.userByNickname(invitObj.from);
+                        if (usr) {
+                            friendLobby = lobby;
                             break;
+                        }
                     }
 
                     if (!friendLobby)
                         err = Errors.NETWORK.LOBY_CLOSED;
-                    else if (friendLobby.users.length >= friendLobby.maxUsersNb)
+                    else if (friendLobby.users.length >= friendLobby.targetUsersNb)
                         err = Errors.NETWORK.LOBBY_FULL;
                 }
 
@@ -67,15 +57,6 @@ class Network {
                 user.socket.emit('lobbyFriendAcceptInvitationRes', { error: err.code, status: err.status });
             }
         });
-
-    }
-
-    userNoLobbyStopListening (user) {
-        user.socket.off('lobbyCreateReq');
-        user.socket.off('lobbyFriendAcceptInvitationReq');
-    }
-
-    lobbyUserListen (user, lobby) {
 
         // lobbyInviteFriend
         user.socket.on('lobbyInviteFriendReq', (data) => {
@@ -86,7 +67,7 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (user.friends.indexOf(data.friendPseudo) === -1)
                 err = Errors.FRIEND_NOT_EXISTS;
-            else if (lobby.users.length >= lobby.maxUsersNb)
+            else if (lobby.users.length >= lobby.targetUsersNb)
                 err = Errors.LOBBY_FULL;
             else {
                 for (const user of this.users) {
@@ -147,42 +128,37 @@ class Network {
             if (!data.playerToKickPseudo)
                 err = Errors.MISSING_FIELD;
             else {
-                for (const user of lobby.users) {
-                    if (user.nickname === data.playerToKickPseudo) {
-                        userToKick = user;
-                        break;
-                    }
-                }
+                const userToKick = lobby.userByNickname(data.playerToKickPseudo);
                 if (!userToKick)
                     err = Errors.NETWORK.NOT_IN_LOBBY;
             }
 
             if (err.code === Errors.SUCCESS.code) {
                 lobby.delUser(userToKick);
-                userToKick.socket.emit('lobbyKickedRes');
+                this.io.to(userToKick.room).emit('lobbyKickedRes', { nickname: userToKick.nickname });
             }
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
         });
 
         // lobbyPlay
         user.socket.on('lobbyPlayReq', (data) => {
-            // !!! WARNING data attributs ignoré pour l'instant (provisoire)
             let err = Errors.SUCCESS;
 
             if (lobby.users[0] !== user)
-                err = Errors.UNKNOW;
+                err = Errors.UNKNOW; // n'est pas l'hôte
             else if (lobby.users.length < lobby.targetUsersNb)
                 err = Errors.LOBBY_NOT_FULL;
 
             if (err.code === Errors.SUCCESS.code) {
-                lobby.searchGame();
                 this.io.to(user.room).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                lobby.searchGame();
             } else
                 user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
         });
     }
 
-    lobbyStopUserListening (user) {
+    lobbyUserStopListening (user) {
+        user.socket.off('lobbyFriendAcceptInvitationReq');
         user.socket.off('lobbyInviteFriendReq');
         user.socket.off('lobbyChatMessageReq');
         user.socket.off('lobbyKickReq');

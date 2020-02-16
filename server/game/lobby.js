@@ -11,6 +11,7 @@ class Lobby {
      */
     invitations = [];
     invitationIDCounter = 0;
+    lobbyIDCounter = 0;
 
     /**
      * @param lobbies La liste de tous les lobbies du serveur
@@ -23,6 +24,7 @@ class Lobby {
         this.network = network;
         this.matchmaking = matchmaking;
         this.chat = new Chat();
+        this.id = this.lobbyIDCounter ++;
 
         // le user à l'indice 0 => hôte
         this.users = [user];
@@ -40,7 +42,8 @@ class Lobby {
 
         this.users.push(user);
         this.pawns.push(0);
-        this.network.lobbyListen(user, this);
+        user.room = this.id;
+        this.network.lobbyUserListen(user, this);
     }
 
     /**
@@ -64,9 +67,10 @@ class Lobby {
                 this.lobbies.splice(lobInd, 1);
         }
 
+        user.room = null;
         this.users.splice(ind, 1);
         this.pawns.splice(ind, 1);
-        this.network.lobbyStopListening(user);
+        this.network.lobbyUserStopListening(user);
     }
 
     delete () {
@@ -90,6 +94,19 @@ class Lobby {
     searchGame () {
         this.matchmaking.addLobby(this);
         this.targetUsersNb = 0; // bloquer l'accès
+    }
+
+    /**
+     * @param nickname Le pseudo de l'utilisateur à chercher
+     * @return l'utilisateur (user) si trouvé, sinon null
+     */
+    userByNickname (nickname) {
+        for (const user of this.users) {
+            if (user.nickname === nickname)
+                return user;
+        }
+
+        return null;
     }
 
     /**

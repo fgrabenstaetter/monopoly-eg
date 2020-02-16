@@ -165,6 +165,7 @@ io.on('connection', (socket) => {
 
     console.log('[IO CONNEXION] SUCCÈS. { session ID: ' + unsignedSessionID + ', user nickname: ' + session.user.nickname + ' }');
 
+    session.user.socket = socket;
     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
     new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
 });
