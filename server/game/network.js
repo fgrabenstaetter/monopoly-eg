@@ -11,15 +11,13 @@ class Network {
      * @param io L'instance globale socket.io du serveur
      * @param users Le tableau global de users du serveur
      * @param lobbies Le tableau global de lobbies du serveur
-     * @param lobbyInvitations Le tableau global d'invitations de lobby du serveur
      * @param games Le tableau global de games du serveur
      * @param matchmaking L'instance globale de matchmaking du serveur
      */
-    constructor (io, users, lobbies, lobbyInvitations, games, matchmaking) {
+    constructor (io, users, lobbies, games, matchmaking) {
         this.io = io;
         this.users = users;
         this.lobbies = lobbies;
-        this.lobbyInvitations;
         this.games = games;
         this.matchmaking = matchmaking;
     }
