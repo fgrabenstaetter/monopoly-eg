@@ -14,20 +14,6 @@
 
 ## Lobby
 
-- **Créer un lobby pour pouvoir jouer avec des amis**
-    * **Requête:** lobbyCreateReq
-        * *Données:*
-        ```javascript
-        null
-        ```
-
-    * **Réponse:** lobbyCreateRes
-        * Ne peut pas échouer
-        * *Données:*
-        ```javascript
-        null
-        ```
-
 - **Inviter un ami dans le lobby**
     * **Requête:** lobbyInviteFriendReq
         * *Données:*
@@ -119,17 +105,9 @@
     * **Requête:** lobbyPlayReq
         * *Données:*
         ```javascript
-        {
-            nicknames: array of string,
-            pions: array of int
-            players: [
-                {
-                    nickname: string,
-                    pawn: int
-                }, ...
-            ]
-        }
+         null
          ```
+
     * **Réponse:** lobbyPlayRes
         > Lors d'un succès, est envoyé à tous les joueurs du lobby
 
@@ -141,13 +119,17 @@
         }
         ```
 
-- **Kické du lobby**
-    > Le joueur a été kické du lobby courrant
+- **Un joueur a été kick du lobby**
+    > Un joueur a été kické du lobby courrant
 
     * **Réponse:** lobbyKickedRes
+        > Est envoyé à tout le monde dans le lobby !
+
         * *Données:*
         ```javascript
-        null
+        {
+            nickname: string
+        }
         ```
 
 ## Game
