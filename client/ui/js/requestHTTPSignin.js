@@ -1,5 +1,3 @@
-let urlApi = 'https://monopolyegdev.singlequote.net/api'
-
 // Requête HTTP AJAX - Inscription
 $(document).ready(function() {
     
