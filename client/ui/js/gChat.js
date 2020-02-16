@@ -1,8 +1,28 @@
-document.getElementById('chat').addEventListener('keypress', function (e) {
-  if (e.key === 'Enter')
-    sendMsg();
+const urlApi = 'https://monopolyegdev.singlequote.net/api'
+
+// Requête HTTP AJAX - gChat
+$(document).ready(function() {
+    $('#chat').click(keypress(function(e) {
+      if (e.keyCode == '13') {
+        if ($('#chat').val().trim()!="") {
+          $.post(urlApi,
+            {
+              user: $('#nickname-input').val(),
+              msg: $('#chat').val()
+            }, sendMsg())
+        }
+      }
+    });
+		$('#btnSendMsg').click(function() {
+      if ($('#chat').val().trim()!="") {
+        $.post(urlApi,
+          {
+            user: $('#nickname-input').val(),
+            msg: $('#chat').val()
+          }, sendMsg())
+      }
+    });
 });
-document.getElementById('btnSendMsg').addEventListener("click", sendMsg);
 
 /** Fonction qui affiche le message envoyer par le joueur sur le chat
  */
