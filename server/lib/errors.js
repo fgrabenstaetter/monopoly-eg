@@ -82,6 +82,10 @@ module.exports = Object.freeze({
         LOBBY_NOT_FULL: {
             code: 8,
             status: 'Lobby non plein'
+        },
+        PAWN_ALREADY_USED: {
+            code: 9,
+            status: 'Pion déjà utilisé'
         }
     },
 });

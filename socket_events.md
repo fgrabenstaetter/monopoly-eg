@@ -14,20 +14,6 @@
 
 ## Lobby
 
-- **Créer un lobby pour pouvoir jouer avec des amis**
-    * **Requête:** lobbyCreateReq
-        * *Données:*
-        ```javascript
-        null
-        ```
-
-    * **Réponse:** lobbyCreateRes
-        * Ne peut pas échouer
-        * *Données:*
-        ```javascript
-        null
-        ```
-
 - **Inviter un ami dans le lobby**
     * **Requête:** lobbyInviteFriendReq
         * *Données:*
@@ -74,6 +60,105 @@
         }
         ```
 
+- **Données initiales lors du rejoignage d'un lobby**
+    > Reçu uniquement par le joueur qui vient de rejoindre un lobby (pour avoir les informations du lobby)
+
+    * **Réponse:** lobbyJoinedRes
+        * *Données:*
+        ```javascript
+        {
+            targetUsersNb: int, // nombre de joueurs désirés pour la partie
+            pawn: int, // le pion initial pour le joueur
+            players: [
+                {
+                    nickname: string,
+                    pawn: int
+                },
+                ...
+            ],
+            messages: [ // max 100 messages, les plus récents en dernier
+                {
+                    senderNickname: string,
+                    text: string,
+                    createdTime: timestamp
+                },
+                ...
+            ]
+        }
+        ```
+
+- **Un nouveau joueur a rejoint le lobby**
+    * **Requête:** lobbyPlayerJoinedRes
+        * *Données:*
+        ```javascript
+        {
+            nickname: string
+            pawn: int
+        }
+        ```
+
+- **Modifier le nombre désiré de joueurs du lobby**
+    > Uniquement par l'hôte, et attention: si le nombre désiré est plus petit que le nombre actuel de d'utilisateurs du lobby, ceux en trop seront automatiquement kickés
+
+    * **Requête:** lobbyChangeTargetUsersNbReq
+        * *Données:*
+        ```javascript
+        {
+            nb: int // 2 - 8
+
+        }
+        ```
+
+    * **Réponse:** lobbyChangeTargetUsersNbRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Le nombre désiré de joueurs a changé**
+    > Reçu par tous les utilisateurs dans le lobby
+
+    * **Réponse:** lobbyTargetUsersNbChangedRes
+        * *Données:*
+        ```javascript
+        {
+            nb: int // 2 - 8
+        }
+        ```
+
+- **Modifier son pion**
+    * **Requête:** lobbyChangePawnReq
+        * *Données:*
+        ```javascript
+        {
+            pawn: int
+        }
+        ```
+
+    * **Réponse:** lobbyChangePawnRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Un joueur a changé son pion**
+    > Reçu par tous les utilisateurs dans le lobby
+
+    * **Réponse:** lobbyPlayerPawnChangedRes
+        * *Données:*
+        ```javascript
+        {
+            nickname: string, // pseudo de celui qui a changé son pion
+            pawn: int
+        }
+        ```
+
 - **Kicker un joueur du lobby**
     * **Requête:** lobbyKickReq
         * *Données:*
@@ -89,6 +174,17 @@
         {
             error: int,
             status: string
+        }
+        ```
+
+- **Un joueur a été kické du lobby**
+    * **Réponse:** lobbyKickedRes
+        > Est envoyé à tout le monde dans le lobby !
+
+        * *Données:*
+        ```javascript
+        {
+            nickname: string
         }
         ```
 
@@ -119,17 +215,9 @@
     * **Requête:** lobbyPlayReq
         * *Données:*
         ```javascript
-        {
-            nicknames: array of string,
-            pions: array of int
-            players: [
-                {
-                    nickname: string,
-                    pawn: int
-                }, ...
-            ]
-        }
+         null
          ```
+
     * **Réponse:** lobbyPlayRes
         > Lors d'un succès, est envoyé à tous les joueurs du lobby
 
@@ -139,15 +227,6 @@
             error: int,
             status: string
         }
-        ```
-
-- **Kické du lobby**
-    > Le joueur a été kické du lobby courrant
-
-    * **Réponse:** lobbyKickedRes
-        * *Données:*
-        ```javascript
-        null
         ```
 
 ## Game

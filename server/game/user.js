@@ -14,13 +14,14 @@ class User {
         this.id = this.idCounter ++;
         this.nickname = userSchema.nickname;
         this.email = userSchema.email;
-        // this.friends = userSchema.friends;
+        this.friends = userSchema.friends;
         this.inscriptionDatetime = userSchema.inscriptionDatetime;
         this.level = userSchema.level;
         this.exp = userSchema.exp;
 
         this.levelUpExp = 100;
         this.socket = null;
+        this.room = null; // room socket.io
     }
 
     /**
