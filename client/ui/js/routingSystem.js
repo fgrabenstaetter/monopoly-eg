@@ -94,4 +94,9 @@ let onNavItemClick = (pathName) => {
 	loadContent();
 }
 
-contentDiv.innerHTML = routes[window.location.pathname];
+$(document).ready(function() {
+	contentDiv.innerHTML = routes[window.location.pathname];
+	loadContent();
+});
+
+//contentDiv.innerHTML = routes[window.location.pathname];
