@@ -2,6 +2,9 @@ const Constants = require('../lib/constants');
 const Errors = require('../lib/errors');
 const Lobby = require('./lobby');
 
+/**
+ * Simplifie et centralise toutes les communications socket
+ */
 class Network {
 
     /**
@@ -74,7 +77,7 @@ class Network {
         user.socket.off('lobbyFriendAcceptInvitationReq');
     }
 
-    lobbyListen (user, lobby) {
+    lobbyUserListen (user, lobby) {
 
         // lobbyInviteFriend
         user.socket.on('lobbyInviteFriendReq', (data) => {
@@ -181,11 +184,19 @@ class Network {
         });
     }
 
-    lobbyStopListening (user) {
+    lobbyStopUserListening (user) {
         user.socket.off('lobbyInviteFriendReq');
         user.socket.off('lobbyChatMessageReq');
         user.socket.off('lobbyKickReq');
         user.socket.off('lobbyPlayReq');
+    }
+
+    gamePlayerListen (player, game) {
+
+    }
+
+    gamePlayerStopListening (player) {
+
     }
 }
 
