@@ -4,6 +4,8 @@ document.getElementById('chat').addEventListener('keypress', function (e) {
 });
 document.getElementById('btnSendMsg').addEventListener("click", sendMsg);
 
+/** Fonction qui affiche le message envoyer par le joueur sur le chat
+ */
 function sendMsg() {
 	if (document.getElementById('chat').value.trim()!="") {
     const element = document.getElementById("msgChat");
@@ -20,6 +22,8 @@ function sendMsg() {
 	}
 }
 
+/** Fonction qui remet la barre de défilement en bas
+ */
 function updateScroll(){
   const element = document.getElementById("msgChat");
   console.log(element.scrollTop);
