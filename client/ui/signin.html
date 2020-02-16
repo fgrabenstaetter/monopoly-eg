@@ -20,14 +20,14 @@
       </div>
       <div class="card-body">
         <div class="form-group">
-          <form action="lobby.html">
+          <form method='post'>
             <input type="text"
               class="form-control" name="" id="nickname-input" aria-describedby="helpId" placeholder="Nom d'utilisateur">
             <input type="email"
             class="form-control" name="" id="email-input" aria-describedby="helpId" placeholder="Mail">
             <input type="password"
             class="form-control" name="" id="password-input" aria-describedby="helpId" placeholder="Mot de passe">
-            <button type="button submit" class="btn btn-primary" id="signin-btn">INSCRIPTION</button>
+            <button type="button" class="btn btn-primary" id="signin-btn">INSCRIPTION</button>
             <a href="login.html" class="btn btn-secondary">ANNULER</a>
           </form>
         </div>
@@ -37,6 +37,7 @@
 
     <!-- jQuery first, then Bootstrap JS -->
     <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/requestHTTPInscription.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/2b1672a39c.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/mainFunctions.js"></script>

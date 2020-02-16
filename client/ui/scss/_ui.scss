@@ -78,6 +78,9 @@
 .tchat-container {
   width: 100%;
   max-width: 240px;
+  max-height: 230px;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .msg-me {
     position: relative;
@@ -86,7 +89,7 @@
     color: white;
     font-size: 13px;
     text-align: right;
-    margin: 10px 0;
+    margin: 10px 6px 10px 0;
   }
   
   .msg-me:after {
@@ -110,7 +113,7 @@
     color: white;
     font-size: 13px;
     text-align: left;
-    margin: 10px 0;
+    margin: 10px 0 10px 6px;
   }
   
   .msg-other:after {
@@ -160,10 +163,6 @@
 
 .lobby-ui-container {
   width: 100%;
-
-  /* {
-    border: black 1px dotted;
-  } */
 
   .box {
     width: 220px;

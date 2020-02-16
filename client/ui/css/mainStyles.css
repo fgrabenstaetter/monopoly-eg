@@ -99,6 +99,9 @@
 .tchat-container {
   width: 100%;
   max-width: 240px;
+  max-height: 230px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .tchat-container .msg-me {
@@ -108,7 +111,7 @@
   color: white;
   font-size: 13px;
   text-align: right;
-  margin: 10px 0;
+  margin: 10px 6px 10px 0;
 }
 
 .tchat-container .msg-me:after {
@@ -132,7 +135,7 @@
   color: white;
   font-size: 13px;
   text-align: left;
-  margin: 10px 0;
+  margin: 10px 0 10px 6px;
 }
 
 .tchat-container .msg-other:after {
@@ -180,9 +183,6 @@
 
 .lobby-ui-container {
   width: 100%;
-  /* {
-    border: black 1px dotted;
-  } */
 }
 
 .lobby-ui-container .box {
