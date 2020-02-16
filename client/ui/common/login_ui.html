@@ -9,10 +9,12 @@
         class="form-control" name="" id="username-input" aria-describedby="helpId" placeholder="Nom d'utilisateur">
         <input type="password"
         class="form-control" name="" id="password-input" aria-describedby="helpId" placeholder="Mot de passe">
-        <button type="button" class="btn btn-primary" id="connexion-btn" onclick="onNavItemClick('/lobby'); return false;">CONNEXION</button>
+        <button type="button" class="btn btn-primary" id="login-btn" onclick="onNavItemClick('/lobby'); return false;">CONNEXION</button>
         <button type="button" class="btn btn-secondary" onclick="onNavItemClick('/signin'); return false;">INSCRIPTION</button>
       </form>
     </div>
     <a id="forgot-password" href="#">Mot de passe oublié ?</a>
   </div>
 </div>
+
+<script type="text/javascript" src="js/requestHTTPLogin.js"></script>
