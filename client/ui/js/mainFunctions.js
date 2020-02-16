@@ -6,4 +6,6 @@ function loadContent(){
 	$(".options-overlay-container").load("common/options_overlay.html");
 	$(".profile-overlay-container").load("common/profile_overlay.html");
 	$(".resolution-overlay-container").load("common/res_overlay.html");
+	$(".login-ui-container").load("common/login_ui.html");
+	$(".signin-ui-container").load("common/signin_ui.html");
 };
