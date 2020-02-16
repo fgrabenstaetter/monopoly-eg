@@ -2,10 +2,8 @@ let urlApi = 'https://monopolyegdev.singlequote.net/api'
 
 // Requête HTTP AJAX - connexion
 $(document).ready(function() {
-
     // Evénement quand on appuie sur le bouton connexion
-    $('#signin-btn').click(function() {
-        
+    $('body').on('click', '#signin-btn', function() {        
         $.ajax({
             type: "POST",
 
