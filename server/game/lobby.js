@@ -29,6 +29,7 @@ class Lobby {
         // le user à l'indice 0 => hôte
         this.users = [user];
         this.pawns = [0]; // pion par défaut pour l'hôte
+        // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
         this.targetUsersNb = 4;
         this.lobbies.push(this);
     }
@@ -42,7 +43,8 @@ class Lobby {
 
         this.users.push(user);
         this.pawns.push(0);
-        user.room = this.id;
+        user.room = 'lobby-' + this.id;
+        user.socket.join(user.room);
         this.network.lobbyUserListen(user, this);
     }
 
@@ -68,6 +70,7 @@ class Lobby {
         }
 
         user.room = null;
+        user.socket.leave('lobby-' + this.id);
         this.users.splice(ind, 1);
         this.pawns.splice(ind, 1);
         this.network.lobbyUserStopListening(user);
@@ -107,6 +110,17 @@ class Lobby {
         }
 
         return null;
+    }
+
+    /**
+     * @return un pion disponible
+     */
+    get nextPawn () {
+        for (let i = 0; i < 7; i ++) {
+            if (this.pawns.indexOf(i) === -1)
+                return i;
+        }
+        // ne peut pas arriver ici
     }
 
     /**

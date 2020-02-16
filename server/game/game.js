@@ -21,6 +21,7 @@ class Game {
 
         for (let i = 0, l = users.length; i < l; i ++) {
             users[i].room = this.id;
+            users[i].socket.join('game-' + this.id);
             this.players.push(new Player(users[i], pawns[i]));
             this.network.gamePlayerListen(players[i], this);
         }
@@ -32,6 +33,7 @@ class Game {
         for (const player of this.players) {
             this.network.gamePlayerStopListening(player);
             player.user.room = null;
+            player.user.socket.leave('game-' + this.id);
         }
 
         const ind = this.games.indexOf(this);

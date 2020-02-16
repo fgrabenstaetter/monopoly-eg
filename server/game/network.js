@@ -52,8 +52,40 @@ class Network {
                         err = Errors.NETWORK.LOBBY_FULL;
                 }
 
-                if (err.code === Errors.SUCCESS.code)
+                if (err.code === Errors.SUCCESS.code) {
                     friendLobby.addUser(user);
+
+                    let messages = [];
+                    for (const mess of friendLobby.chat.messages) {
+                        messages.push({
+                            senderNickname: mess.senderUser.nickname,
+                            text: mess.content,
+                            createdTime: mess.createdTime
+                        });
+                    }
+
+                    let users = [];
+                    for (let i = 0, l = friendLobby.users.length; i < l; i ++) {
+                        users.push({
+                            nickname: friendLobby.users[i].nickname,
+                            pawn: friendLobby.pawns[i]
+                        });
+                    }
+
+                    user.socket.emit('lobbyJoinedRes', {
+                        targetUsersNb: friendLobby.targetUsersNb,
+                        pawn: friendLobby.nextPawn,
+                        players: users,
+                        messages: messages
+                    });
+
+                    // envoyer à tous les users du loby, sauf le nouveau
+                    user.socket.broadcast.to(user.room).emit('lobbyPlayerJoinedRes', {
+                        nickname: user.nickname,
+                        pawn: friendLobby.pawns[friendLobby.users.indexOf(user)]
+                    });
+                }
+
                 user.socket.emit('lobbyFriendAcceptInvitationRes', { error: err.code, status: err.status });
             }
         });
@@ -134,10 +166,44 @@ class Network {
             }
 
             if (err.code === Errors.SUCCESS.code) {
-                lobby.delUser(userToKick);
                 this.io.to(userToKick.room).emit('lobbyKickedRes', { nickname: userToKick.nickname });
+                lobby.delUser(userToKick);
             }
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
+        });
+
+        // lobbyChangeTargetUsersNb
+        user.socket.on('lobbyChangeTargetUsersNbReq', (data) => {
+            let err = Errors.SUCCESS;
+            if (!data.nb)
+                err = Errors.MISSING_FIELD;
+            else if (lobby.users.indexOf(user) !== 0)
+                err = Errors.UNKNOW; // n'est pas l'hôte
+            else {
+                lobby.changeTargetUsersNb(data.nb);
+                this.io.to(user.room).emit('lobbyTargetUsersNbChangedRes', { nb: lobby.targetUsersNb });
+            }
+
+            user.socket.emit('lobbyChangeTargetUsersNbRes', { error: err.code, status: err.status });
+        });
+
+        // lobbyChangePawn
+        user.socket.on('lobbyChangePawnReq', (data) => {
+            let err = Errors.SUCCESS;
+
+            if (!data.pawn)
+                err = Errors.MISSING_FIELD;
+            else if (lobby.pawns.indexOf(data.pawn) !== -1)
+                err = Errors.PAWN_ALREADY_USED;
+            else {
+                lobby.pawns[lobby.users.indexOf(user)] = data.pawn;
+                this.io.to(user.room).emit('lobbyPlayerPawnChangedRes', {
+                    nickname: user.nickname,
+                    pawn: data.pawn
+                });
+            }
+
+            user.socket.emit('lobbyChangePawnRes', { error: err.code, status: err.status });
         });
 
         // lobbyPlay
@@ -163,6 +229,8 @@ class Network {
         user.socket.off('lobbyChatMessageReq');
         user.socket.off('lobbyKickReq');
         user.socket.off('lobbyPlayReq');
+        user.socket.off('lobbyChangeTargetUsersNbReq');
+        user.socket.off('lobbyChangePawnReq');
     }
 
     gamePlayerListen (player, game) {
