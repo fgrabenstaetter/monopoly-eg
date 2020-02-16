@@ -4,7 +4,7 @@ const Chat = require('./chat');
  * Représente un Lobby
  */
 class Lobby {
-t
+
     /**
      * Objets d'invitation de lobby
      * { from: pseudoEmetteur, to: pseudoDestinataire, id: int }
@@ -12,31 +12,35 @@ t
     invitations = [];
     invitationIDCounter = 0;
 
-
     /**
-     * @param id ID unique pour le lobby
+     * @param lobbies La liste de tous les lobbies du serveur
      * @param network L'instance globale network du serveur
      * @param user L'utilisateur qui veut créer le lobby
      * @param matchmaking L'instance globale de matchmaking du serveur
      */
-    constructor (id, network, user, matchmaking) {
-        this.id = id;
+    constructor (lobbies, network, user, matchmaking) {
+        this.lobbies = lobbies;
         this.network = network;
+        this.matchmaking = matchmaking;
+        this.chat = new Chat();
+
         // le user à l'indice 0 => hôte
         this.users = [user];
-        this.chat = new Chat();
+        this.pawns = [0]; // pion par défaut pour l'hôte
         this.targetUsersNb = 4;
-        this.matchmaking = matchmaking;
+        this.lobbies.push(this);
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser (user) {
-        if (this.users.indexOf(user) === -1) {
-            this.users.push(user);
-            this.network.lobbyListen(user, this);
-        }
+        if (this.users.indexOf(user) !== -1 || this.users.length >= this.targetUsersNb)
+            return;
+
+        this.users.push(user);
+        this.pawns.push(0);
+        this.network.lobbyListen(user, this);
     }
 
     /**
@@ -44,36 +48,48 @@ t
      */
     delUser (user) {
         const ind = this.users.indexOf(user);
+        if (ind === -1)
+            return;
+
         if (ind === 0) {
             // l'hôte est parti, ferme ce lobby
-            this.targetUsersNb = 0; // bloquer l'accès au lobby (solution temporaire)
+            this.targetUsersNb = 0; // bloquer l'accès au lobby
             for (let i = 1, l = this.users.length; i < l; i ++)
                 this.delUser(this.users[i]);
             this.delUser(this.users[0]);
-        } else if (ind !== -1) {
-            this.users.splice(this.users.indexOf(user), 1);
-            this.network.lobbyStopListening(user);
+
+            // supprimer le lobby de la liste globale des lobbies
+            const lobInd = this.lobbies.indexOf(this);
+            if (lobInd !== -1)
+                this.lobbies.splice(lobInd, 1);
         }
+
+        this.users.splice(ind, 1);
+        this.pawns.splice(ind, 1);
+        this.network.lobbyStopListening(user);
+    }
+
+    delete () {
+        if (this.users.length === 0)
+            return;
+        this.delUser(this.users[0]);
     }
 
     /**
-     * @param newNb le nouveau nombre de joueur de la partie à chercher
+     * @param newNb le nouveau nombre de joueur souhaité pour la partie à jouer
      */
-    changeMaxPlayersNb (newNb) {
-        // Si on veut changer pour un nombre plus petit que 2 on le met automatiquement à 2
+    changeTargetUsersNb (newNb) {
         if (newNb < 2)
             this.targetUsersNb = 2;
-        // Si on veut changer pour un nombre plus grand que 8 on le met automatique à 8
         else if (newNb > 8)
             this.targetUsersNb = 8;
-        // Sinon le nombre est correct
         else
             this.targetUsersNb = newNb;
     }
 
     searchGame () {
         this.matchmaking.addLobby(this);
-        this.targetUsersNb = 0; // sol. temporaire pour bloquer l'accès
+        this.targetUsersNb = 0; // bloquer l'accès
     }
 
     /**
