@@ -1,8 +1,6 @@
-const urlApi = 'https://monopolyegdev.singlequote.net/api'
-
 // Requête HTTP AJAX - gChat
 $(document).ready(function() {
-    $('#chat').click(keypress(function(e) {
+    $('#chat').keypress(function(e) {
       if (e.keyCode == '13') {
         if ($('#chat').val().trim()!="") {
           $.post(urlApi,
@@ -13,6 +11,7 @@ $(document).ready(function() {
         }
       }
     });
+
 		$('#btnSendMsg').click(function() {
       if ($('#chat').val().trim()!="") {
         $.post(urlApi,
