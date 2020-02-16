@@ -86,7 +86,7 @@ window.onpopstate = () => {
 
 let onNavItemClick = (pathName) => {
 	window.history.pushState(
-		{}, 
+		{},
 		pathName,
 		window.location.origin + pathName
 	);
@@ -98,5 +98,3 @@ $(document).ready(function() {
 	contentDiv.innerHTML = routes[window.location.pathname];
 	loadContent();
 });
-
-//contentDiv.innerHTML = routes[window.location.pathname];
