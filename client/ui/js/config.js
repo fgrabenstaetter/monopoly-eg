@@ -1,0 +1,1 @@
+let urlApi = 'https://monopolyegdev.singlequote.net/api'

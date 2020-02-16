@@ -1,60 +1,155 @@
-//const Chat = require('./chat.js');
+const Chat = require('./chat');
 
 /**
  * Représente un Lobby
  */
 class Lobby {
+
     /**
-     * @param id ID unique pour le lobby
+     * Objets d'invitation de lobby
+     * { from: pseudoEmetteur, to: pseudoDestinataire, id: int }
+     */
+    invitations = [];
+    invitationIDCounter = 0;
+    lobbyIDCounter = 0;
+
+    /**
+     * @param lobbies La liste de tous les lobbies du serveur
+     * @param network L'instance globale network du serveur
      * @param user L'utilisateur qui veut créer le lobby
      * @param matchmaking L'instance globale de matchmaking du serveur
      */
-    constructor (id, user, matchmaking) {
-        this.id = id;
-        this.users = [user];
-        //this.chat = new Chat();
-        this.targetUsersNb = 4;
-        // Il y aura un seul objet matchmaking qui sera un attribut de chaque objet Lobby pour simplifier
+    constructor (lobbies, network, user, matchmaking) {
+        this.lobbies = lobbies;
+        this.network = network;
         this.matchmaking = matchmaking;
+        this.chat = new Chat();
+        this.id = this.lobbyIDCounter ++;
+
+        // le user à l'indice 0 => hôte
+        this.users = [user];
+        this.pawns = [0]; // pion par défaut pour l'hôte
+        // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
+        this.targetUsersNb = 4;
+        this.lobbies.push(this);
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser (user) {
-        if (this.users.indexOf(user) === -1)
-            this.users.push(user);
+        if (this.users.indexOf(user) !== -1 || this.users.length >= this.targetUsersNb)
+            return;
+
+        this.users.push(user);
+        this.pawns.push(0);
+        user.room = 'lobby-' + this.id;
+        user.socket.join(user.room);
+        this.network.lobbyUserListen(user, this);
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à retirer du lobby
      */
     delUser (user) {
-        if (this.users.indexOf(user) !== -1)
-            this.users.splice(this.users.indexOf(user), 1);
+        const ind = this.users.indexOf(user);
+        if (ind === -1)
+            return;
+
+        if (ind === 0) {
+            // l'hôte est parti, ferme ce lobby
+            this.targetUsersNb = 0; // bloquer l'accès au lobby
+            for (let i = 1, l = this.users.length; i < l; i ++)
+                this.delUser(this.users[i]);
+            this.delUser(this.users[0]);
+
+            // supprimer le lobby de la liste globale des lobbies
+            const lobInd = this.lobbies.indexOf(this);
+            if (lobInd !== -1)
+                this.lobbies.splice(lobInd, 1);
+        }
+
+        user.room = null;
+        user.socket.leave('lobby-' + this.id);
+        this.users.splice(ind, 1);
+        this.pawns.splice(ind, 1);
+        this.network.lobbyUserStopListening(user);
     }
 
-    get nbUsers () {
-        return this.users.length;
+    delete () {
+        if (this.users.length === 0)
+            return;
+        this.delUser(this.users[0]);
     }
 
     /**
-     * @param newNb le nouveau nombre de joueur de la partie à chercher
+     * @param newNb le nouveau nombre de joueur souhaité pour la partie à jouer
      */
-    changeMaxPlayersNb (newNb) {
-        // Si on veut changer pour un nombre plus petit que 2 on le met automatiquement à 2
+    changeTargetUsersNb (newNb) {
         if (newNb < 2)
             this.targetUsersNb = 2;
-        // Si on veut changer pour un nombre plus grand que 8 on le met automatique à 8
         else if (newNb > 8)
             this.targetUsersNb = 8;
-        // Sinon le nombre est correct
         else
             this.targetUsersNb = newNb;
     }
 
     searchGame () {
         this.matchmaking.addLobby(this);
+        this.targetUsersNb = 0; // bloquer l'accès
+    }
+
+    /**
+     * @param nickname Le pseudo de l'utilisateur à chercher
+     * @return l'utilisateur (user) si trouvé, sinon null
+     */
+    userByNickname (nickname) {
+        for (const user of this.users) {
+            if (user.nickname === nickname)
+                return user;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return un pion disponible
+     */
+    get nextPawn () {
+        for (let i = 0; i < 7; i ++) {
+            if (this.pawns.indexOf(i) === -1)
+                return i;
+        }
+        // ne peut pas arriver ici
+    }
+
+    /**
+     * @param from Le pseudo de l'utilisateur qui envoie l'invitation
+     * @param to Le pseudo de l'utilisateur qui doit recevoir l'invitation
+     * @return L'ID de l'invitation créée
+     */
+    static addInvitation (from, to) {
+        this.invitations.push( {
+            from: from,
+            to: to,
+            id: this.invitationIDCounter
+        });
+        return this.invitationIDCounter ++;
+    }
+
+    /*
+     * @param id L'ID de l'invitation à supprimer
+     * @return L'objet invitation si trouvé, false sinon
+     */
+    static delInvitation (id) {
+        for (let i = 0, l = this.invitations.length; i < l; i ++) {
+            if (this.invitations[i].id === id) {
+                const save = this.invitations[i];
+                this.invitations.splice(i, 1);
+                return save;
+            }
+        }
+        return false;
     }
 }
 

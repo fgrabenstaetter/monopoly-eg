@@ -6,8 +6,12 @@ const Property = require('./property');
  */
 class Street extends Property {
 
-    constructor (id, owner) {
+    /**
+     * @param game l'instance de partie, utile pour par exemple déterminer si le joueur a toutes les propriétés d'une même couleur, ou non
+     */
+    constructor (id, owner, game) {
         super(id, owner);
+        this.game = game;
         this.housesNb = 0;
         this.hostel = false;
         this.housePrice = this.price.house;
