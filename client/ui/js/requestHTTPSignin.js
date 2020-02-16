@@ -4,7 +4,7 @@ $(document).ready(function() {
     // Évènement quand on appuie sur le bouton connexion
     $('#signin-btn').click(function() {     
         $.ajax({
-            type: "POST",
+            type: 'POST',
 
             // Ressource ciblée
             url: urlApi + '/register',
@@ -20,7 +20,7 @@ $(document).ready(function() {
             
             success: function(res) {
                 // Forcément status 200 (donc pas d'erreur)
-                location.replace('lobby.html');
+                location.replace('/lobby');
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur

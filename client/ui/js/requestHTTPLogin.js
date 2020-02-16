@@ -2,13 +2,12 @@
 $(document).ready(function() {
 
     // Évènement quand on appuie sur le bouton connexion
-    $('#login-btn').click(function() {
-        
+    $('#login-btn').click(function() {   
         $.ajax({
-            type: "POST",
+            type: 'POST',
 
             // Ressource ciblée
-            url: urlApi + '/MettreURLIci',
+            url: urlApi + '/login',
 
             // Les données à envoyer au serveur
             data: {
@@ -20,7 +19,7 @@ $(document).ready(function() {
             
             success: function(res) {
                 // Forcément status 200 (donc pas d'erreur)
-                location.replace('lobby.html');
+                location.replace('/lobby');
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur
@@ -50,9 +49,3 @@ $(document).ready(function() {
         });
     });
 });
-
-/*
-    Comme la page n'est pas encore existante et le groupe n'en n'est pas encore là, 
-    je ne peux pas savoir comment elle sera structurée.
-    Donc il y aura des changements à prendre en compte.
-*/
