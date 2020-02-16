@@ -23,8 +23,34 @@ class Network {
     }
 
     lobbyUserListen (user, lobby) {
+        this.lobbyFriendAcceptInvitation(user, lobby);
+        this.lobbyInviteFriend(user, lobby);
+        this.lobbyChatMessage(user, lobby);
+        this.lobbyChangeTargetUsersNb(user, lobby);
+        this.lobbyChangePawn(user, lobby);
+        this.lobbyKick(user, lobby);
+        this.lobbyPlay(user, lobby);
+    }
 
-        // lobbyFriendAcceptInvitation
+    lobbyUserStopListening (user) {
+        user.socket.off('lobbyFriendAcceptInvitationReq');
+        user.socket.off('lobbyInviteFriendReq');
+        user.socket.off('lobbyChatMessageReq');
+        user.socket.off('lobbyChangeTargetUsersNbReq');
+        user.socket.off('lobbyChangePawnReq');
+        user.socket.off('lobbyKickReq');
+        user.socket.off('lobbyPlayReq');
+    }
+
+    gamePlayerListen (player, game) {
+
+    }
+
+    gamePlayerStopListening (player) {
+
+    }
+
+    lobbyFriendAcceptInvitationReq (user, lobby) {
         user.socket.on('lobbyFriendAcceptInvitationReq', (data) => {
             let err = Errors.SUCCESS;
             let friendLobby = null;
@@ -89,8 +115,9 @@ class Network {
                 user.socket.emit('lobbyFriendAcceptInvitationRes', { error: err.code, status: err.status });
             }
         });
+    }
 
-        // lobbyInviteFriend
+    lobbyInviteFriendReq (user, lobby) {
         user.socket.on('lobbyInviteFriendReq', (data) => {
             let err = Errors.SUCCESS;
             let friendUser = null;
@@ -133,8 +160,9 @@ class Network {
                 user.socket.emit('lobbyInviteFriendRes', { error: err.code, status: err.status });
             }
         });
+    }
 
-        // lobbyChatMessage
+    lobbyChatMessageReq (user, lobby) {
         user.socket.on('lobbyChatMessageReq', (data) => {
             if (!data.text) {
                 user.socket.emit('lobbyChatMessageRes', { error: Errors.MISSING_FIELD.code, status: Errors.MISSING_FIELD.status });
@@ -151,8 +179,9 @@ class Network {
                 createdTime: mess.createdTime
             });
         });
+    }
 
-        // lobbyKick
+    lobbyKickReq (user, lobby) {
         user.socket.on('lobbyKickReq', (data) => {
             let err = Errors.SUCCESS;
             let userToKick = null;
@@ -171,8 +200,9 @@ class Network {
             }
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
         });
+    }
 
-        // lobbyChangeTargetUsersNb
+    lobbyChangeTargetUsersNbReq (user, lobby) {
         user.socket.on('lobbyChangeTargetUsersNbReq', (data) => {
             let err = Errors.SUCCESS;
             if (!data.nb)
@@ -186,8 +216,9 @@ class Network {
 
             user.socket.emit('lobbyChangeTargetUsersNbRes', { error: err.code, status: err.status });
         });
+    }
 
-        // lobbyChangePawn
+    lobbyChangePawnReq (user, lobby) {
         user.socket.on('lobbyChangePawnReq', (data) => {
             let err = Errors.SUCCESS;
 
@@ -205,8 +236,9 @@ class Network {
 
             user.socket.emit('lobbyChangePawnRes', { error: err.code, status: err.status });
         });
+    }
 
-        // lobbyPlay
+    lobbyPlayReq (user, lobby) {
         user.socket.on('lobbyPlayReq', (data) => {
             let err = Errors.SUCCESS;
 
@@ -221,24 +253,6 @@ class Network {
             } else
                 user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
         });
-    }
-
-    lobbyUserStopListening (user) {
-        user.socket.off('lobbyFriendAcceptInvitationReq');
-        user.socket.off('lobbyInviteFriendReq');
-        user.socket.off('lobbyChatMessageReq');
-        user.socket.off('lobbyKickReq');
-        user.socket.off('lobbyPlayReq');
-        user.socket.off('lobbyChangeTargetUsersNbReq');
-        user.socket.off('lobbyChangePawnReq');
-    }
-
-    gamePlayerListen (player, game) {
-
-    }
-
-    gamePlayerStopListening (player) {
-
     }
 }
 
