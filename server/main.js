@@ -171,15 +171,15 @@ io.on('connection', (socket) => {
 
 
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-    if (GLOBA.lobbies.length === 0) {
+    if (GLOBAL.lobbies.length === 0) {
         // creer le lobby
         new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
     } else {
         // rejoindre le lobby
-        if (this.GLOBAL.lobbies[0].users.length >= this.GLOBAL.lobbies[0].targetUsersNb)
+        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
             console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
         else {
-            this.GLOBAL.lobbies[0].addUser(session.user);
+            GLOBAL.lobbies[0].addUser(session.user);
             console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
         }
     }
