@@ -167,7 +167,22 @@ io.on('connection', (socket) => {
 
     session.user.socket = socket;
     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
-    new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+    // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+
+
+    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
+    if (GLOBA.lobbies.length === 0) {
+        // creer le lobby
+        new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+    } else {
+        // rejoindre le lobby
+        if (this.GLOBAL.lobbies[0].users.length >= this.GLOBAL.lobbies[0].targetUsersNb)
+            console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
+        else {
+            this.GLOBAL.lobbies[0].addUser(session.user);
+            console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
+        }
+    }
 });
 
 
