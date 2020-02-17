@@ -30,6 +30,13 @@ class Network {
         this.lobbyChangePawn(user, lobby);
         this.lobbyKick(user, lobby);
         this.lobbyPlay(user, lobby);
+
+        if (lobby.users[0] === user) { // est l'hôte
+            user.socket.emit('lobbyCreatedRes', {
+                targetUsersNb: lobby.targetUsersNb,
+                pawn: lobby.pawns[0]
+            });
+        }
     }
 
     lobbyUserStopListening (user) {

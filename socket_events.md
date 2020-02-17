@@ -14,6 +14,20 @@
 
 ## Lobby
 
+- **Le lobby a été créé**
+    > Lors de la connexion au socket, un lobby est automatiquement créé pour vous avec des paramètres par défaut
+
+    * **Réponse:** lobbyCreatedRes
+        > Automatiquement envoyé après la connexion au socket
+
+        * *Données:*
+        ```javascript
+        {
+            targetUsersNb: int, // par défaut à 4
+            pawn: int // par défaut à 0
+        }
+        ```
+
 - **Inviter un ami dans le lobby**
     * **Requête:** lobbyInviteFriendReq
         * *Données:*
