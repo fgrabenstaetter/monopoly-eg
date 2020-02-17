@@ -9,7 +9,7 @@ class Cell {
      * @param type Type de case (voir CELL_TYPE)
      * @param property Propriété associée à la case (le cas échéant)
      */
-    constructor (id, type, property) {
+    constructor (id, type, property = null) {
         this.id = id;
         this.type = type;
         this.property = property;
@@ -22,7 +22,7 @@ class Cell {
             case Constants.CELL_TYPE.PRISON:
                 return 'Prison';
             case Constants.CELL_TYPE.PROPERTY:
-                return ''; // Il faudra retourner le nom de la propriété (classe à implémenter...)
+                return this.property.name;
             case Constants.CELL_TYPE.CHANCE_CARD:
                 return 'Carte chance';
             case Constants.CELL_TYPE.COMMUNITY_CARD:
