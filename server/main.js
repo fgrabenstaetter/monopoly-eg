@@ -147,20 +147,32 @@ GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLO
 // CONNECTION SOCKET //
 ///////////////////////
 
-io.use(socketioJwt.authorize({
-    secret: '123',
-    handshake: true
-}));
+// io.use(socketioJwt.authorize({
+//     secret: JWT_SECRET,
+//     handshake: true
+// }));
 
-io.on('connection', (socket) => {
+// Cannot read propery "on" of undefined
+io.sockets
+  .on('connection', socketioJwt.authorize({
+    secret: JWT_SECRET,
+    timeout: 15000 // 15 seconds to send the authentication message
+  })).on('authenticated', function(socket) {
+    //this socket is authenticated, we are good to handle more events from it.
+    console.log('hello! ');
+    console.log(socket.decoded_token);
+  });
+
+io.on('__connection', (socket) => {
     // si le client n'est pas connecté, refuser la connexion au socket
     // demande de connexion au socket = création de lobby pour le user
 
     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
     // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-    const token = socket.decoded_token;
-    console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
-    socket.emit('connectionRes');
+    // const token = socket.decoded_token;
+    // console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
+    console.log('connected');
+    // socket.emit('connectionRes');
     return;
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
     if (GLOBAL.lobbies.length === 0) {
