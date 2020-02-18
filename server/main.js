@@ -159,7 +159,7 @@ io.on('connection', function (socket) {
 
     socket.on('chat message', function(msg) {
         console.log('Message "' + msg + '" reçu par ' + decodedToken.nickname);
-        socket.broadcast.emit('chat message', msg);
+        socket.broadcast.emit('chat message', {author: decodedToken.nickname, content: msg});
     });
 
     socket.on('disconnect', function() {

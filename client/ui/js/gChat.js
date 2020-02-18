@@ -38,7 +38,7 @@ function sendMsg() {
 
     msg = document.createElement('div');
 		msg.className = 'msg-me';
-		msg.innerHTML = chatMsg;
+		msg.innerHTML = `<div class="msg-author">Moi</div>`+ chatMsg;
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
     
@@ -51,7 +51,7 @@ function sendMsg() {
 }
 
 socket.on('chat message', function(msg) {
-  let html = `<div class="msg-other">` + msg + `</div>`;
+  let html = `<div class="msg-other"><div class="msg-author">` + msg.author + `</div>` + msg.content + `</div>`;
   $('#msgChat').append(html);
   updateScroll();
 });
