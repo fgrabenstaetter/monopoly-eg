@@ -32,12 +32,18 @@
         }
 
         function testSocket () {
-            console.log(' [TEST SOCKET] connexion socket.io');
-
-            const socket = io('http://localhost:' + port);
-            socket.on('connectionRes', (res) => {
-                console.log('Réponse socket.io, je suis connecté (pseudo + mdp) = ' + res);
-                // false => non connecté (pseudo + mdp) au serveur
+            console.log(' [TEST SOCKET] connexion socket.io avec JWT');
+            const jwt = {
+                test: 123456
+            }
+            const socket = io.connect('http://localhost:' + port, {
+                'query': 'token=' + jwt
+            });
+            socket.on('unauthorized', (err) => {
+                console.log('ERROR: ' + err)
+            });
+            socket.on('connectionRes', () => {
+                console.log('SUCCESS connected');
             });
         }
 

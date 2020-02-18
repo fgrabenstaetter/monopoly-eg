@@ -7,10 +7,9 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
-const session = require('express-session');
-const MemoryStore = require('memorystore')(session);
-const cookie = require('cookie');
-const cookieSignature = require('cookie-signature');
+const jwt = require('express-jwt');
+const socketioJwt = require('socketio-jwt');
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -27,19 +26,6 @@ let server;
 let production = false;
 if (foundArg('production'))
     production = true;
-
-let sessionConfig = {
-    store: new MemoryStore({ checkPeriod: 3600000 }), // 1h
-    secret: 'iA"8I3&p', // secret (random) pour signer le cookie de session ID (sécurité)
-    unset: 'destroy', // efface l'instance de session lors de instance = null
-    resave: false,
-    saveUninitialized: true, // garder la même instance de session durant toute sa durée
-    cookie: {
-        maxAge: 21600000, // 6h
-        httpOnly: true, // rendre inaccessible le cookie de session ID au côté client (sécurité)
-        secure: false // default pour mode dev, mis à true pour mode prod
-    }
-}
 
 ////////////////////////////////////////////
 // CONFIG MODE PRODUCTION / DEVELOPPEMENT //
@@ -59,7 +45,6 @@ if (production) {
         secureOptions: constants.SSL_OP_NO_TLSv1
     };
 
-    sessionConfig.cookie.secure = true; // empêche les cookies de circuler hors HTTPS
     server = https.createServer(options, app).listen(securePort);
 
     // Redirection du port 'redirectionPort' vers le port 'securePort'
@@ -83,7 +68,6 @@ if (production) {
     server = http.createServer(app).listen(port);
 }
 
-app.use(session(sessionConfig));
 const io = require('socket.io')(server);
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
@@ -96,7 +80,6 @@ app.get('/', (req, res) => {
     res.send(`<h1>Bonjour</h1>
               <b>IP:</b> ` + req.socket.remoteAddress + `<br />
               <b>Port:</b> ` + req.socket.remotePort + `<br />
-              <b>express session ID:</b> ` + req.sessionID + `<br />
               <a href="/tests">tests console</a>`
     );
 });
@@ -105,7 +88,10 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 
+app.use(jwt({ secret: '123' }));
+
 app.post('/api/register', (req, res) => {
+
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
         if (err.code !== Errors.SUCCESS.code)
             res.status(400);
@@ -115,9 +101,9 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        if (err.code === Errors.SUCCESS.code)
-            req.session.user = new User(userSchema);
-        else
+        if (err.code === Errors.SUCCESS.code) {
+            // req.session.user = new User(userSchema);
+        } else
             res.status(400);
         res.json({ error: err.code, status: err.status });
     });
@@ -140,36 +126,21 @@ GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLO
 // CONNECTION SOCKET //
 ///////////////////////
 
-// socket.io connections
+io.use(socketioJwt.authorize({
+    secret: '123',
+    handshake: true
+}));
+
 io.on('connection', (socket) => {
     // si le client n'est pas connecté, refuser la connexion au socket
     // demande de connexion au socket = création de lobby pour le user
 
-    // petit trick pour récuperer la session express depuis le cookie connect.sid
-    const cookieVal = cookie.parse(socket.handshake.headers.cookie)['connect.sid'];
-    const unsignedSessionID = cookieSignature.unsign(cookieVal.replace('s:', ''), sessionConfig.secret);
-
-    let session = null;
-    sessionConfig.store.get(unsignedSessionID, (err, expressSession) => {
-        if (err || !expressSession) {
-            console.log('[IO CONNEXION] ÉCHEC. Impossible de récuperer une session correspondant au socket');
-            return;
-        }
-        session = expressSession;
-    });
-
-    if (!session || !session.user) {
-        console.log('[IO CONNEXION] ÉCHEC. La session est trouvée, mais le le client correspondant au socket n\'est pas connecté (/ap/login)');
-        return;
-    }
-
-    console.log('[IO CONNEXION] SUCCÈS. { session ID: ' + unsignedSessionID + ', user nickname: ' + session.user.nickname + ' }');
-
-    session.user.socket = socket;
     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
     // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-
-
+    const token = socket.decoded_token;
+    console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
+    socket.emit('connectionRes');
+    return;
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
     if (GLOBAL.lobbies.length === 0) {
         // creer le lobby
@@ -184,9 +155,6 @@ io.on('connection', (socket) => {
         }
     }
 });
-
-
-
 
 
 
