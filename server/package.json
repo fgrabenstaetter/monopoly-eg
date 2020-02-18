@@ -4,7 +4,8 @@
   "description": "Monopoly game made by EG team",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "test": "mocha"
   },
   "dependencies": {
     "bcrypt": "^3.0.8",
@@ -16,6 +17,7 @@
     "express-validator": "^6.4.0",
     "jsonwebtoken": "^8.5.1",
     "memorystore": "^1.6.1",
+    "mocha": "^7.0.1",
     "mongoose": "^5.8.11",
     "mongoose-friends": "^0.2.5",
     "mysql": "^2.18.1",

@@ -32,7 +32,7 @@ Team EG
 
 (Testé avec nodejs LTS 12.14.1)
 
-0. Avoir installé Node LTS 12.14.1 et MongoDB 4.2.3 sur sa machine (et avoir le service MongoDB en cours d'exécution) 
+0. Avoir installé Node LTS 12.14.1 et MongoDB 4.2.3 sur sa machine (et avoir le service MongoDB en cours d'exécution)
 
 1. Changer de répertoire
 
@@ -51,4 +51,9 @@ npm install
 ```bash
 npm start # mode développement
 npm start production # mode production
+```
+
+4. Lancer les tests unitaires
+```bash
+npm test
 ```
