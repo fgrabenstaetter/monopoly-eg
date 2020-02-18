@@ -2,12 +2,15 @@ function foundArg (arg) {
     return process.argv.indexOf(arg) != -1;
 }
 
+const JWT_SECRET = 'J@-(icrwUsD*IH5';
+
 const app = require('express')();
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
-const jwt = require('express-jwt');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
 
 const mongoose = require('mongoose');
@@ -88,7 +91,16 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 
-app.use(jwt({ secret: '123' }));
+// app.use(jwt({ secret: '123' }));
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODIwMzkxMDMsImV4cCI6MTU4MjEyNTUwM30.EIL4Fkw3gF3vclxZdFnv2LP1rBLkeP7kbctX3EgqFE8
+
+app.use(expressJwt({ secret: JWT_SECRET}).unless({path: ['/api/register', '/api/login']}));
+
+app.get('/api/tokentest', (req, res) => {
+    console.log(req.user);
+    res.json(req.user);
+});
 
 app.post('/api/register', (req, res) => {
 
@@ -101,11 +113,20 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
+        let token;
+
         if (err.code === Errors.SUCCESS.code) {
-            // req.session.user = new User(userSchema);
-        } else
+            let user = new User(userSchema);
+            // req.session.user = user;
+            token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
+                expiresIn: 86400 // expires in 24 hours
+            });
+        } else {
+            token = null;
             res.status(400);
-        res.json({ error: err.code, status: err.status });
+        }
+
+        res.json({ error: err.code, status: err.status, token: token });
     });
 });
 
