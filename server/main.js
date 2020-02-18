@@ -147,46 +147,52 @@ GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLO
 // CONNECTION SOCKET //
 ///////////////////////
 
-// io.use(socketioJwt.authorize({
-//     secret: JWT_SECRET,
-//     handshake: true
-// }));
-
-// Cannot read propery "on" of undefined
 io.use(socketioJwt.authorize({
     secret: JWT_SECRET,
     handshake: true
 }));
 
 io.on('connection', function (socket) {
-    console.log('Votre token décodé : ', socket.decoded_token);
-})
+    let decodedToken = socket.decoded_token;
 
-io.on('__connection', (socket) => {
-    // si le client n'est pas connecté, refuser la connexion au socket
-    // demande de connexion au socket = création de lobby pour le user
+    console.log('Utilisateur ' + decodedToken.nickname + ' connecté');
 
-    // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
-    // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-    // const token = socket.decoded_token;
-    // console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
-    console.log('connected');
-    // socket.emit('connectionRes');
-    return;
-    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-    if (GLOBAL.lobbies.length === 0) {
-        // creer le lobby
-        new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-    } else {
-        // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
-            console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
-        else {
-            GLOBAL.lobbies[0].addUser(session.user);
-            console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
-        }
-    }
+    socket.on('chat message', function(msg) {
+        console.log('Message "' + msg + '" reçu par ' + decodedToken.nickname);
+        socket.broadcast.emit('chat message', msg);
+    });
+
+    socket.on('disconnect', function() {
+        console.log('Utilisateur ' + decodedToken.nickname + ' déconnecté');
+    });
 });
+
+
+// io.on('__connection', (socket) => {
+//     // si le client n'est pas connecté, refuser la connexion au socket
+//     // demande de connexion au socket = création de lobby pour le user
+
+//     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
+//     // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+//     // const token = socket.decoded_token;
+//     // console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
+//     console.log('connected');
+//     // socket.emit('connectionRes');
+//     return;
+//     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
+//     if (GLOBAL.lobbies.length === 0) {
+//         // creer le lobby
+//         new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+//     } else {
+//         // rejoindre le lobby
+//         if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
+//             console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
+//         else {
+//             GLOBAL.lobbies[0].addUser(session.user);
+//             console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
+//         }
+//     }
+// });
 
 
 
