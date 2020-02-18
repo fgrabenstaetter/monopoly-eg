@@ -17,8 +17,11 @@ mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true
 const Constants = require('./lib/constants');
 const Errors = require('./lib/errors');
 const { UserSchema, UserManager } = require('./models/user');
+
 const User = require('./game/user');
-const Cell = require('./game/cell');
+const Lobby = require('./game/lobby');
+const Matchmaking = require('./game/matchmaking');
+const Network = require('./game/network');
 
 let server;
 let production = false;
@@ -37,6 +40,10 @@ let sessionConfig = {
         secure: false // default pour mode dev, mis à true pour mode prod
     }
 }
+
+////////////////////////////////////////////
+// CONFIG MODE PRODUCTION / DEVELOPPEMENT //
+////////////////////////////////////////////
 
 if (production) {
     // mode production
@@ -97,6 +104,7 @@ app.get('/', (req, res) => {
 ///////////////////
 // API ENDPOINTS //
 ///////////////////
+
 app.post('/api/register', (req, res) => {
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
         if (err.code !== Errors.SUCCESS.code)
@@ -114,50 +122,79 @@ app.post('/api/login', (req, res) => {
         res.json({ error: err.code, status: err.status });
     });
 });
-///////////////////////
-// FIN API ENDPOINTS //
-///////////////////////
 
-// tableau des données de jeu principales
-let waitingPlayers = []; // joueurs en attente de partie
-let parties = []; // toutes les parties en cours
-const partyMinPlayersNb = 2;
+//////////////////////
+// VARIABLES DE JEU //
+//////////////////////
+
+let GLOBAL = {
+    users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
+    lobbies: [], // Lobbies actuellement créés
+    games: [], // Parties de jeu actuellement en cours
+}
+
+GLOBAL.matchmaking = new Matchmaking(GLOBAL.lobbies, GLOBAL.games);
+GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLOBAL.matchmaking);
+
+///////////////////////
+// CONNECTION SOCKET //
+///////////////////////
 
 // socket.io connections
 io.on('connection', (socket) => {
     // si le client n'est pas connecté, refuser la connexion au socket
-    // demande de connexion au socket = demande de rejoindre une partie
+    // demande de connexion au socket = création de lobby pour le user
 
     // petit trick pour récuperer la session express depuis le cookie connect.sid
     const cookieVal = cookie.parse(socket.handshake.headers.cookie)['connect.sid'];
     const unsignedSessionID = cookieSignature.unsign(cookieVal.replace('s:', ''), sessionConfig.secret);
-    console.log('Socket.io connection (express session ID = ' + unsignedSessionID);
 
     let session = null;
     sessionConfig.store.get(unsignedSessionID, (err, expressSession) => {
-        if (err != null || expressSession == null) {
-            socket.emit('connectionRes', false);
+        if (err || !expressSession) {
+            console.log('[IO CONNEXION] ÉCHEC. Impossible de récuperer une session correspondant au socket');
             return;
         }
         session = expressSession;
     });
 
-    if (session == null || session.pseudo == null) {
-        socket.emit('connectionRes', false);
+    if (!session || !session.user) {
+        console.log('[IO CONNEXION] ÉCHEC. La session est trouvée, mais le le client correspondant au socket n\'est pas connecté (/ap/login)');
         return;
     }
 
-    // le client est bien connecté (pseudo + mdp)
-    socket.emit('connectionRes', true);
-    waitingPlayers.push(new Player(session.pseudo, socket));
+    console.log('[IO CONNEXION] SUCCÈS. { session ID: ' + unsignedSessionID + ', user nickname: ' + session.user.nickname + ' }');
 
-    // si nb de joueurs en attente > nb minimum pour une partie, démarrer une nouvelle partie
-    if (waitingPlayers.length === partyMinPlayersNb) {
-        parties.push(new Party(waitingPlayers, io));
-        waitingPlayers = []; // retirer tous les jours de la file d'attente
+    session.user.socket = socket;
+    // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
+    // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+
+
+    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
+    if (GLOBAL.lobbies.length === 0) {
+        // creer le lobby
+        new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+    } else {
+        // rejoindre le lobby
+        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
+            console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
+        else {
+            GLOBAL.lobbies[0].addUser(session.user);
+            console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
+        }
     }
-    // sinon attendre qu'un nouveau joueur "enclanche" le démarrage de partie
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 ////////////////
@@ -204,6 +241,7 @@ app.get('/delete-users-from-db', (req, res) => {
     });
 });
 
+const Cell = require('./game/cell');
 app.get('/cell-test', (req, res) => {
     let cells = [
         new Cell(Constants.CELL_TYPE.PARC, null),

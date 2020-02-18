@@ -5,15 +5,15 @@ const Constants = require('../lib/constants');
  */
 class Player {
     /**
-     * @param id ID du joueur
      * @param user L'utilisateur associé au joueur
-     * @param money L'argent de base accordé
+     * @param pawn Son pion
      */
-    constructor (id, user, money) {
-        this.id = id;
-        this.cellId = 0;
+    constructor (user, pawn) {
         this.user = user;
-        this.money = money;
+        this.pawn = pawn;
+
+        this.money = 1500; // argent initial
+        this.cellId = 0;
         this.properties = [];
         this.jailJokerCards = 0;
         this.remainingTurnsInJail = 0;
