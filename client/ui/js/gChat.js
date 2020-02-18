@@ -1,5 +1,6 @@
 // Requête HTTP AJAX - gChat
 $(document).ready(function() {
+    updateScroll();
     $('#chat').keypress(function(e) {
       if (e.keyCode == '13') {
         if ($('#chat').val().trim()!="") {
@@ -21,6 +22,19 @@ $(document).ready(function() {
           }, sendMsg())
       }
     });
+
+    $.get(urlApi,function(data, status){
+      const element = document.getElementById("msgChat");
+      const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
+
+      msg = document.createElement('div');
+  		msg.className = 'msg-other';
+  		msg.innerHTML = data;
+  		chat = document.getElementById('msgChat');
+  		chat.appendChild(msg);
+      if (isScroll)
+        updateScroll();
+    });
 });
 
 /** Fonction qui affiche le message envoyer par le joueur sur le chat
@@ -36,7 +50,7 @@ function sendMsg() {
 		chat = document.getElementById('msgChat');
 		chat.appendChild(msg);
     updateScroll();
-  }
+    }
 }
 
 /** Fonction qui remet la barre de défilement en bas
