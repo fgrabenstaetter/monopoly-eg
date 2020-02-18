@@ -153,15 +153,14 @@ GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLO
 // }));
 
 // Cannot read propery "on" of undefined
-io.sockets
-  .on('connection', socketioJwt.authorize({
+io.use(socketioJwt.authorize({
     secret: JWT_SECRET,
-    timeout: 15000 // 15 seconds to send the authentication message
-  })).on('authenticated', function(socket) {
-    //this socket is authenticated, we are good to handle more events from it.
-    console.log('hello! ');
-    console.log(socket.decoded_token);
-  });
+    handshake: true
+}));
+
+io.on('connection', function (socket) {
+    console.log('Votre token décodé : ', socket.decoded_token);
+})
 
 io.on('__connection', (socket) => {
     // si le client n'est pas connecté, refuser la connexion au socket

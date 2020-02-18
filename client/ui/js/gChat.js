@@ -1,3 +1,22 @@
+const jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNGJlNDhiODZkOGJjNTliZjJkY2I5MiIsIm5pY2tuYW1lIjoidGVzdCIsImVtYWlsIjoiMTJib3Jpcy5mbGVzY2hAZ21haWwuY29tIiwiaWF0IjoxNTgyMDQwMDgwLCJleHAiOjE1ODIxMjY0ODB9.dW-raKEe0x7_0G_ExAmkSMErxCED6R6llE4OZHSoO08';
+
+var socket = io.connect('http://localhost:3000', {
+  'query': 'token=' + jwt
+});
+
+socket.on("error", function(error) {
+  if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
+    // redirect user to login page perhaps?
+    alert("User's token has expired");
+  }
+});
+
+socket.on("unauthorized", function(error) {
+  if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
+    alert("User's token has expired (invalid token)");
+  }
+});
+
 // Requête HTTP AJAX - gChat
 $(document).ready(function() {
     $('#chat').keypress(function(e) {
