@@ -71,7 +71,7 @@ if (production) {
     server = http.createServer(app).listen(port);
 }
 
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
