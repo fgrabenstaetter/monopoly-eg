@@ -1,4 +1,4 @@
-function loadContent(){
+function loadContent() {
 	$(".background-container").load("common/background.html");
 	$(".board-container").load("common/board.html");
 	$(".ingame-ui-container").load("common/ingame_ui.html");
@@ -8,4 +8,4 @@ function loadContent(){
 	$(".resolution-overlay-container").load("common/res_overlay.html");
 	$(".login-ui-container").load("common/login_ui.html");
 	$(".signin-ui-container").load("common/signin_ui.html");
-};
+}
