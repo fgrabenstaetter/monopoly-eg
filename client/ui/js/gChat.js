@@ -28,7 +28,6 @@ $(document).ready(function() {
 function sendMsg() {
 	if (document.getElementById('chat').value.trim()!="") {
     const element = document.getElementById("msgChat");
-    const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
 
     msg = document.createElement('div');
 		msg.className = 'msg-me';
@@ -36,9 +35,8 @@ function sendMsg() {
 		document.getElementById('chat').value="";
 		chat = document.getElementById('msgChat');
 		chat.appendChild(msg);
-    if (isScroll)
-      updateScroll();
-	}
+    updateScroll();
+  }
 }
 
 /** Fonction qui remet la barre de défilement en bas
