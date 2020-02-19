@@ -2,15 +2,17 @@ function foundArg (arg) {
     return process.argv.indexOf(arg) != -1;
 }
 
+const JWT_SECRET = 'J@-(icrwUsD*IH5';
+
 const app = require('express')();
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
-const session = require('express-session');
-const MemoryStore = require('memorystore')(session);
-const cookie = require('cookie');
-const cookieSignature = require('cookie-signature');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
+const socketioJwt = require('socketio-jwt');
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -27,19 +29,6 @@ let server;
 let production = false;
 if (foundArg('production'))
     production = true;
-
-let sessionConfig = {
-    store: new MemoryStore({ checkPeriod: 3600000 }), // 1h
-    secret: 'iA"8I3&p', // secret (random) pour signer le cookie de session ID (sécurité)
-    unset: 'destroy', // efface l'instance de session lors de instance = null
-    resave: false,
-    saveUninitialized: true, // garder la même instance de session durant toute sa durée
-    cookie: {
-        maxAge: 21600000, // 6h
-        httpOnly: true, // rendre inaccessible le cookie de session ID au côté client (sécurité)
-        secure: false // default pour mode dev, mis à true pour mode prod
-    }
-}
 
 ////////////////////////////////////////////
 // CONFIG MODE PRODUCTION / DEVELOPPEMENT //
@@ -59,7 +48,6 @@ if (production) {
         secureOptions: constants.SSL_OP_NO_TLSv1
     };
 
-    sessionConfig.cookie.secure = true; // empêche les cookies de circuler hors HTTPS
     server = https.createServer(options, app).listen(securePort);
 
     // Redirection du port 'redirectionPort' vers le port 'securePort'
@@ -83,8 +71,7 @@ if (production) {
     server = http.createServer(app).listen(port);
 }
 
-app.use(session(sessionConfig));
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
@@ -96,7 +83,6 @@ app.get('/', (req, res) => {
     res.send(`<h1>Bonjour</h1>
               <b>IP:</b> ` + req.socket.remoteAddress + `<br />
               <b>Port:</b> ` + req.socket.remotePort + `<br />
-              <b>express session ID:</b> ` + req.sessionID + `<br />
               <a href="/tests">tests console</a>`
     );
 });
@@ -105,7 +91,19 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 
+// app.use(jwt({ secret: '123' }));
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODIwMzkxMDMsImV4cCI6MTU4MjEyNTUwM30.EIL4Fkw3gF3vclxZdFnv2LP1rBLkeP7kbctX3EgqFE8
+
+app.use(expressJwt({ secret: JWT_SECRET}).unless({path: ['/api/register', '/api/login']}));
+
+app.get('/api/tokentest', (req, res) => {
+    console.log(req.user);
+    res.json(req.user);
+});
+
 app.post('/api/register', (req, res) => {
+
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
         if (err.code !== Errors.SUCCESS.code)
             res.status(400);
@@ -115,11 +113,20 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        if (err.code === Errors.SUCCESS.code)
-            req.session.user = new User(userSchema);
-        else
+        let token;
+
+        if (err.code === Errors.SUCCESS.code) {
+            let user = new User(userSchema);
+            // req.session.user = user;
+            token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
+                expiresIn: 86400 // expires in 24 hours
+            });
+        } else {
+            token = null;
             res.status(400);
-        res.json({ error: err.code, status: err.status });
+        }
+
+        res.json({ error: err.code, status: err.status, token: token });
     });
 });
 
@@ -140,53 +147,52 @@ GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLO
 // CONNECTION SOCKET //
 ///////////////////////
 
-// socket.io connections
-io.on('connection', (socket) => {
-    // si le client n'est pas connecté, refuser la connexion au socket
-    // demande de connexion au socket = création de lobby pour le user
+io.use(socketioJwt.authorize({
+    secret: JWT_SECRET,
+    handshake: true
+}));
 
-    // petit trick pour récuperer la session express depuis le cookie connect.sid
-    const cookieVal = cookie.parse(socket.handshake.headers.cookie)['connect.sid'];
-    const unsignedSessionID = cookieSignature.unsign(cookieVal.replace('s:', ''), sessionConfig.secret);
+io.on('connection', function (socket) {
+    let decodedToken = socket.decoded_token;
 
-    let session = null;
-    sessionConfig.store.get(unsignedSessionID, (err, expressSession) => {
-        if (err || !expressSession) {
-            console.log('[IO CONNEXION] ÉCHEC. Impossible de récuperer une session correspondant au socket');
-            return;
-        }
-        session = expressSession;
+    console.log('Utilisateur ' + decodedToken.nickname + ' connecté');
+
+    socket.on('chat message', function(msg) {
+        console.log('Message "' + msg + '" reçu par ' + decodedToken.nickname);
+        socket.broadcast.emit('chat message', {author: decodedToken.nickname, content: msg});
     });
 
-    if (!session || !session.user) {
-        console.log('[IO CONNEXION] ÉCHEC. La session est trouvée, mais le le client correspondant au socket n\'est pas connecté (/ap/login)');
-        return;
-    }
-
-    console.log('[IO CONNEXION] SUCCÈS. { session ID: ' + unsignedSessionID + ', user nickname: ' + session.user.nickname + ' }');
-
-    session.user.socket = socket;
-    // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
-    // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-
-
-    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-    if (GLOBAL.lobbies.length === 0) {
-        // creer le lobby
-        new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-    } else {
-        // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
-            console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
-        else {
-            GLOBAL.lobbies[0].addUser(session.user);
-            console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
-        }
-    }
+    socket.on('disconnect', function() {
+        console.log('Utilisateur ' + decodedToken.nickname + ' déconnecté');
+    });
 });
 
 
+// io.on('__connection', (socket) => {
+//     // si le client n'est pas connecté, refuser la connexion au socket
+//     // demande de connexion au socket = création de lobby pour le user
 
+//     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
+//     // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+//     // const token = socket.decoded_token;
+//     // console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
+//     console.log('connected');
+//     // socket.emit('connectionRes');
+//     return;
+//     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
+//     if (GLOBAL.lobbies.length === 0) {
+//         // creer le lobby
+//         new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
+//     } else {
+//         // rejoindre le lobby
+//         if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
+//             console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
+//         else {
+//             GLOBAL.lobbies[0].addUser(session.user);
+//             console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
+//         }
+//     }
+// });
 
 
 

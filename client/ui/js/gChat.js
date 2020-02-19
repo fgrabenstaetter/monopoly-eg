@@ -3,23 +3,13 @@ $(document).ready(function() {
     updateScroll();
     $('#chat').keypress(function(e) {
       if (e.keyCode == '13') {
-        if ($('#chat').val().trim()!="") {
-          $.post(urlApi,
-            {
-              user: $('#nickname-input').val(),
-              msg: $('#chat').val()
-            }, sendMsg())
-        }
+        sendMsg()
       }
     });
 
 		$('#btnSendMsg').click(function() {
       if ($('#chat').val().trim()!="") {
-        $.post(urlApi,
-          {
-            user: $('#nickname-input').val(),
-            msg: $('#chat').val()
-          }, sendMsg())
+        sendMsg()
       }
     });
 
@@ -37,28 +27,38 @@ $(document).ready(function() {
     });
 });
 
+
 /** Fonction qui affiche le message envoyer par le joueur sur le chat
  */
 function sendMsg() {
-	if (document.getElementById('chat').value.trim()!="") {
+  let chatMsg = document.getElementById('chat').value;
+
+	if (chatMsg.trim()!="") {
     const element = document.getElementById("msgChat");
 
     msg = document.createElement('div');
 		msg.className = 'msg-me';
-		msg.innerHTML = document.getElementById('chat').value;
+		msg.innerHTML = `<div class="msg-author">Moi</div>`+ chatMsg;
 		document.getElementById('chat').value="";
-		chat = document.getElementById('msgChat');
-		chat.appendChild(msg);
+    chat = document.getElementById('msgChat');
+    
+    socket.emit('chat message', chatMsg);
+
+    chat.appendChild(msg);
+    
     updateScroll();
     }
 }
+
+socket.on('chat message', function(msg) {
+  let html = `<div class="msg-other"><div class="msg-author">` + msg.author + `</div>` + msg.content + `</div>`;
+  $('#msgChat').append(html);
+  updateScroll();
+});
 
 /** Fonction qui remet la barre de défilement en bas
  */
 function updateScroll(){
   const element = document.getElementById("msgChat");
-  console.log(element.scrollTop);
-  console.log(element.scrollHeight);
-
   element.scrollTop = element.scrollHeight;
 }

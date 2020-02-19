@@ -20,7 +20,7 @@ $(document).ready(function() {
             
             success: function(res) {
                 // Forcément status 200 (donc pas d'erreur)
-                location.replace('/lobby');
+                location.replace('/login');
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur

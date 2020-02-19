@@ -92,6 +92,9 @@ a:not([href]) {
 
   .-webkit-scrollbar {
     display: none;
+
+  .msg-author {
+    margin-bottom: 7px;
   }
 
   .msg-me {
@@ -100,8 +103,11 @@ a:not([href]) {
     padding: 5px 10px;
     color: white;
     font-size: 13px;
-    text-align: right;
     margin: 10px 6px 10px 0;
+
+    .msg-author {
+      color: rgba($color: white, $alpha: 0.7);
+    }
   }
 
   .msg-me:after {
@@ -124,8 +130,11 @@ a:not([href]) {
     padding: 5px 10px;
     color: white;
     font-size: 13px;
-    text-align: left;
     margin: 10px 0 10px 6px;
+
+    .msg-author {
+      color: rgba($color: white, $alpha: 0.7);
+    }
   }
 
   .msg-other:after {
