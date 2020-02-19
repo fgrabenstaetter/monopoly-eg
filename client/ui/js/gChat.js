@@ -4,26 +4,13 @@ $(document).ready(function() {
     $('#chat').keypress(function(e) {
       if (e.keyCode == '13') {
         sendMsg()
+        updateScroll();
       }
     });
 
 		$('#btnSendMsg').click(function() {
-      if ($('#chat').val().trim()!="") {
-        sendMsg()
-      }
-    });
-
-    $.get(urlApi,function(data, status){
-      const element = document.getElementById("msgChat");
-      const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-
-      msg = document.createElement('div');
-  		msg.className = 'msg-other';
-  		msg.innerHTML = data;
-  		chat = document.getElementById('msgChat');
-  		chat.appendChild(msg);
-      if (isScroll)
-        updateScroll();
+      sendMsg()
+      updateScroll();
     });
 });
 
