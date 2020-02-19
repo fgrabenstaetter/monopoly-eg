@@ -28,19 +28,22 @@ function sendMsg() {
 		msg.innerHTML = `<div class="msg-author">Moi</div>`+ chatMsg;
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
-    
+
     socket.emit('chat message', chatMsg);
 
     chat.appendChild(msg);
-    
-    updateScroll();
-    }
+
+  }
 }
 
 socket.on('chat message', function(msg) {
+  const element = document.getElementById("msgChat");
+  const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
   let html = `<div class="msg-other"><div class="msg-author">` + msg.author + `</div>` + msg.content + `</div>`;
   $('#msgChat').append(html);
-  updateScroll();
+  console.log(element);
+  if (isScroll)
+    updateScroll();
 });
 
 /** Fonction qui remet la barre de défilement en bas
