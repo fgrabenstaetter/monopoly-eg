@@ -87,14 +87,39 @@ app.get('/', (req, res) => {
     );
 });
 
+//////////////////////
+// VARIABLES DE JEU //
+//////////////////////
+
+let GLOBAL = {
+    users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
+    lobbies: [], // Lobbies actuellement créés
+    games: [], // Parties de jeu actuellement en cours
+}
+
+GLOBAL.matchmaking = new Matchmaking(GLOBAL.lobbies, GLOBAL.games);
+GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLOBAL.matchmaking);
+
+function nicknameToUser (nickname) {
+    for (const usr of GLOBAL.users) {
+        if (usr.nickname === nickname)
+            return usr;
+    }
+    return null;
+}
+
 ///////////////////
 // API ENDPOINTS //
 ///////////////////
 
-app.use(expressJwt({ secret: JWT_SECRET}).unless({path: ['/api/register', '/api/login', /\/test*/]}));
+app.use(expressJwt({ secret: JWT_SECRET }).unless({ path: ['/api/register', '/api/login', /\/test*/] }));
+
+app.use( (err, req, res, next) => {
+    if (err.name === 'UnauthorizedError')
+        res.status(401).send('Invalid JWT token');
+});
 
 app.get('/api/tokentest', (req, res) => {
-    console.log(req.user);
     res.json(req.user);
 });
 
@@ -109,86 +134,73 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        let token;
+        let token = null;
 
         if (err.code === Errors.SUCCESS.code) {
-            let user = new User(userSchema);
-            // req.session.user = user;
+            // si le user n'est pas déjà dans la liste, l'y ajouter
+            let user = nicknameToUser(userSchema.nickname);
+            if (!user) {
+                user = new User(userSchema);
+                GLOBAL.users.push(user);
+            }
+
             token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
                 expiresIn: 86400 // expires in 24 hours
             });
-        } else {
-            token = null;
+        } else
             res.status(400);
-        }
 
         res.json({ error: err.code, status: err.status, token: token });
     });
 });
 
 //////////////////////
-// VARIABLES DE JEU //
+// CONNEXION SOCKET //
 //////////////////////
-
-let GLOBAL = {
-    users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
-    lobbies: [], // Lobbies actuellement créés
-    games: [], // Parties de jeu actuellement en cours
-}
-
-GLOBAL.matchmaking = new Matchmaking(GLOBAL.lobbies, GLOBAL.games);
-GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLOBAL.matchmaking);
-
-///////////////////////
-// CONNECTION SOCKET //
-///////////////////////
 
 io.use(socketioJwt.authorize({
     secret: JWT_SECRET,
     handshake: true
 }));
 
-io.on('connection', function (socket) {
-    let decodedToken = socket.decoded_token;
-
+io.on('connection', (socket) => {
+    const decodedToken = socket.decoded_token;
     console.log('Utilisateur ' + decodedToken.nickname + ' connecté');
 
-    socket.on('chat message', function(msg) {
+    socket.on('chat message', (msg) => {
         console.log('Message "' + msg + '" reçu par ' + decodedToken.nickname);
-        socket.broadcast.emit('chat message', {author: decodedToken.nickname, content: msg});
+        socket.broadcast.emit('chat message', { author: decodedToken.nickname, content: msg });
     });
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', () => {
         console.log('Utilisateur ' + decodedToken.nickname + ' déconnecté');
     });
+
+    // ------------------------------------------------
+
+    const user = nicknameToUser(decodedToken.nickname);
+    // new Lobby(GLOBAL.lobbies, GLOBAL.network, user, GLOBAL.matchmaking);
+
+    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
+
+    if (GLOBAL.lobbies.length === 0) {
+        // creer le lobby
+        new Lobby(GLOBAL.lobbies, GLOBAL.network, user, GLOBAL.matchmaking);
+    } else {
+        // rejoindre le lobby
+        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
+            console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
+        else {
+            GLOBAL.lobbies[0].addUser(user);
+            console.log('(user ' + user.nickname + ') Lobby global rejoint');
+        }
+    }
 });
 
 
-// io.on('__connection', (socket) => {
-//     // si le client n'est pas connecté, refuser la connexion au socket
-//     // demande de connexion au socket = création de lobby pour le user
 
-//     // Création du lobby avec cet utilisateur ====> interactions via SOCKET à partir de maintenant
-//     // new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-//     // const token = socket.decoded_token;
-//     // console.log('CONNECTINO SOCKET authenticated, token.test = ' + token.test);
-//     console.log('connected');
-//     // socket.emit('connectionRes');
-//     return;
-//     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-//     if (GLOBAL.lobbies.length === 0) {
-//         // creer le lobby
-//         new Lobby(GLOBAL.lobbies, GLOBAL.network, session.user, GLOBAL.matchmaking);
-//     } else {
-//         // rejoindre le lobby
-//         if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
-//             console.log('(user ' + session.user.nickname + ') Lobby global PLEIN, aurevoir');
-//         else {
-//             GLOBAL.lobbies[0].addUser(session.user);
-//             console.log('(user ' + session.user.nickname + ') Lobby global rejoint');
-//         }
-//     }
-// });
+
+
 
 
 
@@ -228,7 +240,7 @@ app.get('/test/get-friends/:user', (req, res) => {
         console.log('err', err);
         console.log('User ' + req.params.user + ' friends :');
         console.log(friendships);
-    }); 
+    });
 
     res.send('ok');
 });

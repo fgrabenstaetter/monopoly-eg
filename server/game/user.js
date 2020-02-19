@@ -5,13 +5,10 @@ const Constants = require('../lib/constants');
  */
 class User {
 
-    static idCounter = 0;
-
     /*
      * @param userSchema Le modèle d'utilisateur associé aux données
      */
     constructor (userSchema) {
-        this.id = this.idCounter ++;
         this.nickname = userSchema.nickname;
         this.email = userSchema.email;
         this.friends = userSchema.friends;
