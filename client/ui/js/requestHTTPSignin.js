@@ -2,7 +2,8 @@
 $(document).ready(function() {
     
     // Évènement quand on appuie sur le bouton connexion
-    $('#signin-btn').click(function() {     
+    $('#formSignin-id').submit(function(event) {     
+        event.preventDefault();
         $.ajax({
             type: 'POST',
 
