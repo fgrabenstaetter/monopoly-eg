@@ -105,6 +105,11 @@ a:not([href]) {
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
+  -ms-overflow-style: none;
+}
+
+.tchat-container .-webkit-scrollbar {
+  display: none;
 }
 
 .tchat-container .msg-author {
