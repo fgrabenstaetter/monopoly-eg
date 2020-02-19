@@ -1,8 +1,7 @@
-document.getElementById('friendBar').addEventListener("keyup", myFunction);
+$(document).ready(function() {
 
-function myFunction(e) {
+  $('#friendBar').keyup(function(e) {
     let input, filter, ul, li, a, i, txtValue;
-
     input = document.getElementById("friendBar");
     filter = input.value.toUpperCase();
     console.log(filter);
