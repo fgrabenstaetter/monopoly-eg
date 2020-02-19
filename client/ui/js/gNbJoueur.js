@@ -5,7 +5,7 @@ document.getElementById('rightNbJ').addEventListener("click", rightNbJ);
 */
 function leftNbJ() {
 	let nb = parseFloat(document.getElementById('nbJoueurs').innerHTML);
-	if (nb != 1) {
+	if (nb > 2) {
 		nb--;
 		document.getElementById('nbJoueurs').innerHTML = nb;
 	}
@@ -15,7 +15,7 @@ function leftNbJ() {
 */
 function rightNbJ() {
 	let nb = parseFloat(document.getElementById('nbJoueurs').innerHTML);
-	if (nb != 8) {
+	if (nb < 8) {
 		nb++;
 		document.getElementById('nbJoueurs').innerHTML = nb;
 	}
