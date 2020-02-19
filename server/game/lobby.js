@@ -27,7 +27,7 @@ class Lobby {
         this.pawns = [0]; // pion par défaut pour l'hôte
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
 
-        this.targetUsersNb = 8; // de 2 à 8
+        this.targetUsersNb = 1000; // de 2 à 8
     }
 
     /**

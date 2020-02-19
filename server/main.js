@@ -179,6 +179,9 @@ io.on('connection', (socket) => {
     // ------------------------------------------------
 
     let user = nicknameToUser(decodedToken.nickname);
+    if (!user)
+        return;
+    
     user.socket = socket;
     GLOBAL.users.push(user);
 
@@ -187,20 +190,21 @@ io.on('connection', (socket) => {
     if (GLOBAL.lobbies.length === 0) {
         console.log('Création du lobby global');
         GLOBAL.lobbies.push(new Lobby(user, GLOBAL.matchmaking));
-        GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
         console.log('(user ' + user.nickname + ') Lobby global rejoint');
     } else {
         // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
+        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb) {
             console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
-        else {
+            return;
+        } else {
             console.log("Ajout " + user.nickname + " au lobby #" + GLOBAL.lobbies[0].id);
             GLOBAL.lobbies[0].addUser(user);
-            GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
 
             console.log('(user ' + user.nickname + ') Lobby global rejoint');
         }
     }
+
+    GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
     
 });
 
