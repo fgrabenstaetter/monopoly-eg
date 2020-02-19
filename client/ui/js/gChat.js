@@ -29,17 +29,17 @@ function sendMsg() {
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
 
-    socket.emit('chat message', chatMsg);
+    socket.emit('lobbyChatMessageReq', {content: chatMsg});
 
     chat.appendChild(msg);
 
   }
 }
 
-socket.on('chat message', function(msg) {
+socket.on('lobbyChatMessageRes', (msg) => {
   const element = document.getElementById("msgChat");
   const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-  let html = `<div class="msg-other"><div class="msg-author">` + msg.author + `</div>` + msg.content + `</div>`;
+  let html = `<div class="msg-other"><div class="msg-author">` + msg.sender + `</div>` + msg.content + `</div>`;
   $('#msgChat').append(html);
   console.log(element);
   if (isScroll)

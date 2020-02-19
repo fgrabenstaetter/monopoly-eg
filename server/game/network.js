@@ -23,19 +23,24 @@ class Network {
     }
 
     lobbyUserListen (user, lobby) {
-        this.lobbyFriendAcceptInvitation(user, lobby);
-        this.lobbyInviteFriend(user, lobby);
-        this.lobbyChatMessage(user, lobby);
-        this.lobbyChangeTargetUsersNb(user, lobby);
-        this.lobbyChangePawn(user, lobby);
-        this.lobbyKick(user, lobby);
-        this.lobbyPlay(user, lobby);
+        user.socket.join(lobby.name);
+
+        this.lobbyFriendAcceptInvitationReq(user, lobby);
+        this.lobbyInviteFriendReq(user, lobby);
+        this.lobbyChatMessageReq(user, lobby);
+        this.lobbyChangeTargetUsersNbReq(user, lobby);
+        this.lobbyChangePawnReq(user, lobby);
+        this.lobbyKickReq(user, lobby);
+        this.lobbyPlayReq(user, lobby);
 
         if (lobby.users[0] === user) { // est l'hôte
             user.socket.emit('lobbyCreatedRes', {
                 targetUsersNb: lobby.targetUsersNb,
                 pawn: lobby.pawns[0]
             });
+        } else {
+            // envoyer données du lobby : historique du chat, users, targetUsersNb, ...
+            user.socket.emit('lobbyJoinedRes', {})
         }
     }
 
@@ -65,7 +70,7 @@ class Network {
             if (!data.invitationID)
                 err = Errors.MISSING_FIELD;
             else {
-                const invitObj = Lobby.delInvitation(data.invitationID);
+                const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
                     err = Errors.NETWORK.INVITATION_NOT_EXISTS;
                 else if (invitObj.to !== user.nickname)
@@ -123,7 +128,7 @@ class Network {
                     });
 
                     // envoyer à tous les users du loby, sauf le nouveau
-                    user.socket.broadcast.to(user.room).emit('lobbyPlayerJoinedRes', {
+                    user.socket.broadcast.to(lobby.name).emit('lobbyPlayerJoinedRes', {
                         nickname: user.nickname,
                         pawn: friendLobby.pawns[friendLobby.users.indexOf(user)]
                     });
@@ -180,19 +185,20 @@ class Network {
     }
 
     lobbyChatMessageReq (user, lobby) {
-        user.socket.on('lobbyChatMessageReq', (data) => {
-            if (!data.text) {
+        user.socket.on('lobbyChatMessageReq', (msg) => {
+            if (!msg.content) {
                 user.socket.emit('lobbyChatMessageRes', { error: Errors.MISSING_FIELD.code, status: Errors.MISSING_FIELD.status });
                 return;
             }
 
-            const mess = chat.addMessage(user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
+            const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
+
             // broadcast lobby
-            this.io.to(user.room).emit('lobbyChatMessageRes', {
+            user.socket.to(lobby.name).emit('lobbyChatMessageRes', {
                 error: Errors.SUCCESS.code,
                 status: Errors.SUCCESS.status,
-                senderPseudo: mess.senderUser.nickname,
-                text: mess.content,
+                sender: mess.senderUser.nickname,
+                content: mess.content,
                 createdTime: mess.createdTime
             });
         });
@@ -228,7 +234,7 @@ class Network {
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else {
                 lobby.changeTargetUsersNb(data.nb);
-                this.io.to(user.room).emit('lobbyTargetUsersNbChangedRes', { nb: lobby.targetUsersNb });
+                this.io.to(lobby.name).emit('lobbyTargetUsersNbChangedRes', { nb: lobby.targetUsersNb });
             }
 
             user.socket.emit('lobbyChangeTargetUsersNbRes', { error: err.code, status: err.status });
@@ -245,7 +251,7 @@ class Network {
                 err = Errors.PAWN_ALREADY_USED;
             else {
                 lobby.pawns[lobby.users.indexOf(user)] = data.pawn;
-                this.io.to(user.room).emit('lobbyPlayerPawnChangedRes', {
+                this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
                     nickname: user.nickname,
                     pawn: data.pawn
                 });
@@ -265,7 +271,7 @@ class Network {
                 err = Errors.LOBBY_NOT_FULL;
 
             if (err.code === Errors.SUCCESS.code) {
-                this.io.to(user.room).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                this.io.to(lobby.name).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                 lobby.searchGame();
             } else
                 user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
