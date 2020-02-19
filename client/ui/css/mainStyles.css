@@ -216,6 +216,49 @@ a:not([href]) {
           justify-content: space-between;
 }
 
+.lobby-ui-container .box.friendlist .friend-request {
+  background: rgba(0, 0, 0, 0.3);
+  margin: 15px -20px;
+  width: 220px;
+  padding: 20px;
+  text-align: left;
+}
+
+.lobby-ui-container .box.friendlist .friend-request .friend-request-text {
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.lobby-ui-container .box.friendlist .friend-request .friend-request-accept {
+  border: white 1px solid;
+  border-radius: 3px;
+  margin-left: auto;
+  padding: 2px 5px;
+  font-size: 12px;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  background-color: white;
+}
+
+.lobby-ui-container .box.friendlist .friend-request .friend-request-deny {
+  border: rgba(255, 255, 255, 0.7) 1px solid;
+  border-radius: 3px;
+  margin-left: auto;
+  padding: 2px 5px;
+  font-size: 12px;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.lobby-ui-container .box.friendlist .fa-search {
+  position: absolute;
+  display: none;
+}
+
 .lobby-ui-container .box.friendlist .friend-entry {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -358,6 +401,7 @@ a:not([href]) {
   background-color: rgba(0, 0, 0, 0.3);
   color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
+  position: relative;
 }
 
 .card.window {

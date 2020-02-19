@@ -1,1 +1,0 @@
-$('.friend-add').text('inviter');

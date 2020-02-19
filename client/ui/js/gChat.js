@@ -25,7 +25,7 @@ function sendMsg() {
 
     msg = document.createElement('div');
 		msg.className = 'msg-me';
-		msg.innerHTML = `<div class="msg-author">Moi</div>`+ chatMsg;
+		msg.innerHTML = `<div class="msg-author">Moi</div>` + chatMsg;
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
 

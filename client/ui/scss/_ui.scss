@@ -193,6 +193,50 @@ a:not([href]) {
       display: flex;
       justify-content: space-between;
 
+      .friend-request {
+        background: rgba($color: black, $alpha: 0.3);
+        margin: 15px -20px;
+        width: 220px;
+        padding: 20px;
+        text-align: left;
+
+        .friend-request-text {
+          font-size: 13px;
+          margin-bottom: 10px;
+          color: white;
+        }
+
+        .friend-request-accept {
+          border: white 1px solid;
+          border-radius: 3px;
+          margin-left: auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: black;
+          cursor: pointer;
+          display: inline-block;
+          background-color: white;
+        }
+
+        .friend-request-deny {
+          border: rgba($color: white, $alpha: 0.7) 1px solid;
+          border-radius: 3px;
+          margin-left: auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: black;
+          cursor: pointer;
+          display: inline-block;
+          background-color: rgba($color: white, $alpha: 0.7);
+        }
+      }
+
+      // à compléter plus tard
+      .fa-search {
+        position: absolute;
+        display: none;
+      }
+
       .friend-entry {
         display: flex;
         align-items: center;
@@ -328,6 +372,7 @@ a:not([href]) {
       background-color: rgba($color: black, $alpha: 0.3);
       color: rgba($color: white, $alpha: 0.7);
       font-size: 13px;
+      position: relative;
     }
   }
 
