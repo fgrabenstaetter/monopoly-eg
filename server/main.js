@@ -180,22 +180,28 @@ io.on('connection', (socket) => {
 
     let user = nicknameToUser(decodedToken.nickname);
     user.socket = socket;
-    // new Lobby(GLOBAL.lobbies, GLOBAL.network, user, GLOBAL.matchmaking);
+    GLOBAL.users.push(user);
 
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-
+    // Créer le lobby
     if (GLOBAL.lobbies.length === 0) {
-        // creer le lobby
-        new Lobby(GLOBAL.lobbies, GLOBAL.network, user, GLOBAL.matchmaking);
+        console.log('Création du lobby global');
+        GLOBAL.lobbies.push(new Lobby(user, GLOBAL.matchmaking));
+        GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
+        console.log('(user ' + user.nickname + ') Lobby global rejoint');
     } else {
         // rejoindre le lobby
         if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb)
             console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
         else {
+            console.log("Ajout " + user.nickname + " au lobby #" + GLOBAL.lobbies[0].id);
             GLOBAL.lobbies[0].addUser(user);
+            GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
+
             console.log('(user ' + user.nickname + ') Lobby global rejoint');
         }
     }
+    
 });
 
 

@@ -14,14 +14,10 @@ class Lobby {
     lobbyIDCounter = 0;
 
     /**
-     * @param lobbies La liste de tous les lobbies du serveur
-     * @param network L'instance globale network du serveur
-     * @param user L'utilisateur qui veut créer le lobby
+     * @param user Utilisateur qui crée le lobby (= hôte)
      * @param matchmaking L'instance globale de matchmaking du serveur
      */
-    constructor (lobbies, network, user, matchmaking) {
-        this.lobbies = lobbies;
-        this.network = network;
+    constructor (user, matchmaking) {
         this.matchmaking = matchmaking;
         this.chat = new Chat();
         this.id = this.lobbyIDCounter ++;
@@ -30,8 +26,8 @@ class Lobby {
         this.users = [user];
         this.pawns = [0]; // pion par défaut pour l'hôte
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
-        this.targetUsersNb = 4;
-        this.lobbies.push(this);
+
+        this.targetUsersNb = 2; // de 2 à 8
     }
 
     /**
@@ -43,9 +39,6 @@ class Lobby {
 
         this.users.push(user);
         this.pawns.push(0);
-        user.room = 'lobby-' + this.id;
-        user.socket.join(user.room);
-        this.network.lobbyUserListen(user, this);
     }
 
     /**
@@ -64,16 +57,16 @@ class Lobby {
             this.delUser(this.users[0]);
 
             // supprimer le lobby de la liste globale des lobbies
-            const lobInd = this.lobbies.indexOf(this);
-            if (lobInd !== -1)
-                this.lobbies.splice(lobInd, 1);
+            // const lobInd = this.lobbies.indexOf(this);
+            // if (lobInd !== -1)
+            //     this.lobbies.splice(lobInd, 1);
         }
 
         user.room = null;
         user.socket.leave('lobby-' + this.id);
         this.users.splice(ind, 1);
         this.pawns.splice(ind, 1);
-        this.network.lobbyUserStopListening(user);
+        // this.network.lobbyUserStopListening(user);
     }
 
     delete () {
@@ -121,6 +114,13 @@ class Lobby {
                 return i;
         }
         // ne peut pas arriver ici
+    }
+
+    /**
+     * @return le nom du lobby (utilisé comme socket room notamment)
+     */
+    get name() {
+        return 'lobby-' + this.id;
     }
 
     /**
