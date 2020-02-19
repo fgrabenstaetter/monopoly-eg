@@ -83,6 +83,16 @@ class Network {
                         err = Errors.NETWORK.LOBY_CLOSED;
                     else if (friendLobby.users.length >= friendLobby.targetUsersNb)
                         err = Errors.NETWORK.LOBBY_FULL;
+                    else {
+                        // ferme le lobby de user
+                        for (const lobby of this.lobbies) {
+                            const usr = lobby.userByNickname(user);
+                            if (usr) {
+                                lobby.delete();
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if (err.code === Errors.SUCCESS.code) {
