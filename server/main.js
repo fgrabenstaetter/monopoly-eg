@@ -178,7 +178,8 @@ io.on('connection', (socket) => {
 
     // ------------------------------------------------
 
-    const user = nicknameToUser(decodedToken.nickname);
+    let user = nicknameToUser(decodedToken.nickname);
+    user.socket = socket;
     // new Lobby(GLOBAL.lobbies, GLOBAL.network, user, GLOBAL.matchmaking);
 
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
