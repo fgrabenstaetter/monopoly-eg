@@ -207,6 +207,56 @@ a:not([href]) {
   width: 220px;
 }
 
+.lobby-ui-container .box.friendlist {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.lobby-ui-container .box.friendlist .friend-entry {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 10px;
+}
+
+.lobby-ui-container .box.friendlist .friend-entry .friends-avatar {
+  max-height: 35px;
+  max-width: 35px;
+  border-radius: 3px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.lobby-ui-container .box.friendlist .friend-entry .friends-name {
+  margin-left: 10px;
+  font-size: 13px;
+  overflow: hidden;
+  overflow-wrap: unset;
+}
+
+.lobby-ui-container .box.friendlist .friend-entry .friend-add {
+  border: rgba(255, 255, 255, 0.6) 1px solid;
+  border-radius: 3px;
+  margin-left: auto;
+  padding: 2px 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.lobby-ui-container .box.friendlist .friend-entry .friend-add:hover {
+  color: white;
+  border-color: white;
+}
+
 .lobby-ui-container .btn {
   height: 50px;
   border-radius: 25px;
