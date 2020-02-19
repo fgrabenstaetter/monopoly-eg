@@ -91,11 +91,7 @@ app.get('/', (req, res) => {
 // API ENDPOINTS //
 ///////////////////
 
-// app.use(jwt({ secret: '123' }));
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODIwMzkxMDMsImV4cCI6MTU4MjEyNTUwM30.EIL4Fkw3gF3vclxZdFnv2LP1rBLkeP7kbctX3EgqFE8
-
-app.use(expressJwt({ secret: JWT_SECRET}).unless({path: ['/api/register', '/api/login']}));
+app.use(expressJwt({ secret: JWT_SECRET}).unless({path: ['/api/register', '/api/login', /\/test*/]}));
 
 app.get('/api/tokentest', (req, res) => {
     console.log(req.user);
@@ -213,7 +209,32 @@ app.get('/tests', (req, res) => {
 });
 
 
-app.get('/add-user-in-db/:username/:email', (req, res) => {
+// Créer une demande d'ami de userA vers userB (userX = ObjetcId)
+// ex : /test/process-friend-request/5e457cb3d7d620e3e2bc5d22/5e43073fbd410f9edcdae8f7
+// et pour "accepter" -> inverser les deux IDs
+app.get('/test/process-friend-request/:userA/:userB', (req, res) => {
+    UserSchema.requestFriend(req.params.userA, req.params.userB, (err) => {
+        console.log('err', err);
+        console.log(req.params.userA + " requested ----> " + req.params.userB);
+    });
+
+    res.send('ok');
+});
+
+// Récupère les amis de user (user = ObjectId)
+// ex : /test/get-friends/5e43073fbd410f9edcdae8f7
+app.get('/test/get-friends/:user', (req, res) => {
+    UserSchema.getFriends(req.params.user, (err, friendships) => {
+        console.log('err', err);
+        console.log('User ' + req.params.user + ' friends :');
+        console.log(friendships);
+    }); 
+
+    res.send('ok');
+});
+
+
+app.get('/test/add-user-in-db/:username/:email', (req, res) => {
     let newUserSchema = new UserSchema({
         nickname: req.params.username,
         email: req.params.email,
@@ -228,7 +249,7 @@ app.get('/add-user-in-db/:username/:email', (req, res) => {
     });
 });
 
-app.get('/get-users-from-db', (req, res) => {
+app.get('/test/get-users-from-db', (req, res) => {
     UserSchema.find((err, users) => {
         let html = '';
         for (let i = 0; i < users.length; i++) {
@@ -238,7 +259,7 @@ app.get('/get-users-from-db', (req, res) => {
     });
 });
 
-app.get('/delete-users-from-db', (req, res) => {
+app.get('/test/delete-users-from-db', (req, res) => {
     UserSchema.deleteMany({}, (err, result) => {
         if (err)
             res.send('Une erreur est survenue :/');
@@ -248,7 +269,7 @@ app.get('/delete-users-from-db', (req, res) => {
 });
 
 const Cell = require('./game/cell');
-app.get('/cell-test', (req, res) => {
+app.get('/test/cell-test', (req, res) => {
     let cells = [
         new Cell(Constants.CELL_TYPE.PARC, null),
         new Cell(Constants.CELL_TYPE.PRISON, null),

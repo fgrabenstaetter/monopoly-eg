@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const User = require('../game/user.js');
 const Errors = require('../lib/errors');
+const friends = require("mongoose-friends");
 
 let userSchema = new Schema({
     nickname: { type: String, required: true },
@@ -11,8 +12,10 @@ let userSchema = new Schema({
     inscriptionDate: { type: Date, default: Date.now, required: true },
     level: { type: Number, default: 1, required: true },
     exp: { type: Number, default: 0, required: true },
-    friends: { type: [String], default: [], required: false }
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Friend'}]
 });
+
+userSchema.plugin(friends());
 
 const UserSchema = mongoose.model('User', userSchema);
 
