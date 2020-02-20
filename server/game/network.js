@@ -12,14 +12,12 @@ class Network {
      * @param users Le tableau global de users du serveur
      * @param lobbies Le tableau global de lobbies du serveur
      * @param games Le tableau global de games du serveur
-     * @param matchmaking L'instance globale de matchmaking du serveur
      */
-    constructor (io, users, lobbies, games, matchmaking) {
+    constructor (io, users, lobbies, games) {
         this.io = io;
         this.users = users;
         this.lobbies = lobbies;
         this.games = games;
-        this.matchmaking = matchmaking;
     }
 
     lobbyUserListen (user, lobby) {
@@ -29,6 +27,7 @@ class Network {
         this.lobbyInvitationReq(user, lobby);
         this.lobbyInvitationAcceptReq(user, lobby);
         this.lobbyKickReq(user, lobby);
+        this.lobbyDisconnect(user, lobby);
 
         // Paramètres + Chat
         this.lobbyChangeTargetUsersNbReq(user, lobby);
@@ -37,21 +36,30 @@ class Network {
         this.lobbyPlayReq(user, lobby);
 
         // Amis
-        //
+        this.lobbyFriendInviteReq(user, lobby);
+        this.lobbyFriendInvitationActionReq(user, lobby);
+        this.lobbyFriendDeleteReq(user, lobby);
 
         // réponse de création / rejoignage de lobby
         this.lobbyNewUser(user, lobby);
     }
 
     lobbyUserStopListening (user) {
+        // Inviter / Rejoindre / Quitter
         user.socket.off('lobbyInvitationReq');
         user.socket.off('lobbyInvitationAcceptReq');
         user.socket.off('lobbyKickReq');
 
+        // Paramètres + Chat
         user.socket.off('lobbyChangeTargetUsersNbReq');
         user.socket.off('lobbyChangePawnReq');
         user.socket.off('lobbyChatSendReq');
         user.socket.off('lobbyPlayReq');
+
+        // Amis
+        user.socket.off('lobbyFriendInviteReq');
+        user.socket.off('lobbyFriendInvitationActionReq');
+        user.socket.off('lobbyFriendDeleteReq');
     }
 
     gamePlayerListen (player, game) {
@@ -73,7 +81,6 @@ class Network {
         }
 
         // non hôte
-
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
@@ -174,14 +181,15 @@ class Network {
 
                     if (!friendLobby)
                         err = Errors.NETWORK.LOBY_CLOSED;
-                    else if (friendLobby.users.length >= friendLobby.targetUsersNb)
+                    else if (friendLobby.users.length >= 8)
                         err = Errors.NETWORK.LOBBY_FULL;
                     else {
-                        // ferme le lobby de user
+                        // quitter son lobby
                         for (const lobby of this.lobbies) {
                             const usr = lobby.userByNickname(user);
                             if (usr) {
-                                lobby.delete();
+                                lobby.delUser(user);
+                                user.socket.leave(lobby.name);
                                 break;
                             }
                         }
@@ -210,13 +218,39 @@ class Network {
             }
 
             if (err.code === Errors.SUCCESS.code) {
-                this.io.to(userToKick.room).emit('lobbyUserLeftRes', {
-                    nickname: userToKick.nickname,
-                    host: lobby.users[0].nickname
-                });
-                lobby.delUser(userToKick);
+                if (lobby.users.length > 1) {
+                    this.io.to(lobby.name).emit('lobbyUserLeftRes', {
+                        nickname: user.nickname,
+                        host: lobby.users[1].nickname
+                    });
+                }
+
+                lobby.delUser(user);
+                user.socket.leave(lobby.name);
+
+                // nouveau lobby solo pour ce joueur kické
+                const newLobby = new Lobby(user, lobby.matchmaking);
+                this.lobbies.push(newLobby);
+                user.socket.join(newLobby.name);
             }
+
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
+        });
+    }
+
+    lobbyDisconnect (user, lobby) {
+        user.socket.on('disconnect', () => {
+            if (lobby.users.length > 1) {
+                const newHost = lobby.isHost(user) ? lobby.users[0] : lobby.users[1];
+                this.io.to(lobby.name).emit('lobbyUserLeftRes', {
+                    nickname: user.nickname,
+                    host: newHost.nickname
+                });
+            }
+
+            lobby.delUser(user);
+            user.socket.leave(lobby.name);
+            this.users.splice(this.users.indexOf(user), 1);
         });
     }
 

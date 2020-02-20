@@ -181,7 +181,7 @@ io.on('connection', (socket) => {
     let user = nicknameToUser(decodedToken.nickname);
     if (!user)
         return;
-    
+
     user.socket = socket;
     GLOBAL.users.push(user);
 
@@ -205,7 +205,7 @@ io.on('connection', (socket) => {
     }
 
     GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
-    
+
 });
 
 

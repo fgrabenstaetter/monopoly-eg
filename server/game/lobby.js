@@ -28,17 +28,19 @@ class Lobby {
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
 
         this.targetUsersNb = 1000; // de 2 à 8
+        this.open = true;
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser (user) {
-        if (this.users.indexOf(user) !== -1 || this.users.length >= this.targetUsersNb)
+        if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= 8)
             return;
-
         this.users.push(user);
         this.pawns.push(0);
+        if (this.users.length > this.targetUsersNb)
+            this.targetUsersNb = this.users.length;
     }
 
     /**
@@ -49,21 +51,6 @@ class Lobby {
         if (ind === -1)
             return;
 
-        if (ind === 0) {
-            // l'hôte est parti, ferme ce lobby
-            this.targetUsersNb = 0; // bloquer l'accès au lobby
-            for (let i = 1, l = this.users.length; i < l; i ++)
-                this.delUser(this.users[i]);
-            this.delUser(this.users[0]);
-
-            // supprimer le lobby de la liste globale des lobbies
-            // const lobInd = this.lobbies.indexOf(this);
-            // if (lobInd !== -1)
-            //     this.lobbies.splice(lobInd, 1);
-        }
-
-        user.room = null;
-        user.socket.leave('lobby-' + this.id);
         this.users.splice(ind, 1);
         this.pawns.splice(ind, 1);
         // this.network.lobbyUserStopListening(user);
@@ -72,7 +59,8 @@ class Lobby {
     delete () {
         if (this.users.length === 0)
             return;
-        this.delUser(this.users[0]);
+        for (const usr of this.users)
+            this.delUser(usr);
     }
 
     /**
@@ -83,13 +71,15 @@ class Lobby {
             this.targetUsersNb = 2;
         else if (newNb > 8)
             this.targetUsersNb = 8;
+        else if (newNb < this.users.length)
+            this.targetUsersNb = this.users.length;
         else
             this.targetUsersNb = newNb;
     }
 
     searchGame () {
         this.matchmaking.addLobby(this);
-        this.targetUsersNb = 0; // bloquer l'accès
+        this.open = false;
     }
 
     /**
