@@ -40,6 +40,19 @@ class Game {
         if (ind !== -1)
             this.games.splice(ind, 1);
     }
+
+    /**
+     * @param nickname Le pseudo du joueur recherché
+     * @return le joueur si trouvé, sinon null
+     */
+    playerByNickname (nickname) {
+        for (const player of this.players) {
+            if (player.user.nickname === nickname)
+                return player;
+        }
+
+        return null;
+    }
 }
 
 module.exports = Game;

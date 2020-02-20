@@ -106,6 +106,39 @@ class Lobby {
     }
 
     /**
+     * @param user L'utilisateur dont on veut récupérer le pion
+     * @return son pion (int) si user trouvé, sinon null
+     */
+    userPawn (user) {
+        const ind = this.users.indexOf(user);
+        if (ind !== -1)
+            return this.pawns[ind];
+        return null;
+    }
+
+    /**
+     * @param user L'utilisateur dont on veut modifier le pion
+     * @param pawn Le nouveau pion
+     * @return true si succès, false sinon (pion déjà utilisé)
+     */
+    changePawn (user, pawn) {
+        const ok = this.pawns.indexOf(pawn) === -1;
+        if (!ok)
+            return false;
+
+        this.pawns[this.users.indexOf(user)] = pawn;
+        return true;
+    }
+
+    /**
+     * @param user L'utilisateur qu'on veut tester hote ou non
+     * @return true si il est l'hôte, false sinon
+     */
+    isHost (user) {
+        return this.users[0] === user;
+    }
+
+    /**
      * @return un pion disponible
      */
     get nextPawn () {
