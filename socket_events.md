@@ -8,11 +8,12 @@
 **Res = réponse serveur -> client (pas forcément après un Req)**
 > Les données sont reçues en argument de la fonction callback de l'event socket
 
-- Pour avoir accès à la connexion socket.io, être connecté (session express.js)
-- Socket => gérer le lobby, matchmaking, parties de jeu
+- Pour avoir accès à la connexion socket.io, être connecté (jeton JWT)
 - Dans une réponse, **error** est égal à **0** lorsqu'il s'agit d'un succès, sinon contient un code d'erreur **> 0**. Tous les types d'erreurs sont définis dans le fichier **server/lib/errors.js**. **status** contient toujours le message lié à ce code d'erreur.
 
 ## Lobby
+
+### --- Créer / Inviter / Rejoindre / Quitter
 
 - **Le lobby a été créé**
     > Lors de la connexion au socket, un lobby est automatiquement créé pour vous avec des paramètres par défaut
@@ -29,7 +30,7 @@
         ```
 
 - **Inviter un ami dans le lobby**
-    * **Requête:** lobbyInviteFriendReq
+    * **Requête:** lobbyInvitationReq
         * *Données:*
         ```javascript
         {
@@ -37,7 +38,7 @@
         }
         ```
 
-    * **Réponse:** lobbyInviteFriendRes
+    * **Réponse:** lobbyInvitationRes
         * *Données:*
         ```javascript
         {
@@ -47,25 +48,25 @@
         ```
 
 - **Invitation reçue d'un ami pour rejoindre son lobby**
-    * **Réponse:** lobbyFriendInvitationRes
+    * **Réponse:** lobbyInvitationReceivedRes
         * *Données:*
         ```javascript
         {
             invitationID: int,
             senderFriendNickname: string,
-            nbPlayersInLobby: int
+            nbUsersInLobby: int
         }
          ```
 
 - **Accepter une demande d'invitation lobby d'un ami**
-    * **Requête:** lobbyFriendAcceptInvitationReq
+    * **Requête:** lobbyInvitationAcceptReq
         * *Données:*
         ```javascript
         {
             invitationID: int
         }
          ```
-    * **Réponse:** lobbyFriendAcceptInvitationRes
+    * **Réponse:** lobbyInvitationAcceptRes
         * *Données:*
         ```javascript
         {
@@ -83,7 +84,7 @@
         {
             targetUsersNb: int, // nombre de joueurs désirés pour la partie
             pawn: int, // le pion initial pour le joueur
-            players: [
+            users: [
                 // first user = host
                 {
                     nickname: string,
@@ -103,7 +104,7 @@
         ```
 
 - **Un nouveau joueur a rejoint le lobby**
-    * **Requête:** lobbyPlayerJoinedRes
+    * **Requête:** lobbyUserJoinedRes
         * *Données:*
         ```javascript
         {
@@ -111,6 +112,40 @@
             pawn: int
         }
         ```
+
+- **Kicker un joueur du lobby**
+    * **Requête:** lobbyKickReq
+        * *Données:*
+        ```javascript
+        {
+            userToKickNickname: string
+        }
+        ```
+
+    * **Réponse:** lobbyKickRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Un joueur est parti / a été kické du lobby**
+    * **Réponse:** lobbyUserLeftRes
+        > Est envoyé à tout le monde dans le lobby. Si le user en question recoit aussi l'event, cela veut dire qu'il n'est pas parti mais qu'il a été kické du lobby (actualiser l'affichage)
+
+        * *Données:*
+            > Le pseudo de l'hôte est retourné (*host*) car il change après le départ de l'hôte (uniquement)
+
+        ```javascript
+        {
+            nickname: string,
+            host: string // host nickname
+        }
+        ```
+
+### --- Paramètres / Chat
 
 - **Modifier le nombre désiré de joueurs du lobby**
     > Uniquement par l'hôte, et attention: si le nombre désiré est plus petit que le nombre actuel de d'utilisateurs du lobby, ceux en trop seront automatiquement kickés
@@ -165,44 +200,12 @@
 - **Un joueur a changé son pion**
     > Reçu par tous les utilisateurs dans le lobby
 
-    * **Réponse:** lobbyPlayerPawnChangedRes
+    * **Réponse:** lobbyUserPawnChangedRes
         * *Données:*
         ```javascript
         {
             nickname: string, // pseudo de celui qui a changé son pion
             pawn: int
-        }
-        ```
-
-- **Kicker un joueur du lobby**
-    * **Requête:** lobbyKickReq
-        * *Données:*
-        ```javascript
-        {
-            playerToKickNickname: string
-        }
-        ```
-
-    * **Réponse:** lobbyKickRes
-        * *Données:*
-        ```javascript
-        {
-            error: int,
-            status: string
-        }
-        ```
-
-- **Un joueur est parti / a été kické du lobby**
-    * **Réponse:** lobbyUserLeftRes
-        > Est envoyé à tout le monde dans le lobby. Si le user en question recoit aussi l'event, cela veut dire qu'il n'est pas parti mais qu'il a été kické du lobby (actualiser l'affichage)
-
-        * *Données:*
-            > Le pseudo de l'hôte est retourné (*host*) car il change après le départ de l'hôte (uniquement)
-
-        ```javascript
-        {
-            nickname: string,
-            host: string // host nickname
         }
         ```
 
@@ -246,6 +249,8 @@
             status: string
         }
         ```
+
+### --- Amis
 
 - **Envoyer une demande d'ami**
 
