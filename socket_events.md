@@ -243,6 +243,89 @@
         }
         ```
 
+- **Envoyer une demande d'ami**
+
+    * **Requête:** lobbyFriendInviteReq
+        * *Données:*
+        ```javascript
+        {
+            receiverNickname: string
+        }
+        ```
+
+    * **Réponse:** lobbyFriendInviteRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Acceptation / Déclinaison d'une demande d'ami (action du récepteur)**
+    > Envoyé à l'émetteur de la requête après que son récepteur ai accepté ou décliné l'invitation
+
+    * **Réponse:** lobbyFriendInvitationRes
+        * *Données:*
+        ```javascript
+        {
+            receiverNickname: string
+            state: string // accepted | rejected
+        }
+        ```
+
+* **Réception d'une demande d'ami**
+    > Reçu lorsque quelqu'un nous a envoyé une demande d'ami
+
+    * **Réponse:** lobbyFriendInvitationReceivedRes
+        * *Données:*
+        ```javascript
+        {
+            senderNickname: string
+        }
+        ```
+
+* **Accepter / Décliner une demande d'ami**
+    > Accepter ou décliner une demande d'ami qui a été reçue
+
+    * **Requête:** lobbyFriendInvitationActionReq
+        * *Données:*
+        ```javascript
+        {
+            senderNickname: string,
+            action: string // accept | reject
+        }
+        ```
+
+    * **Réponse:** lobbyFriendInvitationActionRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Supprimer un ami**
+    > Supprimer un ami revient à le supprimer des deux côtés (plus aucun des deux n'a l'autre en ami)
+
+    * **Requête:** lobbyFriendDeleteReq
+        * *Données:*
+        ```javascript
+        {
+            friendNickname: string
+        }
+        ```
+
+    * **Réponse:** lobbyFriendDeleteRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
 ## Game
 
 - **Démarrage - infos générales du jeu**
