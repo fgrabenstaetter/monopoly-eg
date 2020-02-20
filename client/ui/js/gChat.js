@@ -21,18 +21,24 @@ function sendMsg() {
   let chatMsg = document.getElementById('chat').value;
 
 	if (chatMsg.trim()!="") {
-    const element = document.getElementById("msgChat");
+    var msg = document.createElement('div');
+    msg.className = 'msg-me';
+    
+    var msgAuthor = document.createElement('div');
+    msgAuthor.className = 'msg-author';
+    msgAuthor.innerHTML = `<div class="msg-author">Moi</div>`;
 
-    msg = document.createElement('div');
-		msg.className = 'msg-me';
-		msg.innerHTML = `<div class="msg-author">Moi</div>` + chatMsg;
+    var msgContent = document.createElement('div');
+    msgContent.innerText = chatMsg;
+
+    msg.appendChild(msgAuthor);
+    msg.appendChild(msgContent);
+
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
 
     socket.emit('lobbyChatMessageReq', {content: chatMsg});
-
     chat.appendChild(msg);
-
   }
 }
 
