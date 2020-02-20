@@ -84,6 +84,7 @@
             targetUsersNb: int, // nombre de joueurs désirés pour la partie
             pawn: int, // le pion initial pour le joueur
             players: [
+                // first user = host
                 {
                     nickname: string,
                     pawn: int
@@ -191,14 +192,17 @@
         }
         ```
 
-- **Un joueur a été kické du lobby**
-    * **Réponse:** lobbyKickedRes
-        > Est envoyé à tout le monde dans le lobby !
+- **Un joueur est parti / a été kické du lobby**
+    * **Réponse:** lobbyUserLeftRes
+        > Est envoyé à tout le monde dans le lobby. Si le user en question recoit aussi l'event, cela veut dire qu'il n'est pas parti mais qu'il a été kické du lobby (actualiser l'affichage)
 
         * *Données:*
+            > Le pseudo de l'hôte est retourné (*host*) car il change après le départ de l'hôte (uniquement)
+
         ```javascript
         {
-            nickname: string
+            nickname: string,
+            host: string // host nickname
         }
         ```
 
