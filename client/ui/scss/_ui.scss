@@ -374,6 +374,10 @@ a:not([href]) {
       font-size: 13px;
       position: relative;
     }
+
+    input::placeholder {
+      color: rgba($color: white, $alpha: 0.7);
+    }
   }
 
   &.window {

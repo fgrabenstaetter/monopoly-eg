@@ -404,6 +404,22 @@ a:not([href]) {
   position: relative;
 }
 
+.card.box input::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card.box input:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card.box input::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card.box input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .card.window {
   border-radius: 15px;
   background-color: transparent;
