@@ -104,7 +104,7 @@
         ```
 
 - **Un nouveau joueur a rejoint le lobby**
-    * **Requête:** lobbyUserJoinedRes
+    * **Réponse:** lobbyUserJoinedRes
         * *Données:*
         ```javascript
         {
