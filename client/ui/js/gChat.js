@@ -23,7 +23,7 @@ function sendMsg() {
 	if (chatMsg.trim()!="") {
     var msg = document.createElement('div');
     msg.className = 'msg-me';
-    
+
     var msgAuthor = document.createElement('div');
     msgAuthor.className = 'msg-author';
     msgAuthor.innerHTML = `<div class="msg-author">Moi</div>`;
@@ -37,12 +37,12 @@ function sendMsg() {
 		document.getElementById('chat').value="";
     chat = document.getElementById('msgChat');
 
-    socket.emit('lobbyChatMessageReq', {content: chatMsg});
+    socket.emit('lobbyChatSendReq', {content: chatMsg});
     chat.appendChild(msg);
   }
 }
 
-socket.on('lobbyChatMessageRes', (msg) => {
+socket.on('lobbyChatReceiveRes', (msg) => {
   const element = document.getElementById("msgChat");
   const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
   let html = `<div class="msg-other"><div class="msg-author">` + msg.sender + `</div>` + msg.content + `</div>`;

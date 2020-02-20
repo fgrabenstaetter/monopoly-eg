@@ -25,32 +25,32 @@ class Network {
     lobbyUserListen (user, lobby) {
         user.socket.join(lobby.name);
 
-        this.lobbyFriendAcceptInvitationReq(user, lobby);
-        this.lobbyInviteFriendReq(user, lobby);
-        this.lobbyChatMessageReq(user, lobby);
+        // Inviter / Rejoindre / Quitter
+        this.lobbyInvitationReq(user, lobby);
+        this.lobbyInvitationAcceptReq(user, lobby);
+        this.lobbyKickReq(user, lobby);
+
+        // Paramètres + Chat
         this.lobbyChangeTargetUsersNbReq(user, lobby);
         this.lobbyChangePawnReq(user, lobby);
-        this.lobbyKickReq(user, lobby);
+        this.lobbyChatSendReq(user, lobby);
         this.lobbyPlayReq(user, lobby);
 
-        if (lobby.users[0] === user) { // est l'hôte
-            user.socket.emit('lobbyCreatedRes', {
-                targetUsersNb: lobby.targetUsersNb,
-                pawn: lobby.pawns[0]
-            });
-        } else {
-            // envoyer données du lobby : historique du chat, users, targetUsersNb, ...
-            user.socket.emit('lobbyJoinedRes', {})
-        }
+        // Amis
+        //
+
+        // réponse de création / rejoignage de lobby
+        this.lobbyNewUser(user, lobby);
     }
 
     lobbyUserStopListening (user) {
-        user.socket.off('lobbyFriendAcceptInvitationReq');
-        user.socket.off('lobbyInviteFriendReq');
-        user.socket.off('lobbyChatMessageReq');
+        user.socket.off('lobbyInvitationReq');
+        user.socket.off('lobbyInvitationAcceptReq');
+        user.socket.off('lobbyKickReq');
+
         user.socket.off('lobbyChangeTargetUsersNbReq');
         user.socket.off('lobbyChangePawnReq');
-        user.socket.off('lobbyKickReq');
+        user.socket.off('lobbyChatSendReq');
         user.socket.off('lobbyPlayReq');
     }
 
@@ -62,8 +62,96 @@ class Network {
 
     }
 
-    lobbyFriendAcceptInvitationReq (user, lobby) {
-        user.socket.on('lobbyFriendAcceptInvitationReq', (data) => {
+    lobbyNewUser (user, lobby) {
+
+        if (lobby.users[0] === user) { // est l'hôte
+            user.socket.emit('lobbyCreatedRes', {
+                targetUsersNb: lobby.targetUsersNb,
+                pawn: lobby.userPawn(user)
+            });
+            return;
+        }
+
+        // non hôte
+
+        let messages = [];
+        for (const mess of lobby.chat.messages) {
+            messages.push({
+                senderNickname: mess.senderUser.nickname,
+                text: mess.content,
+                createdTime: mess.createdTime
+            });
+        }
+
+        let users = [];
+        for (const usr of lobby.users) {
+            users.push({
+                nickname: usr.nickname,
+                pawn: lobby.userPawn(usr)
+            });
+        }
+
+        user.socket.emit('lobbyJoinedRes', {
+            targetUsersNb: lobby.targetUsersNb,
+            pawn: lobby.userPawn(user),
+            players: users,
+            messages: messages
+        });
+
+        // envoyer à tous les users du loby, sauf le nouveau
+        user.socket.broadcast.to(lobby.name).emit('lobbyPlayerJoinedRes', {
+            nickname: user.nickname,
+            pawn: lobby.pawns[lobby.users.indexOf(user)]
+        });
+    }
+
+    lobbyInvitationReq (user, lobby) {
+        user.socket.on('lobbyInvitationReq', (data) => {
+            let err = Errors.SUCCESS;
+            let friendUser = null;
+
+            if (!data.friendNickname)
+                err = Errors.MISSING_FIELD;
+            else if (user.friends.indexOf(data.friendNickname) === -1)
+                err = Errors.FRIEND_NOT_EXISTS;
+            else if (lobby.users.length >= lobby.targetUsersNb)
+                err = Errors.LOBBY_FULL;
+            else {
+                for (const user of this.users) {
+                    if (user.nickname === data.friendNickname) {
+                        friendUser = user;
+                        break;
+                    }
+                }
+
+                if (!friendUser)
+                    err = Errors.FRIEND_NOT_CONNECTED;
+                else {
+                    for (const game of this.games) {
+                        const tmp = game.playerByNickname(data.friendNickname);
+                        if (tmp) {
+                            err = Errors.FRIEND_IN_GAME;
+                            break;
+                        }
+                    }
+                }
+
+                if (err.code === Errors.SUCCESS.code) {
+                    const invitId = lobby.addInvitation(user.nickname, data.friendNickname);
+                    friendUser.socket.emit('lobbyInvitationReceivedRes', {
+                        invitationID: invitId,
+                        senderFriendNickname: user.nickname,
+                        nbUsersInLobby: lobby.users.length
+                    });
+                }
+
+                user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
+            }
+        });
+    }
+
+    lobbyInvitationAcceptReq (user, lobby) {
+        user.socket.on('lobbyInvitationAcceptReq', (data) => {
             let err = Errors.SUCCESS;
             let friendLobby = null;
 
@@ -100,107 +188,11 @@ class Network {
                     }
                 }
 
-                if (err.code === Errors.SUCCESS.code) {
+                if (err.code === Errors.SUCCESS.code)
                     friendLobby.addUser(user);
 
-                    let messages = [];
-                    for (const mess of friendLobby.chat.messages) {
-                        messages.push({
-                            senderNickname: mess.senderUser.nickname,
-                            text: mess.content,
-                            createdTime: mess.createdTime
-                        });
-                    }
-
-                    let users = [];
-                    for (let i = 0, l = friendLobby.users.length; i < l; i ++) {
-                        users.push({
-                            nickname: friendLobby.users[i].nickname,
-                            pawn: friendLobby.pawns[i]
-                        });
-                    }
-
-                    user.socket.emit('lobbyJoinedRes', {
-                        targetUsersNb: friendLobby.targetUsersNb,
-                        pawn: friendLobby.nextPawn,
-                        players: users,
-                        messages: messages
-                    });
-
-                    // envoyer à tous les users du loby, sauf le nouveau
-                    user.socket.broadcast.to(lobby.name).emit('lobbyPlayerJoinedRes', {
-                        nickname: user.nickname,
-                        pawn: friendLobby.pawns[friendLobby.users.indexOf(user)]
-                    });
-                }
-
-                user.socket.emit('lobbyFriendAcceptInvitationRes', { error: err.code, status: err.status });
+                user.socket.emit('lobbyInvitationAcceptRes', { error: err.code, status: err.status });
             }
-        });
-    }
-
-    lobbyInviteFriendReq (user, lobby) {
-        user.socket.on('lobbyInviteFriendReq', (data) => {
-            let err = Errors.SUCCESS;
-            let friendUser = null;
-
-            if (!data.friendPseudo)
-                err = Errors.MISSING_FIELD;
-            else if (user.friends.indexOf(data.friendPseudo) === -1)
-                err = Errors.FRIEND_NOT_EXISTS;
-            else if (lobby.users.length >= lobby.targetUsersNb)
-                err = Errors.LOBBY_FULL;
-            else {
-                for (const user of this.users) {
-                    if (user.nickname === friendPseudo) {
-                        friendUser = user;
-                        break;
-                    }
-                }
-
-                if (!friendUser)
-                    err = Errors.FRIEND_NOT_CONNECTED;
-                else {
-                    let inGame = false;
-                    for (const game of this.games) {
-                        for (const player of game) {
-                            if (player.user.nickname === data.friendPseudo) {
-                                inGame = true;
-                                break;
-                            }
-                        }
-                        if (inGame) {
-                            err = Errors.FRIEND_IN_GAME;
-                            break;
-                        }
-                    }
-                }
-
-                if (err.code === Errors.SUCCESS.code)
-                    lobby.addUser(friendUser);
-
-                user.socket.emit('lobbyInviteFriendRes', { error: err.code, status: err.status });
-            }
-        });
-    }
-
-    lobbyChatMessageReq (user, lobby) {
-        user.socket.on('lobbyChatMessageReq', (msg) => {
-            if (!msg.content) {
-                user.socket.emit('lobbyChatMessageRes', { error: Errors.MISSING_FIELD.code, status: Errors.MISSING_FIELD.status });
-                return;
-            }
-
-            const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
-
-            // broadcast lobby
-            user.socket.to(lobby.name).emit('lobbyChatMessageRes', {
-                error: Errors.SUCCESS.code,
-                status: Errors.SUCCESS.status,
-                sender: mess.senderUser.nickname,
-                content: mess.content,
-                createdTime: mess.createdTime
-            });
         });
     }
 
@@ -209,7 +201,7 @@ class Network {
             let err = Errors.SUCCESS;
             let userToKick = null;
 
-            if (!data.playerToKickPseudo)
+            if (!data.userToKickNickname)
                 err = Errors.MISSING_FIELD;
             else {
                 const userToKick = lobby.userByNickname(data.playerToKickPseudo);
@@ -218,7 +210,10 @@ class Network {
             }
 
             if (err.code === Errors.SUCCESS.code) {
-                this.io.to(userToKick.room).emit('lobbyKickedRes', { nickname: userToKick.nickname });
+                this.io.to(userToKick.room).emit('lobbyUserLeftRes', {
+                    nickname: userToKick.nickname,
+                    host: lobby.users[0].nickname
+                });
                 lobby.delUser(userToKick);
             }
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
@@ -230,7 +225,7 @@ class Network {
             let err = Errors.SUCCESS;
             if (!data.nb)
                 err = Errors.MISSING_FIELD;
-            else if (lobby.users.indexOf(user) !== 0)
+            else if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else {
                 lobby.changeTargetUsersNb(data.nb);
@@ -247,10 +242,9 @@ class Network {
 
             if (!data.pawn)
                 err = Errors.MISSING_FIELD;
-            else if (lobby.pawns.indexOf(data.pawn) !== -1)
+            else if (!lobby.changePawn(user, data.pawn))
                 err = Errors.PAWN_ALREADY_USED;
             else {
-                lobby.pawns[lobby.users.indexOf(user)] = data.pawn;
                 this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
                     nickname: user.nickname,
                     pawn: data.pawn
@@ -261,11 +255,31 @@ class Network {
         });
     }
 
+    lobbyChatSendReq (user, lobby) {
+        user.socket.on('lobbyChatSendReq', (msg) => {
+            let err = Errors.SUCCESS;
+
+            if (!msg.content)
+                err = Errors.MISSING_FIELD;
+            else {
+                const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
+                // broadcast lobby
+                user.socket.to(lobby.name).emit('lobbyChatReceiveRes', {
+                    sender: mess.senderUser.nickname,
+                    content: mess.content,
+                    createdTime: mess.createdTime
+                });
+            }
+
+            user.socket.emit('lobbyChatSendRes', { error: err.code, status: err.status });
+        });
+    }
+
     lobbyPlayReq (user, lobby) {
         user.socket.on('lobbyPlayReq', (data) => {
             let err = Errors.SUCCESS;
 
-            if (lobby.users[0] !== user)
+            if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else if (lobby.users.length < lobby.targetUsersNb)
                 err = Errors.LOBBY_NOT_FULL;
