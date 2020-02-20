@@ -336,6 +336,60 @@ a:not([href]) {
         border-right:17px solid rgba($color: white, $alpha: 0.5);
       }
     }
+
+    .notification-container {
+      display: flex;
+      align-items: bottom;
+      flex-direction: column-reverse;
+      overflow-y: hidden;
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+
+      .notification {
+        border-radius: 15px;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+        position: relative;
+        margin-top: 20px;
+  
+        .card-header {
+          border-radius: 15px 15px 0px 0px;
+          font-family: 'LilitaOne', sans-serif;
+          color: white;
+          background-color: $window_header;
+        }
+  
+        .card-body {
+          border-radius: 0px 0px 15px 15px;
+          background-color: $window_body;
+          padding: 10px;
+
+          .card-text {
+            color: white;
+            font-size: 13px;
+            margin: 10px 0 20px 0;
+          }
+
+          .btn {
+            height: 34px;
+            font-size: 14px;
+            width: 120px;
+            margin: 0 10px 10px 10px;
+            padding: 0;
+          }
+
+          .btn-primary {
+            background-color: #35d859;
+          }
+
+          .btn-secondary {
+            background-color: rgba($color: black, $alpha: 0.3);
+          }
+        }
+      }
+    }
   }
 }
 

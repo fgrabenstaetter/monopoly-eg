@@ -368,6 +368,67 @@ a:not([href]) {
   border-right: 17px solid rgba(255, 255, 255, 0.5);
 }
 
+.lobby-ui-container .container:nth-child(2) .notification-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: bottom;
+      -ms-flex-align: bottom;
+          align-items: bottom;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
+  overflow-y: hidden;
+  position: absolute;
+  bottom: 100px;
+  right: 0;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification {
+  border-radius: 15px;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-header {
+  border-radius: 15px 15px 0px 0px;
+  font-family: 'LilitaOne', sans-serif;
+  color: white;
+  background-color: #066875;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body {
+  border-radius: 0px 0px 15px 15px;
+  background-color: #24a9ba;
+  padding: 10px;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .card-text {
+  color: white;
+  font-size: 13px;
+  margin: 10px 0 20px 0;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
+  height: 34px;
+  font-size: 14px;
+  width: 120px;
+  margin: 0 10px 10px 10px;
+  padding: 0;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-primary {
+  background-color: #35d859;
+}
+
+.lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
 .ingame-ui-container {
   position: absolute;
   z-index: 1;
