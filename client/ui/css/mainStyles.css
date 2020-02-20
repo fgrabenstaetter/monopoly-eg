@@ -105,7 +105,7 @@ a:not([href]) {
   top: 50%;
   -webkit-transform: translate(0, -50%);
           transform: translate(0, -50%);
-  color: rgba(0, 0, 0, 0.7);
+  color: white;
 }
 
 @media (max-width: 767.98px) {
