@@ -409,14 +409,14 @@ a:not([href]) {
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .card-text {
   color: white;
-  font-size: 13px;
+  font-size: 14px;
   margin: 10px 0 20px 0;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
-  height: 34px;
-  font-size: 14px;
-  width: 120px;
+  height: 32px;
+  font-size: 12px;
+  width: 110px;
   margin: 0 10px 10px 10px;
   padding: 0;
 }
