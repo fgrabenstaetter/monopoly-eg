@@ -209,8 +209,8 @@
         }
         ```
 
-- **Envoyer/Recevoir un message dans le chat du lobby**
-    * **Requête:** lobbyChatMessageReq
+- **Envoyer un message dans le chat du lobby**
+    * **Requête:** lobbyChatSendReq
         * Envoyer un message
         * *Données:*
         ```javascript
@@ -218,14 +218,23 @@
             text: string
         }
         ```
-    * **Réponse:** lobbyChatMessageRes
+
+    * **Réponse:** lobbyChatSendRes
         * *Données:*
         ```javascript
         {
             error: int,
             status: string,
-            senderNickname: string,
-            text: string,
+        }
+        ```
+
+- **Recevoir un message dans le chat**
+    * **Réponse:** lobbyChatReceiveRes
+        * *Données:*
+        ```javascript
+        {
+            sender: string, // pseudo de l'émetteur
+            content: string, // texte
             createdTime: timestamp
         }
         ```
