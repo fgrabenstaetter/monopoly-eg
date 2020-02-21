@@ -1,4 +1,4 @@
-const Constants = {
+module.exports = Object.freeze({
     // CELL
     CELL_TYPE: {
         PARC:      0,
@@ -27,6 +27,4 @@ const Constants = {
         TEXT: 0,
         OFFER: 1
     }
-}
-
-module.exports = Constants;
+});
