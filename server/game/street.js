@@ -15,8 +15,6 @@ class Street extends Property {
         this.game = game;
         this.housesNb = 0;
         this.hostel = false;
-        this.housePrice = this.price.house;
-        this.hostelPrice = this.price.hostel;
     }
 
     /**
