@@ -1,3 +1,4 @@
+const Constants = require('../lib/constants');
 const Property = require('./property');
 
 /**
@@ -9,8 +10,8 @@ class Street extends Property {
     /**
      * @param game l'instance de partie, utile pour par exemple déterminer si le joueur a toutes les propriétés d'une même couleur, ou non
      */
-    constructor (id, owner, game) {
-        super(id, owner);
+    constructor (owner, data, game) {
+        super(owner, data, Constants.PROPERTY_TYPE.STREET);
         this.game = game;
         this.housesNb = 0;
         this.hostel = false;

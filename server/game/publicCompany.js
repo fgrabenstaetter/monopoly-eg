@@ -1,3 +1,4 @@
+const Constants = require('../lib/constants');
 const Property = require('./property');
 
 /**
@@ -5,8 +6,8 @@ const Property = require('./property');
  */
 class PublicCompany extends Property {
 
-    constructor (id, owner) {
-        super(id, owner);
+    constructor (owner, data) {
+        super(owner, Constants.PROPERTY_TYPE.PUBLIC_COMPANY, data);
     }
 
     /**
