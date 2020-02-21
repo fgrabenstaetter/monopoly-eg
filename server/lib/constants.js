@@ -5,7 +5,8 @@ module.exports = Object.freeze({
         PRISON:    1,
         PROPERTY:  2,
         CHANCE:    3,
-        COMMUNITY: 4
+        COMMUNITY: 4,
+        START: 5
     },
 
     // PROPERTY

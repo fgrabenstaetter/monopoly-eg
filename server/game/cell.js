@@ -5,18 +5,18 @@ const Constants = require('./../lib/constants');
  */
 class Cell {
     /**
-     * @param id ID de la case
      * @param type Type de case (voir CELL_TYPE)
      * @param property Propriété associée à la case (le cas échéant)
      */
-    constructor (id, type, property = null) {
-        this.id = id;
+    constructor (type, property = null) {
         this.type = type;
         this.property = property;
     }
 
     get name() {
         switch (this.type) {
+            case Constants.CELL_TYPE.START:
+                return 'Début';
             case Constants.CELL_TYPE.PARC:
                 return 'Parc';
             case Constants.CELL_TYPE.PRISON:

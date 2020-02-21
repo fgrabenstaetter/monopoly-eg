@@ -8,7 +8,7 @@ class Property { // classe abstraite
     idCounter = 0;
 
     /*
-     * @param owner Propriétaire de la propriété (Player)
+     * @param owner Propriétaire de la propriété (Player) ou null si à la banque
      * @param type Type de la propriété (PROPERTY_TYPE, voir constants.js)
      * @param data L'objet qui contient les données de la propriété (voir properties.js)
      */
@@ -18,7 +18,7 @@ class Property { // classe abstraite
         this.owner = owner;
         this.type = type;
         // implémenté chez les classes filles uniquement
-        this.load(this.data);
+        this.load(data);
     }
 }
 

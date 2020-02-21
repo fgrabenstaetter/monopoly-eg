@@ -13,7 +13,7 @@ class Player {
         this.pawn = pawn;
 
         this.money = 1500; // argent initial
-        this.cellId = 0;
+        this.cellInd = 0;
         this.properties = [];
         this.jailJokerCards = 0;
         this.remainingTurnsInJail = 0;
