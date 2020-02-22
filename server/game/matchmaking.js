@@ -9,10 +9,12 @@ class Matchmaking {
     /**
      * @param lobbies Liste de tous les lobbies du serveur
      * @param games Liste de toutes les parties de jeu du serveur
+     * @param network Le network manager du serveur
      */
-    constructor (lobbies, games) {
+    constructor (lobbies, games, network) {
         this.lobbies = lobbies;
         this.games = games;
+        this.network = network;
 
         /** Tableau de 6 cases => 1 case pour chaque nb de joueurs souhaité par des lobby
          * case indice 0 => Lobby pour une partie à 2 joueurs
@@ -62,6 +64,10 @@ class Matchmaking {
         for (const lobby of lobbies) {
             users = users.concat(lobby.users);
             pawns = pawns.concat(lobby.pawns);
+
+            for (const usr of lobby.users)
+                this.network.lobbyUserStopListening(usr);
+
             this.delLobby(lobby);
         }
 

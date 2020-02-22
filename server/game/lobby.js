@@ -56,9 +56,14 @@ class Lobby {
         // this.network.lobbyUserStopListening(user);
     }
 
+    /**
+     * 
+     * @param network Gestionnaire de réseau dont les users seront retirés 
+     */
     delete () {
         if (this.users.length === 0)
             return;
+        
         for (const usr of this.users)
             this.delUser(usr);
     }

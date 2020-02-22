@@ -36,9 +36,9 @@ class Network {
         this.lobbyPlayReq(user, lobby);
 
         // Amis
-        this.lobbyFriendInviteReq(user, lobby);
-        this.lobbyFriendInvitationActionReq(user, lobby);
-        this.lobbyFriendDeleteReq(user, lobby);
+        // this.lobbyFriendInviteReq(user, lobby);
+        // this.lobbyFriendInvitationActionReq(user, lobby);
+        // this.lobbyFriendDeleteReq(user, lobby);
 
         // réponse de création / rejoignage de lobby
         this.lobbyNewUser(user, lobby);
@@ -57,9 +57,9 @@ class Network {
         user.socket.off('lobbyPlayReq');
 
         // Amis
-        user.socket.off('lobbyFriendInviteReq');
-        user.socket.off('lobbyFriendInvitationActionReq');
-        user.socket.off('lobbyFriendDeleteReq');
+        // user.socket.off('lobbyFriendInviteReq');
+        // user.socket.off('lobbyFriendInvitationActionReq');
+        // user.socket.off('lobbyFriendDeleteReq');
     }
 
     gamePlayerListen (player, game) {
@@ -240,6 +240,7 @@ class Network {
 
     lobbyDisconnect (user, lobby) {
         user.socket.on('disconnect', () => {
+            console.log('user ' + user.nickname + ' disconnected from lobby');
             if (lobby.users.length > 1) {
                 const newHost = lobby.isHost(user) ? lobby.users[0] : lobby.users[1];
                 this.io.to(lobby.name).emit('lobbyUserLeftRes', {
