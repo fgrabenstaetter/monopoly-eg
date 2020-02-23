@@ -413,13 +413,17 @@ a:not([href]) {
   text-align: center;
   position: relative;
   margin-top: 20px;
+  width: 300px;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-header {
+  height: 40px;
   border-radius: 15px 15px 0px 0px;
   font-family: 'LilitaOne', sans-serif;
+  font-size: 14px;
   color: white;
   background-color: #066875;
+  padding-top: 10px;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body {
@@ -430,13 +434,13 @@ a:not([href]) {
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .card-text {
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   margin: 10px 0 20px 0;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
-  height: 32px;
-  font-size: 12px;
+  height: 28px;
+  font-size: 11px;
   width: 110px;
   margin: 0 10px 10px 10px;
   padding: 0;
