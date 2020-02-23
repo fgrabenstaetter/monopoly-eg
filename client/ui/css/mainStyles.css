@@ -413,6 +413,7 @@ a:not([href]) {
   text-align: center;
   position: relative;
   margin-top: 20px;
+  margin-left: auto;
   width: 300px;
 }
 
