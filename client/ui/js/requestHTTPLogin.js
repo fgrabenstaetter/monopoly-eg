@@ -2,7 +2,7 @@
 $(document).ready(function() {
 
     // Évènement quand on appuie sur le bouton connexion
-    $('#formLogin-id').submit(function(event) {   
+    $('#formLogin-id').submit(function(event) {
         event.preventDefault();
         $.ajax({
             type: 'POST',
@@ -17,7 +17,7 @@ $(document).ready(function() {
             },
             dataType: 'json',
 
-            
+
             success: function(res) {
                 // Forcément status 200 (donc pas d'erreur)
                 localStorage.setItem('jwt', res.token);
@@ -25,28 +25,9 @@ $(document).ready(function() {
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur
-            error: function(err) {
-                if(err.status === 400) {
-                    let errorCode = JSON.parse(err.responseText).error;
-                    
-                    switch(errorCode){
-                        case 1: alert('Identifiants incorrects');
-                                break;
-
-                        case 1000: alert('Internal error');
-                                   break;
-
-                        case 1001: alert('Veuillez remplir tous les champs');
-                                   break;
-
-                        case 1002: alert('Inconnu');
-                                   break;
-
-                        default: alert('Erreur inconnue');
-                    }
-                } else {
-                    alert('Erreur inconnue serveur');
-                }
+            error: (err) => {
+                if (err.status === 400)
+                    alert(JSON.parse(err.responseText).status);
             }
         });
     });

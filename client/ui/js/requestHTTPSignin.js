@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - Inscription
 $(document).ready(function() {
-    
+
     // Évènement quand on appuie sur le bouton connexion
-    $('#formSignin-id').submit(function(event) {     
+    $('#formSignin-id').submit(function(event) {
         event.preventDefault();
         $.ajax({
             type: 'POST',
@@ -18,44 +18,16 @@ $(document).ready(function() {
             },
             dataType: 'json',
 
-            
+
             success: function(res) {
                 // Forcément status 200 (donc pas d'erreur)
                 location.replace('/login');
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur
-            error: function(err) {
-                if(err.status === 400) {
-                    let errorCode = JSON.parse(err.responseText).error;
-                    
-                    switch(errorCode){
-                        case 1: alert('Cette adresse e-mail est déjà utilisée.');
-                                break;
-
-                        case 2: alert('Le nom d\'utilisateur est déjà pris.');
-                                break;
-
-                        case 3: alert('Le format d\'e-mail n\'est pas correct');
-                                break;
-
-                        case 4: alert('Le nom d\'utilisateur est trop court');
-                                break;
-
-                        case 5: alert('Le mot de passe est trop court');
-                                break;
-
-                        case 1000: alert('Internal error');
-                                break;
-
-                        case 1001: alert('Veuillez remplir tous les champs');
-                                break;
-
-                        default: alert('Erreur inconnue');
-                    }
-                } else {
-                    alert('Erreur inconnue serveur');
-                }
+            error: (err) => {
+                if (err.status === 400)
+                    alert(JSON.parse(err.responseText).status);
             }
         });
     });
