@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - mot de passe oublié
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Evénement quand on appuie sur le bouton mot de passe oublié
-    $('#motDePasseOublie-btn').click(function() {
+    $('#motDePasseOublie-btn').click( () => {
 
         $.ajax({
             type: "GET",

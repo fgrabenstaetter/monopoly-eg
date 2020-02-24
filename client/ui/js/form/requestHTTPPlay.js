@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - jouer
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Evénement quand on appuie sur le bouton jouer
-    $('#jouer-btn').click(function() {
+    $('#jouer-btn').click( () => {
 
         $.ajax({
             type: "GET",
@@ -14,7 +14,7 @@ $(document).ready(function() {
             dataType: 'json',
 
 
-            success: function(res) {
+            success: (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 location.replace('MettreURLIci');
             },

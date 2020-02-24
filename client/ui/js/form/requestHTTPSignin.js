@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - Inscription
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Évènement quand on appuie sur le bouton connexion
-    $('#formSignin-id').submit(function(event) {
+    $('#formSignin-id').submit( (event) => {
         event.preventDefault();
         $.ajax({
             type: 'POST',
@@ -19,7 +19,7 @@ $(document).ready(function() {
             dataType: 'json',
 
 
-            success: function(res) {
+            success: (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 location.replace('/login');
             },

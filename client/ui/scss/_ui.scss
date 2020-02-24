@@ -1,513 +1,513 @@
 .btn {
-  height: 35px;
-  border-radius: 17.5px;
-  border: none;
-  font-family: 'LilitaOne', sans-serif;
-  font-size: 0.75em;
+    height: 35px;
+    border-radius: 17.5px;
+    border: none;
+    font-family: 'LilitaOne', sans-serif;
+    font-size: 0.75em;
 
-  &.stylized {
-    color: white;
-    background-color: $mp_orange;
-    border: #ffa243 4px solid;
-    box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
-  }
+    &.stylized {
+        color: white;
+        background-color: $mp_orange;
+        border: #ffa243 4px solid;
+        box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+    }
 
-  &.stylized:hover {
-    background-color: #ffa243;
-    border: white 4px solid;
-  }
+    &.stylized:hover {
+        background-color: #ffa243;
+        border: white 4px solid;
+    }
 }
 
 // à revoir
 a:not([href]) {
-  color: white;
+    color: white;
 }
 
 .background-container {
-  position: absolute;
-  z-index: -2;
-  background-color: $mp_blue;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    z-index: -2;
+    background-color: $mp_blue;
+    width: 100%;
+    height: 100%;
 }
 
 .options-overlay-container {
-  position: absolute;
-  z-index: 2;
-  width: 100%;
-  padding-top: 20px;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    padding-top: 20px;
 
-  i {
-    height: 40px;
-    width: 40px;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 20px;
-    padding-top: 10px;
-    background-color: rgba($color: black, $alpha: 0.3);
-    color: white;
-    border-radius: 100%;
-  }
+    i {
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 20px;
+        padding-top: 10px;
+        background-color: rgba($color: black, $alpha: 0.3);
+        color: white;
+        border-radius: 100%;
+    }
 }
 
 .profile-overlay-container {
-  position: absolute;
-  z-index: 2;
-  width: 100%;
-  padding-top: 20px;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    padding-top: 20px;
 
-  img {
-    margin-right: 50px;
-    height: 60px;
-    width: 60px;
-    border-radius: 100%;
-    border: 4px solid white;
-    box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
-  }
+    img {
+        margin-right: 50px;
+        height: 60px;
+        width: 60px;
+        border-radius: 100%;
+        border: 4px solid white;
+        box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+    }
 }
 
 .resolution-overlay-container {
-  position: absolute;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  background-color: $mp_blue;
-  display: none;
-  text-align: center;
-  
-  div {
-    font-family: 'LilitaOne', sans-serif;
-    font-size: 30px;
-    width: 100%;
-    height: min-content;
     position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    color: white;
-  }
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    background-color: $mp_blue;
+    display: none;
+    text-align: center;
+
+    div {
+        font-family: 'LilitaOne', sans-serif;
+        font-size: 30px;
+        width: 100%;
+        height: min-content;
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        color: white;
+    }
 }
 
 @media (max-width: 767.98px) {
-  .resolution-overlay-container {
-    display: block;
-  }
+    .resolution-overlay-container {
+        display: block;
+    }
 }
 
 @media (max-height: 650px) {
-  .resolution-overlay-container {
-    display: block;
-  }
+    .resolution-overlay-container {
+        display: block;
+    }
 }
 
 .tchat-container {
-  width: 100%;
-  max-width: 240px;
-  max-height: 230px;
-  overflow-x: hidden;
-  overflow-y: auto;
+    width: 100%;
+    max-width: 240px;
+    max-height: 230px;
+    overflow-x: hidden;
+    overflow-y: auto;
 
-  -ms-overflow-style: none;
+    -ms-overflow-style: none;
 
-  .-webkit-scrollbar {
-    display: none;
-  }
-  
-  .msg-author {
-    margin-bottom: 7px;
-  }
-
-  .msg-me {
-    position: relative;
-    background: #00e54f;
-    padding: 5px 10px;
-    color: white;
-    font-size: 13px;
-    margin: 10px 6px 10px 0;
+    .-webkit-scrollbar {
+        display: none;
+    }
 
     .msg-author {
-      color: rgba($color: white, $alpha: 0.7);
+        margin-bottom: 7px;
     }
-  }
 
-  .msg-me:after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 10px;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-left-color: #00e54f;
-    border-right: 0;
-    margin-top: -6px;
-    margin-right: -6px;
-  }
+    .msg-me {
+        position: relative;
+        background: #00e54f;
+        padding: 5px 10px;
+        color: white;
+        font-size: 13px;
+        margin: 10px 6px 10px 0;
 
-  .msg-other {
-    position: relative;
-    background: rgba($color: black, $alpha: 0.3);;
-    padding: 5px 10px;
-    color: white;
-    font-size: 13px;
-    margin: 10px 0 10px 6px;
-
-    .msg-author {
-      color: rgba($color: white, $alpha: 0.7);
+        .msg-author {
+            color: rgba($color: white, $alpha: 0.7);
+        }
     }
-  }
 
-  .msg-other:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-right-color: rgba($color: black, $alpha: 0.3);;
-    border-left: 0;
-    margin-top: -6px;
-    margin-left: -6px;
-  }
+    .msg-me:after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 10px;
+        width: 0;
+        height: 0;
+        border: 6px solid transparent;
+        border-left-color: #00e54f;
+        border-right: 0;
+        margin-top: -6px;
+        margin-right: -6px;
+    }
 
-  .input-group input,
-  .input-group-text {
-    height: 35px;
-    border: none;
-    border-radius: 0;
-    background: rgba($color: white, $alpha: 0.7);
-  }
+    .msg-other {
+        position: relative;
+        background: rgba($color: black, $alpha: 0.3);;
+        padding: 5px 10px;
+        color: white;
+        font-size: 13px;
+        margin: 10px 0 10px 6px;
 
-  .input-group input {
-    font-size: 14px;
-  }
+        .msg-author {
+            color: rgba($color: white, $alpha: 0.7);
+        }
+    }
 
-  .input-group-append {
-    margin: 0;
-  }
+    .msg-other:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 0;
+        height: 0;
+        border: 6px solid transparent;
+        border-right-color: rgba($color: black, $alpha: 0.3);;
+        border-left: 0;
+        margin-top: -6px;
+        margin-left: -6px;
+    }
+
+    .input-group input,
+    .input-group-text {
+        height: 35px;
+        border: none;
+        border-radius: 0;
+        background: rgba($color: white, $alpha: 0.7);
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    .input-group-append {
+        margin: 0;
+    }
 }
 
 .welcome-screen {
-  .btn {
-    position: absolute;
-    bottom: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 140px;
-    height: 50px;
-    border-radius: 25px;
-    font-size: 20px;
-    padding: 6px 0;
-  }
+    .btn {
+        position: absolute;
+        bottom: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 140px;
+        height: 50px;
+        border-radius: 25px;
+        font-size: 20px;
+        padding: 6px 0;
+    }
 }
 
 .lobby-ui-container {
-  width: 100%;
+    width: 100%;
 
-  .box {
-    width: 220px;
-
-    &.friendlist {
-      display: flex;
-      justify-content: space-between;
-
-      .friend-request {
-        background: rgba($color: black, $alpha: 0.3);
-        margin: 15px -20px;
+    .box {
         width: 220px;
-        padding: 20px;
-        text-align: left;
 
-        .friend-request-text {
-          font-size: 13px;
-          margin-bottom: 10px;
-          color: white;
+        &.friendlist {
+            display: flex;
+            justify-content: space-between;
+
+            .friend-request {
+                background: rgba($color: black, $alpha: 0.3);
+                margin: 15px -20px;
+                width: 220px;
+                padding: 20px;
+                text-align: left;
+
+                .friend-request-text {
+                    font-size: 13px;
+                    margin-bottom: 10px;
+                    color: white;
+                }
+
+                .friend-request-accept {
+                    border: white 1px solid;
+                    border-radius: 3px;
+                    margin-left: auto;
+                    padding: 2px 5px;
+                    font-size: 12px;
+                    color: black;
+                    cursor: pointer;
+                    display: inline-block;
+                    background-color: white;
+                }
+
+                .friend-request-deny {
+                    border: rgba($color: white, $alpha: 0.7) 1px solid;
+                    border-radius: 3px;
+                    margin-left: auto;
+                    padding: 2px 5px;
+                    font-size: 12px;
+                    color: black;
+                    cursor: pointer;
+                    display: inline-block;
+                    background-color: rgba($color: white, $alpha: 0.7);
+                }
+            }
+
+            // à compléter plus tard
+            .fa-search {
+                position: absolute;
+                display: none;
+            }
+
+            .friend-entry {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+
+                .friends-avatar {
+                    max-height: 35px;
+                    max-width: 35px;
+                    border-radius: 3px;
+                    border: 3px solid rgba($color: white, $alpha: 0.7);
+                    box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+                }
+
+                .friends-name {
+                    margin-left: 10px;
+                    font-size: 13px;
+                    overflow: hidden;
+                    overflow-wrap: unset;
+                }
+
+                .friend-add {
+                    border: rgba($color: white, $alpha: 0.6) 1px solid;
+                    border-radius: 3px;
+                    margin-left: auto;
+                    padding: 2px 5px;
+                    font-size: 12px;
+                    color: rgba($color: white, $alpha: 0.6);
+                    cursor: pointer;
+                }
+
+                .friend-add:hover {
+                    color: white;
+                    border-color: white;
+                }
+            }
         }
-
-        .friend-request-accept {
-          border: white 1px solid;
-          border-radius: 3px;
-          margin-left: auto;
-          padding: 2px 5px;
-          font-size: 12px;
-          color: black;
-          cursor: pointer;
-          display: inline-block;
-          background-color: white;
-        }
-
-        .friend-request-deny {
-          border: rgba($color: white, $alpha: 0.7) 1px solid;
-          border-radius: 3px;
-          margin-left: auto;
-          padding: 2px 5px;
-          font-size: 12px;
-          color: black;
-          cursor: pointer;
-          display: inline-block;
-          background-color: rgba($color: white, $alpha: 0.7);
-        }
-      }
-
-      // à compléter plus tard
-      .fa-search {
-        position: absolute;
-        display: none;
-      }
-
-      .friend-entry {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-
-        .friends-avatar {
-          max-height: 35px;
-          max-width: 35px;
-          border-radius: 3px;
-          border: 3px solid rgba($color: white, $alpha: 0.7);
-          box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
-        }
-
-        .friends-name {
-          margin-left: 10px;
-          font-size: 13px;
-          overflow: hidden;
-          overflow-wrap: unset;
-        }
-
-        .friend-add {
-          border: rgba($color: white, $alpha: 0.6) 1px solid;
-          border-radius: 3px;
-          margin-left: auto;
-          padding: 2px 5px;
-          font-size: 12px;
-          color: rgba($color: white, $alpha: 0.6);
-          cursor: pointer;
-        }
-
-        .friend-add:hover {
-          color: white;
-          border-color: white;
-        }
-      }
     }
-  }
 
-  .btn {
-    height: 50px;
-    border-radius: 25px;
-    font-size: 20px;
-    padding: 6px 30px;
-  }
-
-  .container:first-child {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    transform: translate(-50%, 0);
-  }
-
-  .container:nth-child(2) {
-    position: absolute;
-    bottom: 5%;
-    left: 50%;
-    transform: translate(-50%, 0);
-
-    .nb-joueurs-container {
-      position: relative;
-
-      #nbJoueurs {
+    .btn {
         height: 50px;
-        width: 50px;
-        border-radius: 100%;
-        padding: 0;
-      }
-
-      div:first-of-type {
-        position: absolute; bottom: 0; right: 0; margin-right: 15px;
-      }
-
-      .stylized {
-        border-color: #5fddeb;
-        background-color: #0ab6cc;
-      }
-
-      .arrow-right, .arrow-left {
-        position: absolute;
-        top: 15px;
-        background-color: transparent;
-        border: none;
-        padding: 0;
-        width: 0;
-        height: 0;
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
-      }
-
-      .arrow-right {
-        left: 55px;
-        border-left:17px solid rgba($color: white, $alpha: 0.5);
-      }
-
-      .arrow-left {
-        right: 55px;
-        border-right:17px solid rgba($color: white, $alpha: 0.5);
-      }
+        border-radius: 25px;
+        font-size: 20px;
+        padding: 6px 30px;
     }
 
-    .notification-container {
-      display: flex;
-      align-items: bottom;
-      flex-direction: column-reverse;
-      overflow-y: hidden;
-      position: absolute;
-      bottom: 100px;
-      right: 0;
+    .container:first-child {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
 
-      .notification {
+    .container:nth-child(2) {
+        position: absolute;
+        bottom: 5%;
+        left: 50%;
+        transform: translate(-50%, 0);
+
+        .nb-joueurs-container {
+            position: relative;
+
+            #nbJoueurs {
+                height: 50px;
+                width: 50px;
+                border-radius: 100%;
+                padding: 0;
+            }
+
+            div:first-of-type {
+                position: absolute; bottom: 0; right: 0; margin-right: 15px;
+            }
+
+            .stylized {
+                border-color: #5fddeb;
+                background-color: #0ab6cc;
+            }
+
+            .arrow-right, .arrow-left {
+                position: absolute;
+                top: 15px;
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                width: 0;
+                height: 0;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+            }
+
+            .arrow-right {
+                left: 55px;
+                border-left:17px solid rgba($color: white, $alpha: 0.5);
+            }
+
+            .arrow-left {
+                right: 55px;
+                border-right:17px solid rgba($color: white, $alpha: 0.5);
+            }
+        }
+
+        .notification-container {
+            display: flex;
+            align-items: bottom;
+            flex-direction: column-reverse;
+            overflow-y: hidden;
+            position: absolute;
+            bottom: 100px;
+            right: 0;
+
+            .notification {
+                border-radius: 15px;
+                background-color: transparent;
+                border: none;
+                text-align: center;
+                position: relative;
+                margin-top: 20px;
+                margin-left: auto;
+                width: 300px;
+
+                .card-header {
+                    height: 40px;
+                    border-radius: 15px 15px 0px 0px;
+                    font-family: 'LilitaOne', sans-serif;
+                    font-size: 14px;
+                    color: white;
+                    background-color: $window_header;
+                    padding-top: 10px;
+                }
+
+                .card-body {
+                    border-radius: 0px 0px 15px 15px;
+                    background-color: $window_body;
+                    padding: 10px;
+
+                    .card-text {
+                        color: white;
+                        font-size: 13px;
+                        margin: 10px 0 20px 0;
+                    }
+
+                    .btn {
+                        height: 28px;
+                        font-size: 11px;
+                        width: 110px;
+                        margin: 0 10px 10px 10px;
+                        padding: 0;
+                    }
+
+                    .btn-primary {
+                        background-color: #35d859;
+                    }
+
+                    .btn-secondary {
+                        background-color: rgba($color: black, $alpha: 0.3);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ingame-ui-container {
+    position: absolute;
+    z-index: 1;
+    font-family: 'Roboto', sans-serif;
+}
+
+.card {
+    &.box {
+        border-radius: 0;
+        border: none;
+
+        .card-header {
+            border-radius: 0;
+            background-color: $box_header;
+            font-family: 'LilitaOne', sans-serif;
+            color: white;
+            font-size: 17px;
+        }
+
+        .card-body {
+            border-radius: 0;
+            background-color: $box_body;
+            color: white;
+            font-size: 14px;
+        }
+
+        input {
+            height: 30px;
+            border-radius: 15px;
+            border: none;
+            background-color: rgba($color: black, $alpha: 0.3);
+            color: rgba($color: white, $alpha: 0.7);
+            font-size: 13px;
+            position: relative;
+        }
+
+        input::placeholder {
+            color: rgba($color: white, $alpha: 0.7);
+        }
+    }
+
+    &.window {
         border-radius: 15px;
         background-color: transparent;
         border: none;
         text-align: center;
-        position: relative;
-        margin-top: 20px;
-        margin-left: auto;
-        width: 300px;
-  
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
         .card-header {
-          height: 40px;
-          border-radius: 15px 15px 0px 0px;
-          font-family: 'LilitaOne', sans-serif;
-          font-size: 14px;
-          color: white;
-          background-color: $window_header;
-          padding-top: 10px;
-        }
-  
-        .card-body {
-          border-radius: 0px 0px 15px 15px;
-          background-color: $window_body;
-          padding: 10px;
-
-          .card-text {
+            border-radius: 15px 15px 0px 0px;
+            font-family: 'LilitaOne', sans-serif;
             color: white;
-            font-size: 13px;
-            margin: 10px 0 20px 0;
-          }
-
-          .btn {
-            height: 28px;
-            font-size: 11px;
-            width: 110px;
-            margin: 0 10px 10px 10px;
-            padding: 0;
-          }
-
-          .btn-primary {
-            background-color: #35d859;
-          }
-
-          .btn-secondary {
-            background-color: rgba($color: black, $alpha: 0.3);
-          }
-        }
-      }
-    }
-  }
-}
-
-.ingame-ui-container {
-  position: absolute;
-  z-index: 1;
-  font-family: 'Roboto', sans-serif;
-}
-
-.card {
-  &.box {
-    border-radius: 0;
-    border: none;
-
-    .card-header {
-      border-radius: 0;
-      background-color: $box_header;
-      font-family: 'LilitaOne', sans-serif;
-      color: white;
-      font-size: 17px;
-    }
-
-    .card-body {
-      border-radius: 0;
-      background-color: $box_body;
-      color: white;
-      font-size: 14px;
-    }
-
-    input {
-      height: 30px;
-      border-radius: 15px;
-      border: none;
-      background-color: rgba($color: black, $alpha: 0.3);
-      color: rgba($color: white, $alpha: 0.7);
-      font-size: 13px;
-      position: relative;
-    }
-
-    input::placeholder {
-      color: rgba($color: white, $alpha: 0.7);
-    }
-  }
-
-  &.window {
-    border-radius: 15px;
-    background-color: transparent;
-    border: none;
-    text-align: center;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    .card-header {
-      border-radius: 15px 15px 0px 0px;
-      font-family: 'LilitaOne', sans-serif;
-      color: white;
-      background-color: $window_header;
-    }
-
-    .card-body {
-      border-radius: 0px 0px 15px 15px;
-      background-color: $window_body;
-      padding: 30px 170px;
-
-      input {
-        width: 275px;
-        height: 40px;
-        border-radius: 20px;
-        border: none;
-        margin: 15px 0;
-        font-size: 0.9em;
-      }
-
-      .btn {
-        display: block;
-        margin: 10px auto;
-        width: 150px;
-
-        &.btn-primary {
-          background: #35d859;
-          margin-top: 40px;
+            background-color: $window_header;
         }
 
-        &.btn-secondary {
-          padding-top: 8px;
-          background: #066875;
-        }
-      }
+        .card-body {
+            border-radius: 0px 0px 15px 15px;
+            background-color: $window_body;
+            padding: 30px 170px;
 
-      #forgot-password {
-        font-size: 0.8em;
-        color: #b0dfe5;
-      }
+            input {
+                width: 275px;
+                height: 40px;
+                border-radius: 20px;
+                border: none;
+                margin: 15px 0;
+                font-size: 0.9em;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 150px;
+
+                &.btn-primary {
+                    background: #35d859;
+                    margin-top: 40px;
+                }
+
+                &.btn-secondary {
+                    padding-top: 8px;
+                    background: #066875;
+                }
+            }
+
+            #forgot-password {
+                font-size: 0.8em;
+                color: #b0dfe5;
+            }
+        }
     }
-  }
 }

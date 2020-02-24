@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - mot de passe oublié
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Evénement quand on appuie sur le bouton mot de passe oublié
-    $('#amis-btn').click(function() {
+    $('#amis-btn').click( () => {
 
         $.ajax({
             type: "GET",
@@ -13,7 +13,7 @@ $(document).ready(function() {
             // Les données à envoyer au serveur
             dataType: 'json',
 
-            success: function(res) {
+            success: (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 location.replace('MettreURLIci');
             },
@@ -31,4 +31,4 @@ $(document).ready(function() {
     Comme la page n'est pas encore existante et le groupe n'en n'est pas encore là,
     je ne peux pas savoir comment elle sera structurée.
     Donc il y aura des changements à prendre en compte.
-*/
+    */

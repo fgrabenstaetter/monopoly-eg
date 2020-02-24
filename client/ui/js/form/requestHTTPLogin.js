@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - Connexion
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Évènement quand on appuie sur le bouton connexion
-    $('#formLogin-id').submit(function(event) {
+    $('#formLogin-id').submit( (event) => {
         event.preventDefault();
         $.ajax({
             type: 'POST',
@@ -18,7 +18,7 @@ $(document).ready(function() {
             dataType: 'json',
 
 
-            success: function(res) {
+            success:  (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 localStorage.setItem('jwt', res.token);
                 location.replace('/lobby');

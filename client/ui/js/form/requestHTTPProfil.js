@@ -1,8 +1,8 @@
 // Requête HTTP AJAX - profil
-$(document).ready(function() {
+$(document).ready( () => {
 
     // Evénement quand on appuie sur le bouton profil
-    $('#connexion-btn').click(function() {
+    $('#connexion-btn').click( () => {
 
         $.ajax({
             type: "POST",
@@ -13,7 +13,7 @@ $(document).ready(function() {
             // Les données à envoyer au serveur
             dataType: 'json',
 
-            success: function(res) {
+            success: (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 location.replace('MettreURLIci');
             },
