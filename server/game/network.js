@@ -17,30 +17,30 @@ class Network {
     }
 
     lobbyUserListen (user, lobby) {
-        user.socket.join(lobby.name);
-
-        // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq(user, lobby);
-        this.lobbyInvitationAcceptReq(user, lobby);
-        this.lobbyKickReq(user, lobby);
-
-        // Paramètres + Chat
-        this.lobbyChangeTargetUsersNbReq(user, lobby);
-        this.lobbyChangePawnReq(user, lobby);
-        this.lobbyChatSendReq(user, lobby);
-        this.lobbyPlayReq(user, lobby);
-
-        // Amis
-        // this.lobbyFriendInviteReq(user, lobby);
-        // this.lobbyFriendInvitationActionReq(user, lobby);
-        // this.lobbyFriendDeleteReq(user, lobby);
-
-        // réponse de création / rejoignage de lobby
-        // timeout car sinon le mess arrive avant que le client est préparé son socket.on(...)
-        // => trouver meilleure solution
         setTimeout( () => {
+            user.socket.join(lobby.name);
+
+            // Inviter / Rejoindre / Quitter
+            this.lobbyInvitationReq(user, lobby);
+            this.lobbyInvitationAcceptReq(user, lobby);
+            this.lobbyKickReq(user, lobby);
+
+            // Paramètres + Chat
+            this.lobbyChangeTargetUsersNbReq(user, lobby);
+            this.lobbyChangePawnReq(user, lobby);
+            this.lobbyChatSendReq(user, lobby);
+            this.lobbyPlayReq(user, lobby);
+
+            // Amis
+            // this.lobbyFriendInviteReq(user, lobby);
+            // this.lobbyFriendInvitationActionReq(user, lobby);
+            // this.lobbyFriendDeleteReq(user, lobby);
+
+            // réponse de création / rejoignage de lobby
             this.lobbyNewUser(user, lobby);
-        }, 1000);
+        }, 300);
+        // TIMEOUT solution temporaire
+        // car sinon le mess arrive avant que le client est préparé son socket.on(...) => BUG
     }
 
     lobbyUserStopListening (user, lobby) {

@@ -170,8 +170,10 @@ io.on('connection', (socket) => {
     // ------------------------------------------------
 
     let user = nicknameToUser(decodedToken.nickname);
-    if (!user)
+    if (!user) {
+        console.log('USER NOT FOUND, return');
         return;
+    }
 
     socket.on('disconnect', () => {
         console.log('Utilisateur ' + user.nickname + ' déconnecté');
@@ -181,7 +183,6 @@ io.on('connection', (socket) => {
                 break;
             }
         }
-        GLOBAL.users.splice(GLOBAL.users.indexOf(user), 1);
     });
 
     user.socket = socket;
