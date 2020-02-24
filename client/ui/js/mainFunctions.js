@@ -1,11 +1,11 @@
 function loadContent() {
-	$(".background-container").load("common/background.html");
-	$(".board-container").load("common/board.html");
-	$(".ingame-ui-container").load("common/ingame_ui.html");
-	$(".lobby-ui-container").load("common/lobby_ui.html");
-	$(".options-overlay-container").load("common/options_overlay.html");
-	$(".profile-overlay-container").load("common/profile_overlay.html");
-	$(".resolution-overlay-container").load("common/res_overlay.html");
-	$(".login-ui-container").load("common/login_ui.html");
-	$(".signin-ui-container").load("common/signin_ui.html");
+	$(".background-container").load("html/background.html");
+	$(".board-container").load("html/board.html");
+	$(".ingame-ui-container").load("html/ingame_ui.html");
+	$(".lobby-ui-container").load("html/lobby_ui.html");
+	$(".options-overlay-container").load("html/options_overlay.html");
+	$(".profile-overlay-container").load("html/profile_overlay.html");
+	$(".resolution-overlay-container").load("html/res_overlay.html");
+	$(".login-ui-container").load("html/login_ui.html");
+	$(".signin-ui-container").load("html/signin_ui.html");
 }
