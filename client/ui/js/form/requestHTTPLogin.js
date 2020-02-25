@@ -3,7 +3,9 @@ $(document).ready( () => {
 
     // Évènement quand on appuie sur le bouton connexion
     $('#formLogin-id').submit( (event) => {
+        const nickname = $('#nickname-input').val();
         event.preventDefault();
+
         $.ajax({
             type: 'POST',
 
@@ -12,7 +14,7 @@ $(document).ready( () => {
 
             // Les données à envoyer au serveur
             data: {
-                nickname : $('#nickname-input').val(),
+                nickname : nickname,
                 password : $('#password-input').val()
             },
             dataType: 'json',
@@ -21,6 +23,7 @@ $(document).ready( () => {
             success:  (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 localStorage.setItem('jwt', res.token);
+                localStorage.setItem('nickname', nickname);
                 location.replace('/lobby');
             },
 

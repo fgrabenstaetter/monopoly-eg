@@ -284,9 +284,9 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else {
                 const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
-                // broadcast lobby
+                // broadcast lobby (also sender)
                 console.log('tchat send req for ' + user.nickname)
-                user.socket.to(lobby.name).emit('lobbyChatReceiveRes', {
+                this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
                     sender: mess.senderUser.nickname,
                     content: mess.content,
                     createdTime: mess.createdTime

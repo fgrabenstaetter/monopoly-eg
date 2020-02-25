@@ -59,37 +59,30 @@ $(document).ready( () => {
     });
 });
 
-/** Fonction qui affiche le message envoyer par le joueur sur le chat
+/** Fonction qui envoie un message via socket
 */
 function sendMsg () {
-    let chatMsg = document.getElementById('chat').value;
-
-    if (chatMsg.trim()!='') {
-        let msg = document.createElement('div');
-        msg.className = 'msg-me';
-
-        let msgAuthor = document.createElement('div');
-        msgAuthor.className = 'msg-author';
-        msgAuthor.innerHTML = `<div class='msg-author'>Moi</div>`;
-
-        let msgContent = document.createElement('div');
-        msgContent.innerText = chatMsg;
-
-        msg.appendChild(msgAuthor);
-        msg.appendChild(msgContent);
-
-        document.getElementById('chat').value='';
-        chat = document.getElementById('msgChat');
-
-        socket.emit('lobbyChatSendReq', {content: chatMsg});
-        chat.appendChild(msg);
+    const chatMsg = document.getElementById('chat');
+    if (chatMsg.value.trim() != '') {
+        socket.emit('lobbyChatSendReq', {content: chatMsg.value});
+        chatMsg.value = '';
     }
 }
 
+/**
+ * Fonction qui affiche un messag reçu
+ * @param msg L'object message reçu par socket
+ */
 function addMsg (msg) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-    const html = `<div class="msg-other"><div class="msg-author">` + msg.sender + `</div>` + msg.content + `</div>`;
+    const msgClass = 'msg-' + (msg.sender === NICKNAME ? 'me' : 'other');
+    const html = `
+        <div class="` + msgClass + `">
+            <div class="msg-author">` + msg.sender + `</div>`
+            + msg.content +
+        `</div>`;
+
     $('#msgChat').append(html);
     if (isScroll)
         updateScroll();
