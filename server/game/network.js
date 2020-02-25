@@ -38,7 +38,7 @@ class Network {
 
             // réponse de création / rejoignage de lobby
             this.lobbyNewUser(user, lobby);
-        }, 300);
+        }, 2000);
         // TIMEOUT solution temporaire
         // car sinon le mess arrive avant que le client est préparé son socket.on(...) => BUG
     }

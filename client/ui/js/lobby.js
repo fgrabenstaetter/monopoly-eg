@@ -1,5 +1,23 @@
+let iAmHost = false
+
 socket.on('lobbyCreatedRes', (res) => {
     console.log('lobbyCreatedRes: ' + Object.keys(res));
+    iAmHost = true;
+    // nb désiré de joueurs par défaut
+    document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
+
+    // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
+    $('#leftNbJ').click( () => {
+        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
+        if (nb > 2)
+            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
+    });
+
+    $('#rightNbJ').click( () => {
+        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
+        if (nb < 8)
+            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
+    });
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -8,8 +26,15 @@ socket.on('lobbyJoinedRes', (res) => {
     // res.pawn = pion du joueur (non hôte)
     // res.players = liste des users présents (nickname + pion)
     // res.messages = liste des anciens messages du lobby (senderNickname + text + createdTime)
+
+    // nb par défaut de joueurs désiré
+    document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
+
     for (const mess of res.messages)
         addMsg(mess)
+
+    // non hôte => masquer les fleches du nombre de désiré joueur
+    $('#leftNbJ, #rightNbJ').css('display', 'none');
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
@@ -19,6 +44,10 @@ socket.on('lobbyUserLeftRes', (res) => {
 socket.on('lobbyChatReceiveRes', (msg) => {
     console.log('lobbyChatReceiveRes');
     addMsg(msg);
+});
+
+socket.on('lobbyTargetUsersNbChangedRes', (res) => {
+    document.getElementById('nbJoueurs').textContent = res.nb;
 });
 
 $(document).ready( () => {
@@ -48,14 +77,6 @@ $(document).ready( () => {
     $('#btnSendMsg').click( () => {
         sendMsg()
         updateScroll();
-    });
-
-    $('#leftNbJ').click( () => {
-        leftNbJ();
-    });
-
-    $('#rightNbJ').click( () => {
-        rightNbJ();
     });
 });
 
@@ -93,24 +114,4 @@ function addMsg (msg) {
 function updateScroll(){
     const element = document.getElementById('msgChat');
     element.scrollTop = element.scrollHeight;
-}
-
-/** Fonction qui decremente le nombre de joueur
-*/
-function leftNbJ() {
-    let nb = parseFloat(document.getElementById('nbJoueurs').innerHTML);
-    if (nb > 2) {
-        nb--;
-        document.getElementById('nbJoueurs').innerHTML = nb;
-    }
-}
-
-/** Fonction qui incermente le nombre de joueur
-*/
-function rightNbJ() {
-    let nb = parseFloat(document.getElementById('nbJoueurs').innerHTML);
-    if (nb < 8) {
-        nb++;
-        document.getElementById('nbJoueurs').innerHTML = nb;
-    }
 }
