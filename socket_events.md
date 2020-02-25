@@ -13,6 +13,15 @@
 
 ## Lobby
 
+- **Le client est prêt à recevoir des messages socket**
+    > À envoyer lorsque toutes les écoutes de message sockets ont été préparées du côté client (socket.on)
+
+    * **Requête:** lobbyReadyReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
 ### --- Créer / Inviter / Rejoindre / Quitter
 
 - **Le lobby a été créé**

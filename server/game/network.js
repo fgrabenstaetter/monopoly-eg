@@ -17,7 +17,7 @@ class Network {
     }
 
     lobbyUserListen (user, lobby) {
-        setTimeout( () => {
+        user.socket.on('lobbyReadyReq', () => {
             user.socket.join(lobby.name);
 
             // Inviter / Rejoindre / Quitter
@@ -38,9 +38,7 @@ class Network {
 
             // réponse de création / rejoignage de lobby
             this.lobbyNewUser(user, lobby);
-        }, 2000);
-        // TIMEOUT solution temporaire
-        // car sinon le mess arrive avant que le client est préparé son socket.on(...) => BUG
+        });
     }
 
     lobbyUserStopListening (user, lobby) {

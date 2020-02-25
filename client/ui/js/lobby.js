@@ -127,3 +127,5 @@ function updateScroll(){
     const element = document.getElementById('msgChat');
     element.scrollTop = element.scrollHeight;
 }
+
+socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
