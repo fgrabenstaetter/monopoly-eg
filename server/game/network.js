@@ -17,25 +17,25 @@ class Network {
     }
 
     lobbyUserListen (user, lobby) {
+        user.socket.join(lobby.name);
+
+        // Inviter / Rejoindre / Quitter
+        this.lobbyInvitationReq(user, lobby);
+        this.lobbyInvitationAcceptReq(user, lobby);
+        this.lobbyKickReq(user, lobby);
+
+        // Paramètres + Chat
+        this.lobbyChangeTargetUsersNbReq(user, lobby);
+        this.lobbyChangePawnReq(user, lobby);
+        this.lobbyChatSendReq(user, lobby);
+        this.lobbyPlayReq(user, lobby);
+
+        // Amis
+        // this.lobbyFriendInviteReq(user, lobby);
+        // this.lobbyFriendInvitationActionReq(user, lobby);
+        // this.lobbyFriendDeleteReq(user, lobby);
+
         user.socket.on('lobbyReadyReq', () => {
-            user.socket.join(lobby.name);
-
-            // Inviter / Rejoindre / Quitter
-            this.lobbyInvitationReq(user, lobby);
-            this.lobbyInvitationAcceptReq(user, lobby);
-            this.lobbyKickReq(user, lobby);
-
-            // Paramètres + Chat
-            this.lobbyChangeTargetUsersNbReq(user, lobby);
-            this.lobbyChangePawnReq(user, lobby);
-            this.lobbyChatSendReq(user, lobby);
-            this.lobbyPlayReq(user, lobby);
-
-            // Amis
-            // this.lobbyFriendInviteReq(user, lobby);
-            // this.lobbyFriendInvitationActionReq(user, lobby);
-            // this.lobbyFriendDeleteReq(user, lobby);
-
             // réponse de création / rejoignage de lobby
             this.lobbyNewUser(user, lobby);
         });

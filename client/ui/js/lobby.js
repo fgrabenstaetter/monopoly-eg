@@ -60,6 +60,17 @@ socket.on('lobbyChatReceiveRes', (msg) => {
 
 socket.on('lobbyTargetUsersNbChangedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.nb;
+
+    if (hostNickname === NICKNAME) {
+        if (res.nb === 2)
+            $('#leftNbJ').css('display', 'none');
+        else if (res.nb === 8)
+            $('#rightNbJ').css('display', 'none');
+        else {
+            $('#leftNbJ').css('display', '');
+            $('#rightNbJ').css('display', '');
+        }
+    }
 });
 
 $(document).ready( () => {
