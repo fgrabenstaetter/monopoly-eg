@@ -86,8 +86,8 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                senderNickname: mess.senderUser.nickname,
-                text: mess.content,
+                sender: mess.senderUser.nickname,
+                content: mess.content,
                 createdTime: mess.createdTime
             });
         }

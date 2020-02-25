@@ -9,7 +9,7 @@ socket.on('lobbyJoinedRes', (res) => {
     // res.players = liste des users présents (nickname + pion)
     // res.messages = liste des anciens messages du lobby (senderNickname + text + createdTime)
     for (const mess of res.messages)
-        addMsg(mess.senderNickname, mess.text)
+        addMsg(mess)
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
@@ -18,7 +18,7 @@ socket.on('lobbyUserLeftRes', (res) => {
 
 socket.on('lobbyChatReceiveRes', (msg) => {
     console.log('lobbyChatReceiveRes');
-    addMsg(msg.sender, msg.content);
+    addMsg(msg);
 });
 
 $(document).ready( () => {
@@ -86,10 +86,10 @@ function sendMsg () {
     }
 }
 
-function addMsg (sender, text) {
+function addMsg (msg) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-    const html = `<div class="msg-other"><div class="msg-author">` + sender + `</div>` + text + `</div>`;
+    const html = `<div class="msg-other"><div class="msg-author">` + msg.sender + `</div>` + msg.content + `</div>`;
     $('#msgChat').append(html);
     if (isScroll)
         updateScroll();

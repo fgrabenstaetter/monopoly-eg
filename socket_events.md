@@ -94,8 +94,8 @@
             ],
             messages: [ // max 100 messages, les plus récents en dernier
                 {
-                    senderNickname: string,
-                    text: string,
+                    sender: string,
+                    content: string,
                     createdTime: timestamp
                 },
                 ...
