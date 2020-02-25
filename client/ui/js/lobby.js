@@ -1,8 +1,9 @@
-let iAmHost = false
+// NICKNAME = mon pseudo
+let hostNickname;
 
 socket.on('lobbyCreatedRes', (res) => {
     console.log('lobbyCreatedRes: ' + Object.keys(res));
-    iAmHost = true;
+    hostNickname = NICKNAME;
     // nb désiré de joueurs par défaut
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
@@ -35,10 +36,21 @@ socket.on('lobbyJoinedRes', (res) => {
 
     // non hôte => masquer les fleches du nombre de désiré joueur
     $('#leftNbJ, #rightNbJ').css('display', 'none');
+
+    // l'hote est le premier user de la liste res.users
+    hostNickname = res.users[0].nickname;
+});
+
+socket.on('lobbyUserJoinedRes', (res) => {
+    console.log('[Lobby] ' + res.nickname + 'a rejoin !');
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
-    console.log('lobbyUserLeftRes: ' + Object.keys(res));
+    console.log('[Lobby] ' + res.nickname + ' est parti !');
+    if (hostNickname !== res.host) {
+        // ...
+    }
+    hostNickname = res.host;
 });
 
 socket.on('lobbyChatReceiveRes', (msg) => {
@@ -68,7 +80,7 @@ $(document).ready( () => {
     });
 
     $('#chat').keypress( (e) => {
-        if (e.keyCode == '13') {
+        if (e.keyCode == '13') { // touche entrer
             sendMsg()
             updateScroll();
         }

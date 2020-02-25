@@ -109,7 +109,7 @@ class Network {
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
-        user.socket.broadcast.to(lobby.name).emit('lobbyPlayerJoinedRes', {
+        user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
             nickname: user.nickname,
             pawn: lobby.pawns[lobby.users.indexOf(user)]
         });
