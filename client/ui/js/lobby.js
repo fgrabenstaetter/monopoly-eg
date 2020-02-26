@@ -121,8 +121,9 @@ function addMsg (msg) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
     const msgClass = 'msg-' + (msg.sender === NICKNAME ? 'me' : 'other');
+    const localeDate = new Date(msg.createdTime).toLocaleString();
     const html = `
-        <div class="` + msgClass + `">
+        <div class="` + msgClass + `" title="` + localeDate + `">
             <div class="msg-author">` + msg.sender + `</div>`
             + msg.content +
         `</div>`;
