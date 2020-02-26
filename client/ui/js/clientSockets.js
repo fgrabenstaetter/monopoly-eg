@@ -8,23 +8,27 @@ function connectToSocketServer (jwt) {
     });
 
     socket.io.on('connect_error', (err) => {
-        alert("Impossible de se connecter au serveur de sockets...");
-        window.location = "/login";
+        alert('Impossible de se connecter au serveur de sockets...');
+        window.location = '/login';
     });
 
-    socket.on("error", (error) => {
-        if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
+    socket.on('error', (error) => {
+        if (error.type == 'UnauthorizedError' || error.code == 'invalid_token') {
             // redirect user to login page perhaps?
-            alert("User's token has expired");
-            window.location = "/login";
+            alert('Le token a expiré');
+            window.location = '/login';
         }
     });
 
-    socket.on("unauthorized", (error) => {
-        if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
-            alert("User's token has expired (invalid token)");
-            window.location = "/login";
+    socket.on('unauthorized', (error) => {
+        if (error.data.type == 'UnauthorizedError' || error.data.code == 'invalid_token') {
+            alert('Le token a expiré (token invalide)');
+            window.location = '/login';
         }
+    });
+
+    socket.on('notLoggedRes', () => {
+        window.location = '/login';
     });
 }
 

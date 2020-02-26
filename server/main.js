@@ -171,7 +171,8 @@ io.on('connection', (socket) => {
 
     let user = nicknameToUser(decodedToken.nickname);
     if (!user) {
-        console.log('USER NOT FOUND, return');
+        console.log('USER NOT FOUND (not connected), sending notLoggedRes');
+        socket.emit('notLoggedRes');
         return;
     }
 
