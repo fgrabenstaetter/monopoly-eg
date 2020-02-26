@@ -1,5 +1,10 @@
-// NICKNAME = mon pseudo
 let hostNickname;
+// désactivers/masquer certaines actions/elements par défaut (et réactiver si hôte ensuite)
+$('#leftNbJ, #rightNbJ').css('display', 'none'); // afficher que si hote
+
+/////////////////////////////
+// SOCKET EVENTS LISTENERS //
+/////////////////////////////
 
 socket.on('lobbyCreatedRes', (res) => {
     console.log('lobbyCreatedRes: ' + Object.keys(res));
@@ -8,24 +13,14 @@ socket.on('lobbyCreatedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
-    $('#leftNbJ').click( () => {
-        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
-        if (nb > 2)
-            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
-    });
-
-    $('#rightNbJ').click( () => {
-        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
-        if (nb < 8)
-            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
-    });
+    imHost();
 });
 
 socket.on('lobbyJoinedRes', (res) => {
     console.log('lobbyJoinedRes: ' + Object.keys(res));
     // res.targetUsersNb
     // res.pawn = pion du joueur (non hôte)
-    // res.players = liste des users présents (nickname + pion)
+    // res.users = liste des users présents (nickname + pion)
     // res.messages = liste des anciens messages du lobby (senderNickname + text + createdTime)
 
     // nb par défaut de joueurs désiré
@@ -33,9 +28,6 @@ socket.on('lobbyJoinedRes', (res) => {
 
     for (const mess of res.messages)
         addMsg(mess)
-
-    // non hôte => masquer les fleches du nombre de désiré joueur
-    $('#leftNbJ, #rightNbJ').css('display', 'none');
 
     // l'hote est le premier user de la liste res.users
     hostNickname = res.users[0].nickname;
@@ -51,6 +43,9 @@ socket.on('lobbyUserLeftRes', (res) => {
         // ...
     }
     hostNickname = res.host;
+    console.log('newhost = ' + res.host)
+    if (hostNickname === NICKNAME)
+        imHost();
 });
 
 socket.on('lobbyChatReceiveRes', (msg) => {
@@ -61,17 +56,15 @@ socket.on('lobbyChatReceiveRes', (msg) => {
 socket.on('lobbyTargetUsersNbChangedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.nb;
 
-    if (hostNickname === NICKNAME) {
-        if (res.nb === 2)
-            $('#leftNbJ').css('display', 'none');
-        else if (res.nb === 8)
-            $('#rightNbJ').css('display', 'none');
-        else {
-            $('#leftNbJ').css('display', '');
-            $('#rightNbJ').css('display', '');
-        }
-    }
+    if (hostNickname === NICKNAME)
+        updateNbUsersArrows();
 });
+
+socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
+
+////////////////////////////
+// INTERFACE JS FUNCTIONS //
+////////////////////////////
 
 $(document).ready( () => {
 
@@ -140,4 +133,36 @@ function updateScroll(){
     element.scrollTop = element.scrollHeight;
 }
 
-socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
+/**
+ * Maj des flèches de changement du nombre désiré de users (que pour l'hote)
+ */
+function updateNbUsersArrows () {
+    $('#leftNbJ').css('display', '');
+    $('#rightNbJ').css('display', '');
+    const nb = parseInt(document.getElementById('nbJoueurs').textContent);
+
+    if (nb === 2)
+        $('#leftNbJ').css('display', 'none');
+    else if (nb === 8)
+        $('#rightNbJ').css('display', 'none');
+}
+
+/**
+ * Actions possibles lorsqu'on est hôte
+ */
+function imHost () {
+    console.log('je suis hote')
+    updateNbUsersArrows();
+
+    $('#leftNbJ').click( () => {
+        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
+        if (nb > 2)
+            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
+    });
+
+    $('#rightNbJ').click( () => {
+        const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
+        if (nb < 8)
+            socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
+    });
+}
