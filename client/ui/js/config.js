@@ -1,6 +1,6 @@
 // DEV LOCAL
-const urlApi = 'http://localhost:3000/api';
-const socketUrl = 'http://localhost:3000';
+//const urlApi = 'http://localhost:3000/api';
+//const socketUrl = 'http://localhost:3000';
 
 // PROD
 // const urlApi = 'https://monopolyegdev.singlequote.net/api';
