@@ -166,3 +166,9 @@ function imHost () {
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
 }
+
+$('.friend-add').click(function() {
+    let friendName = $(this).prev('.friends-name').text();
+    
+    alert("A implementer...");
+});
