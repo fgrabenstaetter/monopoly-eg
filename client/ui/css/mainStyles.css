@@ -321,6 +321,74 @@ a:not([href]) {
   border-color: white;
 }
 
+.lobby-ui-container .avatar-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+}
+
+.lobby-ui-container .avatar-container .avatar {
+  width: 250px;
+  height: 310px;
+  -webkit-transform: translate(0, 30%);
+          transform: translate(0, 30%);
+}
+
+.lobby-ui-container .avatar-container .avatar .avatar-ui {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 20px 0 0 0;
+}
+
+.lobby-ui-container .avatar-container .avatar .avatar-ui .avatar-bubble, .lobby-ui-container .avatar-container .avatar .avatar-ui i {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.lobby-ui-container .avatar-container .avatar .avatar-ui .avatar-bubble {
+  height: 40px;
+  padding: 8px 25px 0 25px;
+  font-family: 'LilitaOne', sans-serif;
+  position: relative;
+}
+
+.lobby-ui-container .avatar-container .avatar .avatar-ui .avatar-bubble:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-left-color: rgba(255, 255, 255, 0.3);
+  border-right: 0;
+  margin-top: -6px;
+  margin-right: -6px;
+}
+
+.lobby-ui-container .avatar-container .avatar .avatar-ui i {
+  height: 40px;
+  width: 40px;
+  margin-left: 20px;
+  text-align: center;
+  padding-top: 10px;
+  border: solid 2px white;
+  cursor: pointer;
+}
+
 .lobby-ui-container .btn {
   height: 50px;
   border-radius: 25px;

@@ -293,6 +293,61 @@ a:not([href]) {
     }
   }
 
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    .avatar {
+      width: 250px;
+      height: 310px;
+      transform: translate(0, 30%);
+
+      .avatar-ui {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0 0 0;
+
+        .avatar-bubble, i {
+          align-self: center;
+          background-color: rgba($color: white, $alpha: 0.3);
+          color: white;
+        }
+
+        .avatar-bubble {
+          height: 40px;
+          padding: 8px 25px 0 25px;
+          font-family: 'LilitaOne', sans-serif;
+          position: relative;
+        }
+
+        .avatar-bubble:after {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 20px;
+          width: 0;
+          height: 0;
+          border: 6px solid transparent;
+          border-left-color: rgba($color: white, $alpha: 0.3);
+          border-right: 0;
+          margin-top: -6px;
+          margin-right: -6px;
+        }
+
+        i {
+          height: 40px;
+          width: 40px;
+          margin-left: 20px;
+          text-align: center;
+          padding-top: 10px;
+          border: solid 2px white;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
   .btn {
     height: 50px;
     border-radius: 25px;
