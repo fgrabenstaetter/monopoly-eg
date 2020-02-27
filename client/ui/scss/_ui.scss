@@ -297,11 +297,13 @@ a:not([href]) {
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    z-index: -1;
 
     .avatar {
       width: 250px;
       height: 310px;
       transform: translate(0, 30%);
+      margin: 0 20px;
 
       .avatar-ui {
         display: flex;
