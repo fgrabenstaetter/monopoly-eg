@@ -1,5 +1,5 @@
-.card {
-  &.window {
+.login-ui-container, .signin-ui-container {
+  .card {
     border-radius: 15px;
     background-color: transparent;
     border: none;
@@ -50,6 +50,10 @@
         font-size: 0.8em;
         color: #b0dfe5;
       }
+    }
+
+    a:not([href]) {
+      color: white;
     }
   }
 }

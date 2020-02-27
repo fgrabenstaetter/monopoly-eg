@@ -29,10 +29,6 @@
   border: white 4px solid;
 }
 
-a:not([href]) {
-  color: white;
-}
-
 .background-container {
   position: absolute;
   z-index: -2;
@@ -48,7 +44,7 @@ a:not([href]) {
   height: 100%;
 }
 
-.card.window {
+.login-ui-container .card, .signin-ui-container .card {
   border-radius: 15px;
   background-color: transparent;
   border: none;
@@ -60,20 +56,20 @@ a:not([href]) {
           transform: translate(-50%, -50%);
 }
 
-.card.window .card-header {
+.login-ui-container .card .card-header, .signin-ui-container .card .card-header {
   border-radius: 15px 15px 0px 0px;
   font-family: 'LilitaOne', sans-serif;
   color: white;
   background-color: #066875;
 }
 
-.card.window .card-body {
+.login-ui-container .card .card-body, .signin-ui-container .card .card-body {
   border-radius: 0px 0px 15px 15px;
   background-color: #24a9ba;
   padding: 30px 170px;
 }
 
-.card.window .card-body input {
+.login-ui-container .card .card-body input, .signin-ui-container .card .card-body input {
   width: 275px;
   height: 40px;
   border-radius: 20px;
@@ -82,25 +78,29 @@ a:not([href]) {
   font-size: 0.9em;
 }
 
-.card.window .card-body .btn {
+.login-ui-container .card .card-body .btn, .signin-ui-container .card .card-body .btn {
   display: block;
   margin: 10px auto;
   width: 150px;
 }
 
-.card.window .card-body .btn.btn-primary {
+.login-ui-container .card .card-body .btn.btn-primary, .signin-ui-container .card .card-body .btn.btn-primary {
   background: #35d859;
   margin-top: 40px;
 }
 
-.card.window .card-body .btn.btn-secondary {
+.login-ui-container .card .card-body .btn.btn-secondary, .signin-ui-container .card .card-body .btn.btn-secondary {
   padding-top: 8px;
   background: #066875;
 }
 
-.card.window .card-body #forgot-password {
+.login-ui-container .card .card-body #forgot-password, .signin-ui-container .card .card-body #forgot-password {
   font-size: 0.8em;
   color: #b0dfe5;
+}
+
+.login-ui-container .card a:not([href]), .signin-ui-container .card a:not([href]) {
+  color: white;
 }
 
 .options-overlay-container {
