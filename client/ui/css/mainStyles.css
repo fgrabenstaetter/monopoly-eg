@@ -108,7 +108,7 @@ a:not([href]) {
   color: white;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
   .resolution-overlay-container {
     display: block;
   }
@@ -237,9 +237,13 @@ a:not([href]) {
           justify-content: space-between;
 }
 
+.lobby-ui-container .box.friendlist .card-body {
+  padding: 0;
+}
+
 .lobby-ui-container .box.friendlist .friend-request {
   background: rgba(0, 0, 0, 0.3);
-  margin: 15px -20px;
+  margin: 0;
   width: 220px;
   padding: 20px;
   text-align: left;
@@ -247,7 +251,7 @@ a:not([href]) {
 
 .lobby-ui-container .box.friendlist .friend-request .friend-request-text {
   font-size: 13px;
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
   color: white;
 }
 
@@ -280,6 +284,13 @@ a:not([href]) {
   display: none;
 }
 
+.lobby-ui-container .box.friendlist .friends-entries-container {
+  overflow-y: scroll;
+  max-height: 250px;
+  padding: 0;
+  margin: 0;
+}
+
 .lobby-ui-container .box.friendlist .friend-entry {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -287,7 +298,7 @@ a:not([href]) {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  margin-bottom: 10px;
+  margin: 15px;
 }
 
 .lobby-ui-container .box.friendlist .friend-entry .friends-avatar {
@@ -337,8 +348,8 @@ a:not([href]) {
 .lobby-ui-container .avatar-container .avatar {
   width: 250px;
   height: 310px;
-  -webkit-transform: translate(0, 30%);
-          transform: translate(0, 30%);
+  -webkit-transform: translate(0, 25%);
+          transform: translate(0, 25%);
   margin: 0 20px;
 }
 
@@ -559,6 +570,10 @@ a:not([href]) {
   color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
   position: relative;
+  margin: 15px auto auto auto;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
 }
 
 .card.box input::-webkit-input-placeholder {
