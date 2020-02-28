@@ -16,6 +16,10 @@ class Network {
         this.GLOBAL = GLOBAL;
     }
 
+    /////////////////////
+    // GENERAL METHODS //
+    /////////////////////
+
     lobbyUserListen (user, lobby) {
         user.socket.join(lobby.name);
 
@@ -62,12 +66,20 @@ class Network {
     }
 
     gamePlayerListen (player, game) {
+        player.user.socket.join(game.name);
 
+        this.gameReadyReq(player, game);
     }
 
     gamePlayerStopListening (player, game) {
+        player.user.socket.off('gameReadyReq');
 
+        player.user.socket.leave(game.name);
     }
+
+    //////////////////
+    // LOBBY EVENTS //
+    //////////////////
 
     lobbyNewUser (user, lobby) {
 
