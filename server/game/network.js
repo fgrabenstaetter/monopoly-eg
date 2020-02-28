@@ -168,7 +168,7 @@ class Network {
             else {
                 const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
-                    err = Errors.NETWORK.INVITATION_NOT_EXISTS;
+                    err = Errors.LOBBY.INVITATION_NOT_EXISTS;
                 else if (invitObj.to !== user.nickname)
                     err = Errors.UNKNOW;
                 else {
@@ -181,9 +181,9 @@ class Network {
                     }
 
                     if (!friendLobby)
-                        err = Errors.NETWORK.LOBY_CLOSED;
+                        err = Errors.LOBBY.CLOSED;
                     else if (friendLobby.users.length >= 8)
-                        err = Errors.NETWORK.LOBBY_FULL;
+                        err = Errors.LOBBY.FULL;
                     else {
                         // quitter son lobby
                         for (const lobby of this.GLOBAL.lobbies) {
@@ -215,7 +215,7 @@ class Network {
             else {
                 const userToKick = lobby.userByNickname(data.playerToKickPseudo);
                 if (!userToKick)
-                    err = Errors.NETWORK.NOT_IN_LOBBY;
+                    err = Errors.LOBBY.NOT_IN_LOBBY;
             }
 
             if (err.code === Errors.SUCCESS.code) {
@@ -262,7 +262,7 @@ class Network {
             if (!data.pawn)
                 err = Errors.MISSING_FIELD;
             else if (!lobby.changePawn(user, data.pawn))
-                err = Errors.PAWN_ALREADY_USED;
+                err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
                     nickname: user.nickname,
@@ -302,7 +302,7 @@ class Network {
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else if (lobby.users.length < lobby.targetUsersNb)
-                err = Errors.LOBBY_NOT_FULL;
+                err = Errors.LOBBY.NOT_FULL;
 
             if (err.code === Errors.SUCCESS.code) {
                 this.io.to(lobby.name).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });

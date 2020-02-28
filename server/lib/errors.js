@@ -49,21 +49,25 @@ module.exports = Object.freeze({
         },
     },
 
-    // NETWORK
-    NETWORK: {
-        FRIEND_NOT_CONNECTED: {
+    // FRIENDS
+    FRIENDS: {
+        NOT_CONNECTED: {
             code: 1,
             status: 'Friend is not connected'
         },
-        FRIEND_IN_GAME: {
+        IN_GAME: {
             code: 2,
             status: 'Friend is already in game'
         },
-        FRIEND_NOT_EXISTS: {
+        NOT_EXISTS: {
             code: 3,
             status: 'Friend don\'t exists'
-        },
-        LOBBY_FULL: {
+        }
+    },
+
+    // LOBBY
+    LOBBY: {
+        FULL: {
             code: 4,
             status: 'Lobby plein'
         },
@@ -75,11 +79,11 @@ module.exports = Object.freeze({
             code: 6,
             status: 'L\'invitation n\'existe pas'
         },
-        LOBBY_CLOSED: {
+        CLOSED: {
             code: 7,
             status: 'Lobby fermé'
         },
-        LOBBY_NOT_FULL: {
+        NOT_FULL: {
             code: 8,
             status: 'Lobby non plein'
         },
