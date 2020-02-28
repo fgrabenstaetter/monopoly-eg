@@ -355,6 +355,15 @@
 
 ## Game
 
+- **Le client est prêt à recevoir des messages socket du jeu**
+    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on)
+
+    * **Requête:** gameReadyReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
 - **Démarrage - infos générales du jeu**
     > Nom des joueurs, pions, cases du plateau, ...
 
