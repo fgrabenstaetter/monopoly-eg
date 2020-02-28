@@ -193,3 +193,23 @@ $('.friend-add').click(function() {
     
     alert("A implementer...");
 });
+
+$('.btn-primary').click(function() {
+    const invitationID = $(this).parent().parent().attr('id');
+    let error = 0;
+    let status = 100;
+    alert("A implementer");
+
+
+    if (!error) {
+        $(this).parent().parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+});
+
+$('.btn-secondary').click(function() {
+    $(this).parent().parent().remove();
+});
+
