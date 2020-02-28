@@ -167,6 +167,27 @@ function imHost () {
     });
 }
 
+/**
+ * Cree et affiche une invitation recu à rejoindre une partie
+ * @param invitationID Identifiant de l'invitation pour rejoindre une partie
+ * @param senderFriendNickname Nom de la personne qui a inviter le joueur
+ */
+function lobbyInvitation(invitationID, senderFriendNickname) {
+    const html = `
+    <div class="card notification" id="` + invitationID + `">
+        <div class="card-header">
+            INVITATION
+        </div>
+        <div class="card-body">
+            <p class="card-text">`+ senderFriendNickname + ` vous invite à rejoindre sa partie</p>
+            <button class="btn btn-primary">ACCEPTER</button>
+            <button class="btn btn-secondary">REFUSER</button>
+        </div>
+    </div>`;
+
+    $('#inviteGameContainer').append(html);
+}
+
 $('.friend-add').click(function() {
     let friendName = $(this).prev('.friends-name').text();
     
