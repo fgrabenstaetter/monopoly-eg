@@ -18,7 +18,6 @@ class User {
 
         this.levelUpExp = 100;
         this.socket = null;
-        // this.room = null; // room socket.io
     }
 
     /**
