@@ -97,8 +97,8 @@ let GLOBAL = {
     games: [], // Parties de jeu actuellement en cours
 }
 
-GLOBAL.matchmaking = new Matchmaking(GLOBAL.lobbies, GLOBAL.games);
-GLOBAL.network = new Network(io, GLOBAL.users, GLOBAL.lobbies, GLOBAL.games, GLOBAL.matchmaking);
+GLOBAL.matchmaking = new Matchmaking(GLOBAL);
+GLOBAL.network = new Network(io, GLOBAL);
 
 function nicknameToUser (nickname) {
     for (const usr of GLOBAL.users) {
@@ -167,45 +167,42 @@ io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
     console.log('Utilisateur ' + decodedToken.nickname + ' connecté');
 
-    socket.on('chat message', (msg) => {
-        console.log('Message "' + msg + '" reçu par ' + decodedToken.nickname);
-        socket.broadcast.emit('chat message', { author: decodedToken.nickname, content: msg });
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Utilisateur ' + decodedToken.nickname + ' déconnecté');
-    });
-
     // ------------------------------------------------
 
     let user = nicknameToUser(decodedToken.nickname);
-    if (!user)
+    if (!user) {
+        console.log('USER NOT FOUND (not connected), sending notLoggedRes');
+        socket.emit('notLoggedRes');
         return;
+    }
+
+    socket.on('disconnect', () => {
+        console.log('Utilisateur ' + user.nickname + ' déconnecté');
+        for (const lobby of GLOBAL.lobbies) {
+            if (lobby.userByNickname(user.nickname)) {
+                lobby.delUser(user, false);
+                break;
+            }
+        }
+    });
 
     user.socket = socket;
-    GLOBAL.users.push(user);
 
     // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
     // Créer le lobby
     if (GLOBAL.lobbies.length === 0) {
-        console.log('Création du lobby global');
-        GLOBAL.lobbies.push(new Lobby(user, GLOBAL.matchmaking));
-        console.log('(user ' + user.nickname + ') Lobby global rejoint');
+        console.log('Création du lobby global par ' + user.nickname);
+        GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
     } else {
         // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].targetUsersNb) {
+        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb) {
             console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
             return;
         } else {
-            console.log("Ajout " + user.nickname + " au lobby #" + GLOBAL.lobbies[0].id);
             GLOBAL.lobbies[0].addUser(user);
-
-            console.log('(user ' + user.nickname + ') Lobby global rejoint');
+            console.log(user.nickname + ' a rejoin le lobby global (' + GLOBAL.lobbies[0].users.length + '/' + GLOBAL.lobbies[0].maxUsersNb + ')');
         }
     }
-
-    GLOBAL.network.lobbyUserListen(user, GLOBAL.lobbies[0]);
-
 });
 
 

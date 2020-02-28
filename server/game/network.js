@@ -9,15 +9,11 @@ class Network {
 
     /**
      * @param io L'instance globale socket.io du serveur
-     * @param users Le tableau global de users du serveur
-     * @param lobbies Le tableau global de lobbies du serveur
-     * @param games Le tableau global de games du serveur
+     * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (io, users, lobbies, games) {
+    constructor (io, GLOBAL) {
         this.io = io;
-        this.users = users;
-        this.lobbies = lobbies;
-        this.games = games;
+        this.GLOBAL = GLOBAL;
     }
 
     lobbyUserListen (user, lobby) {
@@ -27,7 +23,6 @@ class Network {
         this.lobbyInvitationReq(user, lobby);
         this.lobbyInvitationAcceptReq(user, lobby);
         this.lobbyKickReq(user, lobby);
-        this.lobbyDisconnect(user, lobby);
 
         // Paramètres + Chat
         this.lobbyChangeTargetUsersNbReq(user, lobby);
@@ -36,15 +31,17 @@ class Network {
         this.lobbyPlayReq(user, lobby);
 
         // Amis
-        this.lobbyFriendInviteReq(user, lobby);
-        this.lobbyFriendInvitationActionReq(user, lobby);
-        this.lobbyFriendDeleteReq(user, lobby);
+        // this.lobbyFriendInviteReq(user, lobby);
+        // this.lobbyFriendInvitationActionReq(user, lobby);
+        // this.lobbyFriendDeleteReq(user, lobby);
 
-        // réponse de création / rejoignage de lobby
-        this.lobbyNewUser(user, lobby);
+        user.socket.on('lobbyReadyReq', () => {
+            // réponse de création / rejoignage de lobby
+            this.lobbyNewUser(user, lobby);
+        });
     }
 
-    lobbyUserStopListening (user) {
+    lobbyUserStopListening (user, lobby) {
         // Inviter / Rejoindre / Quitter
         user.socket.off('lobbyInvitationReq');
         user.socket.off('lobbyInvitationAcceptReq');
@@ -57,22 +54,25 @@ class Network {
         user.socket.off('lobbyPlayReq');
 
         // Amis
-        user.socket.off('lobbyFriendInviteReq');
-        user.socket.off('lobbyFriendInvitationActionReq');
-        user.socket.off('lobbyFriendDeleteReq');
+        // user.socket.off('lobbyFriendInviteReq');
+        // user.socket.off('lobbyFriendInvitationActionReq');
+        // user.socket.off('lobbyFriendDeleteReq');
+
+        user.socket.leave(lobby.name);
     }
 
     gamePlayerListen (player, game) {
 
     }
 
-    gamePlayerStopListening (player) {
+    gamePlayerStopListening (player, game) {
 
     }
 
     lobbyNewUser (user, lobby) {
 
         if (lobby.users[0] === user) { // est l'hôte
+            console.log('envoi de createdred')
             user.socket.emit('lobbyCreatedRes', {
                 targetUsersNb: lobby.targetUsersNb,
                 pawn: lobby.userPawn(user)
@@ -84,8 +84,8 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                senderNickname: mess.senderUser.nickname,
-                text: mess.content,
+                sender: mess.senderUser.nickname,
+                content: mess.content,
                 createdTime: mess.createdTime
             });
         }
@@ -98,15 +98,16 @@ class Network {
             });
         }
 
+        console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
             targetUsersNb: lobby.targetUsersNb,
             pawn: lobby.userPawn(user),
-            players: users,
+            users: users,
             messages: messages
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
-        user.socket.broadcast.to(lobby.name).emit('lobbyPlayerJoinedRes', {
+        user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
             nickname: user.nickname,
             pawn: lobby.pawns[lobby.users.indexOf(user)]
         });
@@ -124,7 +125,7 @@ class Network {
             else if (lobby.users.length >= lobby.targetUsersNb)
                 err = Errors.LOBBY_FULL;
             else {
-                for (const user of this.users) {
+                for (const user of this.GLOBAL.users) {
                     if (user.nickname === data.friendNickname) {
                         friendUser = user;
                         break;
@@ -134,7 +135,7 @@ class Network {
                 if (!friendUser)
                     err = Errors.FRIEND_NOT_CONNECTED;
                 else {
-                    for (const game of this.games) {
+                    for (const game of this.GLOBAL.games) {
                         const tmp = game.playerByNickname(data.friendNickname);
                         if (tmp) {
                             err = Errors.FRIEND_IN_GAME;
@@ -171,7 +172,7 @@ class Network {
                 else if (invitObj.to !== user.nickname)
                     err = Errors.UNKNOW;
                 else {
-                    for (const lobby of this.lobbies) {
+                    for (const lobby of this.GLOBAL.lobbies) {
                         const usr = lobby.userByNickname(invitObj.from);
                         if (usr) {
                             friendLobby = lobby;
@@ -185,7 +186,7 @@ class Network {
                         err = Errors.NETWORK.LOBBY_FULL;
                     else {
                         // quitter son lobby
-                        for (const lobby of this.lobbies) {
+                        for (const lobby of this.GLOBAL.lobbies) {
                             const usr = lobby.userByNickname(user);
                             if (usr) {
                                 lobby.delUser(user);
@@ -230,27 +231,11 @@ class Network {
 
                 // nouveau lobby solo pour ce joueur kické
                 const newLobby = new Lobby(user, lobby.matchmaking);
-                this.lobbies.push(newLobby);
+                this.GLOBAL.lobbies.push(newLobby);
                 user.socket.join(newLobby.name);
             }
 
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
-        });
-    }
-
-    lobbyDisconnect (user, lobby) {
-        user.socket.on('disconnect', () => {
-            if (lobby.users.length > 1) {
-                const newHost = lobby.isHost(user) ? lobby.users[0] : lobby.users[1];
-                this.io.to(lobby.name).emit('lobbyUserLeftRes', {
-                    nickname: user.nickname,
-                    host: newHost.nickname
-                });
-            }
-
-            lobby.delUser(user);
-            user.socket.leave(lobby.name);
-            this.users.splice(this.users.indexOf(user), 1);
         });
     }
 
@@ -297,8 +282,9 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else {
                 const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
-                // broadcast lobby
-                user.socket.to(lobby.name).emit('lobbyChatReceiveRes', {
+                // broadcast lobby (also sender)
+                console.log('tchat send req for ' + user.nickname)
+                this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
                     sender: mess.senderUser.nickname,
                     content: mess.content,
                     createdTime: mess.createdTime

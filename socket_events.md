@@ -13,6 +13,15 @@
 
 ## Lobby
 
+- **Le client est prêt à recevoir des messages socket**
+    > À envoyer lorsque toutes les écoutes de message sockets ont été préparées du côté client (socket.on)
+
+    * **Requête:** lobbyReadyReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
 ### --- Créer / Inviter / Rejoindre / Quitter
 
 - **Le lobby a été créé**
@@ -94,8 +103,8 @@
             ],
             messages: [ // max 100 messages, les plus récents en dernier
                 {
-                    senderNickname: string,
-                    text: string,
+                    sender: string,
+                    content: string,
                     createdTime: timestamp
                 },
                 ...

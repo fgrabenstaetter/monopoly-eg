@@ -15,50 +15,74 @@ class Lobby {
 
     /**
      * @param user Utilisateur qui crée le lobby (= hôte)
-     * @param matchmaking L'instance globale de matchmaking du serveur
+     * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (user, matchmaking) {
-        this.matchmaking = matchmaking;
+    constructor (user, GLOBAL) {
+        this.GLOBAL = GLOBAL;
         this.chat = new Chat();
         this.id = this.lobbyIDCounter ++;
 
         // le user à l'indice 0 => hôte
-        this.users = [user];
-        this.pawns = [0]; // pion par défaut pour l'hôte
+        this.users = [];
+        this.pawns = [];
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
 
-        this.targetUsersNb = 1000; // de 2 à 8
+        this.targetUsersNb = 4; // de 2 à 8
+        this.maxUsersNb = 100; // TEMPORAIRE (normalement 8)
         this.open = true;
+
+        this.addUser(user);
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser (user) {
-        if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= 8)
-            return;
+        if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
+            return false;
+
         this.users.push(user);
         this.pawns.push(0);
         if (this.users.length > this.targetUsersNb)
             this.targetUsersNb = this.users.length;
+
+        this.GLOBAL.network.lobbyUserListen(user, this);
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à retirer du lobby
+     * @param stopListeners Si il faut arêter toutes les écoutes d'events socket.io du user sur ce lobby ou non (false nécéssaire lors du socket disconnect)
      */
-    delUser (user) {
+    delUser (user, stopListeners = true) {
         const ind = this.users.indexOf(user);
         if (ind === -1)
             return;
 
-        this.users.splice(ind, 1);
         this.pawns.splice(ind, 1);
-        // this.network.lobbyUserStopListening(user);
+        this.users.splice(ind, 1);
+        if (stopListeners)
+            this.GLOBAL.network.lobbyUserStopListening(user, this);
+
+        if (this.users.length === 0) {
+            this.maxUsersNb = 0;
+            this.GLOBAL.lobbies.splice(this.GLOBAL.lobbies.indexOf(this), 1);
+        } else {
+            const newHost = this.users[0];
+            this.GLOBAL.network.io.to(this.name).emit('lobbyUserLeftRes', {
+                nickname: user.nickname,
+                host: newHost.nickname
+            });
+        }
     }
 
+    /**
+     *
+     * @param network Gestionnaire de réseau dont les users seront retirés
+     */
     delete () {
         if (this.users.length === 0)
             return;
+
         for (const usr of this.users)
             this.delUser(usr);
     }
@@ -78,7 +102,7 @@ class Lobby {
     }
 
     searchGame () {
-        this.matchmaking.addLobby(this);
+        this.GLOBAL.matchmaking.addLobby(this);
         this.open = false;
     }
 

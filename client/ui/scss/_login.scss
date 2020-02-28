@@ -1,0 +1,61 @@
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT DANS L'ECRAN DE CONNEXION ET D'INSCRIPTION ***/
+
+.login-ui-container, .signin-ui-container {
+  .card {
+    border-radius: 15px;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    .card-header {
+      border-radius: 15px 15px 0px 0px;
+      font-family: 'LilitaOne', sans-serif;
+      color: white;
+      background-color: $window_header;
+    }
+
+    .card-body {
+      border-radius: 0px 0px 15px 15px;
+      background-color: $window_body;
+      padding: 30px 170px;
+
+      input {
+        width: 275px;
+        height: 40px;
+        border-radius: 20px;
+        border: none;
+        margin: 15px 0;
+        font-size: 0.9em;
+      }
+
+      .btn {
+        display: block;
+        margin: 10px auto;
+        width: 150px;
+
+        &.btn-primary {
+          background: #35d859;
+          margin-top: 40px;
+        }
+
+        &.btn-secondary {
+          padding-top: 8px;
+          background: #066875;
+        }
+      }
+
+      #forgot-password {
+        font-size: 0.8em;
+        color: #b0dfe5;
+      }
+    }
+
+    a:not([href]) {
+      color: white;
+    }
+  }
+}
