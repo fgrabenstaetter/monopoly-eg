@@ -213,3 +213,35 @@ $('.btn-secondary').click(function() {
     $(this).parent().parent().remove();
 });
 
+$('.friend-request-accept').click(function() {
+    const senderNickname = $(this).parent().attr('id');
+    const action = 'accept';
+    let error = 0;
+    let status = 100;
+
+    alert("A implementer");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+
+});
+
+$('.friend-request-deny').click(function() {
+    const senderNickname = $(this).parent().attr('id');
+    const action = 'reject';
+    let error = 0;
+    let status = 100;
+
+    alert("A implementer");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+});
