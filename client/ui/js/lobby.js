@@ -182,8 +182,81 @@ function imHost () {
     });
 }
 
+/**
+ * Cree et affiche une invitation recu à rejoindre une partie
+ * @param invitationID Identifiant de l'invitation pour rejoindre une partie
+ * @param senderFriendNickname Nom de la personne qui a inviter le joueur
+ */
+function lobbyInvitation(invitationID, senderFriendNickname) {
+    const html = `
+    <div class="card notification" id="` + invitationID + `">
+        <div class="card-header">
+            INVITATION
+        </div>
+        <div class="card-body">
+            <p class="card-text">`+ senderFriendNickname + ` vous invite à rejoindre sa partie</p>
+            <button class="btn btn-primary">ACCEPTER</button>
+            <button class="btn btn-secondary">REFUSER</button>
+        </div>
+    </div>`;
+
+    $('#inviteGameContainer').append(html);
+}
+
 $('.friend-add').click(function() {
     let friendName = $(this).prev('.friends-name').text();
 
     alert("A implementer...");
+});
+
+$('.btn-primary').click(function() {
+    const invitationID = $(this).parent().parent().attr('id');
+    let error = 0;
+    let status = 100;
+    alert("A implementer");
+
+
+    if (!error) {
+        $(this).parent().parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+});
+
+$('.btn-secondary').click(function() {
+    $(this).parent().parent().remove();
+});
+
+$('.friend-request-accept').click(function() {
+    const senderNickname = $(this).parent().attr('id');
+    const action = 'accept';
+    let error = 0;
+    let status = 100;
+
+    alert("A implementer");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+
+});
+
+$('.friend-request-deny').click(function() {
+    const senderNickname = $(this).parent().attr('id');
+    const action = 'reject';
+    let error = 0;
+    let status = 100;
+
+    alert("A implementer");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
 });
