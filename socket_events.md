@@ -362,8 +362,7 @@
         * *Données:*
         ```javascript
         {
-            gameTimeout: timestamp, // timestamp de fin de partie (limite)
-            turnMaxDuration: int, // temps maximum d'un tour (secondes)
+            gameEndTime: timestamp, // timestamp de fin de partie (limite)
             players: [
                 {
                     nickname: string,
@@ -460,6 +459,7 @@
             cellID: int,
             gameMessage: string, // message de l'action
             actionType: int,
+            turnEndTime: timestamp, // timeout fin de tour
             updateMoney:
             [
                 // peut être vide (dynamique)
