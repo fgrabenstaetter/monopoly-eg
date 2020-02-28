@@ -11,6 +11,7 @@ class Player {
     constructor (user, pawn) {
         this.user = user;
         this.pawn = pawn;
+        this.isReady = false; // synchronisation de tous les joueurs avant lancement de partie
 
         this.money = 1500; // argent initial
         this.cellInd = 0;
