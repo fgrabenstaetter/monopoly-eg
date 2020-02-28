@@ -373,7 +373,7 @@
                 {
                     id: int,
                     type: string, // begin | parc | property | parc | prison | card
-                    typeObjID: int | null // null ou ID d'objet (property ou card) selon le type
+                    propertyID: int | null // null ou ID de propriété
                 }, ...
             ],
             properties: [
