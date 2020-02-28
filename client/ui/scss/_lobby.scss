@@ -33,11 +33,17 @@
         font-size: 13px;
         position: relative;
         margin: 15px auto auto auto;
-        width: max-content;
+        width: 190px;
       }
 
       input::placeholder {
         color: rgba($color: white, $alpha: 0.7);
+      }
+
+      // à compléter plus tard
+      .fa-search {
+        position: absolute;
+        display: none;
       }
 
       .card-body {
@@ -91,17 +97,17 @@
           }
         }
 
-        // à compléter plus tard
-        .fa-search {
-          position: absolute;
-          display: none;
-        }
-
         .friends-entries-container {
           overflow-y: scroll;
-          max-height: 250px;
+          height: 300px;
           padding: 0;
           margin: 0;
+        }
+
+        @media (max-height: 820px) {
+          .friends-entries-container {
+            height: 150px;
+          }
         }
 
         .friend-entry {
