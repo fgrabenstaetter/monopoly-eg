@@ -372,7 +372,7 @@
             cells: [
                 {
                     id: int,
-                    type: string, // property | parc | prison | card
+                    type: string, // begin | parc | property | parc | prison | card
                     typeObjID: int | null // null ou ID d'objet (property ou card) selon le type
                 }, ...
             ],
@@ -411,7 +411,6 @@
                 house: [ maison1 (int), maison2 (int), maison2 (int) ],
                 hostel: int
             }
-
         }
 
         // si type = trainStation
