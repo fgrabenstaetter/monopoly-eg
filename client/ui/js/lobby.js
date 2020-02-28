@@ -1,6 +1,8 @@
 let hostNickname;
 // désactivers/masquer certaines actions/elements par défaut (et réactiver si hôte ensuite)
 $('#leftNbJ, #rightNbJ').css('display', 'none'); // afficher que si hote
+$('#play').addClass('disabled'); // seulement l'hôte peut lancer la partie !
+
 
 /////////////////////////////
 // SOCKET EVENTS LISTENERS //
@@ -101,6 +103,11 @@ $(document).ready( () => {
         sendMsg()
         updateScroll();
     });
+
+    $('#play').click( () => {
+        if (imHost)
+            socket.emit('lobbyPlayReq');
+    });
 });
 
 /** Fonction qui envoie un message via socket
@@ -160,6 +167,7 @@ function updateNbUsersArrows () {
 function imHost () {
     console.log('je suis hote')
     updateNbUsersArrows();
+    $('#play').removeClass('disabled');
 
     $('#leftNbJ').click( () => {
         const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
