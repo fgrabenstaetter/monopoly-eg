@@ -60,6 +60,13 @@ socket.on('lobbyTargetUsersNbChangedRes', (res) => {
         updateNbUsersArrows();
 });
 
+socket.on('lobbyPlayRes', (res) => {
+    if (res.error === 0)
+        window.location = '/game';
+    else // hôte uniquement
+        alert(res.status);
+});
+
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 ////////////////////////////
@@ -169,6 +176,6 @@ function imHost () {
 
 $('.friend-add').click(function() {
     let friendName = $(this).prev('.friends-name').text();
-    
+
     alert("A implementer...");
 });
