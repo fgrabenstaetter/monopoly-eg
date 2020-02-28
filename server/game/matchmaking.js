@@ -31,7 +31,7 @@ class Matchmaking {
     addLobby (lobby) {
         if (lobby.targetUsersNb === lobby.users.length) {
             // On lance la partie directement si le nombre de joueurs correspond au nombre de joueurs attendus pour la partie
-            this.createGame(lobby);
+            this.createGame([lobby]);
             return;
         }
 
@@ -63,7 +63,7 @@ class Matchmaking {
             this.delLobby(lobby);
         }
 
-        let game = new Game(users, pawns, lobbies[0].network, this.games);
+        let game = new Game(users, pawns, this.GLOBAL);
         this.GLOBAL.games.push(game);
     }
 
