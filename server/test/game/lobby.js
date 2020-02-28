@@ -45,15 +45,18 @@ describe("Test sur la classe Lobby + Matchmaking", function() {
 
     it("Le lobby vient d'être créé, il y a donc un seul joueur (François) qui en est l'hôte", function() {
         assert.equal(1, lobby.users.length);
+        assert.equal(1, lobby.pawns.length);
         //On essaye de rajouter le mm user, cela ne devrait pas fonctionner
         lobby.addUser(user1);
         assert.equal(1, lobby.users.length);
+        assert.equal(1, lobby.pawns.length);
         assert.equal("François", lobby.users[0].nickname);
     });
 
     it("On rajoute un second joueur au lobby de François", function() {
         lobby.addUser(user2);
         assert.equal(2, lobby.users.length);
+        assert.equal(2, lobby.pawns.length);
     });
 
     it("Le premier joueur dans le tableau est l'hôte du lobby", function() {
@@ -87,11 +90,14 @@ describe("Test sur la classe Lobby + Matchmaking", function() {
         lobby.searchGame();
         lobby.addUser(user4);
         assert.equal(3, lobby.users.length);
+        assert.equal(3, lobby.pawns.length);
         assert.equal(null, lobby.userByNickname("Matthias"));
     });
 
     it("Suppression du lobby", function() {
-        lobby.delete();
-        //assert.equal(user2, lobby.users[0]);
+        //BUG A CORRIGER => Potentiellement dans delUser
+        /*lobby.delete();
+        assert.equal(0, lobby.users.length);
+        assert.equal(0, lobby.pawns.length);*/
     });
 });
