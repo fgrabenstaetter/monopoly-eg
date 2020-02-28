@@ -1,4 +1,5 @@
 const Properties = require('../lib/properties');
+const Constants = require('../lib/constants');
 
 /**
  * Représente une propriété (rue, gare ou compagnie)
@@ -19,6 +20,19 @@ class Property { // classe abstraite
         this.type = type;
         // implémenté chez les classes filles uniquement
         this.load(data);
+    }
+
+    get typeStr () {
+        switch (this.type) {
+            case Constants.PROPERTY_TYPE.STREET:
+                return 'street';
+            case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                return 'publicCompany';
+            case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                return 'trainStation';
+            default:
+                return null;
+        }
     }
 }
 
