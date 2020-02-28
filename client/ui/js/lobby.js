@@ -209,7 +209,7 @@ $('.friend-add').click(function() {
     alert("A implementer...");
 });
 
-$('.btn-primary').click(function() {
+$('.notification-container .btn-primary').click(function() {
     const invitationID = $(this).parent().parent().attr('id');
     let error = 0;
     let status = 100;
@@ -224,7 +224,7 @@ $('.btn-primary').click(function() {
     }
 });
 
-$('.btn-secondary').click(function() {
+$('.notification-container .btn-secondary').click(function() {
     $(this).parent().parent().remove();
 });
 
