@@ -427,13 +427,14 @@
         ```
 
 - **Doit jouer (lancer les dés)**
-    > Signale le nom du joueur qui doit jouer = lancer les dés
+    > Signale le nom du joueur qui doit jouer = lancer les dés. Le timeout du tour commence ici
 
     * **Réponse:** gameTurnRes
         * *Données:*
         ```javascript
         {
-            nickname: string
+            nickname: string,
+            turnEndTime: timestamp // timestamp de fin forcé du tour
         }
         ```
 
