@@ -1,5 +1,6 @@
 const Constants = require('../lib/constants');
 const Property = require('./property');
+const Properties = require('../lib/properties')
 
 /**
  * Représente une carte "rue"

@@ -571,6 +571,10 @@
   padding: 6px 30px;
 }
 
+.lobby-ui-container .container:nth-child(2) .btn:hover {
+  color: white;
+}
+
 .lobby-ui-container .container:nth-child(2) .notification-container {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -32,12 +32,7 @@ class TrainStation extends Property {
      * @return Le prix d'hypothèque de la gare
      */
     get mortagePrice () {
-        if (this.hostel)
-            return this.prices.hostel / 2;
-        else if (this.housesNb > 0)
-            return this.prices.house * this.housesNb / 2;
-        else
-            return this.prices.empty / 2;
+        return this.price / 2;
     }
 }
 
