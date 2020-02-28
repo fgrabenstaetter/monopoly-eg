@@ -1,7 +1,15 @@
 const User = require('../../game/user');
 const Lobby = require('../../game/lobby');
 const Matchmaking = require('../../game/matchmaking');
+const Game = require('../../game/game');
 const assert = require('assert');
+
+let GLOBAL = {
+    users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
+    lobbies: [], // Lobbies actuellement créés
+    games: [], // Parties de jeu actuellement en cours
+}
+
 
 describe("Test sur la classe Matchmaking", function() {
     const userSchema1 = {
@@ -36,18 +44,18 @@ describe("Test sur la classe Matchmaking", function() {
         level: 1,
         exp: 0
     };
-    const matchmaking = new Matchmaking([],[]);
+    const matchmaking = new Matchmaking(GLOBAL);
     const user1 = new User(userSchema1);
     const user2 = new User(userSchema2);
     const user3 = new User(userSchema3);
     const user4 = new User(userSchema4);
 
     it("Aucun lobby n'a encore été créé", function() {
-        assert.equal(0, matchmaking.lobbies.length);
+        assert.equal(0, GLOBAL.lobbies.length);
     });
 
     it("Aucune Partie n'a encore débutée", function() {
-        assert.equal(0, matchmaking.games.length);
+        assert.equal(0, GLOBAL.games.length);
     });
 
     /*it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {

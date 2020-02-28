@@ -26,7 +26,7 @@ describe("Test sur la classe Network + Sockets", function() {
     user1.socket = io;
     const user2 = new User(userSchema2);
     const network = new Network(io, [user1, user2], [{}], [{}]);
-    it("Doit renvoyer l'ID de l'invit + le pseudo de l'ami", function() {
+    /*it("Doit renvoyer l'ID de l'invit + le pseudo de l'ami", function() {
         network.lobbyInvitationReq(user1, network.lobbies[0]);
-    });
+    });*/
 });
