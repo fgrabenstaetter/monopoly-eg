@@ -224,28 +224,16 @@ class Network {
 
             if (!data.userToKickNickname)
                 err = Errors.MISSING_FIELD;
+            else if (data.userToKickNickname === user.nickname)
+                err = Errors.UNKNOW;
             else {
-                const userToKick = lobby.userByNickname(data.playerToKickPseudo);
+                userToKick = lobby.userByNickname(data.userToKickNickname);
                 if (!userToKick)
                     err = Errors.LOBBY.NOT_IN_LOBBY;
             }
 
-            if (err.code === Errors.SUCCESS.code) {
-                if (lobby.users.length > 1) {
-                    this.io.to(lobby.name).emit('lobbyUserLeftRes', {
-                        nickname : user.nickname,
-                        host     : lobby.users[1].nickname
-                    });
-                }
-
-                lobby.delUser(user);
-                user.socket.leave(lobby.name);
-
-                // nouveau lobby solo pour ce joueur kické
-                const newLobby = new Lobby(user, lobby.matchmaking);
-                this.GLOBAL.lobbies.push(newLobby);
-                user.socket.join(newLobby.name);
-            }
+            if (err.code === Errors.SUCCESS.code)
+                lobby.delUser(userToKick, false); // lui envoie l'event socket lobbyUserLeftRes
 
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
         });
@@ -276,7 +264,7 @@ class Network {
             else if (!lobby.changePawn(user, data.pawn))
                 err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
-                this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
+                this.io.to(lobby.name).emit('lobbyUserPawnChangedRes', {
                     nickname : user.nickname,
                     pawn     : data.pawn
                 });
