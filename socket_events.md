@@ -92,14 +92,14 @@
         ```javascript
         {
             targetUsersNb: int, // nombre de joueurs désirés pour la partie
-            pawn: int, // le pion initial pour le joueur
             users: [
-                // first user = host
+                // premier user = host
                 {
                     nickname: string,
                     pawn: int
                 },
                 ...
+                // dernier user = le nouveau qui a reçu cet évènnement
             ],
             messages: [ // max 100 messages, les plus récents en dernier
                 {
