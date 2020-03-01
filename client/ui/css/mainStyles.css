@@ -466,7 +466,7 @@ input {
   overflow-wrap: unset;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
   border: rgba(255, 255, 255, 0.6) 1px solid;
   border-radius: 3px;
   margin-left: auto;
@@ -476,16 +476,16 @@ input {
   cursor: pointer;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add:hover {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action:hover {
   color: white;
   border-color: white;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .group-entry.leader .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader .friend-add {
+.lobby-ui-container .container:first-child .box.friendlist .group-entry.leader .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader .friend-action {
   display: none;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add {
+.lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
   color: white;
   background-color: rgba(255, 0, 0, 0.7);
 }
