@@ -3,22 +3,8 @@ const Lobby = require('../../game/lobby');
 const Matchmaking = require('../../game/matchmaking');
 const Game = require('../../game/game');
 const Network = require('../../game/network');
-const app = require('express')();
-const http = require('http');
-const express = require('express');
+const io = require('socket.io-client');
 const assert = require('assert');
-
-const port = 5000;
-
-// autorisation de toutes les requêtes externes
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
-let server = http.createServer(app).listen(port);
-const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
 
 let GLOBAL = {
     users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
@@ -30,6 +16,32 @@ GLOBAL.matchmaking = new Matchmaking(GLOBAL);
 GLOBAL.network = new Network(io, GLOBAL);
 
 describe("Test sur la classe Lobby + Matchmaking", function() {
+    let socket;
+    beforeEach(function(done) {
+        socket = io.connect('http://localhost:6000', {
+            'reconnection delay' : 0
+            , 'reopen delay' : 0
+            , 'force new connection' : true
+        });
+        socket.on('connect', function() {
+            console.log('worked...');
+            //done();
+        });
+        socket.on('disconnect', function() {
+            console.log('disconnected...');
+        });
+        done();
+    });
+
+    afterEach(function(done) {
+        if(socket.connected) {
+            console.log('disconnecting...');
+            socket.disconnect();
+        } else {
+            console.log('no connection to break...');
+        }
+        done();
+    });
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',
