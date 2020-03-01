@@ -18,10 +18,10 @@ class Street extends Property {
      * @param data L'objet correspond aux données de l'ID
      */
     load (data) {
-        this.name = data.name;
-        this.description = data.description;
-        this.color = data.color;
-        this.prices = data.prices;
+        this.name         = data.name;
+        this.description  = data.description;
+        this.color        = data.color;
+        this.prices       = data.prices;
         this.rentalPrices = data.rentalPrices;
     }
 

@@ -1,17 +1,17 @@
-const bcrypt = require('bcrypt');
+const bcrypt   = require('bcrypt');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const User = require('../game/user.js');
-const Errors = require('../lib/errors');
-const friends = require("mongoose-friends");
+const User     = require('../game/user.js');
+const Errors   = require('../lib/errors');
+const friends  = require('mongoose-friends');
+const Schema   = mongoose.Schema;
 
 let userSchema = new Schema({
-    nickname: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    inscriptionDate: { type: Date, default: Date.now, required: true },
-    level: { type: Number, default: 1, required: true },
-    exp: { type: Number, default: 0, required: true },
+    nickname        : { type : String , required : true },
+    email           : { type : String , required : true },
+    password        : { type : String , required : true },
+    inscriptionDate : { type : Date   , required : true  , default : Date.now },
+    level           : { type : Number , required : true  , default : 1        },
+    exp             : { type : Number , required : true  , default : 0        },
     friends: [{ type: Schema.Types.ObjectId, ref: 'Friend'}]
 });
 

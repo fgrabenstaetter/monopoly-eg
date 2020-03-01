@@ -5,49 +5,49 @@ const Properties = {
 
     TRAIN_STATION: [
         {
-            name: 'Gare de Strasbourg',
-            description: 'Quelle magnifique gare !',
-            price: 200,
-            rentalPrices: [25, 50, 100, 200]
+            name         : 'Gare de Strasbourg',
+            description  : 'Quelle magnifique gare !',
+            price        : 200,
+            rentalPrices : [25, 50, 100, 200]
         },
         {
-            name: 'Gare de Mulhouse',
-            description: 'Gare perdue',
-            price: 200,
-            rentalPrices: [25, 50, 100, 200]
+            name         : 'Gare de Mulhouse',
+            description  : 'Gare perdue',
+            price        : 200,
+            rentalPrices : [25, 50, 100, 200]
         }
     ],
 
     STREET: [
         {
-            name: 'Rue de Londres',
-            description: 'Quelle magnifique rue !',
-            color: Constants.PROPERTY_COLOR.RED,
-            prices: {
-                empty: 160,
-                house: 400,
-                hostel: 2000
+            name         : 'Rue de Londres',
+            description  : 'Quelle magnifique rue !',
+            color        : Constants.PROPERTY_COLOR.RED,
+            prices       : {
+                empty    : 160,
+                house    : 400,
+                hostel   : 2000
             },
-            rentalPrices: {
-                empty: 12,
-                house: [200, 300, 400],
-                hostel: 800
+            rentalPrices : {
+                empty    : 12,
+                house    : [200, 300, 400],
+                hostel   : 800
             }
         },
     ],
 
     PUBLIC_COMPANY: [
         {
-            name: 'La décheterie',
-            description: 'En libre service, venez donc',
-            price: 430,
-            rentalPrice: 25
+            name        : 'La décheterie',
+            description : 'En libre service, venez donc',
+            price       : 430,
+            rentalPrice : 25
         },
         {
-            name: 'UFR de math Info',
-            description: 'Math info top niveau',
-            price: 530,
-            rentalPrice: 45
+            name        : 'UFR de math Info',
+            description : 'Math info top niveau',
+            price       : 530,
+            rentalPrice : 45
         }
     ]
 }

@@ -1,7 +1,7 @@
 const Constants = require('../lib/constants');
-const Cells = require('../lib/cells');
-const Player = require('./player');
-const Cards = []; // en attente d'implémentation des cartes
+const Cells     = require('../lib/cells');
+const Player    = require('./player');
+const Cards     = []; // en attente d'implémentation des cartes
 
 /**
  * Représente une partie de jeu (superviseur de jeu)

@@ -15,9 +15,9 @@ class TrainStation extends Property {
      * @param data L'objet correspond aux données de l'ID
      */
     load (data) {
-        this.name = data.name;
-        this.description = data.description;
-        this.price = data.price;
+        this.name         = data.name;
+        this.description  = data.description;
+        this.price        = data.price;
         this.rentalPrices = data.rentalPrices;
     }
 

@@ -10,11 +10,11 @@ class User {
      */
     constructor (userSchema) {
         this.nickname = userSchema.nickname;
-        this.email = userSchema.email;
-        this.friends = userSchema.friends;
+        this.email    = userSchema.email;
+        this.friends  = userSchema.friends;
+        this.level    = userSchema.level;
+        this.exp      = userSchema.exp;
         this.inscriptionDatetime = userSchema.inscriptionDatetime;
-        this.level = userSchema.level;
-        this.exp = userSchema.exp;
 
         this.levelUpExp = 100;
         this.socket = null;

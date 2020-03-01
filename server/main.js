@@ -2,33 +2,31 @@ function foundArg (arg) {
     return process.argv.indexOf(arg) != -1;
 }
 
-const JWT_SECRET = 'J@-(icrwUsD*IH5';
-
-const app = require('express')();
-const http = require('http');
-const https = require('https');
-const fs = require('fs');
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
+const app         = require('express')();
+const http        = require('http');
+const https       = require('https');
+const fs          = require('fs');
+const express     = require('express');
+const jwt         = require('jsonwebtoken');
+const expressJwt  = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
+const mongoose    = require('mongoose');
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
-
-const Constants = require('./lib/constants');
-const Errors = require('./lib/errors');
-const { UserSchema, UserManager } = require('./models/user');
-
-const User = require('./game/user');
-const Lobby = require('./game/lobby');
+const Constants   = require('./lib/constants');
+const Errors      = require('./lib/errors');
+const User        = require('./game/user');
+const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
-const Network = require('./game/network');
+const Network     = require('./game/network');
+const { UserSchema, UserManager } = require('./models/user');
 
 let server;
 let production = false;
 if (foundArg('production'))
     production = true;
+
+mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
+const JWT_SECRET = 'J@-(icrwUsD*IH5';
 
 ////////////////////////////////////////////
 // CONFIG MODE PRODUCTION / DEVELOPPEMENT //
@@ -43,16 +41,16 @@ if (production) {
     // SSL Let's Encrypt certificats
     const constants = require('crypto');
     const options = {
-        cert: fs.readFileSync('./ssl/fullchain.pem'),
-        key: fs.readFileSync('./ssl/privkey.pem'),
-        secureOptions: constants.SSL_OP_NO_TLSv1
+        cert          : fs.readFileSync('./ssl/fullchain.pem'),
+        key           : fs.readFileSync('./ssl/privkey.pem'),
+        secureOptions : constants.SSL_OP_NO_TLSv1
     };
 
     server = https.createServer(options, app).listen(securePort);
 
     // Redirection du port 'redirectionPort' vers le port 'securePort'
     http.createServer( (req, res) => {
-        res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+        res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url });
         res.end();
     }).listen(redirectionPort);
 
@@ -61,9 +59,9 @@ if (production) {
     const port = 3000;
 
     // autorisation de toutes les requêtes externes
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    app.use( (req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         next();
     });
 
@@ -92,13 +90,13 @@ app.get('/', (req, res) => {
 //////////////////////
 
 let GLOBAL = {
-    users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
-    lobbies: [], // Lobbies actuellement créés
-    games: [], // Parties de jeu actuellement en cours
+    users   : [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
+    lobbies : [], // Lobbies actuellement créés
+    games   : [], // Parties de jeu actuellement en cours
 }
 
 GLOBAL.matchmaking = new Matchmaking(GLOBAL);
-GLOBAL.network = new Network(io, GLOBAL);
+GLOBAL.network     = new Network(io, GLOBAL);
 
 function nicknameToUser (nickname) {
     for (const usr of GLOBAL.users) {
@@ -165,19 +163,19 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
-    console.log('Utilisateur ' + decodedToken.nickname + ' connecté');
+    console.log('[SOCKET] Utilisateur ' + decodedToken.nickname + ' connecté');
 
     // ------------------------------------------------
 
     let user = nicknameToUser(decodedToken.nickname);
     if (!user) {
-        console.log('USER NOT FOUND (not connected), sending notLoggedRes');
+        console.log('[SOCKET] USER NOT FOUND (not connected), sending notLoggedRes');
         socket.emit('notLoggedRes');
         return;
     }
 
     socket.on('disconnect', () => {
-        console.log('Utilisateur ' + user.nickname + ' déconnecté');
+        console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');
         for (const lobby of GLOBAL.lobbies) {
             if (lobby.userByNickname(user.nickname)) {
                 lobby.delUser(user, false);

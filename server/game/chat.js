@@ -21,11 +21,11 @@ class Chat {
      */
     addMessage (senderUser, content, type, offer = null) {
         this.messages.push({
-            senderUser: senderUser, // obj User
-            content: content, // text
-            type: type, // CHAT_MESSAGE_TYPE
-            offer: offer, // obj Offer ou null
-            createdTime: Date.now()
+            senderUser  : senderUser, // obj User
+            content     : content, // text
+            type        : type, // CHAT_MESSAGE_TYPE
+            offer       : offer, // obj Offer ou null
+            createdTime : Date.now()
         });
 
         if (this.messages.length > this.maxMessages.length)

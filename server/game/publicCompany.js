@@ -14,9 +14,9 @@ class PublicCompany extends Property {
      * @param data L'objet correspond aux données de l'ID
      */
     load (data) {
-        this.name = data.name;
+        this.name        = data.name;
         this.description = data.description;
-        this.price = data.price;
+        this.price       = data.price;
         this.rentalPrice = data.rentalPrice;
     }
 

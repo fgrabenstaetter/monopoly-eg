@@ -1,6 +1,6 @@
 const Constants = require('../lib/constants');
-const Errors = require('../lib/errors');
-const Lobby = require('./lobby');
+const Errors    = require('../lib/errors');
+const Lobby     = require('./lobby');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -86,8 +86,8 @@ class Network {
         if (lobby.users[0] === user) { // est l'hôte
             console.log('envoi de createdred')
             user.socket.emit('lobbyCreatedRes', {
-                targetUsersNb: lobby.targetUsersNb,
-                pawn: lobby.userPawn(user)
+                targetUsersNb : lobby.targetUsersNb,
+                pawn          : lobby.userPawn(user)
             });
             return;
         }
@@ -96,32 +96,32 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                sender: mess.senderUser.nickname,
-                content: mess.content,
-                createdTime: mess.createdTime
+                sender      : mess.senderUser.nickname,
+                content     : mess.content,
+                createdTime : mess.createdTime
             });
         }
 
         let users = [];
         for (const usr of lobby.users) {
             users.push({
-                nickname: usr.nickname,
-                pawn: lobby.userPawn(usr)
+                nickname : usr.nickname,
+                pawn     : lobby.userPawn(usr)
             });
         }
 
         console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
-            targetUsersNb: lobby.targetUsersNb,
-            pawn: lobby.userPawn(user),
-            users: users,
-            messages: messages
+            targetUsersNb : lobby.targetUsersNb,
+            pawn          : lobby.userPawn(user),
+            users         : users,
+            messages      : messages
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
-            nickname: user.nickname,
-            pawn: lobby.pawns[lobby.users.indexOf(user)]
+            nickname : user.nickname,
+            pawn     : lobby.pawns[lobby.users.indexOf(user)]
         });
     }
 
@@ -159,9 +159,9 @@ class Network {
                 if (err.code === Errors.SUCCESS.code) {
                     const invitId = lobby.addInvitation(user.nickname, data.friendNickname);
                     friendUser.socket.emit('lobbyInvitationReceivedRes', {
-                        invitationID: invitId,
-                        senderFriendNickname: user.nickname,
-                        nbUsersInLobby: lobby.users.length
+                        invitationID         : invitId,
+                        senderFriendNickname : user.nickname,
+                        nbUsersInLobby       : lobby.users.length
                     });
                 }
 
@@ -233,8 +233,8 @@ class Network {
             if (err.code === Errors.SUCCESS.code) {
                 if (lobby.users.length > 1) {
                     this.io.to(lobby.name).emit('lobbyUserLeftRes', {
-                        nickname: user.nickname,
-                        host: lobby.users[1].nickname
+                        nickname : user.nickname,
+                        host     : lobby.users[1].nickname
                     });
                 }
 
@@ -277,8 +277,8 @@ class Network {
                 err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
-                    nickname: user.nickname,
-                    pawn: data.pawn
+                    nickname : user.nickname,
+                    pawn     : data.pawn
                 });
             }
 
@@ -297,9 +297,9 @@ class Network {
                 // broadcast lobby (also sender)
                 console.log('tchat send req for ' + user.nickname)
                 this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-                    sender: mess.senderUser.nickname,
-                    content: mess.content,
-                    createdTime: mess.createdTime
+                    sender      : mess.senderUser.nickname,
+                    content     : mess.content,
+                    createdTime : mess.createdTime
                 });
             }
 
@@ -338,27 +338,43 @@ class Network {
                 // envoyer les données initiales de jeu à tous les joueurs
                 let players = [], cells = [], properties = [], cards = [], cellsCounter = 0;
 
-                for (const player of game.players)
-                    players.push({ nickname: player.user.nickname, pawn: player.pawn });
+                for (const player of game.players) {
+                    players.push({
+                        nickname : player.user.nickname,
+                        pawn     : player.pawn
+                    });
+                }
 
                 for (const cell of game.cells) {
-                    cells.push({ id: cellsCounter ++, type: cell.typeStr, propertyID: cell.property ? cell.property.id : null });
+                    cells.push({
+                        id         : cellsCounter ++,
+                        type       : cell.typeStr,
+                        propertyID : cell.property ? cell.property.id : null
+                    });
 
                     // propriétés
                     if (cell.type === Constants.CELL_TYPE.PROPERTY) {
-                        let propertyData = { id: cell.property.id, type: cell.property.typeStr, name: cell.property.name, description: cell.property.description };
+                        let propertyData = {
+                            id          : cell.property.id,
+                            type        : cell.property.typeStr,
+                            name        : cell.property.name,
+                            description : cell.property.description
+                        };
+
                         switch (cell.property.type) {
                             case Constants.PROPERTY_TYPE.STREET:
-                                propertyData.color = cell.property.color;
-                                propertyData.prices = cell.property.prices;
+                                propertyData.color        = cell.property.color;
+                                propertyData.prices       = cell.property.prices;
                                 propertyData.rentalPrices = cell.property.rentalPrices;
                                 break;
+
                             case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
-                                propertyData.price = cell.property.price;
+                                propertyData.price       = cell.property.price;
                                 propertyData.rentalPrice = cell.property.rentalPrice;
                                 break;
+
                             case Constants.PROPERTY_TYPE.TRAIN_STATION:
-                                propertyData.price = cell.property.price;
+                                propertyData.price        = cell.property.price;
                                 propertyData.rentalPrices = cell.property.rentalPrices;
                         }
 
@@ -366,15 +382,21 @@ class Network {
                     }
                 }
 
-                for (const card of game.cards)
-                    cards.push({ id: card.id, type: card.typeStr, name: card.name, description: card.description });
+                for (const card of game.cards) {
+                    cards.push({
+                        id          : card.id,
+                        type        : card.typeStr,
+                        name        : card.name,
+                        description : card.description
+                    });
+                }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime: game.forcedEndTime,
-                    players: players,
-                    cells: cells,
-                    properties: properties,
-                    cards: cards
+                    gameEndTime : game.forcedEndTime,
+                    players     : players,
+                    cells       : cells,
+                    properties  : properties,
+                    cards       : cards
                 });
             }
         });
