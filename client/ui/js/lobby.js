@@ -195,7 +195,7 @@ function imHost () {
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
 
-    $('.grouplist .friend-add').css('display', '');
+    $('.grouplist .friend-action').css('display', '');
 }
 
 /**
@@ -234,13 +234,13 @@ function addGroupUser (nickname, pawn) {
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
             <img class="friends-avatar" src="img/ui/avatar1.jpg">
             <div class="friends-name">` + nickname + `</div>
-            <div class="friend-add" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
+            <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 
     $('.grouplist .group-entries-container > div').append(html);
 
     // actualisation de l'event click (car html modifié)
-    $('.grouplist .friend-add').click(function() {
+    $('.grouplist .friend-action').click(function() {
         // = bouton EXCLURE
         // Uniquement si HÔTE
         const nick = $(this).parent().find('.friends-name').text();
@@ -258,7 +258,7 @@ function delGroupUser (nickname) {
     }
 }
 
-$('.friendList .friend-add').click(function() {
+$('.friendList .friend-action').click(function() {
     let friendName = $(this).prev('.friends-name').text();
 
     alert("A implementer...");

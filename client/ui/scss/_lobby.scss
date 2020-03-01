@@ -130,7 +130,7 @@
             overflow-wrap: unset;
           }
 
-          .friend-add {
+          .friend-action {
             border: rgba($color: white, $alpha: 0.6) 1px solid;
             border-radius: 3px;
             margin-left: auto;
@@ -140,7 +140,7 @@
             cursor: pointer;
           }
 
-          .friend-add:hover {
+          .friend-action:hover {
             color: white;
             border-color: white;
           }
@@ -148,12 +148,12 @@
 
         .group-entry {
           &.leader {
-            .friend-add {
+            .friend-action {
               display: none;
             }
           }
 
-          .friend-add {
+          .friend-action {
             color: white;
             background-color: rgba($color: red, $alpha: 0.7);
           }
