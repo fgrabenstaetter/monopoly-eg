@@ -2,6 +2,8 @@ const User = require('../../game/user');
 const Lobby = require('../../game/lobby');
 const Matchmaking = require('../../game/matchmaking');
 const Game = require('../../game/game');
+const Network = require('../../game/network');
+const io = require('socket.io-client');
 const assert = require('assert');
 
 let GLOBAL = {
@@ -10,8 +12,36 @@ let GLOBAL = {
     games: [], // Parties de jeu actuellement en cours
 }
 
+GLOBAL.matchmaking = new Matchmaking(GLOBAL);
+GLOBAL.network = new Network(io, GLOBAL);
 
 describe("Test sur la classe Lobby + Matchmaking", function() {
+    let socket;
+    beforeEach(function(done) {
+        socket = io.connect('http://localhost:6000', {
+            'reconnection delay' : 0
+            , 'reopen delay' : 0
+            , 'force new connection' : true
+        });
+        socket.on('connect', function() {
+            console.log('worked...');
+            //done();
+        });
+        socket.on('disconnect', function() {
+            console.log('disconnected...');
+        });
+        done();
+    });
+
+    afterEach(function(done) {
+        if(socket.connected) {
+            console.log('disconnecting...');
+            socket.disconnect();
+        } else {
+            console.log('no connection to break...');
+        }
+        done();
+    });
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',
@@ -75,7 +105,7 @@ describe("Test sur la classe Lobby + Matchmaking", function() {
         assert.equal(false, lobby.isHost(user1));
     });
 
-    /*it("Est ce que Florian se trouve dans le lobby ?", function() {
+    it("Est ce que Florian se trouve dans le lobby ?", function() {
         assert.equal(null, lobby.userByNickname("Florian"));
         lobby.addUser(user3);
         assert.equal(user3, lobby.userByNickname("Florian"));
