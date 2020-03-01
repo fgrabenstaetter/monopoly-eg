@@ -91,18 +91,20 @@ describe("Test sur la classe Matchmaking", function() {
         });
 
         it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {
-            user1.socket = socket;
-            user2.socket = socket;
-            const lobby1 = new Lobby(user1, GLOBAL);
-            const lobby2 = new Lobby(user2, GLOBAL);
-            lobby1.addUser(user3);
-            lobby2.addUser(user4);
-            lobby1.changeTargetUsersNb(4);
-            lobby2.changeTargetUsersNb(4);
-            matchmaking.addLobby(lobby1);
-            matchmaking.addLobby(lobby2);
-            assert.equal(1, matchmaking.games.length);
-            done();
+            socket.on('connection', (socket) => {
+                user1.socket = socket;
+                user2.socket = socket;
+                const lobby1 = new Lobby(user1, GLOBAL);
+                const lobby2 = new Lobby(user2, GLOBAL);
+                lobby1.addUser(user3);
+                lobby2.addUser(user4);
+                lobby1.changeTargetUsersNb(4);
+                lobby2.changeTargetUsersNb(4);
+                matchmaking.addLobby(lobby1);
+                matchmaking.addLobby(lobby2);
+                assert.equal(1, matchmaking.games.length);
+                done();
+            });
         });
     });
 });
