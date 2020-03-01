@@ -8,7 +8,7 @@ const http = require('http');
 const express = require('express');
 const assert = require('assert');
 
-const port = 5000;
+const port = 6000;
 
 // autorisation de toutes les requêtes externes
 app.use(function(req, res, next) {
@@ -77,9 +77,9 @@ describe("Test sur la classe Matchmaking", function() {
         assert.equal(0, GLOBAL.games.length);
     });
 
-    /*it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {
-        const lobby1 = new Lobby(user1, matchmaking);
-        const lobby2 = new Lobby(user2, matchmaking);
+    it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {
+        const lobby1 = new Lobby(user1, GLOBAL);
+        const lobby2 = new Lobby(user2, GLOBAL);
         lobby1.addUser(user3);
         lobby2.addUser(user4);
         lobby1.changeTargetUsersNb(4);
@@ -87,5 +87,5 @@ describe("Test sur la classe Matchmaking", function() {
         matchmaking.addLobby(lobby1);
         matchmaking.addLobby(lobby2);
         assert.equal(1, matchmaking.games.length);
-    });*/
+    });
 });
