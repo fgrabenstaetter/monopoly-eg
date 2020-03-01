@@ -168,8 +168,7 @@ function updateNbUsersArrows () {
     $('#leftNbJ').css('display', '');
     $('#rightNbJ').css('display', '');
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
-
-    if (nb === 2)
+    if (nb === 2 || nb === document.getElementsByClassName('group-entry').length)
         $('#leftNbJ').css('display', 'none');
     else if (nb === 8)
         $('#rightNbJ').css('display', 'none');
@@ -185,7 +184,7 @@ function imHost () {
 
     $('#leftNbJ').click( () => {
         const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
-        if (nb > 2)
+        if (nb > 2 && nb > document.getElementsByClassName('group-entry').length)
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
     });
 
