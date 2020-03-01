@@ -15,7 +15,7 @@ let GLOBAL = {
 GLOBAL.matchmaking = new Matchmaking(GLOBAL);
 GLOBAL.network = new Network(io, GLOBAL);
 
-describe("Test sur la classe Lobby + Matchmaking", function() {
+describe("Test sur la classe Lobby", function() {
     let socket;
     beforeEach(function(done) {
         socket = io.connect('http://localhost:6000', {
@@ -42,6 +42,7 @@ describe("Test sur la classe Lobby + Matchmaking", function() {
         }
         done();
     });
+
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',
@@ -149,6 +150,7 @@ describe("Test sur la classe Lobby + Matchmaking", function() {
             assert.equal(3, lobby.users.length);
             assert.equal(3, lobby.pawns.length);
             assert.equal(null, lobby.userByNickname("Matthias"));
+            done();
         });
     });
 
