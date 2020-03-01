@@ -2,7 +2,7 @@ let hostNickname;
 // désactivers/masquer certaines actions/elements par défaut (et réactiver si hôte ensuite)
 $('#leftNbJ, #rightNbJ').css('display', 'none'); // afficher que si hote
 $('#play').addClass('disabled'); // seulement l'hôte peut lancer la partie !
-
+lobbyInvitation('1', 'FullMerinos')
 
 /////////////////////////////
 // SOCKET EVENTS LISTENERS //
@@ -168,8 +168,7 @@ function updateNbUsersArrows () {
     $('#leftNbJ').css('display', '');
     $('#rightNbJ').css('display', '');
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
-
-    if (nb === 2)
+    if (nb === 2 || nb === document.getElementsByClassName('group-entry').length)
         $('#leftNbJ').css('display', 'none');
     else if (nb === 8)
         $('#rightNbJ').css('display', 'none');
@@ -185,7 +184,7 @@ function imHost () {
 
     $('#leftNbJ').click( () => {
         const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
-        if (nb > 2)
+        if (nb > 2 && nb > document.getElementsByClassName('group-entry').length)
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
     });
 
@@ -217,6 +216,25 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         </div>`;
 
     $('#inviteGameContainer').append(html);
+
+    $('.notification-container .btn-primary').click(function() {
+        const invitationID = $(this).parent().parent().attr('id');
+        let error = 0;
+        let status = 100;
+        alert("A implementer");
+
+
+        if (!error) {
+            $(this).parent().parent().remove();
+        }
+        else {
+            alert("erreur : " + status)
+        }
+    });
+
+    $('.notification-container .btn-secondary').click(function() {
+        $(this).parent().parent().remove();
+    });
 }
 
 function addGroupUser (nickname, pawn) {
@@ -264,25 +282,6 @@ $('.friendList .friend-action').click(function() {
     alert("A implementer...");
 });
 
-$('.notification-container .btn-primary').click(function() {
-    const invitationID = $(this).parent().parent().attr('id');
-    let error = 0;
-    let status = 100;
-    alert("A implementer");
-
-
-    if (!error) {
-        $(this).parent().parent().remove();
-    }
-    else {
-        alert("erreur : " + status)
-    }
-});
-
-$('.notification-container .btn-secondary').click(function() {
-    $(this).parent().parent().remove();
-});
-
 $('.friend-request-accept').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'accept';
@@ -303,6 +302,19 @@ $('.friend-request-accept').click(function() {
 $('.friend-request-deny').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';
+    let error = 0;
+    let status = 100;
+
+    alert("A implementer");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+});
+
     let error = 0;
     let status = 100;
 
