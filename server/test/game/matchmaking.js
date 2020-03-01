@@ -81,6 +81,8 @@ describe("Test sur la classe Matchmaking", function() {
         const user2 = new User(userSchema2);
         const user3 = new User(userSchema3);
         const user4 = new User(userSchema4);
+        user1.socket = socket;
+        user2.socket = socket;
 
         it("Aucun lobby n'a encore été créé", function() {
             assert.equal(0, GLOBAL.lobbies.length);
@@ -92,8 +94,6 @@ describe("Test sur la classe Matchmaking", function() {
 
         it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {
             socket.on('connection', (socket) => {
-                user1.socket = socket;
-                user2.socket = socket;
                 const lobby1 = new Lobby(user1, GLOBAL);
                 const lobby2 = new Lobby(user2, GLOBAL);
                 lobby1.addUser(user3);
