@@ -10,7 +10,7 @@
     left: 50%;
     transform: translate(-50%, 0);
 
-    // Fenêtres liste d'amis (et quêtes)
+    // Fenêtres liste d'amis et liste du groupe
     .box {
       width: 220px;
       border-radius: 0;
@@ -54,8 +54,8 @@
         padding: 0;
       }
 
-      // Spécifique à la liste d'amis
-      &.friendlist {
+      // Spécifique à la liste d'amis et la liste du groupe
+      &.friendlist, &.grouplist {
         display: flex;
         justify-content: space-between;
 
@@ -97,7 +97,7 @@
           }
         }
 
-        .friends-entries-container {
+        .friends-entries-container, .group-entries-container {
           overflow-y: scroll;
           height: 300px;
           padding: 0;
@@ -105,12 +105,12 @@
         }
 
         @media (max-height: 820px) {
-          .friends-entries-container {
+          .friends-entries-container, .group-entries-container {
             height: 150px;
           }
         }
 
-        .friend-entry {
+        .friend-entry, .group-entry {
           display: flex;
           align-items: center;
           margin: 15px;
@@ -143,6 +143,35 @@
           .friend-add:hover {
             color: white;
             border-color: white;
+          }
+        }
+
+        .group-entry {
+          &.leader {
+            .friend-add {
+              display: none;
+            }
+          }
+
+          .friend-add {
+            color: white;
+            background-color: rgba($color: red, $alpha: 0.7);
+          }
+
+          &.leader::after {
+            font-family: "Font Awesome\ 5 Pro";
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            font-weight: 900;
+            content: "\f521";
+            margin-left: 10px;
+            font-size: 12px;
+            color: yellow;
           }
         }
       }

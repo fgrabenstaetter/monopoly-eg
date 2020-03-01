@@ -380,7 +380,7 @@ input {
   padding: 0;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist {
+.lobby-ui-container .container:first-child .box.friendlist, .lobby-ui-container .container:first-child .box.grouplist {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -389,7 +389,7 @@ input {
           justify-content: space-between;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-request {
+.lobby-ui-container .container:first-child .box.friendlist .friend-request, .lobby-ui-container .container:first-child .box.grouplist .friend-request {
   background: rgba(0, 0, 0, 0.3);
   margin: 0;
   width: 220px;
@@ -397,13 +397,13 @@ input {
   text-align: left;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-text {
+.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-text, .lobby-ui-container .container:first-child .box.grouplist .friend-request .friend-request-text {
   font-size: 13px;
   margin: 0 0 10px 0;
   color: white;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-accept {
+.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-accept, .lobby-ui-container .container:first-child .box.grouplist .friend-request .friend-request-accept {
   border: white 1px solid;
   border-radius: 3px;
   margin-left: auto;
@@ -415,7 +415,7 @@ input {
   background-color: white;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-deny {
+.lobby-ui-container .container:first-child .box.friendlist .friend-request .friend-request-deny, .lobby-ui-container .container:first-child .box.grouplist .friend-request .friend-request-deny {
   border: rgba(255, 255, 255, 0.7) 1px solid;
   border-radius: 3px;
   margin-left: auto;
@@ -427,7 +427,7 @@ input {
   background-color: rgba(255, 255, 255, 0.7);
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friends-entries-container {
+.lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
   overflow-y: scroll;
   height: 300px;
   padding: 0;
@@ -435,12 +435,12 @@ input {
 }
 
 @media (max-height: 820px) {
-  .lobby-ui-container .container:first-child .box.friendlist .friends-entries-container {
+  .lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
     height: 150px;
   }
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry, .lobby-ui-container .container:first-child .box.friendlist .group-entry, .lobby-ui-container .container:first-child .box.grouplist .friend-entry, .lobby-ui-container .container:first-child .box.grouplist .group-entry {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -450,7 +450,7 @@ input {
   margin: 15px;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-avatar {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-avatar, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-avatar, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-avatar, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-avatar {
   max-height: 35px;
   max-width: 35px;
   border-radius: 3px;
@@ -459,14 +459,14 @@ input {
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-name {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-name {
   margin-left: 10px;
   font-size: 13px;
   overflow: hidden;
   overflow-wrap: unset;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add {
   border: rgba(255, 255, 255, 0.6) 1px solid;
   border-radius: 3px;
   margin-left: auto;
@@ -476,9 +476,34 @@ input {
   cursor: pointer;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add:hover {
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-add:hover, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add:hover {
   color: white;
   border-color: white;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .group-entry.leader .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader .friend-add {
+  display: none;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-add, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-add {
+  color: white;
+  background-color: rgba(255, 0, 0, 0.7);
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .group-entry.leader::after, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader::after {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f521";
+  margin-left: 10px;
+  font-size: 12px;
+  color: yellow;
 }
 
 .lobby-ui-container .container:first-child .avatar-container {
