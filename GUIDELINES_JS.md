@@ -27,9 +27,9 @@ let values = ['Volvo', 'Saab', 'Fiat'];
 - Ne pas mettre d'**accolades** si un bloc ne comporte qu'une seule ligne (mais faire attention si rajout de ligne)
 ```javascript
 if (true)
-    console.log('c'est vrai !');
+    console.log('c\'est vrai !');
 else
-    console.log('c'est faux !');
+    console.log('c\'est faux !');
 ```
 
 - Insérer **un espace** avant la parenthèse ouvrante lors de la déclaration d'une fonction, d'une condition, d'une boucle, etc. mais pas lors de l'appel d'une fonction
@@ -70,10 +70,10 @@ null === undefined // false
 ```
 - Pour vérifier si une condition est vraie ou fausse, utiliser la **syntaxe légère**
 ```javascript
-if (!test) // test === false
+if (!test) // test == false
     return false;
 
-if (test) // test === true
+if (test) // test == true
     return true;
 ```
 - Ajouter des **parenthèses** lorsque nécessaire uniquement

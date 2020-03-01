@@ -16,6 +16,10 @@ class Network {
         this.GLOBAL = GLOBAL;
     }
 
+    /////////////////////
+    // GENERAL METHODS //
+    /////////////////////
+
     lobbyUserListen (user, lobby) {
         user.socket.join(lobby.name);
 
@@ -62,12 +66,20 @@ class Network {
     }
 
     gamePlayerListen (player, game) {
+        player.user.socket.join(game.name);
 
+        this.gameReadyReq(player, game);
     }
 
     gamePlayerStopListening (player, game) {
+        player.user.socket.off('gameReadyReq');
 
+        player.user.socket.leave(game.name);
     }
+
+    //////////////////
+    // LOBBY EVENTS //
+    //////////////////
 
     lobbyNewUser (user, lobby) {
 
@@ -168,7 +180,7 @@ class Network {
             else {
                 const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
-                    err = Errors.NETWORK.INVITATION_NOT_EXISTS;
+                    err = Errors.LOBBY.INVITATION_NOT_EXISTS;
                 else if (invitObj.to !== user.nickname)
                     err = Errors.UNKNOW;
                 else {
@@ -181,9 +193,9 @@ class Network {
                     }
 
                     if (!friendLobby)
-                        err = Errors.NETWORK.LOBY_CLOSED;
+                        err = Errors.LOBBY.CLOSED;
                     else if (friendLobby.users.length >= 8)
-                        err = Errors.NETWORK.LOBBY_FULL;
+                        err = Errors.LOBBY.FULL;
                     else {
                         // quitter son lobby
                         for (const lobby of this.GLOBAL.lobbies) {
@@ -215,7 +227,7 @@ class Network {
             else {
                 const userToKick = lobby.userByNickname(data.playerToKickPseudo);
                 if (!userToKick)
-                    err = Errors.NETWORK.NOT_IN_LOBBY;
+                    err = Errors.LOBBY.NOT_IN_LOBBY;
             }
 
             if (err.code === Errors.SUCCESS.code) {
@@ -262,7 +274,7 @@ class Network {
             if (!data.pawn)
                 err = Errors.MISSING_FIELD;
             else if (!lobby.changePawn(user, data.pawn))
-                err = Errors.PAWN_ALREADY_USED;
+                err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyPlayerPawnChangedRes', {
                     nickname: user.nickname,
@@ -302,13 +314,69 @@ class Network {
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else if (lobby.users.length < lobby.targetUsersNb)
-                err = Errors.LOBBY_NOT_FULL;
+                err = Errors.LOBBY.NOT_FULL;
 
             if (err.code === Errors.SUCCESS.code) {
                 this.io.to(lobby.name).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                 lobby.searchGame();
             } else
                 user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
+        });
+    }
+
+    /////////////////
+    // GAME EVENTS //
+    /////////////////
+
+    gameReadyReq (player, game) {
+        player.user.socket.on('gameReadyReq', () => {
+            player.isReady = true;
+            if (game.allPlayersReady) {
+                console.log('all players ready. CREATE NEW GAME');
+                game.start();
+
+                // envoyer les données initiales de jeu à tous les joueurs
+                let players = [], cells = [], properties = [], cards = [], cellsCounter = 0;
+
+                for (const player of game.players)
+                    players.push({ nickname: player.user.nickname, pawn: player.pawn });
+
+                for (const cell of game.cells) {
+                    cells.push({ id: cellsCounter ++, type: cell.typeStr, propertyID: cell.property ? cell.property.id : null });
+
+                    // propriétés
+                    if (cell.type === Constants.CELL_TYPE.PROPERTY) {
+                        let propertyData = { id: cell.property.id, type: cell.property.typeStr, name: cell.property.name, description: cell.property.description };
+                        switch (cell.property.type) {
+                            case Constants.PROPERTY_TYPE.STREET:
+                                propertyData.color = cell.property.color;
+                                propertyData.prices = cell.property.prices;
+                                propertyData.rentalPrices = cell.property.rentalPrices;
+                                break;
+                            case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                                propertyData.price = cell.property.price;
+                                propertyData.rentalPrice = cell.property.rentalPrice;
+                                break;
+                            case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                                propertyData.price = cell.property.price;
+                                propertyData.rentalPrices = cell.property.rentalPrices;
+                        }
+
+                        properties.push(propertyData);
+                    }
+                }
+
+                for (const card of game.cards)
+                    cards.push({ id: card.id, type: card.typeStr, name: card.name, description: card.description });
+
+                this.io.to(game.name).emit('gameStartedRes', {
+                    gameEndTime: game.forcedEndTime,
+                    players: players,
+                    cells: cells,
+                    properties: properties,
+                    cards: cards
+                });
+            }
         });
     }
 }

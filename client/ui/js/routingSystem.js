@@ -6,12 +6,16 @@ let homePage = `
         <div class="welcome-screen">
                 <button type="button" onclick="onNavItemClick('/login'); return false;" class="btn btn-primary stylized">JOUER!</button>
         </div>
+        <div class="resolution-overlay-container"></div>
 `;
 
 let gamePage = `
         <div class="background-container"></div>
         <div class="board-container"></div>
         <div class="ingame-ui-container"></div>
+        <div class="options-overlay-container"></div>
+        <div class="profile-overlay-container"></div>
+        <div class="resolution-overlay-container"></div>
 `;
 
 let lobbyPage = `
@@ -25,11 +29,13 @@ let lobbyPage = `
 let loginPage = `
         <div class="background-container"></div>
         <div class="login-ui-container"></div>
+        <div class="resolution-overlay-container"></div>
 `;
 
 let signinPage = `
         <div class="background-container"></div>
         <div class="signin-ui-container"></div>
+        <div class="resolution-overlay-container"></div>
 `;
 
 const routes = {

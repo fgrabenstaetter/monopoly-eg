@@ -355,6 +355,15 @@
 
 ## Game
 
+- **Le client est prêt à recevoir des messages socket du jeu**
+    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on)
+
+    * **Requête:** gameReadyReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
 - **Démarrage - infos générales du jeu**
     > Nom des joueurs, pions, cases du plateau, ...
 
@@ -362,8 +371,7 @@
         * *Données:*
         ```javascript
         {
-            gameTimeout: timestamp, // timestamp de fin de partie (limite)
-            turnMaxDuration: int, // temps maximum d'un tour (secondes)
+            gameEndTime: timestamp, // timestamp de fin de partie (limite)
             players: [
                 {
                     nickname: string,
@@ -373,8 +381,8 @@
             cells: [
                 {
                     id: int,
-                    type: string, // property | parc | prison | card
-                    typeObjID: int | null // null ou ID d'objet (property ou card) selon le type
+                    type: string, // begin | parc | property | parc | prison | card
+                    propertyID: int | null // null ou ID de propriété
                 }, ...
             ],
             properties: [
@@ -412,7 +420,6 @@
                 house: [ maison1 (int), maison2 (int), maison2 (int) ],
                 hostel: int
             }
-
         }
 
         // si type = trainStation
@@ -429,13 +436,14 @@
         ```
 
 - **Doit jouer (lancer les dés)**
-    > Signale le nom du joueur qui doit jouer = lancer les dés
+    > Signale le nom du joueur qui doit jouer = lancer les dés. Le timeout du tour commence ici
 
     * **Réponse:** gameTurnRes
         * *Données:*
         ```javascript
         {
-            nickname: string
+            nickname: string,
+            turnEndTime: timestamp // timestamp de fin forcé du tour
         }
         ```
 
@@ -460,6 +468,7 @@
             cellID: int,
             gameMessage: string, // message de l'action
             actionType: int,
+            turnEndTime: timestamp, // timeout fin de tour
             updateMoney:
             [
                 // peut être vide (dynamique)

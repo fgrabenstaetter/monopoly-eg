@@ -1,9 +1,26 @@
+* {
+  cursor: default;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+input {
+  cursor: text;
+  user-select: initial; /* supported by Chrome and Opera */
+  -webkit-user-select: initial; /* Safari */
+  -khtml-user-select: initial; /* Konqueror HTML */
+  -moz-user-select: initial; /* Firefox */
+  -ms-user-select: initial; /* Internet Explorer/Edge */
+}
+
 .btn {
   height: 35px;
   border-radius: 17.5px;
   border: none;
   font-family: 'LilitaOne', sans-serif;
-  font-size: 0.75em;
 
   &.stylized {
     color: white;
@@ -15,5 +32,6 @@
   &.stylized:hover {
     background-color: #ffa243;
     border: white 4px solid;
+    color: white;
   }
 }

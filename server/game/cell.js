@@ -13,7 +13,7 @@ class Cell {
         this.property = property;
     }
 
-    get name() {
+    get name () {
         switch (this.type) {
             case Constants.CELL_TYPE.START:
                 return 'Début';
@@ -29,6 +29,22 @@ class Cell {
                 return 'Carte de communauté';
             default:
                 return 'N/C';
+        }
+    }
+
+    get typeStr () {
+        switch (this.type) {
+            case Constants.CELL_TYPE.START:
+                return 'begin';
+            case Constants.CELL_TYPE.PARC:
+                return 'parc';
+            case Constants.CELL_TYPE.PRISON:
+                return 'prison';
+            case Constants.CELL_TYPE.PROPERTY:
+                return 'property';
+            case Constants.CELL_TYPE.CHANCE_CARD:
+            case Constants.CELL_TYPE.COMMUNITY_CARD:
+                return 'card';
         }
     }
 }

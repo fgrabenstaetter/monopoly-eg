@@ -85,3 +85,9 @@
     margin: 0;
   }
 }
+
+@media (max-height: 820px) {
+  .tchat-container {
+    max-height: 150px;
+  }
+}
