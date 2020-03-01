@@ -16,6 +16,7 @@ socket.on('lobbyCreatedRes', (res) => {
 
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
     imHost();
+    addGroupUser(NICKNAME, res.pawn);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -33,21 +34,34 @@ socket.on('lobbyJoinedRes', (res) => {
 
     // l'hote est le premier user de la liste res.users
     hostNickname = res.users[0].nickname;
+
+    for (const usr of res.users)
+        addGroupUser(usr.nickname, usr.pawn);
 });
 
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
+    addGroupUser(res.nickname, res.pawn);
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
     console.log('[Lobby] ' + res.nickname + ' est parti !');
+    if (res.nickname === NICKNAME) {
+        // j'ai été KICK
+        window.location = '/lobby';
+        return;
+    }
+
     if (hostNickname !== res.host) {
-        // ...
+        // ...=> changement d'hote
     }
     hostNickname = res.host;
     console.log('newhost = ' + res.host)
     if (hostNickname === NICKNAME)
         imHost();
+
+    // supprimer de la liste dans grouplist
+    delGroupUser(res.nickname);
 });
 
 socket.on('lobbyChatReceiveRes', (msg) => {
@@ -180,6 +194,8 @@ function imHost () {
         if (nb < 8)
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
+
+    $('.grouplist .friend-add').css('display', '');
 }
 
 /**
@@ -189,21 +205,60 @@ function imHost () {
  */
 function lobbyInvitation(invitationID, senderFriendNickname) {
     const html = `
-    <div class="card notification" id="` + invitationID + `">
-        <div class="card-header">
-            INVITATION
-        </div>
-        <div class="card-body">
-            <p class="card-text">`+ senderFriendNickname + ` vous invite à rejoindre sa partie</p>
-            <button class="btn btn-primary">ACCEPTER</button>
-            <button class="btn btn-secondary">REFUSER</button>
-        </div>
-    </div>`;
+        <div class="card notification" id="` + invitationID + `">
+            <div class="card-header">
+                INVITATION
+            </div>
+            <div class="card-body">
+                <p class="card-text">`+ senderFriendNickname + ` vous invite à rejoindre sa partie</p>
+                <button class="btn btn-primary">ACCEPTER</button>
+                <button class="btn btn-secondary">REFUSER</button>
+            </div>
+        </div>`;
 
     $('#inviteGameContainer').append(html);
 }
 
-$('.friend-add').click(function() {
+function addGroupUser (nickname, pawn) {
+    if (nickname === hostNickname) {
+        // ajouter marqueur HOTE
+    }
+
+    if (nickname === NICKNAME) {
+        // ajouter marqueur MOI
+    }
+
+    const shouldDisplayKickButton = NICKNAME === hostNickname && nickname !== NICKNAME;
+    const isHost = nickname === hostNickname;
+    const html = `
+        <div class="group-entry` + (isHost ? ' leader' : '') + `">
+            <img class="friends-avatar" src="img/ui/avatar1.jpg">
+            <div class="friends-name">` + nickname + `</div>
+            <div class="friend-add" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
+        </div>`;
+
+    $('.grouplist .group-entries-container > div').append(html);
+
+    // actualisation de l'event click (car html modifié)
+    $('.grouplist .friend-add').click(function() {
+        // = bouton EXCLURE
+        // Uniquement si HÔTE
+        const nick = $(this).parent().find('.friends-name').text();
+        socket.emit('lobbyKickReq', { userToKickNickname: nick });
+    });
+}
+
+function delGroupUser (nickname) {
+    const els = document.querySelectorAll('.grouplist .friends-name');
+    for (const el of els) {
+        if (el.textContent === nickname) {
+            el.parentNode.parentNode.removeChild(el.parentNode);
+            break;
+        }
+    }
+}
+
+$('.friendList .friend-add').click(function() {
     let friendName = $(this).prev('.friends-name').text();
 
     alert("A implementer...");
