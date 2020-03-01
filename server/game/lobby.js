@@ -60,8 +60,6 @@ class Lobby {
 
         this.pawns.splice(ind, 1);
         this.users.splice(ind, 1);
-        if (stopListeners)
-            this.GLOBAL.network.lobbyUserStopListening(user, this);
 
         if (this.users.length === 0) {
             this.maxUsersNb = 0;
@@ -73,6 +71,9 @@ class Lobby {
                 host: newHost.nickname
             });
         }
+
+        if (stopListeners)
+            this.GLOBAL.network.lobbyUserStopListening(user, this);
     }
 
     /**
