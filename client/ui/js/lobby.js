@@ -314,16 +314,3 @@ $('.friend-request-deny').click(function() {
         alert("erreur : " + status)
     }
 });
-
-    let error = 0;
-    let status = 100;
-
-    alert("A implementer");
-
-    if (!error) {
-        $(this).parent().remove();
-    }
-    else {
-        alert("erreur : " + status)
-    }
-});
