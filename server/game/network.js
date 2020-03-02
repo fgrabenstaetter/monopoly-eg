@@ -113,7 +113,6 @@ class Network {
         console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
             targetUsersNb : lobby.targetUsersNb,
-            pawn          : lobby.userPawn(user),
             users         : users,
             messages      : messages
         });
