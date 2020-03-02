@@ -195,7 +195,17 @@ function imHost () {
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
 
+    // maj l'icone leader et les boutons exclure du groupe de lobby
     $('.grouplist .friend-action').css('display', '');
+    const els = document.querySelectorAll('.grouplist .friends-name');
+    for (const el of els) {
+        if (el.textContent === NICKNAME) {
+            if (!el.parentNode.classList.contains('leader'))
+                el.parentNode.classList.add('leader');
+            el.parentNode.querySelector('.friend-action').style.display = 'none';
+            break;
+        }
+    }
 }
 
 /**
