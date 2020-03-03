@@ -26,6 +26,7 @@ class Game {
         this.turnPlayerInd = Math.floor(Math.random() * this.players.length);
 
         this.cells = Cells;
+        this.cards = []; //tmp
 
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
