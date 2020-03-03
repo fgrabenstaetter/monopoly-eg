@@ -1,10 +1,16 @@
+'use strict'
 const User = require('../../game/user');
 const Lobby = require('../../game/lobby');
 const Matchmaking = require('../../game/matchmaking');
 const Game = require('../../game/game');
 const Network = require('../../game/network');
+const Express = require('express');
+const Http = require('http');
+const ioserver = require('socket.io');
+const ioclient = require('socket.io-client');
 const assert = require('assert');
-const io = require('socket.io-client');
+
+const NODE_PORT = process.env.NODE_PORT || 3000
 
 let GLOBAL = {
     users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
@@ -12,38 +18,7 @@ let GLOBAL = {
     games: [], // Parties de jeu actuellement en cours
 }
 
-GLOBAL.matchmaking = new Matchmaking(GLOBAL);
-GLOBAL.network = new Network(io, GLOBAL);
-
-
 describe("Test sur la classe Matchmaking", function() {
-    let socket;
-    beforeEach(function(done) {
-        socket = io.connect('http://localhost:6000', {
-            'reconnection delay' : 0
-            , 'reopen delay' : 0
-            , 'force new connection' : true
-        });
-        socket.on('connect', function() {
-            console.log('worked...');
-            //done();
-        });
-        socket.on('disconnect', function() {
-            console.log('disconnected...');
-        });
-        done();
-    });
-
-    afterEach(function(done) {
-        if(socket.connected) {
-            console.log('disconnecting...');
-            socket.disconnect();
-        } else {
-            console.log('no connection to break...');
-        }
-        done();
-    });
-
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',
@@ -76,34 +51,21 @@ describe("Test sur la classe Matchmaking", function() {
         level: 1,
         exp: 0
     };
-    const matchmaking = new Matchmaking(GLOBAL);
-    const user1 = new User(userSchema1);
-    const user2 = new User(userSchema2);
-    const user3 = new User(userSchema3);
-    const user4 = new User(userSchema4);
-    user1.socket = socket;
-    user2.socket = socket;
 
-    it("Aucun lobby n'a encore été créé", function() {
-        assert.equal(0, GLOBAL.lobbies.length);
-    });
-
-    it("Aucune Partie n'a encore débutée", function() {
-        assert.equal(0, GLOBAL.games.length);
-    });
-
-    it("Fusion de 2 lobbies à 2 joueurs pour une partie à 4 joueurs", function() {
-        socket.on('connection', (socket) => {
-            const lobby1 = new Lobby(user1, GLOBAL);
-            const lobby2 = new Lobby(user2, GLOBAL);
-            lobby1.addUser(user3);
-            lobby2.addUser(user4);
-            lobby1.changeTargetUsersNb(4);
-            lobby2.changeTargetUsersNb(4);
-            matchmaking.addLobby(lobby1);
-            matchmaking.addLobby(lobby2);
-            assert.equal(1, matchmaking.games.length);
-            done();
-        });
-    });
+    beforeEach(() => {
+		const express = new Express();
+		this._http = Http.Server(express);
+		this._ioserver = ioserver(this._http);
+		this._http.listen(NODE_PORT);
+		this._client = null;
+	});
+    //Lancez un matchmaking Ici
+    
+    afterEach(() => {
+		// this last call forces the client to stop connecting
+		// even if tests failed
+		this._client.close();
+		this._ioserver.close();
+		this._http.close();
+	});
 });
