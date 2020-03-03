@@ -40,8 +40,27 @@ class Player {
         return nb;
     }
 
+    get nickname () {
+        return this.user.nickname;
+    }
+
+    addMoney (amount) {
+        this.money = this.money + amount;
+    }
+
+    loseMoney (amount) {
+        if(this.money < amount)
+            this.money = 0;
+        else
+            this.money = this.money - amount;
+    }
+
     goPrison () {
         this.remainingTurnsInJail = 3;
+    }
+
+    escapePrison () {
+        this.remainingTurnsInJail = 0;
     }
 
     /**

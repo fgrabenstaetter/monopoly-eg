@@ -1,7 +1,11 @@
 const Constants = require('../lib/constants');
-const Cells     = require('../lib/cells');
-const Player    = require('./player');
-const Cards     = []; // en attente d'implémentation des cartes
+const Cells = require('../lib/cells');
+const Deck = require('./deck');
+const Player = require('./player');
+
+const chanceCardsMeta = require('./../lib/chanceCards');
+const communityChestCardsMeta = require('./../lib/communityChestCards');
+
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -22,7 +26,10 @@ class Game {
         this.turnPlayerInd = Math.floor(Math.random() * this.players.length);
 
         this.cells = Cells;
-        this.cards = Cards;
+
+        this.chanceDeck = new Deck(chanceCardsMeta);
+        this.communityChestDeck = new Deck(communityChestCardsMeta);
+
         this.bank = {}; // a faire
 
         this.startedTime = null; // timestamp de démarrage en ms

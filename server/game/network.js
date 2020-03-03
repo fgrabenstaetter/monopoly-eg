@@ -113,7 +113,6 @@ class Network {
         console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
             targetUsersNb : lobby.targetUsersNb,
-            pawn          : lobby.userPawn(user),
             users         : users,
             messages      : messages
         });
@@ -370,14 +369,14 @@ class Network {
                     }
                 }
 
-                for (const card of game.cards) {
-                    cards.push({
-                        id          : card.id,
-                        type        : card.typeStr,
-                        name        : card.name,
-                        description : card.description
-                    });
-                }
+                // for (const card of game.cards) {
+                //     cards.push({
+                //         id          : card.id,
+                //         type        : card.typeStr,
+                //         name        : card.name,
+                //         description : card.description
+                //     });
+                // }
 
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime : game.forcedEndTime,

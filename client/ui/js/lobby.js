@@ -42,6 +42,14 @@ socket.on('lobbyJoinedRes', (res) => {
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     addGroupUser(res.nickname, res.pawn);
+
+    const nb = parseInt(document.getElementById('nbJoueurs').textContent);
+    const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
+    if (nb < nbUsers)
+        document.getElementById('nbJoueurs').textContent = nb + 1
+
+    if (hostNickname === NICKNAME)
+        updateNbUsersArrows();
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
@@ -57,11 +65,12 @@ socket.on('lobbyUserLeftRes', (res) => {
     }
     hostNickname = res.host;
     console.log('newhost = ' + res.host)
-    if (hostNickname === NICKNAME)
-        imHost();
 
     // supprimer de la liste dans grouplist
     delGroupUser(res.nickname);
+
+    if (hostNickname === NICKNAME)
+        imHost();
 });
 
 socket.on('lobbyChatReceiveRes', (msg) => {
@@ -119,7 +128,7 @@ $(document).ready( () => {
     });
 
     $('#play').click( () => {
-        if (imHost)
+        if (hostNickname === NICKNAME)
             socket.emit('lobbyPlayReq');
     });
 });
@@ -194,7 +203,17 @@ function imHost () {
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
 
+    // maj l'icone leader et les boutons exclure du groupe de lobby
     $('.grouplist .friend-action').css('display', '');
+    const els = document.querySelectorAll('.grouplist .friends-name');
+    for (const el of els) {
+        if (el.textContent === NICKNAME) {
+            if (!el.parentNode.classList.contains('leader'))
+                el.parentNode.classList.add('leader');
+            el.parentNode.querySelector('.friend-action').style.display = 'none';
+            break;
+        }
+    }
 }
 
 /**
@@ -302,19 +321,6 @@ $('.friend-request-accept').click(function() {
 $('.friend-request-deny').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';
-    let error = 0;
-    let status = 100;
-
-    alert("A implementer");
-
-    if (!error) {
-        $(this).parent().remove();
-    }
-    else {
-        alert("erreur : " + status)
-    }
-});
-
     let error = 0;
     let status = 100;
 

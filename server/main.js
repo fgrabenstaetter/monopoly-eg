@@ -312,3 +312,28 @@ app.get('/test/cell-test', (req, res) => {
 
     res.send('Voir debug dans la console NodeJS // ' + cells[0].name);
 });
+
+
+const Market = require('./game/market');
+const Player = require('./game/player');
+
+var playerOne = new Player(5, 'horse');
+var playerTwo = new Player(7, 'shoe');
+// const Street = require('./game/street');
+// var street = new Street(1, playerOne, null); this generates an exception
+class Street {
+    constructor (id, name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+var street = new Street(1, 'Testing Street');
+var secondStreet = new Street(2, 'Toasting Street');
+
+playerOne.addProperty(street);
+
+market = new Market();
+market.addBid(playerOne, street, 700);
+market.placeOffer(playerOne, street, playerTwo, 400);
+market.placeOffer(playerOne, street, playerTwo, 500);
+market.placeOffer(playerOne, secondStreet, playerTwo, 500);
