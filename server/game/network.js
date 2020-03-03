@@ -69,10 +69,26 @@ class Network {
         player.user.socket.join(game.name);
 
         this.gameReadyReq(player, game);
+        this.gameRollDiceReq(player, game);
+        this.gameTurnEndReq(player, game);
+        this.gameChatMessageReq(player, game);
+        this.gameOfferSendReq(player, game);
+        this.gameOfferAcceptReq(player, game);
+        this.gameOverbidReq(player, game);
+        this.gameMortageReq(player, game);
+        this.gameQuitReq(player, game);
     }
 
     gamePlayerStopListening (player, game) {
         player.user.socket.off('gameReadyReq');
+        player.user.socket.off('gameRollDiceReq');
+        player.user.socket.off('gameTurnEndReq');
+        player.user.socket.off('gameChatMessageReq');
+        player.user.socket.off('gameOfferSendReq');
+        player.user.socket.off('gameOfferAcceptReq');
+        player.user.socket.off('gameOverbidReq');
+        player.user.socket.off('gameMortageReq');
+        player.user.socket.off('gameQuitReq');
 
         player.user.socket.leave(game.name);
     }
@@ -386,6 +402,62 @@ class Network {
                     cards       : cards
                 });
             }
+        });
+    }
+
+    gameRollDiceReq (player, game) {
+        player.user.socket.on('gameRollDiceReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameTurnEndReq (player, game) {
+        player.user.socket.on('gameTurnEndReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameChatMessageReq (player, game) {
+        player.user.socket.on('gameChatMessageReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameOfferSendReq (player, game) {
+        player.user.socket.on('gameOfferSendReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameOfferAcceptReq (player, game) {
+        player.user.socket.on('gameOfferAcceptReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameOverbidReq (player, game) {
+        player.user.socket.on('gameOverbidReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameMortageReq (player, game) {
+        player.user.socket.on('gameMortageReq', (data) => {
+            let err = Errors.SUCCESS;
+
+        });
+    }
+
+    gameQuitReq (player, game) {
+        player.user.socket.on('gameQuitReq', (data) => {
+            let err = Errors.SUCCESS;
+
         });
     }
 }
