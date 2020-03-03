@@ -104,11 +104,11 @@ $(document).ready( () => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
         filter = input.value.toUpperCase();
-        /**
-         * recherche d'un nouvel ami
-         * nom de l'ami de
-         */
         if (e.keyCode == '13') {
+            /**
+            * recherche d'un nouvel ami
+            * nom de l'ami stocker dans filter
+            */
             alert('A implementer');
         }
         else {
@@ -194,6 +194,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 
     $('#inviteGameContainer').append(html);
 
+    //lobbyInvitationAcceptReq
     $('.notification-container .btn-primary').click(function() {
         const invitationID = $(this).parent().parent().attr('id');
         let error = 0;
@@ -209,6 +210,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         }
     });
 
+    //lobbyInvitationDeny
     $('.notification-container .btn-secondary').click(function() {
         $(this).parent().parent().remove();
     });
@@ -253,12 +255,14 @@ function delGroupUser (nickname) {
     }
 }
 
-$('.friendList .friend-action').click(function() {
+//lobbyInvitationReq
+$('.friend-action').click(function() {
     let friendName = $(this).prev('.friends-name').text();
 
     alert("A implementer...");
 });
 
+//lobbyFriendInvitationRes Acceptation
 $('.friend-request-accept').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'accept';
@@ -276,6 +280,7 @@ $('.friend-request-accept').click(function() {
 
 });
 
+//lobbyFriendInvitationRes Deny
 $('.friend-request-deny').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';
