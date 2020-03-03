@@ -355,8 +355,11 @@
 
 ## Game
 
+### --- Début et fin
+
 - **Le client est prêt à recevoir des messages socket du jeu**
-    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on)
+    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on).
+    Lorsque tous les joueurs ont envoyés cet évènnement, la partie est démarée.
 
     * **Requête:** gameReadyReq
         * *Données:*
@@ -407,7 +410,7 @@
         ```
         **customData** dans *properties* peut être:
         ```javascript
-        // si type = street
+        // Si type = street
         {
             color: int,
             prices: {
@@ -422,7 +425,7 @@
             }
         }
 
-        // si type = trainStation
+        // Si type = trainStation
         {
            price: int,
            rentalPrices: [ 1gare (int), 2gare (int), 3gare (int), 4gare (int) ]
@@ -435,8 +438,30 @@
         }
         ```
 
+- **Abandonner/Un joueur a abandonné la partie**
+    * **Requête:** gameQuitReq
+        > Abandon "soft" de partie
+
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** gameQuitRes
+        > La réponse arrive chez tous les joueurs pour signaler qu'un joueur a abandonné
+
+        * *Données:*
+        ```javascript
+        {
+            playerNickname: string
+        }
+        ```
+
+### --- Tour de jeu
+
 - **Doit jouer (lancer les dés)**
-    > Signale le nom du joueur qui doit jouer = lancer les dés. Le timeout du tour commence ici
+    > Signale le nom du joueur qui doit jouer = lancer les dés.
+    Le décompte de timeout du tour commence ici.
 
     * **Réponse:** gameTurnRes
         * *Données:*
@@ -448,7 +473,8 @@
         ```
 
 - **Action de tour / Lancer les dés**
-    > Uniquement le joueur qui lance les dés envoie la Req, mais tous les joueurs recoivent la Res, un joueur peut lancer les dés plusieurs fois par tour, ex. double valeur aux dés
+    > Uniquement le joueur qui lance les dés envoie la Req, mais tous les joueurs recoivent la Res.
+    Un joueur peut lancer les dés plusieurs fois par tour, ex. double valeur aux dés
 
     * **Requête:** gameRollDiceReq
         * *Données:*
@@ -499,6 +525,8 @@
         ```javascript
         null
         ```
+
+### --- Chat et offres
 
 - **Envoyer/Recevoir un message dans le chat du jeu**
 
@@ -567,9 +595,11 @@
         }
         ```
 
+### --- Enchères, hypothèques et divers
+
 - **Une enchère a démarrée/changée/terminée**
-    > Peut être reçue plusieurs fois (si sur-enchérissement) pour update le prix (alors même bidID)
-        Également reçue lorsque l'enchère est terminée (nom du vainqueur dans text et price = null)
+    > Peut être reçue plusieurs fois (si sur-enchérissement) pour mettre à jour le prix (alors même bidID)
+        Également reçue lorsque l'enchère est terminée (nom du gagnant compris dans text et price = null)
 
     * **Réponse:** gameBidRes
         * *Données:*
@@ -616,25 +646,6 @@
         * *Données:*
         ```javascript
         null
-        ```
-
-- **Abandonner la partie**
-    > Comportement automatiquement exécuté après un certain temps d'inactivité
-
-    * **Requête:** gameQuitReq
-        * *Données:*
-        ```javascript
-        null
-        ```
-
-    * **Réponse:** gameQuitRes
-        > La réponse arrive chez tous les joueurs pour signaler qu'un joueur a abandonné
-
-        * *Données:*
-        ```javascript
-        {
-            playerNickname: string
-        }
         ```
 
 - **Une quête vient d'être accomplie**
