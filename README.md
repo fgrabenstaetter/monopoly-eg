@@ -57,3 +57,21 @@ npm start production # mode production
 ```bash
 npm test
 ```
+
+### Client
+
+(Nécessite d’avoir lancé `npm start` et MongoDB)
+
+0. **[Pour les utilisateurs Windows]** S’assurer d’avoir correctement installé PHP
+   (cf. https://www.sitepoint.com/how-to-install-php-on-windows/)
+
+1. Dans un terminal, se rendre dans le dossier "/client/ui"
+
+2. Lancer la commande
+
+   ```bash
+   php -S localhost:3001
+   ```
+
+3. Accéder à l'adresse http://localhost:3001
+
