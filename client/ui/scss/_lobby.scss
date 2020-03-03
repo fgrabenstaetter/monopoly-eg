@@ -97,16 +97,27 @@
           }
         }
 
-        .friends-entries-container, .group-entries-container {
+        .friends-entries-container {
           overflow-y: scroll;
           height: 300px;
           padding: 0;
           margin: 0;
         }
 
+        .group-entries-container {
+          overflow-y: scroll;
+          max-height: 361px;
+          padding: 0;
+          margin: 0;
+        }
+
         @media (max-height: 820px) {
-          .friends-entries-container, .group-entries-container {
+          .friends-entries-container {
             height: 150px;
+          }
+
+          .group-entries-container {
+            max-height: 211px;
           }
         }
 

@@ -100,31 +100,26 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 $(document).ready( () => {
 
-    updateScroll();
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
         filter = input.value.toUpperCase();
-        element = document.getElementsByClassName('friend-entry');
-        for (i = 0; i < element.length; i++) {
-            txtValue = element[i].getElementsByClassName('friends-name')[0].innerHTML;
-            if (txtValue.toUpperCase().indexOf(filter) > -1)
+        /**
+         * recherche d'un nouvel ami
+         * nom de l'ami de
+         */
+        if (e.keyCode == '13') {
+            alert('A implementer');
+        }
+        else {
+            element = document.getElementsByClassName('friend-entry');
+            for (i = 0; i < element.length; i++) {
+                if (txtValue.toUpperCase().indexOf(filter) > -1)
                 element[i].style.display = '';
-            else
+                else
                 element[i].style.display = 'none';
+            }
         }
-    });
-
-    $('#chat').keypress( (e) => {
-        if (e.keyCode == '13') { // touche entrer
-            sendMsg()
-            updateScroll();
-        }
-    });
-
-    $('#btnSendMsg').click( () => {
-        sendMsg()
-        updateScroll();
     });
 
     $('#play').click( () => {
@@ -132,43 +127,6 @@ $(document).ready( () => {
             socket.emit('lobbyPlayReq');
     });
 });
-
-/** Fonction qui envoie un message via socket
-*/
-function sendMsg () {
-    const chatMsg = document.getElementById('chat');
-    if (chatMsg.value.trim() != '') {
-        socket.emit('lobbyChatSendReq', {content: chatMsg.value});
-        chatMsg.value = '';
-    }
-}
-
-/**
- * Fonction qui affiche un messag reçu
- * @param msg L'object message reçu par socket
- */
-function addMsg (msg) {
-    const element = document.getElementById('msgChat');
-    const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-    const msgClass = 'msg-' + (msg.sender === NICKNAME ? 'me' : 'other');
-    const localeDate = new Date(msg.createdTime).toLocaleString();
-    const html = `
-        <div class="` + msgClass + `" title="` + localeDate + `">
-            <div class="msg-author">` + msg.sender + `</div>`
-            + msg.content +
-        `</div>`;
-
-    $('#msgChat').append(html);
-    if (isScroll)
-        updateScroll();
-}
-
-/** Fonction qui remet la barre de défilement en bas
-*/
-function updateScroll(){
-    const element = document.getElementById('msgChat');
-    element.scrollTop = element.scrollHeight;
-}
 
 /**
  * Maj des flèches de changement du nombre désiré de users (que pour l'hote)
