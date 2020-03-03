@@ -176,6 +176,7 @@ input {
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
