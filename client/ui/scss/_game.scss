@@ -1,5 +1,119 @@
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
+
 .ingame-ui-container {
-  position: absolute;
+  width: 100%;
   z-index: 1;
-  font-family: 'Roboto', sans-serif;
+
+  // Ligne supérieure du HUD: liste des joueurs
+  .container:first-child {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
+  // NB: le style du chat est spécifié dans un fichier externe ("_chat.scss")
+  .container:nth-child(2) {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    .notification-container {
+      display: flex;
+      align-items: bottom;
+      flex-direction: column-reverse;
+      overflow-y: hidden;
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+
+      .notification {
+        border-radius: 15px;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+        position: relative;
+        margin-top: 20px;
+        margin-left: auto;
+        width: 350px;
+  
+        .card-header {
+          border-radius: 15px 15px 0px 0px;
+          color: white;
+          background-color: $window_header;
+          padding-top: 10px;
+          padding-bottom: 10px;
+
+          .title {
+            font-family: 'LilitaOne', sans-serif;
+            font-size: 17px;
+          }
+
+          .subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            color: rgba($color: white, $alpha: 0.7);      
+          }
+        }
+  
+        .card-body {
+          border-radius: 0px 0px 15px 15px;
+          background-color: $window_body;
+
+          .btn {
+            height: 32px;
+            font-size: 12px;
+            width: 110px;
+            margin: 0 10px 10px 10px;
+            padding: 0;
+          }
+
+          .btn-primary {
+            background-color: #35d859;
+          }
+
+          .btn-secondary {
+            background-color: rgba($color: black, $alpha: 0.3);
+          }
+        }
+
+        &.sale {
+          p:first-of-type {
+            color: rgba($color: white, $alpha: 0.7);
+            font-size: 12px;
+            margin: 0;
+          }
+
+          p:nth-of-type(2) {
+            color: white;
+            font-size: 25px;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .action-button-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      height: 100%;
+      padding: 0;
+
+      .col-md-12 {
+        padding: 0;
+
+        .action-button {
+          width: 175px;
+          height: 50px;
+          border-radius: 25px;
+          font-size: 20px;
+          padding: 6px 20px;
+        }
+      }
+    }
+  }
 }

@@ -428,16 +428,26 @@ input {
   background-color: rgba(255, 255, 255, 0.7);
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
+.lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container {
   overflow-y: scroll;
   height: 300px;
   padding: 0;
   margin: 0;
 }
 
+.lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
+  overflow-y: scroll;
+  max-height: 361px;
+  padding: 0;
+  margin: 0;
+}
+
 @media (max-height: 820px) {
-  .lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
+  .lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container {
     height: 150px;
+  }
+  .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
+    max-height: 211px;
   }
 }
 
@@ -707,9 +717,132 @@ input {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
 .ingame-ui-container {
-  position: absolute;
+  width: 100%;
   z-index: 1;
+}
+
+.ingame-ui-container .container:first-child {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+
+.ingame-ui-container .container:nth-child(2) {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: bottom;
+      -ms-flex-align: bottom;
+          align-items: bottom;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
+  overflow-y: hidden;
+  position: absolute;
+  bottom: 100px;
+  right: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification {
+  border-radius: 15px;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+  margin-left: auto;
+  width: 350px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header {
+  border-radius: 15px 15px 0px 0px;
+  color: white;
+  background-color: #066875;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .title {
+  font-family: 'LilitaOne', sans-serif;
+  font-size: 17px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .subtitle {
   font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body {
+  border-radius: 0px 0px 15px 15px;
+  background-color: #24a9ba;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
+  height: 32px;
+  font-size: 12px;
+  width: 110px;
+  margin: 0 10px 10px 10px;
+  padding: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-primary {
+  background-color: #35d859;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification.sale p:first-of-type {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  margin: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification.sale p:nth-of-type(2) {
+  color: white;
+  font-size: 25px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  height: 100%;
+  padding: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 {
+  padding: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button {
+  width: 175px;
+  height: 50px;
+  border-radius: 25px;
+  font-size: 20px;
+  padding: 6px 20px;
 }
 /*# sourceMappingURL=mainStyles.css.map */
