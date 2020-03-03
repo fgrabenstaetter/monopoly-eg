@@ -42,6 +42,14 @@ socket.on('lobbyJoinedRes', (res) => {
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     addGroupUser(res.nickname, res.pawn);
+
+    const nb = parseInt(document.getElementById('nbJoueurs').textContent);
+    const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
+    if (nb < nbUsers)
+        document.getElementById('nbJoueurs').textContent = nb + 1
+
+    if (hostNickname === NICKNAME)
+        updateNbUsersArrows();
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
@@ -57,11 +65,12 @@ socket.on('lobbyUserLeftRes', (res) => {
     }
     hostNickname = res.host;
     console.log('newhost = ' + res.host)
-    if (hostNickname === NICKNAME)
-        imHost();
 
     // supprimer de la liste dans grouplist
     delGroupUser(res.nickname);
+
+    if (hostNickname === NICKNAME)
+        imHost();
 });
 
 socket.on('lobbyChatReceiveRes', (msg) => {
@@ -119,7 +128,7 @@ $(document).ready( () => {
     });
 
     $('#play').click( () => {
-        if (imHost)
+        if (hostNickname === NICKNAME)
             socket.emit('lobbyPlayReq');
     });
 });
