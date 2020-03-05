@@ -117,7 +117,7 @@ class Game {
     }
 
     /**
-     * Met fin au tour actuel (= fin de tour) et commence directement le tour suivant (ne pas devoir attendre le timeout)
+     * Met fin au tour actuel (= fin de tour) et commence directement le tour suivant (pour ne pas devoir attendre le timeout)
      */
     endTurn () {
         clearTimeout(this.turnTimeout);

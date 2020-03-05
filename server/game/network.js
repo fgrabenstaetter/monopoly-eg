@@ -404,16 +404,36 @@ class Network {
     }
 
     gameRollDiceReq (player, game) {
-        player.user.socket.on('gameRollDiceReq', (data) => {
+        player.user.socket.on('gameRollDiceReq', () => {
             let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else {
+                const diceRes = game.rollDice();
+                this.io.to(game.name).emit('gameActionRes', {
+                    playerNickname: player.user.nickname,
+                    dicesRes: diceRes,
+                    cellID: player.cellInd,
+                    gameMessage: 'vide pour linstant',
+                    actionType: 0, // tmp
+                    updateMoney: [ ], // tmp
+                    extra: [ ] // tmp
+                });
+            }
 
+            player.user.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
         });
     }
 
     gameTurnEndReq (player, game) {
         player.user.socket.on('gameTurnEndReq', (data) => {
             let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else
+                game.endTurn();
 
+            player.user.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
         });
     }
 
