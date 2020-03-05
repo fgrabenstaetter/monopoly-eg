@@ -23,7 +23,8 @@ class Game {
         this.GLOBAL = GLOBAL;
         this.players = [];
         this.id = this.gameIDCounter ++;
-        this.turnPlayerInd = Math.floor(Math.random() * this.players.length);
+        this.turnPlayerInd = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
+        this.turnTimeout = null;
 
         this.cells = Cells;
         this.cards = []; //tmp
@@ -105,31 +106,50 @@ class Game {
         return this.startedTime + this.maxDuration;
     }
 
+    /**
+     * @return le joueur du tour actuel
+     */
+    get curPlayer () {
+        return this.players[this.turnPlayerInd];
+    }
+
     start () {
         this.startedTime = Date.now();
         setTimeout(this.nextTurn.bind(this), this.waitingTimeAfterReady);
     }
 
+    /**
+     * Met fin au tour actuel (= fin de tour) et commence directement le tour suivant (ne pas devoir attendre le timeout)
+     */
+    endTurn () {
+        clearTimeout(this.turnTimeout);
+        nextTurn();
+    }
+
+    /**
+     * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
+     */
     nextTurn () {
-        switch (this.cells[this.players[this.turnPlayerInd].cellInd].type) {
-            case Constants.CELL_TYPE.PARC:
-
-                break;
-            case Constants.CELL_TYPE.PRISON:
-
-                break;
-            case Constants.CELL_TYPE.PROPERTY:
-
-                break;
-            case Constants.CELL_TYPE.CHANCE_CARD:
-
-                break;
-            case Constants.CELL_TYPE.COMMUNITY_CARD:
-
-        }
-
         this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
-        console.log('NEXT TURN player = ' + this.players[this.turnPlayerInd].user.nickname);
+        console.log('NEXT TURN player = ' + this.curPlayer.user.nickname);
+        this.turnTimeout = setTimeout(this.nextTurn.bind(this), this.turnMaxDuration);
+        this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
+            nickname: this.curPlayer.user.nickname,
+            turnEndTime: Date.now() + this.turnMaxDuration
+        });
+    }
+
+    /**
+     * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
+     * @return [int, int] le résultat des dés
+     */
+    rollDice () {
+        const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
+
+        //  ... actions du tour
+        //  this.curPlayer
+
+        return diceRes;
     }
 }
 
