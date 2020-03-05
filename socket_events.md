@@ -463,19 +463,27 @@
         }
         ```
 
-- **Action de tour / Lancer les dés**
-    > Uniquement le joueur qui lance les dés envoie la Req, mais tous les joueurs recoivent la Res.
-    Un joueur peut lancer les dés plusieurs fois par tour, ex. double valeur aux dés
+- **Lancer les dés**
+    > Un joueur peut parfois lancer les dés plusieurs fois par tour, ex. double valeur aux dés
 
     * **Requête:** gameRollDiceReq
         * *Données:*
         ```javascript
         null
          ```
-
     * **Réponse:** gameRollDiceRes
-        > Contient le résultat des dés ET toutes les infos à mettre à jour (action de jeu)
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
 
+- **Action de tour**
+    > Contient le résultat des dés et toutes les infos à mettre à jour (action de jeu)
+
+    * **Réponse:** gameActionRes
         * *actionType* peut signifier (rien, peutAcheter, doitPayerLoyer, peutConstruireMaison, peutConstruireHotel)
         * *Données:*
         ```javascript
@@ -485,7 +493,6 @@
             cellID: int,
             gameMessage: string, // message de l'action
             actionType: int,
-            turnEndTime: timestamp, // timeout fin de tour
             updateMoney:
             [
                 // peut être vide (dynamique)
