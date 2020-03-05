@@ -10,6 +10,61 @@
     top: 100px;
     left: 50%;
     transform: translate(-50%, 0);
+
+    .player-list {
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .player-entry {
+        margin-bottom: 20px;
+
+        .name {
+          font-weight: bold;
+        }
+
+        .money {
+          color: white;
+        }
+
+        .money::before {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f3d1";
+          margin-right: 10px;
+          font-size: 20px;
+          color: white;
+          vertical-align: text-top;
+        }
+
+        .money::after {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "$";
+          margin-left: 2px;
+          font-size: 16px;
+          color: white;
+          vertical-align: baseline;
+        }
+      }
+
+      @import '_players-colors.scss'
+    }
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
@@ -51,7 +106,7 @@
             font-size: 17px;
           }
         }
-  
+
         .card-body {
           border-radius: 0px 0px 15px 15px;
           background-color: $window_body;
