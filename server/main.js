@@ -176,10 +176,21 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');
+
+        // si il est dans un lobby, l'y supprimer
         for (const lobby of GLOBAL.lobbies) {
             if (lobby.userByNickname(user.nickname)) {
                 lobby.delUser(user, false);
-                break;
+                return;
+            }
+        }
+
+        // si il est dans une partie de jeu, l'y supprimer
+        for (const game of GLOBAL.games) {
+            const player = game.playerByNickname(user.nickname);
+            if (player) {
+                game.delPlayer(player);
+                return;
             }
         }
     });
