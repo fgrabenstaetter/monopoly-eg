@@ -87,6 +87,26 @@
           margin-top: 10px;
           margin-left: -10px;
         }
+
+        &.current::before {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f111";
+          margin-right: 10px;
+          font-size: 10px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 7px;
+          left: -17px;
+        }
       }
 
       @import '_players-colors.scss'
