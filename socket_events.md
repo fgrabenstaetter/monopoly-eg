@@ -164,7 +164,6 @@
         ```javascript
         {
             nb: int // 2 - 8
-
         }
         ```
 
@@ -438,18 +437,10 @@
         }
         ```
 
-- **Abandonner/Un joueur a abandonné la partie**
-    * **Requête:** gameQuitReq
-        > Abandon "soft" de partie
-
-        * *Données:*
-        ```javascript
-        null
-        ```
+- **Un joueur a quitté la partie**
+    > Automatiquement émit lorsqu'un joueur quitte la partie
 
     * **Réponse:** gameQuitRes
-        > La réponse arrive chez tous les joueurs pour signaler qu'un joueur a abandonné
-
         * *Données:*
         ```javascript
         {

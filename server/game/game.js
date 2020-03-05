@@ -55,6 +55,20 @@ class Game {
     }
 
     /**
+     * Cette méthode n'est à appeler que lorsque le socket associé au joueur a émit l'event 'disconnect'
+     * @param player Le joueur a supprimer
+     */
+    delPlayer (player) {
+        const ind = this.players.indexOf(player);
+         if (ind === -1)
+            return;
+
+        // this.players.gamePlayerStopListening(player, game); // pas besoin car suppression = socket disconnect
+        this.players.splice(ind, 1);
+        this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.user.nickname });
+    }
+
+    /**
      * @param nickname Le pseudo du joueur recherché
      * @return le joueur si trouvé, sinon null
      */

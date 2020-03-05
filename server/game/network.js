@@ -76,7 +76,6 @@ class Network {
         this.gameOfferAcceptReq(player, game);
         this.gameOverbidReq(player, game);
         this.gameMortageReq(player, game);
-        this.gameQuitReq(player, game);
     }
 
     gamePlayerStopListening (player, game) {
@@ -88,7 +87,6 @@ class Network {
         player.user.socket.off('gameOfferAcceptReq');
         player.user.socket.off('gameOverbidReq');
         player.user.socket.off('gameMortageReq');
-        player.user.socket.off('gameQuitReq');
 
         player.user.socket.leave(game.name);
     }
@@ -449,13 +447,6 @@ class Network {
 
     gameMortageReq (player, game) {
         player.user.socket.on('gameMortageReq', (data) => {
-            let err = Errors.SUCCESS;
-
-        });
-    }
-
-    gameQuitReq (player, game) {
-        player.user.socket.on('gameQuitReq', (data) => {
             let err = Errors.SUCCESS;
 
         });
