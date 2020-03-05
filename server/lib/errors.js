@@ -68,28 +68,36 @@ module.exports = Object.freeze({
     // LOBBY
     LOBBY: {
         FULL: {
-            code: 4,
+            code: 1,
             status: 'Lobby plein'
         },
         NOT_IN_LOBBY: {
-            code: 5,
+            code: 2,
             status: 'Vous n\'êtes pas dans un lobby'
         },
         INVITATION_NOT_EXISTS: {
-            code: 6,
+            code: 3,
             status: 'L\'invitation n\'existe pas'
         },
         CLOSED: {
-            code: 7,
+            code: 4,
             status: 'Lobby fermé'
         },
         NOT_FULL: {
-            code: 8,
+            code: 5,
             status: 'Lobby non plein'
         },
         PAWN_ALREADY_USED: {
-            code: 9,
+            code: 6,
             status: 'Pion déjà utilisé'
         }
+    },
+
+    // GAME
+    GAME: {
+        NOT_MY_TURN: {
+            code: 1,
+            status: 'Ce n\'est pas votre tour de jeu'
+        },
     },
 });

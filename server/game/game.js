@@ -36,8 +36,6 @@ class Game {
 
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
-        this.turnMaxDuration = 2e4; // durée max d'un tour de jeu en ms
-        this.waitingTimeAfterReady = 3e3; // attente avant démarrage de partie en ms, après que tous les joueurs soient prêt
 
         for (let i = 0, l = users.length; i < l; i ++) {
             this.players.push(new Player(users[i], pawns[i]));
@@ -115,7 +113,7 @@ class Game {
 
     start () {
         this.startedTime = Date.now();
-        setTimeout(this.nextTurn.bind(this), this.waitingTimeAfterReady);
+        setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
     }
 
     /**
@@ -132,10 +130,10 @@ class Game {
     nextTurn () {
         this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
         console.log('NEXT TURN player = ' + this.curPlayer.user.nickname);
-        this.turnTimeout = setTimeout(this.nextTurn.bind(this), this.turnMaxDuration);
+        this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             nickname: this.curPlayer.user.nickname,
-            turnEndTime: Date.now() + this.turnMaxDuration
+            turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
         });
     }
 

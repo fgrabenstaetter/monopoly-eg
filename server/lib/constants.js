@@ -26,6 +26,12 @@ const Constants = {
     CHAT_MESSAGE_TYPE: {
         TEXT  : 0,
         OFFER : 1
+    },
+
+    // GAME
+    GAME_PARAM: {
+        WAITING_TIME_AFTER_READY: 2e3,
+        TURN_MAX_DURATION: 2e4
     }
 }
 
