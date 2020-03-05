@@ -747,6 +747,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry {
   margin-bottom: 20px;
+  position: relative;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name {
@@ -789,6 +790,30 @@ input {
   font-size: 16px;
   color: white;
   vertical-align: baseline;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup {
+  width: 500px;
+  position: absolute;
+  background-color: white;
+  left: 150px;
+  top: -10px;
+  padding: 50px;
+  border-radius: 20px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: white;
+  border-left: 0;
+  margin-top: 10px;
+  margin-left: -10px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:first-of-type .name {
@@ -856,13 +881,13 @@ input {
   position: relative;
   margin-top: 20px;
   margin-left: auto;
-  width: 350px;
+  width: 225px;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header {
   border-radius: 15px 15px 0px 0px;
   color: white;
-  background-color: #066875;
+  background-color: orange;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -875,6 +900,16 @@ input {
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body {
   border-radius: 0px 0px 15px 15px;
   background-color: #24a9ba;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {

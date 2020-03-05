@@ -19,6 +19,7 @@
 
       .player-entry {
         margin-bottom: 20px;
+        position: relative;
 
         .name {
           font-weight: bold;
@@ -61,6 +62,30 @@
           color: white;
           vertical-align: baseline;
         }
+
+        .popup {
+          width: 500px;
+          position: absolute;
+          background-color: white;
+          left: 150px;
+          top: -10px;
+          padding: 50px;
+          border-radius: 20px;
+        }
+
+        .popup:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 10px;
+          width: 0;
+          height: 0;
+          border: 10px solid transparent;
+          border-right-color: white;
+          border-left: 0;
+          margin-top: 10px;
+          margin-left: -10px;
+        }
       }
 
       @import '_players-colors.scss'
@@ -92,12 +117,13 @@
         position: relative;
         margin-top: 20px;
         margin-left: auto;
-        width: 350px;
+        width: 225px;
   
+        // Il faudra rendre le background-color dynamique
         .card-header {
           border-radius: 15px 15px 0px 0px;
           color: white;
-          background-color: $window_header;
+          background-color: orange;
           padding-top: 10px;
           padding-bottom: 10px;
 
@@ -110,6 +136,9 @@
         .card-body {
           border-radius: 0px 0px 15px 15px;
           background-color: $window_body;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
 
           .btn {
             height: 32px;
