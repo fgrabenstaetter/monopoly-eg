@@ -519,9 +519,14 @@
         ```
 
     * **Réponse:** gameTurnEndRes
+        > Envoyé automatiquement au joueur lorsque son timeout de tour a expiré
+
         * *Données:*
         ```javascript
-        null
+        {
+            error: int,
+            status: string
+        }
         ```
 
 ### --- Chat et offres
