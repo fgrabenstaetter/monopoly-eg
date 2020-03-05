@@ -3,6 +3,7 @@
 Projet intégrateur de S6 de l'UFR Math Info
 
 ## Architecture du dépôt
+
 - / : racine
 - /server : code du serveur
 - /client : code du client (uniquement le client léger pour l'instant, càd le client web)
@@ -36,27 +37,28 @@ Team EG
 
 1. Changer de répertoire
 
-```bash
-cd server/
-```
+   ```bash
+   cd server/
+   ```
 
 2. Installer tous les modules via NPM
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Démarrer le serveur en mode développement/production
 
-```bash
-npm start # mode développement
-npm start production # mode production
-```
+   ```bash
+   npm start # mode développement
+   npm start production # mode production
+   ```
 
 4. Lancer les tests unitaires
-```bash
-npm test
-```
+
+   ```bash
+   npm test
+   ```
 
 ### Client
 
@@ -74,4 +76,3 @@ npm test
    ```
 
 3. Accéder à l'adresse http://localhost:3001
-
