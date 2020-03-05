@@ -756,6 +756,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
   color: white;
+  font-size: 15px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::before {
@@ -770,7 +771,7 @@ input {
   font-weight: 900;
   content: "\f3d1";
   margin-right: 10px;
-  font-size: 20px;
+  font-size: 18px;
   color: white;
   vertical-align: text-top;
 }
