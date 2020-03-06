@@ -24,15 +24,15 @@ class Network {
         user.socket.join(lobby.name);
 
         // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq(user, lobby);
-        this.lobbyInvitationAcceptReq(user, lobby);
-        this.lobbyKickReq(user, lobby);
+        this.lobbyInvitationReq          (user, lobby);
+        this.lobbyInvitationAcceptReq    (user, lobby);
+        this.lobbyKickReq                (user, lobby);
 
         // Paramètres + Chat
-        this.lobbyChangeTargetUsersNbReq(user, lobby);
-        this.lobbyChangePawnReq(user, lobby);
-        this.lobbyChatSendReq(user, lobby);
-        this.lobbyPlayReq(user, lobby);
+        this.lobbyChangeTargetUsersNbReq (user, lobby);
+        this.lobbyChangePawnReq          (user, lobby);
+        this.lobbyChatSendReq            (user, lobby);
+        this.lobbyPlayReq                (user, lobby);
 
         // Amis
         // this.lobbyFriendInviteReq(user, lobby);
@@ -68,14 +68,14 @@ class Network {
     gamePlayerListen (player, game) {
         player.user.socket.join(game.name);
 
-        this.gameReadyReq(player, game);
-        this.gameRollDiceReq(player, game);
-        this.gameTurnEndReq(player, game);
-        this.gameChatMessageReq(player, game);
-        this.gameOfferSendReq(player, game);
-        this.gameOfferAcceptReq(player, game);
-        this.gameOverbidReq(player, game);
-        this.gameMortageReq(player, game);
+        this.gameReadyReq       (player, game);
+        this.gameRollDiceReq    (player, game);
+        this.gameTurnEndReq     (player, game);
+        this.gameChatMessageReq (player, game);
+        this.gameOfferSendReq   (player, game);
+        this.gameOfferAcceptReq (player, game);
+        this.gameOverbidReq     (player, game);
+        this.gameMortageReq     (player, game);
     }
 
     gamePlayerStopListening (player, game) {
@@ -110,9 +110,9 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                sender      : mess.senderUser.nickname,
-                content     : mess.content,
-                createdTime : mess.createdTime
+                senderUserID : mess.senderUser.id,
+                content      : mess.content,
+                createdTime  : mess.createdTime
             });
         }
 
@@ -120,6 +120,7 @@ class Network {
         for (const usr of lobby.users) {
             users.push({
                 nickname : usr.nickname,
+                id       : usr.id,
                 pawn     : lobby.userPawn(usr)
             });
         }
@@ -134,6 +135,7 @@ class Network {
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
             nickname : user.nickname,
+            id       : user.id,
             pawn     : lobby.pawns[lobby.users.indexOf(user)]
         });
     }
@@ -143,15 +145,15 @@ class Network {
             let err = Errors.SUCCESS;
             let friendUser = null;
 
-            if (!data.friendNickname)
+            if (!data.friendID)
                 err = Errors.MISSING_FIELD;
-            else if (user.friends.indexOf(data.friendNickname) === -1)
+            else if (user.friends.indexOf(data.friendID) === -1)
                 err = Errors.FRIEND_NOT_EXISTS;
             else if (lobby.users.length >= lobby.targetUsersNb)
                 err = Errors.LOBBY_FULL;
             else {
                 for (const user of this.GLOBAL.users) {
-                    if (user.nickname === data.friendNickname) {
+                    if (user.friendID === data.friendID) {
                         friendUser = user;
                         break;
                     }
@@ -161,7 +163,7 @@ class Network {
                     err = Errors.FRIEND_NOT_CONNECTED;
                 else {
                     for (const game of this.GLOBAL.games) {
-                        const tmp = game.playerByNickname(data.friendNickname);
+                        const tmp = game.playerByNickname(data.friendID);
                         if (tmp) {
                             err = Errors.FRIEND_IN_GAME;
                             break;
@@ -170,11 +172,11 @@ class Network {
                 }
 
                 if (err.code === Errors.SUCCESS.code) {
-                    const invitId = lobby.addInvitation(user.nickname, data.friendNickname);
+                    const invitId = lobby.addInvitation(user.nickname, data.friendID);
                     friendUser.socket.emit('lobbyInvitationReceivedRes', {
-                        invitationID         : invitId,
-                        senderFriendNickname : user.nickname,
-                        nbUsersInLobby       : lobby.users.length
+                        invitationID   : invitId,
+                        senderFriendID : user.id,
+                        nbUsersInLobby : lobby.users.length
                     });
                 }
 
@@ -235,12 +237,12 @@ class Network {
             let err = Errors.SUCCESS;
             let userToKick = null;
 
-            if (!data.userToKickNickname)
+            if (!data.userToKickID)
                 err = Errors.MISSING_FIELD;
-            else if (data.userToKickNickname === user.nickname)
+            else if (data.userToKickID === user.id)
                 err = Errors.UNKNOW;
             else {
-                userToKick = lobby.userByNickname(data.userToKickNickname);
+                userToKick = lobby.userByID(data.userToKickID);
                 if (!userToKick)
                     err = Errors.LOBBY.NOT_IN_LOBBY;
             }
@@ -278,8 +280,8 @@ class Network {
                 err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyUserPawnChangedRes', {
-                    nickname : user.nickname,
-                    pawn     : data.pawn
+                    userID : user.id,
+                    pawn   : data.pawn
                 });
             }
 
@@ -298,9 +300,9 @@ class Network {
                 // broadcast lobby (also sender)
                 console.log('tchat send req for ' + user.nickname)
                 this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-                    sender      : mess.senderUser.nickname,
-                    content     : mess.content,
-                    createdTime : mess.createdTime
+                    senderUserID : mess.senderUser.id,
+                    content      : mess.content,
+                    createdTime  : mess.createdTime
                 });
             }
 
@@ -342,6 +344,7 @@ class Network {
                 for (const player of game.players) {
                     players.push({
                         nickname : player.user.nickname,
+                        id       : player.user.id,
                         pawn     : player.pawn
                     });
                 }
@@ -411,13 +414,13 @@ class Network {
             else {
                 const diceRes = game.rollDice();
                 this.io.to(game.name).emit('gameActionRes', {
-                    playerNickname: player.user.nickname,
-                    dicesRes: diceRes,
-                    cellID: player.cellInd,
-                    gameMessage: 'vide pour linstant',
-                    actionType: 0, // tmp
-                    updateMoney: [ ], // tmp
-                    extra: [ ] // tmp
+                    playerID : player.user.id,
+                    dicesRes       : diceRes,
+                    cellID         : player.cellInd,
+                    gameMessage    : 'vide pour linstant',
+                    actionType     : 0, // tmp
+                    updateMoney    : [ ], // tmp
+                    extra          : [ ] // tmp
                 });
             }
 

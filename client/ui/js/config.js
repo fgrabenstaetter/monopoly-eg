@@ -8,3 +8,4 @@ const socketUrl = 'http://localhost:3000';
 
 const jwt = localStorage.getItem('jwt');
 const NICKNAME = localStorage.getItem('nickname');
+const ID = localStorage.getItem('id');

@@ -7,7 +7,7 @@ class Lobby {
 
     /**
      * Objets d'invitation de lobby
-     * { from: pseudoEmetteur, to: pseudoDestinataire, id: int }
+     * { from: fromUserID: int, toUserID: int, invitationID: int }
      */
     invitations = [];
     invitationIDCounter = 0;
@@ -67,8 +67,8 @@ class Lobby {
         } else {
             const newHost = this.users[0];
             this.GLOBAL.network.io.to(this.name).emit('lobbyUserLeftRes', {
-                nickname: user.nickname,
-                host: newHost.nickname
+                userID: user.id,
+                hostID: newHost.id
             });
         }
 
@@ -119,6 +119,20 @@ class Lobby {
 
         return null;
     }
+
+    /**
+     * @param id L'ID de l'utilisateur à chercher
+     * @return l'utilisateur (user) si trouvé, sinon null
+     */
+    userByID (id) {
+        for (const user of this.users) {
+            if (user.id === id)
+                return user;
+        }
+
+        return null;
+    }
+
 
     /**
      * @param user L'utilisateur dont on veut récupérer le pion
@@ -172,15 +186,15 @@ class Lobby {
     }
 
     /**
-     * @param from Le pseudo de l'utilisateur qui envoie l'invitation
-     * @param to Le pseudo de l'utilisateur qui doit recevoir l'invitation
+     * @param fromID L'ID de l'utilisateur qui envoie l'invitation
+     * @param toID L'ID pseudo de l'utilisateur qui doit recevoir l'invitation
      * @return L'ID de l'invitation créée
      */
-    static addInvitation (from, to) {
+    static addInvitation (fromID, toID) {
         this.invitations.push( {
-            from: from,
-            to: to,
-            id: this.invitationIDCounter
+            fromUserID: from,
+            toUserID: to,
+            invitationID: this.invitationIDCounter
         });
         return this.invitationIDCounter ++;
     }

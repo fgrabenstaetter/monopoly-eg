@@ -37,11 +37,11 @@ function sendMsg () {
 function addMsg (msg) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-    const msgClass = 'msg-' + (msg.sender === NICKNAME ? 'me' : 'other');
+    const msgClass = 'msg-' + (msg.senderID === ID ? 'me' : 'other');
     const localeDate = new Date(msg.createdTime).toLocaleString();
     const html = `
         <div class="` + msgClass + `" title="` + localeDate + `">
-            <div class="msg-author">` + msg.sender + `</div>`
+            <div class="msg-author">` + idToNick(msg.senderUserID) + `</div>`
             + msg.content +
         `</div>`;
 
