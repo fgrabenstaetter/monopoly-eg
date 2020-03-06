@@ -31,7 +31,9 @@ const Constants = {
     // GAME
     GAME_PARAM: {
         WAITING_TIME_AFTER_READY: 2e3,
-        TURN_MAX_DURATION: 2e4
+        TURN_MAX_DURATION: 2e4,
+        EXIT_JAIL_PRICE: 50,
+        GET_MONEY_FROM_START: 200
     }
 }
 
