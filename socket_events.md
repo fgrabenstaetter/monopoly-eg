@@ -269,6 +269,27 @@
 
 ### --- Amis
 
+- **Recevoir la liste d'amis**
+
+    * **Requête:** lobbyFriendListReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** lobbyFriendListRes
+        * *Données:*
+        ```javascript
+        {
+            friends: [
+                {
+                    id: int,
+                    nickname: string
+                }, ...
+            ]
+        }
+        ```
+
 - **Envoyer une demande d'ami**
 
     * **Requête:** lobbyFriendInviteReq
