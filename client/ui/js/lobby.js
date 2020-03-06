@@ -1,8 +1,21 @@
-let hostNickname;
+let users = []; // = liste de { nickname: string, id: int }
+function nickToId (nick) {
+    for (const row of users) {
+        if (row.nickname === nick)
+            return row.id;
+    }
+}
+function idToNick (id) {
+    for (const row of users) {
+        if (row.id === id)
+            return row.nickname;
+    }
+}
+
+let hostID;
 // désactivers/masquer certaines actions/elements par défaut (et réactiver si hôte ensuite)
 $('#leftNbJ, #rightNbJ').css('display', 'none'); // afficher que si hote
 $('#play').addClass('disabled'); // seulement l'hôte peut lancer la partie !
-lobbyInvitation('1', 'FullMerinos')
 
 /////////////////////////////
 // SOCKET EVENTS LISTENERS //
@@ -10,13 +23,14 @@ lobbyInvitation('1', 'FullMerinos')
 
 socket.on('lobbyCreatedRes', (res) => {
     console.log('lobbyCreatedRes: ' + Object.keys(res));
-    hostNickname = NICKNAME;
+    hostID = ID;
     // nb désiré de joueurs par défaut
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
     imHost();
-    addGroupUser(NICKNAME, res.pawn);
+    users.push({ nickname: NICKNAME, id: ID });
+    addGroupUser(ID, res.pawn);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -33,43 +47,47 @@ socket.on('lobbyJoinedRes', (res) => {
         addMsg(mess)
 
     // l'hote est le premier user de la liste res.users
-    hostNickname = res.users[0].nickname;
+    hostID = res.users[0].id;
 
-    for (const usr of res.users)
-        addGroupUser(usr.nickname, usr.pawn);
+    for (const usr of res.users) {
+        users.push(usr);
+        addGroupUser(usr.id, usr.pawn);
+    }
 });
 
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
-    addGroupUser(res.nickname, res.pawn);
+    users.push({ nickname: res.nickname, id: res.id });
+    addGroupUser(res.id, res.pawn);
 
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
     const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
     if (nb < nbUsers)
         document.getElementById('nbJoueurs').textContent = nb + 1
 
-    if (hostNickname === NICKNAME)
+    if (hostID === ID)
         updateNbUsersArrows();
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
-    console.log('[Lobby] ' + res.nickname + ' est parti !');
-    if (res.nickname === NICKNAME) {
+    console.log('[Lobby] ' + idToNick(res.userID) + ' est parti !');
+    if (res.userID === ID) {
         // j'ai été KICK
         window.location = '/lobby';
         return;
     }
 
-    if (hostNickname !== res.host) {
+    if (hostID !== res.hostID) {
         // ...=> changement d'hote
     }
-    hostNickname = res.host;
-    console.log('newhost = ' + res.host)
+
+    hostID = res.hostID;
+    console.log('newhost = ' + idToNick(res.hostID))
 
     // supprimer de la liste dans grouplist
-    delGroupUser(res.nickname);
+    delGroupUser(res.userID);
 
-    if (hostNickname === NICKNAME)
+    if (hostID === ID)
         imHost();
 });
 
@@ -81,7 +99,7 @@ socket.on('lobbyChatReceiveRes', (msg) => {
 socket.on('lobbyTargetUsersNbChangedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.nb;
 
-    if (hostNickname === NICKNAME)
+    if (hostID === ID)
         updateNbUsersArrows();
 });
 
@@ -123,7 +141,7 @@ $(document).ready( () => {
     });
 
     $('#play').click( () => {
-        if (hostNickname === NICKNAME)
+        if (hostID === ID)
             socket.emit('lobbyPlayReq');
     });
 });
@@ -216,21 +234,13 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
     });
 }
 
-function addGroupUser (nickname, pawn) {
-    if (nickname === hostNickname) {
-        // ajouter marqueur HOTE
-    }
-
-    if (nickname === NICKNAME) {
-        // ajouter marqueur MOI
-    }
-
-    const shouldDisplayKickButton = NICKNAME === hostNickname && nickname !== NICKNAME;
-    const isHost = nickname === hostNickname;
+function addGroupUser (id, pawn) {
+    const shouldDisplayKickButton = ID === hostID && id !== ID;
+    const isHost = id === hostID;
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
             <img class="friends-avatar" src="img/ui/avatar1.jpg">
-            <div class="friends-name">` + nickname + `</div>
+            <div class="friends-name">` + idToNick(id) + `</div>
             <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 
@@ -238,17 +248,16 @@ function addGroupUser (nickname, pawn) {
 
     // actualisation de l'event click (car html modifié)
     $('.grouplist .friend-action').click(function() {
-        // = bouton EXCLURE
-        // Uniquement si HÔTE
-        const nick = $(this).parent().find('.friends-name').text();
-        socket.emit('lobbyKickReq', { userToKickNickname: nick });
+        // = bouton EXCLURE (uniquement si hôte)
+        socket.emit('lobbyKickReq', { userToKickID: id });
     });
 }
 
-function delGroupUser (nickname) {
+function delGroupUser (id) {
+    const nick = idToNick(id);
     const els = document.querySelectorAll('.grouplist .friends-name');
     for (const el of els) {
-        if (el.textContent === nickname) {
+        if (el.textContent === nick) {
             el.parentNode.parentNode.removeChild(el.parentNode);
             break;
         }
@@ -280,7 +289,7 @@ $('.friend-request-accept').click(function() {
 
 });
 
-//lobbyFriendInvitationRes Deny
+// lobbyFriendInvitationRes Deny
 $('.friend-request-deny').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';

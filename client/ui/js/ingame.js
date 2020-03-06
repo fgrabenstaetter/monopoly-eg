@@ -1,15 +1,28 @@
+let playersData, cellsData, propertiesData, cardsData; // données statiques de jeu (format: voir /socket_events.md)
+let gameEndTime; // timestamp de fin forcée du jeu
+
+function nickToId (nick) {
+    for (const row of playersData) {
+        if (row.nickname === nick)
+            return row.id;
+    }
+}
+function idToNick (id) {
+    for (const row of playersData) {
+        if (row.id === id)
+            return row.nickname;
+    }
+}
+
 /////////////////////////////
 // SOCKET EVENTS LISTENERS //
 /////////////////////////////
 
-let playersData, cellsData, propertiesData, cardsData; // données statiques de jeu (format: voir /socket_events.md)
-let gameEndTime; // timestamp de fin forcée du jeu
-
 socket.on('gameStartedRes', (data) => {
-    playersData = data.players;
-    cellsData = data.cells;
+    playersData    = data.players;
+    cellsData      = data.cells;
     propertiesData = data.properties;
-    cardsData = data.cards;
+    cardsData      = data.cards;
 
     console.log('Le jeu a démarré ! joueurs: ');
     for (const pl of playersData)

@@ -132,7 +132,7 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        let token = null;
+        let token = null, id = null;
 
         if (err.code === Errors.SUCCESS.code) {
             // si le user n'est pas déjà dans la liste, l'y ajouter
@@ -142,13 +142,19 @@ app.post('/api/login', (req, res) => {
                 GLOBAL.users.push(user);
             }
 
+            id = userSchema.id;
             token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
                 expiresIn: 86400 // expires in 24 hours
             });
         } else
             res.status(400);
 
-        res.json({ error: err.code, status: err.status, token: token });
+        res.json({
+            error  : err.code,
+            status : err.status,
+            token  : token,
+            id     : id
+        });
     });
 });
 

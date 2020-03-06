@@ -43,7 +43,7 @@
         * *Données:*
         ```javascript
         {
-            friendNickname: string
+            friendID: int
         }
         ```
 
@@ -62,8 +62,8 @@
         ```javascript
         {
             invitationID: int,
-            senderFriendNickname: string,
-            nbUsersInLobby: int
+            nbUsersInLobby: int,
+            senderFriendID: int // connaissance du ID: recevoir liste d'amis au préalable
         }
          ```
 
@@ -96,6 +96,7 @@
                 // premier user = host
                 {
                     nickname: string,
+                    id: int,
                     pawn: int
                 },
                 ...
@@ -103,7 +104,7 @@
             ],
             messages: [ // max 100 messages, les plus récents en dernier
                 {
-                    sender: string,
+                    senderUserID: int,
                     content: string,
                     createdTime: timestamp
                 },
@@ -117,7 +118,8 @@
         * *Données:*
         ```javascript
         {
-            nickname: string
+            nickname: string,
+            id: int,
             pawn: int
         }
         ```
@@ -127,7 +129,7 @@
         * *Données:*
         ```javascript
         {
-            userToKickNickname: string
+            userToKickID: int
         }
         ```
 
@@ -145,12 +147,12 @@
         > Est envoyé à tout le monde dans le lobby. Si le user en question recoit aussi l'event, cela veut dire qu'il n'est pas parti mais qu'il a été kické du lobby (actualiser l'affichage)
 
         * *Données:*
-            > Le pseudo de l'hôte est retourné (*host*) car il change après le départ de l'hôte (uniquement)
+            > L'ID de l'hôte est retourné (*hostID*) car il change après le départ de l'hôte (uniquement)
 
         ```javascript
         {
-            nickname: string,
-            host: string // host nickname
+            userID: int,
+            hostID: int
         }
         ```
 
@@ -212,7 +214,7 @@
         * *Données:*
         ```javascript
         {
-            nickname: string, // pseudo de celui qui a changé son pion
+            userID: int,
             pawn: int
         }
         ```
@@ -241,9 +243,9 @@
         * *Données:*
         ```javascript
         {
-            sender: string, // pseudo de l'émetteur
             content: string, // texte
-            createdTime: timestamp
+            createdTime: timestamp,
+            senderUserID: int
         }
         ```
 
@@ -296,7 +298,7 @@
         * *Données:*
         ```javascript
         {
-            receiverNickname: string
+            receiverUserNickname: string
         }
         ```
 
@@ -316,8 +318,8 @@
         * *Données:*
         ```javascript
         {
-            receiverNickname: string
-            state: string // accepted | rejected
+            state: string, // accepted | rejected
+            receiverUserID: int
         }
         ```
 
@@ -328,7 +330,8 @@
         * *Données:*
         ```javascript
         {
-            senderNickname: string
+            nickname: string,
+            id: int
         }
         ```
 
@@ -339,8 +342,8 @@
         * *Données:*
         ```javascript
         {
-            senderNickname: string,
-            action: string // accept | reject
+            action: string, // accept | reject
+            senderUserID: int
         }
         ```
 
@@ -360,7 +363,7 @@
         * *Données:*
         ```javascript
         {
-            friendNickname: string
+            friendUserID: int
         }
         ```
 
@@ -398,6 +401,7 @@
             players: [
                 {
                     nickname: string,
+                    id: int,
                     pawn: int
                 }, ...
             ],
@@ -465,7 +469,7 @@
         * *Données:*
         ```javascript
         {
-            playerNickname: string
+            playerID: int
         }
         ```
 
@@ -479,8 +483,8 @@
         * *Données:*
         ```javascript
         {
-            nickname: string,
-            turnEndTime: timestamp // timestamp de fin forcé du tour
+            turnEndTime: timestamp, // timestamp de fin forcé du tour
+            playerID: int
         }
         ```
 
@@ -509,15 +513,15 @@
         * *Données:*
         ```javascript
         {
-            playerNickname: string,
             dicesRes: [ int, int ],
             cellID: int,
             gameMessage: string, // message de l'action
             actionType: int,
+            playerID: int,
             updateMoney:
             [
                 // peut être vide (dynamique)
-                nickname: int, // nouveau solde
+                playerID: int, // nouveau solde
                 ...
             ],
             extra: [
@@ -570,7 +574,7 @@
         {
             messID: int,
             type: string, // text | offer
-            nickname: string,
+            playerID: int,
             text: string,
             offer: { // ou null si type !== offer
                 id, // ID de l'offre (utile pour l'accepter)
@@ -630,7 +634,7 @@
         ```javascript
         {
             bidID: int,
-            playerNickname: string,
+            playerID: int,
             text: string,
             price: int | null // null si l'enchère a terminée
         }

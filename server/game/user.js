@@ -9,6 +9,7 @@ class User {
      * @param userSchema Le modèle d'utilisateur associé aux données
      */
     constructor (userSchema) {
+        this.id = userSchema.id;
         this.nickname = userSchema.nickname;
         this.email    = userSchema.email;
         this.friends  = userSchema.friends;
