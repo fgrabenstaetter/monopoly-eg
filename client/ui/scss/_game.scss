@@ -22,7 +22,20 @@
         position: relative;
 
         .name {
+          font-size: 20px;
           font-weight: bold;
+          font-family: 'Work Sans', sans-serif;
+          position: relative;
+          background: transparent;
+          z-index: 0;
+        }
+
+        .name::before {
+          content: attr(title);
+          position: absolute;
+          -webkit-text-stroke: 0.2em black; /* Chris Coyier's favorite color! */
+          left: 0;
+          z-index: -1;
         }
 
         .money {
@@ -156,7 +169,7 @@
 
         .card-body {
           border-radius: 0px 0px 15px 15px;
-          background-color: $window_body;
+          background-color: rgba($color: black, $alpha: 0.2);
           display: flex;
           flex-direction: column;
           align-items: center;

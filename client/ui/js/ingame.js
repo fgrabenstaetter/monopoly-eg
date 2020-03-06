@@ -34,3 +34,9 @@ socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 ////////////////////////////
 // INTERFACE JS FUNCTIONS //
 ////////////////////////////
+
+$(function(){
+    $('.player-entry .name').attr('title', function(){
+        return $(this).html();
+    });
+});

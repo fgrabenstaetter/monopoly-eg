@@ -15,12 +15,12 @@
       border-radius: 15px 15px 0px 0px;
       font-family: 'LilitaOne', sans-serif;
       color: white;
-      background-color: $window_header;
+      background-color: rgba($color: black, $alpha: 0.5);
     }
 
     .card-body {
       border-radius: 0px 0px 15px 15px;
-      background-color: $window_body;
+      background-color: rgba($color: black, $alpha: 0.3);
       padding: 30px 170px;
 
       input {

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:900&display=swap");
 @font-face {
   font-family: 'LilitaOne';
   src: url("../fonts/LilitaOne-Regular.ttf");
@@ -60,7 +61,8 @@ input {
 .background-container {
   position: absolute;
   z-index: -2;
-  background-color: #79e9f7;
+  background: #24d6f2;
+  background: radial-gradient(circle, #24d6f2 0%, #00aaf5 35%, #0052ba 100%);
   width: 100%;
   height: 100%;
 }
@@ -89,12 +91,12 @@ input {
   border-radius: 15px 15px 0px 0px;
   font-family: 'LilitaOne', sans-serif;
   color: white;
-  background-color: #066875;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .login-ui-container .card .card-body, .signin-ui-container .card .card-body {
   border-radius: 0px 0px 15px 15px;
-  background-color: #24a9ba;
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 30px 170px;
 }
 
@@ -330,11 +332,12 @@ input {
   width: 220px;
   border-radius: 0;
   border: none;
+  background: transparent;
 }
 
 .lobby-ui-container .container:first-child .box .card-header {
   border-radius: 0;
-  background-color: #2dc8dc;
+  background-color: rgba(0, 0, 0, 0.5);
   font-family: 'LilitaOne', sans-serif;
   color: white;
   font-size: 17px;
@@ -375,7 +378,7 @@ input {
 
 .lobby-ui-container .container:first-child .box .card-body {
   border-radius: 0;
-  background-color: #0da6b8;
+  background-color: rgba(0, 0, 0, 0.3);
   color: white;
   font-size: 14px;
   padding: 0;
@@ -614,8 +617,8 @@ input {
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .stylized {
-  border-color: #5fddeb;
-  background-color: #0ab6cc;
+  border-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-left {
@@ -685,13 +688,13 @@ input {
   font-family: 'LilitaOne', sans-serif;
   font-size: 14px;
   color: white;
-  background-color: #066875;
+  background-color: rgba(0, 0, 0, 0.5);
   padding-top: 10px;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body {
   border-radius: 0px 0px 15px 15px;
-  background-color: #24a9ba;
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
 }
 
@@ -751,7 +754,21 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name {
+  font-size: 20px;
   font-weight: bold;
+  font-family: 'Work Sans', sans-serif;
+  position: relative;
+  background: transparent;
+  z-index: 0;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .name::before {
+  content: attr(title);
+  position: absolute;
+  -webkit-text-stroke: 0.2em black;
+  /* Chris Coyier's favorite color! */
+  left: 0;
+  z-index: -1;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
@@ -842,15 +859,15 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(2) .name {
-  color: red;
+  color: #d43333;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(3) .name {
-  color: blue;
+  color: #006aff;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(4) .name {
-  color: green;
+  color: #22d406;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(5) .name {
@@ -920,7 +937,7 @@ input {
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body {
   border-radius: 0px 0px 15px 15px;
-  background-color: #24a9ba;
+  background-color: rgba(0, 0, 0, 0.2);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

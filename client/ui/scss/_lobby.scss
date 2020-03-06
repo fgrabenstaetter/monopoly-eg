@@ -15,10 +15,11 @@
       width: 220px;
       border-radius: 0;
       border: none;
+      background: transparent;
 
       .card-header {
         border-radius: 0;
-        background-color: $box_header;
+        background-color: rgba($color: black, $alpha: 0.5);
         font-family: 'LilitaOne', sans-serif;
         color: white;
         font-size: 17px;
@@ -48,7 +49,7 @@
 
       .card-body {
         border-radius: 0;
-        background-color: $box_body;
+        background-color: rgba($color: black, $alpha: 0.3);
         color: white;
         font-size: 14px;
         padding: 0;
@@ -270,8 +271,8 @@
       }
 
       .stylized {
-        border-color: #5fddeb;
-        background-color: #0ab6cc;
+        border-color: rgba($color: black, $alpha: 0.5);
+        background-color: rgba($color: black, $alpha: 0.3);
       }
 
       .arrow-right, .arrow-left {
@@ -334,13 +335,13 @@
           font-family: 'LilitaOne', sans-serif;
           font-size: 14px;
           color: white;
-          background-color: $window_header;
+          background-color: rgba($color: black, $alpha: 0.5);
           padding-top: 10px;
         }
   
         .card-body {
           border-radius: 0px 0px 15px 15px;
-          background-color: $window_body;
+          background-color: rgba($color: black, $alpha: 0.3);
           padding: 10px;
 
           .card-text {
