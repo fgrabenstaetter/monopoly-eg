@@ -49,10 +49,13 @@ class Player {
     }
 
     loseMoney (amount) {
-        if(this.money < amount)
+        if(this.money < amount) {
             this.money = 0;
-        else
+            return false;
+        } else {
             this.money = this.money - amount;
+            return true;
+        }
     }
 
     goPrison () {

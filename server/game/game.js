@@ -140,13 +140,66 @@ class Game {
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
      * @return [int, int] le résultat des dés
+     * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
      */
-    rollDice () {
+    rollDice (useExitJailCard = false) {
         const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
-
+        const total = diceRes[0] + diceRes[1];
+        const oldInd = this.curPlayer.cellInd;
         //  ... actions du tour
         //  this.curPlayer
+        if (this.curPlayer.isInPrison) {
+            if (this.curPlayer.remainingTurnsInJail < 3) {
+                if (useExitJailCard) {
+                    this.curPlayer.cellInd += total;
+                    if (this.curPlayer)
+                    this.curPlayer.jailJokerCards--;
+                    this.curPlayer.escapePrison() = 0;
+                }
+                else if (diceRes[0] == diceRes[1]) {
+                    this.curPlayer.cellInd += total;
+                    this.curPlayer.escapePrison() = 0;
+                }
+            }
+            else {
+                lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
+                if (!lose) {
+                    //Le joueur a perdu car il ne peut pas payer l'amende (à implémenter)
+                }
+                else {
+                    this.curPlayer.cellInd += total;
+                    this.curPlayer.escapePrison();
+                }
+            }
+        }
+        else {
+            const curCell = this.curPlayer.cellInd + total;
+            const cellType = Cells[curCell];
+            switch (cellType) {
+                case Constants.PARC:
+                    break;
 
+                case Constants.PRISON:
+                    this.curPlayer.goPrison();
+                    break;
+
+                case Constants.PROPERTY:
+                    break;
+
+                case Constants.CHANCE:
+                    break;
+
+                case Constants.COMMUNITY:
+                    break;
+
+                case Constants.START:
+                    break;
+            }
+        }
+        if (oldInd > this.curPlayer.cellInd) {
+            //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
+            this.curPlayer.addMoney(Constants.GET_MONEY_FROM_START);
+        }
         return diceRes;
     }
 }
