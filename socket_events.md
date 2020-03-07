@@ -556,9 +556,9 @@
 
 ### --- Chat et offres
 
-- **Envoyer/Recevoir un message dans le chat du jeu**
+- **Envoyer un message dans le chat du jeu**
 
-    * **Requête:** gameChatMessageReq
+    * **Requête:** gameChatSendReq
         * *Données:*
         ```javascript
         {
@@ -566,22 +566,31 @@
         }
         ```
 
-    * **Réponse:** gameChatMessageRes
+    * **Réponse:** gameChatSendRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+- **Recevoir un message dans le chat du jeu**
+
+    * **Réponse:** gameChatReceiveRes
         > Pas forcément un message text brut, peut aussi être une offre (d'achat)
 
         * *Données:*
         ```javascript
         {
-            messID: int,
             type: string, // text | offer
             playerID: int,
             text: string,
+            createdTime: timestamp,
             offer: { // ou null si type !== offer
                 id, // ID de l'offre (utile pour l'accepter)
                 receiver: string,
                 property: int, // ID de la propriété
-                amount: int,
-                datetimeOffer: datetime
+                amount: int
             }
         }
         ```
