@@ -1,14 +1,24 @@
-let playersData, cellsData, propertiesData, cardsData; // données statiques de jeu (format: voir /socket_events.md)
-let gameEndTime; // timestamp de fin forcée du jeu
+// RAPPEL VAR GLOBALES:
+//     NICKNAME => mon pseudo
+//     ID       => mon user/player ID
+
+// données statiques de jeu (format: voir /socket_events.md)
+let DATA = {
+    players     : [],
+    cells       : [],
+    properties  : [],
+    cards       : [],
+    gameEndTime : null // timestamp de fin forcée du jeu
+}
 
 function nickToId (nick) {
-    for (const row of playersData) {
+    for (const row of DATA.players) {
         if (row.nickname === nick)
             return row.id;
     }
 }
 function idToNick (id) {
-    for (const row of playersData) {
+    for (const row of DATA.players) {
         if (row.id === id)
             return row.nickname;
     }
@@ -19,15 +29,32 @@ function idToNick (id) {
 /////////////////////////////
 
 socket.on('gameStartedRes', (data) => {
-    playersData    = data.players;
-    cellsData      = data.cells;
-    propertiesData = data.properties;
-    cardsData      = data.cards;
+    DATA.players     = data.players;
+    DATA.cells       = data.cells;
+    DATA.properties  = data.properties;
+    DATA.cards       = data.cards;
+    DATA.gameEndTime = data.gameEndTime;
 
     console.log('Le jeu a démarré ! joueurs: ');
-    for (const pl of playersData)
+    for (const pl of DATA.players)
         console.log(pl.nickname);
 });
+
+socket.on('gameTurnRes', (data) => {
+    // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
+    console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
+    const turnTimeout = data.turnEndTime;
+    // afficher décompte de temps du tour
+
+    if (data.playerID === ID) {
+        // C'est mon tour !
+    }
+});
+
+socket.on('gameChatReceiveRes', (data) => {
+    addMsg(data.playerID, data.text, data.createdTime);
+});
+
 
 socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
