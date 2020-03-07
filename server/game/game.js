@@ -132,7 +132,7 @@ class Game {
         console.log('NEXT TURN player = ' + this.curPlayer.user.nickname);
         this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            nickname: this.curPlayer.user.nickname,
+            playerID: this.curPlayer.user.id,
             turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
         });
     }
