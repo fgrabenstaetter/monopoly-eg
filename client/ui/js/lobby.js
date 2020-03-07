@@ -44,7 +44,7 @@ socket.on('lobbyJoinedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
     for (const mess of res.messages)
-        addMsg(mess)
+        addMsg(mess.senderUserID, mess.content, mess.createdTime);
 
     // l'hote est le premier user de la liste res.users
     hostID = res.users[0].id;
@@ -91,9 +91,9 @@ socket.on('lobbyUserLeftRes', (res) => {
         imHost();
 });
 
-socket.on('lobbyChatReceiveRes', (msg) => {
+socket.on('lobbyChatReceiveRes', (mess) => {
     console.log('lobbyChatReceiveRes');
-    addMsg(msg);
+    addMsg(mess.senderUserID, mess.content, mess.createdTime);
 });
 
 socket.on('lobbyTargetUsersNbChangedRes', (res) => {
