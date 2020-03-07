@@ -99,5 +99,9 @@ module.exports = Object.freeze({
             code: 1,
             status: 'Ce n\'est pas votre tour de jeu'
         },
+        NOT_STARTED: {
+            code: 2,
+            status: 'La partie n\'a pas encore démarrée'
+        }
     },
 });

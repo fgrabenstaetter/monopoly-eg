@@ -2,6 +2,7 @@ const Constants = require('../lib/constants');
 const Cells = require('../lib/cells');
 const Deck = require('./deck');
 const Player = require('./player');
+const Chat = require('./chat');
 
 const chanceCardsMeta = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
@@ -33,6 +34,7 @@ class Game {
         this.communityChestDeck = new Deck(communityChestCardsMeta);
 
         this.bank = {}; // a faire
+        this.chat = new Chat();
 
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)

@@ -71,7 +71,7 @@ class Network {
         this.gameReadyReq       (player, game);
         this.gameRollDiceReq    (player, game);
         this.gameTurnEndReq     (player, game);
-        this.gameChatMessageReq (player, game);
+        this.gameChatSendReq    (player, game);
         this.gameOfferSendReq   (player, game);
         this.gameOfferAcceptReq (player, game);
         this.gameOverbidReq     (player, game);
@@ -82,7 +82,7 @@ class Network {
         player.user.socket.off('gameReadyReq');
         player.user.socket.off('gameRollDiceReq');
         player.user.socket.off('gameTurnEndReq');
-        player.user.socket.off('gameChatMessageReq');
+        player.user.socket.off('gameChatSendReq');
         player.user.socket.off('gameOfferSendReq');
         player.user.socket.off('gameOfferAcceptReq');
         player.user.socket.off('gameOverbidReq');
@@ -440,10 +440,26 @@ class Network {
         });
     }
 
-    gameChatMessageReq (player, game) {
-        player.user.socket.on('gameChatMessageReq', (data) => {
+    gameChatSendReq (player, game) {
+        player.user.socket.on('gameChatSendReq', (data) => {
             let err = Errors.SUCCESS;
+            if (!data.text)
+                err = Errors.MISSING_FIELD;
+            else if (!game.allPlayersReady)
+                err = Errors.GAME.NOT_STARTED;
+            else {
+                // envoyer le message (texte brut)
+                const mess = game.chat.addMessage(player.user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
+                this.io.to(game.name).emit('gameChatReceiveRes', {
+                    type        : 'text',
+                    playerID    : player.user.id,
+                    text        : mess.content,
+                    createdTime : mess.createdTime,
+                    offer       : null
+                });
+            }
 
+            player.user.socket.emit('gameChatSendRes', { error: err.code, status: err.status });
         });
     }
 
