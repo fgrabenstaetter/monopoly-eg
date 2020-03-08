@@ -156,17 +156,17 @@ class Game {
                     this.curPlayer.cellInd += total;
                     if (this.curPlayer)
                     this.curPlayer.jailJokerCards--;
-                    this.curPlayer.escapePrison() = 0;
+                    this.curPlayer.escapePrison();
                 }
                 else if (diceRes[0] == diceRes[1]) {
                     this.curPlayer.cellInd += total;
-                    this.curPlayer.escapePrison() = 0;
+                    this.curPlayer.escapePrison();
                 }
             }
             else {
                 lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
                 if (!lose) {
-                    //Le joueur a perdu car il ne peut pas payer l'amende (à implémenter)
+                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
                 }
                 else {
                     this.curPlayer.cellInd += total;
@@ -186,6 +186,32 @@ class Game {
                     break;
 
                 case Constants.PROPERTY:
+                    index = this.curPlayer.properties.indexOf(curCell.property);
+                    if (index !== -1) {
+                        //Le joueur est tombé sur une de ses propriétés
+                    }
+                    else {
+                        let cellOwner = null;
+                        for (player in this.players) {
+                            if (this.player.properties.indexOf(curCell.property) !== -1) {
+                                cellOwner = player;
+                                break;
+                            }
+                        }
+                        if (cellOwner == null) {
+                            //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter
+                        }
+                        else {
+                            //Le terrain appartient à un autre joueur
+                            let lose = this.curPlayer.loseMoney(curCell.rentalPrice);
+                            if (!lose) {
+                                //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
+                            }
+                            else {
+                                //Le joueur a payé le loyer
+                            }
+                        }
+                    }
                     break;
 
                 case Constants.CHANCE:
