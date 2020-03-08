@@ -1,4 +1,12 @@
 const Constants = {
+    cellTypes: {
+        start: 'start',
+        property: 'property',
+        communityChest: 'communityChest',
+        chance: 'chance',
+        prison: 'prison',
+        other: 'other' // custom effects, like "Pay $200 Income Tax"
+    },
     // CELL
     CELL_TYPE: {
         PARC      : 0, // case qui ne sert a rien

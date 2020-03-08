@@ -22,7 +22,7 @@ describe("Test sur la classe Player", function() {
     });
 
     it("Le joueur commence la partie sur la première case", function() {
-        assert.equal(0, player.cellPos);
+        assert.equal(null, player.currentCell);
     });
 
     it("Le joueur ne commence pas en prison", function() {

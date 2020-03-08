@@ -5,6 +5,7 @@ const Player    = require('./player');
 const Chat      = require('./chat');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
+const propertiesMeta = require('./../lib/properties');
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -27,7 +28,9 @@ class Game {
         this.chat = new Chat();
 
         this.cells = Cells;
-        this.cards = []; //tmp
+
+        this.map = new Map(cellsMeta, propertiesMeta);
+
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
 
@@ -55,7 +58,6 @@ class Game {
             this.players.push(new Player(users[i], pawns[i]));
         }
 
-        this.GLOBAL.games.push(this);
     }
 
     delete () {
@@ -159,9 +161,17 @@ class Game {
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
     nextTurn () {
+<<<<<<< HEAD
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
+=======
+        resultat_des = map.jeterLesDets()
+        map.movePlayer(currentPlayer, resultat_des);
+
+        switch (this.cells[this.players[this.turnPlayerInd].cellInd].type) {
+            case Constants.CELL_TYPE.PARC:
+>>>>>>> e751057... Implementation de la classe Map
 
         do
             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
