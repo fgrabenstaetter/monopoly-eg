@@ -78,7 +78,6 @@ describe('Test sur la classe Lobby', function () {
 		});
 
 		this._client = ioclient.connect('http://localhost:${NODE_PORT}');
-        console.log("Hello World!");
         /* si nous attendons le serveur et tuons le socket du serveur
 		* le client essaiera de se reconnecter et ne sera pas tué par mocha
         */

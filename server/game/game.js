@@ -154,7 +154,6 @@ class Game {
             if (this.curPlayer.remainingTurnsInJail < 3) {
                 if (useExitJailCard) {
                     this.curPlayer.cellInd += total;
-                    if (this.curPlayer)
                     this.curPlayer.jailJokerCards--;
                     this.curPlayer.escapePrison();
                 }
@@ -199,7 +198,7 @@ class Game {
                             }
                         }
                         if (cellOwner == null) {
-                            //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter
+                            //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter Sinon il est mis au enchère (modélisation ?)
                         }
                         else {
                             //Le terrain appartient à un autre joueur
@@ -215,12 +214,15 @@ class Game {
                     break;
 
                 case Constants.CHANCE:
+                    this.chanceDeck.drawCard(this, this.curPlayer);
                     break;
 
                 case Constants.COMMUNITY:
+                    this.communityChestDeck.drawCard(this, this.curPlayer);
                     break;
 
                 case Constants.START:
+                    //Ne fait rien => Gain de money ajouté à la fin de la fonction
                     break;
             }
         }
