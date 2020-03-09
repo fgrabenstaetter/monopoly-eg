@@ -77,12 +77,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    // pour test
-    res.send(`<h1>Bonjour</h1>
-              <b>IP:</b> ` + req.socket.remoteAddress + `<br />
-              <b>Port:</b> ` + req.socket.remotePort + `<br />
-              <a href="/tests">tests console</a>`
-    );
+    res.send('<h1>Bonjour</h1>');
 });
 
 //////////////////////
@@ -117,12 +112,7 @@ app.use( (err, req, res, next) => {
         res.status(401).send('Invalid JWT token');
 });
 
-app.get('/api/tokentest', (req, res) => {
-    res.json(req.user);
-});
-
 app.post('/api/register', (req, res) => {
-
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
         if (err.code !== Errors.SUCCESS.code)
             res.status(400);
