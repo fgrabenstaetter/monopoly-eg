@@ -190,14 +190,14 @@ class Game {
             const curCell = this.curPlayer.cellInd + total;
             const cellType = Cells[curCell];
             switch (cellType) {
-                case Constants.PARC:
+                case Constants.CELL_TYPE.PARC:
                     break;
 
-                case Constants.PRISON:
+                case Constants.CELL_TYPE.PRISON:
                     this.curPlayer.goPrison();
                     break;
 
-                case Constants.PROPERTY:
+                case Constants.CELL_TYPE.PROPERTY:
                     index = this.curPlayer.properties.indexOf(curCell.property);
                     if (index !== -1) {
                         //Le joueur est tombé sur une de ses propriétés
@@ -226,22 +226,22 @@ class Game {
                     }
                     break;
 
-                case Constants.CHANCE:
+                case Constants.CELL_TYPE.CHANCE:
                     this.chanceDeck.drawCard(this, this.curPlayer);
                     break;
 
-                case Constants.COMMUNITY:
+                case Constants.CELL_TYPE.COMMUNITY:
                     this.communityChestDeck.drawCard(this, this.curPlayer);
                     break;
 
-                case Constants.START:
+                case Constants.CELL_TYPE.START:
                     //Ne fait rien => Gain de money ajouté à la fin de la fonction
                     break;
             }
         }
         if (oldInd > this.curPlayer.cellInd) {
             //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
-            this.curPlayer.addMoney(Constants.GET_MONEY_FROM_START);
+            this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
         }
         return diceRes;
     }
