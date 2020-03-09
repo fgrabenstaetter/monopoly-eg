@@ -163,7 +163,7 @@ class Network {
                     err = Errors.FRIEND_NOT_CONNECTED;
                 else {
                     for (const game of this.GLOBAL.games) {
-                        const tmp = game.playerByNickname(data.friendID);
+                        const tmp = game.playerByID(data.friendID);
                         if (tmp) {
                             err = Errors.FRIEND_IN_GAME;
                             break;
@@ -172,7 +172,7 @@ class Network {
                 }
 
                 if (err.code === Errors.SUCCESS.code) {
-                    const invitId = lobby.addInvitation(user.nickname, data.friendID);
+                    const invitId = lobby.addInvitation(user.id, data.friendID);
                     friendUser.socket.emit('lobbyInvitationReceivedRes', {
                         invitationID   : invitId,
                         senderFriendID : user.id,
@@ -196,11 +196,11 @@ class Network {
                 const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
                     err = Errors.LOBBY.INVITATION_NOT_EXISTS;
-                else if (invitObj.to !== user.nickname)
+                else if (invitObj.to !== user.id)
                     err = Errors.UNKNOW;
                 else {
                     for (const lobby of this.GLOBAL.lobbies) {
-                        const usr = lobby.userByNickname(invitObj.from);
+                        const usr = lobby.userByID(invitObj.from);
                         if (usr) {
                             friendLobby = lobby;
                             break;
@@ -214,7 +214,7 @@ class Network {
                     else {
                         // quitter son lobby
                         for (const lobby of this.GLOBAL.lobbies) {
-                            const usr = lobby.userByNickname(user);
+                            const usr = lobby.userByID(user.id);
                             if (usr) {
                                 lobby.delUser(user);
                                 user.socket.leave(lobby.name);
