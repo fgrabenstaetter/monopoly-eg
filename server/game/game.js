@@ -82,6 +82,19 @@ class Game {
         return null;
     }
 
+    /**
+     * @param id L'IDdu joueur recherché
+     * @return le joueur si trouvé, sinon null
+     */
+    playerByID (id) {
+        for (const player of this.players) {
+            if (player.user.id === id)
+                return player;
+        }
+
+        return null;
+    }
+
     get name () {
         return 'game-' + this.id;
     }
