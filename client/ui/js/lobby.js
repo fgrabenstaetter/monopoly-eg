@@ -118,6 +118,8 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 $(document).ready( () => {
 
+    $('.progress-button').progressInitialize();
+
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
@@ -128,6 +130,7 @@ $(document).ready( () => {
             * nom de l'ami stocker dans filter
             */
             alert('A implementer');
+            console.log("A implementer recherche nouvel ami")
         }
         else {
             element = document.getElementsByClassName('friend-entry');
@@ -145,6 +148,16 @@ $(document).ready( () => {
         if (hostID === ID)
             socket.emit('lobbyPlayReq');
     });
+
+    $('#submitButton').click(function(e){
+        e.preventDefault();
+
+        // This function will show a progress meter for
+        // the specified amount of time
+
+        $(this).progressTimed(2);
+    });
+
 });
 
 /**
@@ -219,6 +232,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         let error = 0;
         let status = 100;
         alert("A implementer");
+        console.log("A implementer lobbyInvitationAcceptReq")
 
 
         if (!error) {
@@ -270,6 +284,7 @@ $('.friend-action').click(function() {
     let friendName = $(this).prev('.friends-name').text();
 
     alert("A implementer...");
+    console.log("A implementer lobbyInvitationReq")
 });
 
 //lobbyFriendInvitationRes Acceptation
@@ -280,6 +295,7 @@ $('.friend-request-accept').click(function() {
     let status = 100;
 
     alert("A implementer");
+    console.log("A implementer lobbyInvitationRes")
 
     if (!error) {
         $(this).parent().remove();
@@ -298,6 +314,7 @@ $('.friend-request-deny').click(function() {
     let status = 100;
 
     alert("A implementer");
+    console.log("A implementer lobbyFriendInvitationRes")
 
     if (!error) {
         $(this).parent().remove();
