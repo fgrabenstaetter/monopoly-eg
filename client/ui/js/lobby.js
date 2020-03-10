@@ -118,7 +118,7 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 $(document).ready( () => {
 
-    $('.progress-button').progressInitialize();
+    // $('.progress-button').progressInitialize();
 
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
