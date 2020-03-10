@@ -188,26 +188,28 @@ class Game {
         index = this.curPlayer.properties.indexOf(curCell.property);
         if (index !== -1) {
             //Le joueur est tombé sur une de ses propriétés
+            this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_UPGRADE;
+            this.turnActionData.message = "Le joueur " + this.curPlayer.user.nickname + " considère l'amélioration de la propriété " + curCell.property.name;
+            this.turnActionData.args.push(curCell.property.id);
         }
         else {
             let cellOwner = null;
-            for (player in this.players) {
+            for (const player of this.players) {
                 if (this.player.properties.indexOf(curCell.property) !== -1) {
                     cellOwner = player;
                     break;
                 }
             }
             if (cellOwner == null) {
-                //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter Sinon il est mis au enchère (modélisation ?)
-
+                //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter. Le client doit savoir l'action à executer
+                this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY;
+                this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
             }
             else {
                 //Le terrain appartient à un autre joueur
                 let lose = this.curPlayer.loseMoney(curCell.property.rentalPrice);
                 if (!lose) {
-                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?) // Le client doit savoir l'action à executer
-                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY;
-                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
+                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
                 }
                 else {
                     //Le joueur a payé le loyer
@@ -224,6 +226,10 @@ class Game {
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
      */
     rollDice (useExitJailCard = false) {
+        for (let i = 0; i < turnActionData.args.length; i++) {
+            //Supprimer tous les arguments envoyer au client avant d'en rajouter de nouveaux avant l'utilisation de ce tableau
+            this.turnActionData.args.splice(i, 1);
+        }
         const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
         const total = diceRes[0] + diceRes[1];
         const oldPos = this.curPlayer.cellInd;
