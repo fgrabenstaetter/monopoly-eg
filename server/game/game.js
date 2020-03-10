@@ -158,14 +158,15 @@ class Game {
         });
     }
 
-    playerTurnIsInPrison () {
+    playerTurnIsInPrison (diceRes1, diceRes2) {
+        const total = diceRes1 + diceRes2;
         if (this.curPlayer.remainingTurnsInJail < 3) {
             if (useExitJailCard) {
                 this.curPlayer.cellInd += total;
                 this.curPlayer.jailJokerCards--;
                 this.curPlayer.escapePrison();
             }
-            else if (diceRes[0] == diceRes[1]) {
+            else if (diceRes1 == diceRes2) {
                 this.curPlayer.cellInd += total;
                 this.curPlayer.escapePrison();
             }
@@ -182,7 +183,8 @@ class Game {
         }
     }
 
-    playerOnPropertyCell () {
+    playerOnPropertyCell (diceRes1, diceRes2, curCell) {
+        const total = diceRes1 + diceRes2;
         index = this.curPlayer.properties.indexOf(curCell.property);
         if (index !== -1) {
             //Le joueur est tombé sur une de ses propriétés
@@ -206,6 +208,9 @@ class Game {
                 }
                 else {
                     //Le joueur a payé le loyer
+                    this.turnActionData.type = PAID_RENT;
+                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' a payé ' + curCell.property.rentalPrice + ' à ' + curCell.property.owner;
+                    this.turnActionData.args.push(curCell.property.owner.user.id);
                 }
             }
         }
@@ -218,11 +223,11 @@ class Game {
     rollDice (useExitJailCard = false) {
         const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
         const total = diceRes[0] + diceRes[1];
-        const oldInd = this.curPlayer.cellInd;
+        const oldPos = this.curPlayer.cellInd;
         //  ... actions du tour
         //  this.curPlayer
         if (this.curPlayer.isInPrison) {
-            this.playerTurnIsInPrison();
+            this.playerTurnIsInPrison(diceRes[0], diceRes[1]);
         }
         else {
             const curCell = this.curPlayer.cellInd + total;
@@ -236,7 +241,7 @@ class Game {
                     break;
 
                 case Constants.CELL_TYPE.PROPERTY:
-                    this.playerOnPropertyCell();
+                    this.playerOnPropertyCell(diceRes[0], diceRes[1], curCell);
                     break;
 
                 case Constants.CELL_TYPE.CHANCE:
@@ -252,7 +257,7 @@ class Game {
                     break;
             }
         }
-        if (oldInd > this.curPlayer.cellInd) {
+        if (oldPos > this.curPlayer.cellInd) {
             //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
             this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
         }
