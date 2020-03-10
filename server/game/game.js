@@ -199,16 +199,19 @@ class Game {
             }
             if (cellOwner == null) {
                 //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter Sinon il est mis au enchère (modélisation ?)
+
             }
             else {
                 //Le terrain appartient à un autre joueur
                 let lose = this.curPlayer.loseMoney(curCell.property.rentalPrice);
                 if (!lose) {
-                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
+                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?) // Le client doit savoir l'action à executer
+                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY:
+                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
                 }
                 else {
                     //Le joueur a payé le loyer
-                    this.turnActionData.type = PAID_RENT;
+                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.PAID_RENT;
                     this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' a payé ' + curCell.property.rentalPrice + ' à ' + curCell.property.owner;
                     this.turnActionData.args.push(curCell.property.owner.user.id);
                 }
