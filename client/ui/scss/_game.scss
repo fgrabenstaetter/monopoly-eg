@@ -33,7 +33,7 @@
         .name::before {
           content: attr(title);
           position: absolute;
-          -webkit-text-stroke: 0.2em black; /* Chris Coyier's favorite color! */
+          -webkit-text-stroke: 0.2em rgba($color: #010961, $alpha: 0.8);
           left: 0;
           z-index: -1;
         }
@@ -117,7 +117,7 @@
           color: white;
           vertical-align: text-top;
           position: absolute;
-          top: 7px;
+          top: 10px;
           left: -17px;
         }
       }
