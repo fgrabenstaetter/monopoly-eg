@@ -73,7 +73,7 @@
             color: white;
           }
 
-          .friend-request-accept {
+          .accept-button {
             border: white 1px solid;
             border-radius: 3px;
             margin-left: auto;
@@ -85,7 +85,7 @@
             background-color: white;
           }
 
-          .friend-request-deny {
+          .deny-button {
             border: rgba($color: white, $alpha: 0.7) 1px solid;
             border-radius: 3px;
             margin-left: auto;
@@ -310,6 +310,7 @@
       color: white;
     }
 
+    // Notifications
     .notification-container {
       display: flex;
       align-items: bottom;
@@ -359,11 +360,11 @@
           }
 
           .btn-primary {
-            background-color: #35d859;
+            background-color: $button-primary;
           }
 
           .btn-secondary {
-            background-color: rgba($color: black, $alpha: 0.3);
+            background-color: $button-secondary;
           }
         }
       }
