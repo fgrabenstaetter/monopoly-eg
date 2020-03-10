@@ -198,6 +198,8 @@ class Network {
                     return;
                 }
 
+                console.log(invitedUser)
+
                 console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
 
                 UserSchema.requestFriend(user._id, invitedUser._id, (error, friendships) => {

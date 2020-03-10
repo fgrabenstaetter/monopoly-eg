@@ -19,6 +19,7 @@ const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
 const { UserSchema, UserManager } = require('./models/user');
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 let server;
 let production = false;
@@ -147,6 +148,39 @@ app.post('/api/login', (req, res) => {
         });
     });
 });
+
+app.get('/test/:friendId', (req, res, next) => {
+    UserSchema.findById("5e43073fbd410f9edcdae8f7", (err, user) => {
+        console.log(user);
+        if (err) {
+            console.log("wtf error here");
+            return next(err);
+        } else {
+            UserSchema.findOne({nickname: req.params.friendId}, (err, invitedUser) => {
+                console.log(err);
+                console.log(invitedUser);
+                console.log(invitedUser._id);
+                if (err) {
+                    console.log("Erreur, ami à inviter non trouvé");
+                    return next(err);
+                } else {    
+                    console.log("Invitation");
+                    UserSchema.requestFriend(user._id, invitedUser._id, (err, friendships) => {
+                        if (err) {
+                            console.log("Erreur lors de l'envoi de la requête");
+                            return next(err);
+                        } else {
+        
+                            console.log("Invitation envoyée");
+                            console.log(friendships);
+                        }
+                    })
+                }
+            });
+        }
+
+    });
+})
 
 //////////////////////
 // CONNEXION SOCKET //

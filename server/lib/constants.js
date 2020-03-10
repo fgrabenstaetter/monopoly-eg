@@ -43,8 +43,7 @@ const Constants = {
         PAID_RENT: 'hasPaid',
         // Actions nécessitant une action d'un joueur
         CAN_BUY: 'canBuy',
-        CAN_BUILD_HOUSE: 'canBuildHouse',
-        CAN_BUILD_HOSTEL: 'canBuildHostel'
+        CAN_UPGRADE: 'canUpgrade'
     }
 }
 
