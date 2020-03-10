@@ -53,15 +53,23 @@ module.exports = Object.freeze({
     FRIENDS: {
         NOT_CONNECTED: {
             code: 1,
-            status: 'Friend is not connected'
+            status: 'Ami non connecté'
         },
         IN_GAME: {
             code: 2,
-            status: 'Friend is already in game'
+            status: 'Ami en jeu'
         },
         NOT_EXISTS: {
             code: 3,
-            status: 'Friend don\'t exists'
+            status: 'Cet ami n\'existe pas'
+        },
+        REQUEST_ERROR: {
+            code: 4,
+            status: 'Erreur lors de l\'envoi de la requête d\'ami'
+        },
+        INVITATION_ACTION_PROCESS_ERROR: {
+            code: 5,
+            status: 'Erreur action traitement de la requête d\'ami'
         }
     },
 
