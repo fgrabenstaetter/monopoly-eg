@@ -25,19 +25,20 @@ class Network {
         user.socket.join(lobby.name);
 
         // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq          (user, lobby);
-        this.lobbyInvitationAcceptReq    (user, lobby);
-        this.lobbyKickReq                (user, lobby);
+        this.lobbyInvitationReq             (user, lobby);
+        this.lobbyInvitationAcceptReq       (user, lobby);
+        this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
-        this.lobbyChangeTargetUsersNbReq (user, lobby);
-        this.lobbyChangePawnReq          (user, lobby);
-        this.lobbyChatSendReq            (user, lobby);
-        this.lobbyPlayReq                (user, lobby);
+        this.lobbyChangeTargetUsersNbReq    (user, lobby);
+        this.lobbyChangePawnReq             (user, lobby);
+        this.lobbyChatSendReq               (user, lobby);
+        this.lobbyPlayReq                   (user, lobby);
 
         // Amis
-        this.lobbyFriendInvitationSendReq(user, lobby);
-        this.lobbyFriendInvitationActionReq(user, lobby);
+        this.lobbyFriendListReq             (user, lobby);
+        this.lobbyFriendInvitationSendReq   (user, lobby);
+        this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
 
         user.socket.on('lobbyReadyReq', () => {
@@ -188,26 +189,24 @@ class Network {
 
     lobbyFriendInvitationSendReq (user, lobby) {
         user.socket.on('lobbyFriendInvitationSendReq', (data) => {
-            let nicknameFriendInvited = data.nickname;
-
             console.log('"' + user.nickname + '" invite un ami');
 
-            UserSchema.findOne({ nickname: nicknameFriendInvited }, (error, invitedUser) => {
+            UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
                 if (error) {
-                    console.log('Ami à inviter "' + nicknameFriendInvited + '" non trouvé :/');
+                    console.log('Ami à inviter "' + data.nickname + '" non trouvé :/');
                     user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
 
                 console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
-    
+
                 UserSchema.requestFriend(user._id, invitedUser._id, (error, friendships) => {
                     if (error) {
                         console.log('Erreur lors de l\'envoi de l\'invitation');
                         user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                         return;
                     }
-    
+
                     console.log('Invitation envoyée avec succès !');
                     user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
 
@@ -215,7 +214,7 @@ class Network {
                     for (const lobby of this.GLOBAL.lobbies) {
                         const invitedUserInLobby = lobby.userByID(invitedUser);
                         if (invitedUserInLobby) {
-                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { fromUser: { id: user.id, nicnkame: user.nickname } });
+                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { fromUser: { id: user.id, nickname: user.nickname } });
                             break;
                         }
                     }
@@ -237,7 +236,7 @@ class Network {
                     user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
-    
+
                 if (action) { // accept
                     UserSchema.requestFriend(user._id, invitedByUser._id, (error, friendships) => {
                         if (error) {
@@ -245,7 +244,7 @@ class Network {
                             user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
-        
+
                         console.log('Invitation acceptée pour "' + invitedByUser.nickname + '"');
                         user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                         return;
@@ -255,7 +254,7 @@ class Network {
                     console.log('Requête rejetée avec succès');
                     user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                     return;
-                }                
+                }
             });
         });
     }
@@ -399,6 +398,24 @@ class Network {
                 lobby.searchGame();
             } else
                 user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
+        });
+    }
+
+    lobbyFriendListReq (user, lobby) {
+        user.socket.on('lobbyFriendListReq', () => {
+            let friends = [];
+            let nbInserted = 0;
+
+            for (let i = 0; i < user.friends.length; i ++) {
+                const friend = user.friends[i];
+                UserSchema.findOne({ id: friendID }, (error, friend) => {
+                    if (!error)
+                        friends.push({ id: friendID, nickname: friend.nickname });
+                    nbInserted ++;
+                    if (nbInserted === user.friends.length)
+                        user.socket.emit('lobbyFriendListRes', { friends: friends });
+                });
+            }
         });
     }
 
