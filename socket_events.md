@@ -84,41 +84,6 @@
         }
         ```
 
-- **Envoyer une requête d'ami à quelqu'un**
-    * **Requête:** lobbyFriendInvitationSendReq
-        * *Données:*
-        ```javascript
-        {
-            nickname: string
-        }
-         ```
-    * **Réponse:** lobbyFriendInvitationSendRes
-        * *Données:*
-        ```javascript
-        {
-            error: int,
-            status: string
-        }
-        ```
-
-- **Accepter/rejeter une requête d'ami reçue**
-    * **Requête:** lobbyFriendInvitationActionReq
-        * *Données:* action (0 = rejeter, 1 = accepter)
-        ```javascript
-        {
-            action: 0/1
-            nickname: string
-        }
-         ```
-    * **Réponse:** lobbyFriendInvitationActionRes
-        * *Données:*
-        ```javascript
-        {
-            error: int,
-            status: string
-        }
-        ```
-
 - **Données initiales lors du rejoignage d'un lobby**
     > Reçu uniquement par le joueur qui vient de rejoindre un lobby (pour avoir les informations du lobby)
 
@@ -327,17 +292,15 @@
         }
         ```
 
-- **Envoyer une demande d'ami**
-
-    * **Requête:** lobbyFriendInviteReq
+- **Envoyer une requête d'ami à quelqu'un**
+    * **Requête:** lobbyFriendInvitationSendReq
         * *Données:*
         ```javascript
         {
-            receiverUserNickname: string
+            nickname: string
         }
-        ```
-
-    * **Réponse:** lobbyFriendInviteRes
+         ```
+    * **Réponse:** lobbyFriendInvitationSendRes
         * *Données:*
         ```javascript
         {
@@ -346,42 +309,15 @@
         }
         ```
 
-* **Acceptation / Déclinaison d'une demande d'ami (action du récepteur)**
-    > Envoyé à l'émetteur de la requête après que son récepteur ai accepté ou décliné l'invitation
-
-    * **Réponse:** lobbyFriendInvitationRes
-        * *Données:*
-        ```javascript
-        {
-            state: string, // accepted | rejected
-            receiverUserID: int
-        }
-        ```
-
-* **Réception d'une demande d'ami**
-    > Reçu lorsque quelqu'un nous a envoyé une demande d'ami
-
-    * **Réponse:** lobbyFriendInvitationReceivedRes
-        * *Données:*
-        ```javascript
-        {
-            nickname: string,
-            id: int
-        }
-        ```
-
-* **Accepter / Décliner une demande d'ami**
-    > Accepter ou décliner une demande d'ami qui a été reçue
-
+- **Accepter/rejeter une requête d'ami reçue**
     * **Requête:** lobbyFriendInvitationActionReq
-        * *Données:*
+        * *Données:* action (0 = rejeter, 1 = accepter)
         ```javascript
         {
-            action: string, // accept | reject
-            senderUserID: int
+            action: 0/1
+            nickname: string
         }
-        ```
-
+         ```
     * **Réponse:** lobbyFriendInvitationActionRes
         * *Données:*
         ```javascript
@@ -391,14 +327,26 @@
         }
         ```
 
-* **Supprimer un ami**
+- **Réception d'une demande d'ami**
+    > Reçu lorsque quelqu'un nous a envoyé une demande d'ami
+
+    * **Réponse:** lobbyFriendInvitationReceivedRes
+        * *Données:*
+        ```javascript
+        {
+            id: int,
+            nickname: string
+        }
+        ```
+
+- **Supprimer un ami**
     > Supprimer un ami revient à le supprimer des deux côtés (plus aucun des deux n'a l'autre en ami)
 
     * **Requête:** lobbyFriendDeleteReq
         * *Données:*
         ```javascript
         {
-            friendUserID: int
+            id: int
         }
         ```
 

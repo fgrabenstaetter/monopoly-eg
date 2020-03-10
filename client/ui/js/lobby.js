@@ -288,7 +288,7 @@ $('.friend-action').click(function() {
 });
 
 //lobbyFriendInvitationRes Acceptation
-$('.friend-request-accept').click(function() {
+$('.friend-request .accept-button').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'accept';
     let error = 0;
@@ -307,7 +307,7 @@ $('.friend-request-accept').click(function() {
 });
 
 // lobbyFriendInvitationRes Deny
-$('.friend-request-deny').click(function() {
+$('.friend-request .deny-button').click(function() {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';
     let error = 0;
