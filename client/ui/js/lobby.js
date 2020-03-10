@@ -283,9 +283,10 @@ function delGroupUser(id) {
 //lobbyInvitationReq
 $('.friend-action').click(function () {
     let friendName = $(this).prev('.friends-name').text();
-    let friendID = -1; //A implementer
+    let friendID = 0; //A implementer
 
     socket.emit("lobbyInvitationReq",{friendID:friendID});
+    console.log("lobbyInvitationReq");
 });
 
 //lobbyFriendInvitationRes Acceptation
@@ -296,6 +297,7 @@ $('.friend-request .accept-button').click(function () {
     let status = 100;
 
     socket.emit("lobbyFriendInvitationActionReq",{action:1,nickname:senderNickname});
+    console.log("lobbyFriendInvitationRes");
 
     if (!error) {
         $(this).parent().remove();
@@ -314,6 +316,7 @@ $('.friend-request .deny-button').click(function () {
     let status = 100;
 
     socket.emit("lobbyFriendInvitationActionReq",{action:0,nickname:senderNickname});
+    console.log("lobbyFriendInvitationRes");
 
     if (!error) {
         $(this).parent().remove();
