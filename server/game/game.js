@@ -38,7 +38,8 @@ class Game {
 
         this.turnActionData = {
             message: null,
-            type: Constants.GAME_ACTION_TYPE.NOTHING
+            type: null,
+            args: []
         };
 
         this.startedTime = null; // timestamp de démarrage en ms

@@ -38,11 +38,13 @@ const Constants = {
 
     // Action d'un tour de jeu
     GAME_ACTION_TYPE: {
-        NOTHING: 0,
-        CAN_BUY: 1,
-        MUST_PAY: 2,
-        CAN_BUILD_HOUSE: 3,
-        CAN_BUILD_HOSTEL: 4
+        // Actions ne nécessitant pas une action d'un joueur
+        NOTHING: 'nothing',
+        PAID_RENT: 'hasPaid',
+        // Actions nécessitant une action d'un joueur
+        CAN_BUY: 'canBuy',
+        CAN_BUILD_HOUSE: 'canBuildHouse',
+        CAN_BUILD_HOSTEL: 'canBuildHostel'
     }
 }
 
