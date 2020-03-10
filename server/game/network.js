@@ -216,7 +216,7 @@ class Network {
                     for (const lobby of this.GLOBAL.lobbies) {
                         const invitedUserInLobby = lobby.userByID(invitedUser);
                         if (invitedUserInLobby) {
-                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { fromUser: { id: user.id, nickname: user.nickname } });
+                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                             break;
                         }
                     }
