@@ -1,11 +1,11 @@
 let users = []; // = liste de { nickname: string, id: int }
-function nickToId (nick) {
+function nickToId(nick) {
     for (const row of users) {
         if (row.nickname === nick)
             return row.id;
     }
 }
-function idToNick (id) {
+function idToNick(id) {
     for (const row of users) {
         if (row.id === id)
             return row.nickname;
@@ -116,7 +116,7 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 // INTERFACE JS FUNCTIONS //
 ////////////////////////////
 
-$(document).ready( () => {
+$(document).ready(() => {
 
     // $('.progress-button').progressInitialize();
 
@@ -129,27 +129,27 @@ $(document).ready( () => {
             * recherche d'un nouvel ami
             * nom de l'ami stocker dans filter
             */
-            alert('A implementer');
-            console.log("A implementer recherche nouvel ami")
+            socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
+            console.log("lobbyFriendInvitationSendReq");
         }
         else {
             element = document.getElementsByClassName('friend-entry');
             for (i = 0; i < element.length; i++) {
                 txtValue = element[i].getElementsByClassName('friends-name')[0].innerHTML;
                 if (txtValue.toUpperCase().indexOf(filter) > -1)
-                element[i].style.display = '';
+                    element[i].style.display = '';
                 else
-                element[i].style.display = 'none';
+                    element[i].style.display = 'none';
             }
         }
     });
 
-    $('#play').click( () => {
+    $('#play').click(() => {
         if (hostID === ID)
             socket.emit('lobbyPlayReq');
     });
 
-    $('#submitButton').click(function(e){
+    $('#submitButton').click(function (e) {
         e.preventDefault();
 
         // This function will show a progress meter for
@@ -163,7 +163,7 @@ $(document).ready( () => {
 /**
  * Maj des flèches de changement du nombre désiré de users (que pour l'hote)
  */
-function updateNbUsersArrows () {
+function updateNbUsersArrows() {
     $('#leftNbJ').css('display', '');
     $('#rightNbJ').css('display', '');
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
@@ -176,18 +176,18 @@ function updateNbUsersArrows () {
 /**
  * Actions possibles lorsqu'on est hôte
  */
-function imHost () {
+function imHost() {
     console.log('je suis hote')
     updateNbUsersArrows();
     $('#play').removeClass('disabled');
 
-    $('#leftNbJ').click( () => {
+    $('#leftNbJ').click(() => {
         const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
         if (nb > 2 && nb > document.getElementsByClassName('group-entry').length)
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb - 1 });
     });
 
-    $('#rightNbJ').click( () => {
+    $('#rightNbJ').click(() => {
         const nb = parseFloat(document.getElementById('nbJoueurs').textContent);
         if (nb < 8)
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
@@ -227,7 +227,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
     $('#inviteGameContainer').append(html);
 
     //lobbyInvitationAcceptReq
-    $('.notification-container .btn-primary').click(function() {
+    $('.notification-container .btn-primary').click(function () {
         const invitationID = $(this).parent().parent().attr('id');
         let error = 0;
         let status = 100;
@@ -245,12 +245,12 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
     });
 
     //lobbyInvitationDeny
-    $('.notification-container .btn-secondary').click(function() {
+    $('.notification-container .btn-secondary').click(function () {
         $(this).parent().parent().remove();
     });
 }
 
-function addGroupUser (id, pawn) {
+function addGroupUser(id, pawn) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
     const html = `
@@ -263,13 +263,13 @@ function addGroupUser (id, pawn) {
     $('.grouplist .group-entries-container > div').append(html);
 
     // actualisation de l'event click (car html modifié)
-    $('.grouplist .friend-action').click(function() {
+    $('.grouplist .friend-action').click(function () {
         // = bouton EXCLURE (uniquement si hôte)
         socket.emit('lobbyKickReq', { userToKickID: id });
     });
 }
 
-function delGroupUser (id) {
+function delGroupUser(id) {
     const nick = idToNick(id);
     const els = document.querySelectorAll('.grouplist .friends-name');
     for (const el of els) {
@@ -281,7 +281,7 @@ function delGroupUser (id) {
 }
 
 //lobbyInvitationReq
-$('.friend-action').click(function() {
+$('.friend-action').click(function () {
     let friendName = $(this).prev('.friends-name').text();
     let friendID = -1; //A implementer
 
@@ -289,7 +289,7 @@ $('.friend-action').click(function() {
 });
 
 //lobbyFriendInvitationRes Acceptation
-$('.friend-request .accept-button').click(function() {
+$('.friend-request .accept-button').click(function () {
     const senderNickname = $(this).parent().attr('id');
     const action = 'accept';
     let error = 0;
@@ -307,7 +307,7 @@ $('.friend-request .accept-button').click(function() {
 });
 
 // lobbyFriendInvitationRes Deny
-$('.friend-request .deny-button').click(function() {
+$('.friend-request .deny-button').click(function () {
     const senderNickname = $(this).parent().attr('id');
     const action = 'reject';
     let error = 0;
