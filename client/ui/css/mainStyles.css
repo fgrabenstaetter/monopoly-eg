@@ -61,7 +61,7 @@ input {
 .background-container {
   position: absolute;
   z-index: -2;
-  background: #24d6f2;
+  background: #0052ba;
   background: radial-gradient(circle, #24d6f2 0%, #00aaf5 35%, #0052ba 100%);
   width: 100%;
   height: 100%;
@@ -271,7 +271,7 @@ input {
   z-index: 3;
   width: 100%;
   height: 100%;
-  background-color: #79e9f7;
+  background-color: #0052ba;
   display: none;
   text-align: center;
 }

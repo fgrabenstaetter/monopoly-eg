@@ -1,6 +1,9 @@
 // Couleurs principales
 $orange: #fd8000;
-$blue: #79e9f7;
+$blue: rgb(0,82,186);
+
+// Backgrounds
+$gradient-background: radial-gradient(circle, rgba(36,214,242,1) 0%, rgba(0,170,245,1) 35%, rgba(0,82,186,1) 100%);
 
 // Notifications
 $notification-body: rgba($color: black, $alpha: 0.2);
@@ -11,7 +14,3 @@ $button-secondary: rgba($color: black, $alpha: 0.3);
 $card-header: rgba($color: black, $alpha: 0.5);
 $card-body: rgba($color: black, $alpha: 0.3);
 $input: rgba($color: black, $alpha: 0.3);
-
-// ??
-$box-header: #2dc8dc;
-$box-body: #0da6b8;
