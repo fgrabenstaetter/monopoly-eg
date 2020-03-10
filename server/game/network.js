@@ -192,12 +192,14 @@ class Network {
 
             console.log('"' + user.nickname + '" invite un ami');
 
-            UserSchema.findOne({ nickname: nicknameFriendInvited }, (error, invitedUser) => {
+            UserSchema.findOne({nickname: nicknameFriendInvited}, (error, invitedUser) => {
                 if (error) {
                     console.log('Ami à inviter "' + nicknameFriendInvited + '" non trouvé :/');
                     user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
+                
+                console.log(invitedUser)
 
                 console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
     
