@@ -206,7 +206,7 @@ class Game {
                 let lose = this.curPlayer.loseMoney(curCell.property.rentalPrice);
                 if (!lose) {
                     //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?) // Le client doit savoir l'action à executer
-                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY:
+                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY;
                     this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
                 }
                 else {
