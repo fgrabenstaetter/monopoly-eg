@@ -408,7 +408,7 @@
             cells: [
                 {
                     id: int,
-                    type: string, // begin | parc | property | parc | prison | card
+                    type: string, // begin | parc | property | parc | prison | chanceCard | communityCard
                     propertyID: int | null // null ou ID de propriété
                 }, ...
             ],
@@ -419,14 +419,6 @@
                     name: string,
                     description: string,
                     customData: selon le type (voir ci-dessous)
-                }, ...
-            ],
-            cards: [
-                {
-                    id: int,
-                    type: string, // chance | commnunity
-                    name: string,
-                    description: string
                 }, ...
             ]
         }
@@ -528,7 +520,11 @@
                 {
                     // contient 0 ou 1 seul de ces éléments
                     newCardJailEscape: null, // nouvelle carte prison
-                    newCard: int, // ID de la carte chance ou community
+                    newCard: {
+                        type: string, // chance | community
+                        name: string,
+                        description: string
+                    }
                 }, ...
             ]
         }

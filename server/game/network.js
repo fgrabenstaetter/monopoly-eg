@@ -339,7 +339,7 @@ class Network {
                 game.start();
 
                 // envoyer les données initiales de jeu à tous les joueurs
-                let players = [], cells = [], properties = [], cards = [], cellsCounter = 0;
+                let players = [], cells = [], properties = [], cellsCounter = 0;
 
                 for (const player of game.players) {
                     players.push({
@@ -386,21 +386,11 @@ class Network {
                     }
                 }
 
-                // for (const card of game.cards) {
-                //     cards.push({
-                //         id          : card.id,
-                //         type        : card.typeStr,
-                //         name        : card.name,
-                //         description : card.description
-                //     });
-                // }
-
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime : game.forcedEndTime,
                     players     : players,
                     cells       : cells,
-                    properties  : properties,
-                    cards       : cards
+                    properties  : properties
                 });
             }
         });
