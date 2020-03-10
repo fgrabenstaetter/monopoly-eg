@@ -34,6 +34,17 @@ const Constants = {
         TURN_MAX_DURATION: 2e4,
         EXIT_JAIL_PRICE: 50,
         GET_MONEY_FROM_START: 200
+    },
+
+    // Action d'un tour de jeu
+    GAME_ACTION_TYPE: {
+        // Actions ne nécessitant pas une action d'un joueur
+        NOTHING: 'nothing',
+        PAID_RENT: 'hasPaid',
+        // Actions nécessitant une action d'un joueur
+        CAN_BUY: 'canBuy',
+        CAN_BUILD_HOUSE: 'canBuildHouse',
+        CAN_BUILD_HOSTEL: 'canBuildHostel'
     }
 }
 

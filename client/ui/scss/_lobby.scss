@@ -19,7 +19,7 @@
 
       .card-header {
         border-radius: 0;
-        background-color: rgba($color: black, $alpha: 0.5);
+        background-color: $card-header;
         font-family: 'LilitaOne', sans-serif;
         color: white;
         font-size: 17px;
@@ -29,7 +29,7 @@
         height: 30px;
         border-radius: 15px;
         border: none;
-        background-color: rgba($color: black, $alpha: 0.3);
+        background-color: $input;
         color: rgba($color: white, $alpha: 0.7);
         font-size: 13px;
         position: relative;
@@ -49,7 +49,7 @@
 
       .card-body {
         border-radius: 0;
-        background-color: rgba($color: black, $alpha: 0.3);
+        background-color: $card-body;
         color: white;
         font-size: 14px;
         padding: 0;
@@ -61,7 +61,7 @@
         justify-content: space-between;
 
         .friend-request {
-          background: rgba($color: black, $alpha: 0.3);
+          background: $notification-body;
           margin: 0;
           width: 220px;
           padding: 20px;
@@ -73,7 +73,7 @@
             color: white;
           }
 
-          .friend-request-accept {
+          .accept-button {
             border: white 1px solid;
             border-radius: 3px;
             margin-left: auto;
@@ -85,7 +85,7 @@
             background-color: white;
           }
 
-          .friend-request-deny {
+          .deny-button {
             border: rgba($color: white, $alpha: 0.7) 1px solid;
             border-radius: 3px;
             margin-left: auto;
@@ -310,6 +310,7 @@
       color: white;
     }
 
+    // Notifications
     .notification-container {
       display: flex;
       align-items: bottom;
@@ -359,11 +360,11 @@
           }
 
           .btn-primary {
-            background-color: #35d859;
+            background-color: $button-primary;
           }
 
           .btn-secondary {
-            background-color: rgba($color: black, $alpha: 0.3);
+            background-color: $button-secondary;
           }
         }
       }

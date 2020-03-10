@@ -36,6 +36,12 @@ class Game {
         this.bank = {}; // a faire
         this.chat = new Chat();
 
+        this.turnActionData = {
+            message: null,
+            type: null,
+            args: []
+        };
+
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
 
@@ -152,6 +158,66 @@ class Game {
         });
     }
 
+    playerTurnIsInPrison (diceRes1, diceRes2) {
+        const total = diceRes1 + diceRes2;
+        if (this.curPlayer.remainingTurnsInJail < 3) {
+            if (useExitJailCard) {
+                this.curPlayer.cellInd += total;
+                this.curPlayer.jailJokerCards--;
+                this.curPlayer.escapePrison();
+            }
+            else if (diceRes1 == diceRes2) {
+                this.curPlayer.cellInd += total;
+                this.curPlayer.escapePrison();
+            }
+        }
+        else {
+            lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
+            if (!lose) {
+                //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
+            }
+            else {
+                this.curPlayer.cellInd += total;
+                this.curPlayer.escapePrison();
+            }
+        }
+    }
+
+    playerOnPropertyCell (diceRes1, diceRes2, curCell) {
+        const total = diceRes1 + diceRes2;
+        index = this.curPlayer.properties.indexOf(curCell.property);
+        if (index !== -1) {
+            //Le joueur est tombé sur une de ses propriétés
+        }
+        else {
+            let cellOwner = null;
+            for (player in this.players) {
+                if (this.player.properties.indexOf(curCell.property) !== -1) {
+                    cellOwner = player;
+                    break;
+                }
+            }
+            if (cellOwner == null) {
+                //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter Sinon il est mis au enchère (modélisation ?)
+
+            }
+            else {
+                //Le terrain appartient à un autre joueur
+                let lose = this.curPlayer.loseMoney(curCell.property.rentalPrice);
+                if (!lose) {
+                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?) // Le client doit savoir l'action à executer
+                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY:
+                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
+                }
+                else {
+                    //Le joueur a payé le loyer
+                    this.turnActionData.type = Constants.GAME_ACTION_TYPE.PAID_RENT;
+                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' a payé ' + curCell.property.rentalPrice + ' à ' + curCell.property.owner;
+                    this.turnActionData.args.push(curCell.property.owner.user.id);
+                }
+            }
+        }
+    }
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
      * @return [int, int] le résultat des dés
@@ -160,31 +226,11 @@ class Game {
     rollDice (useExitJailCard = false) {
         const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
         const total = diceRes[0] + diceRes[1];
-        const oldInd = this.curPlayer.cellInd;
+        const oldPos = this.curPlayer.cellInd;
         //  ... actions du tour
         //  this.curPlayer
         if (this.curPlayer.isInPrison) {
-            if (this.curPlayer.remainingTurnsInJail < 3) {
-                if (useExitJailCard) {
-                    this.curPlayer.cellInd += total;
-                    this.curPlayer.jailJokerCards--;
-                    this.curPlayer.escapePrison();
-                }
-                else if (diceRes[0] == diceRes[1]) {
-                    this.curPlayer.cellInd += total;
-                    this.curPlayer.escapePrison();
-                }
-            }
-            else {
-                lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
-                if (!lose) {
-                    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
-                }
-                else {
-                    this.curPlayer.cellInd += total;
-                    this.curPlayer.escapePrison();
-                }
-            }
+            this.playerTurnIsInPrison(diceRes[0], diceRes[1]);
         }
         else {
             const curCell = this.curPlayer.cellInd + total;
@@ -198,32 +244,7 @@ class Game {
                     break;
 
                 case Constants.CELL_TYPE.PROPERTY:
-                    index = this.curPlayer.properties.indexOf(curCell.property);
-                    if (index !== -1) {
-                        //Le joueur est tombé sur une de ses propriétés
-                    }
-                    else {
-                        let cellOwner = null;
-                        for (player in this.players) {
-                            if (this.player.properties.indexOf(curCell.property) !== -1) {
-                                cellOwner = player;
-                                break;
-                            }
-                        }
-                        if (cellOwner == null) {
-                            //Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter Sinon il est mis au enchère (modélisation ?)
-                        }
-                        else {
-                            //Le terrain appartient à un autre joueur
-                            let lose = this.curPlayer.loseMoney(curCell.rentalPrice);
-                            if (!lose) {
-                                //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
-                            }
-                            else {
-                                //Le joueur a payé le loyer
-                            }
-                        }
-                    }
+                    this.playerOnPropertyCell(diceRes[0], diceRes[1], curCell);
                     break;
 
                 case Constants.CELL_TYPE.CHANCE:
@@ -239,7 +260,7 @@ class Game {
                     break;
             }
         }
-        if (oldInd > this.curPlayer.cellInd) {
+        if (oldPos > this.curPlayer.cellInd) {
             //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
             this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
         }

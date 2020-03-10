@@ -84,6 +84,41 @@
         }
         ```
 
+- **Envoyer une requête d'ami à quelqu'un**
+    * **Requête:** lobbyFriendInvitationSendReq
+        * *Données:*
+        ```javascript
+        {
+            nickname: string
+        }
+         ```
+    * **Réponse:** lobbyFriendInvitationSendRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Accepter/rejeter une requête d'ami reçue**
+    * **Requête:** lobbyFriendInvitationActionReq
+        * *Données:* action (0 = rejeter, 1 = accepter)
+        ```javascript
+        {
+            action: 0/1
+            nickname: string
+        }
+         ```
+    * **Réponse:** lobbyFriendInvitationActionRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
 - **Données initiales lors du rejoignage d'un lobby**
     > Reçu uniquement par le joueur qui vient de rejoindre un lobby (pour avoir les informations du lobby)
 

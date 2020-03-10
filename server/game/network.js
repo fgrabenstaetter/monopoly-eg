@@ -1,5 +1,6 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
+const { UserSchema, UserManager } = require('../models/user');
 const Lobby     = require('./lobby');
 
 /**
@@ -35,8 +36,8 @@ class Network {
         this.lobbyPlayReq                (user, lobby);
 
         // Amis
-        // this.lobbyFriendInviteReq(user, lobby);
-        // this.lobbyFriendInvitationActionReq(user, lobby);
+        this.lobbyFriendInvitationSendReq(user, lobby);
+        this.lobbyFriendInvitationActionReq(user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
 
         user.socket.on('lobbyReadyReq', () => {
@@ -58,8 +59,8 @@ class Network {
         user.socket.off('lobbyPlayReq');
 
         // Amis
-        // user.socket.off('lobbyFriendInviteReq');
-        // user.socket.off('lobbyFriendInvitationActionReq');
+        user.socket.off('lobbyFriendInvitationSendReq');
+        user.socket.off('lobbyFriendInvitationActionReq');
         // user.socket.off('lobbyFriendDeleteReq');
 
         user.socket.leave(lobby.name);
@@ -182,6 +183,80 @@ class Network {
 
                 user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
             }
+        });
+    }
+
+    lobbyFriendInvitationSendReq (user, lobby) {
+        user.socket.on('lobbyFriendInvitationSendReq', (data) => {
+            let nicknameFriendInvited = data.nickname;
+
+            console.log('"' + user.nickname + '" invite un ami');
+
+            UserSchema.findOne({ nickname: nicknameFriendInvited }, (error, invitedUser) => {
+                if (error) {
+                    console.log('Ami à inviter "' + nicknameFriendInvited + '" non trouvé :/');
+                    user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+
+                console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
+    
+                UserSchema.requestFriend(user._id, invitedUser._id, (error, friendships) => {
+                    if (error) {
+                        console.log('Erreur lors de l\'envoi de l\'invitation');
+                        user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                        return;
+                    }
+    
+                    console.log('Invitation envoyée avec succès !');
+                    user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                    // Envoi temps réel (si utilisateur connecté)
+                    for (const lobby of this.GLOBAL.lobbies) {
+                        const invitedUserInLobby = lobby.userByID(invitedUser);
+                        if (invitedUserInLobby) {
+                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { fromUser: { id: user.id, nicnkame: user.nickname } });
+                            break;
+                        }
+                    }
+
+                    return;
+                });
+            });
+        });
+    }
+
+    lobbyFriendInvitationActionReq (user, lobby) {
+        user.socket.on('lobbyFriendInvitationActionReq', (data) => {
+
+            let action = data.action; // 0 = reject; 1 = accept
+            let userNickname = data.nickname;
+
+            UserSchema.findOne({ nickname: userNickname }, (error, invitedByUser) => {
+                if (error) {
+                    user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+    
+                if (action) { // accept
+                    UserSchema.requestFriend(user._id, invitedByUser._id, (error, friendships) => {
+                        if (error) {
+                            console.log('Erreur acceptation invitation');
+                            user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+        
+                        console.log('Invitation acceptée pour "' + invitedByUser.nickname + '"');
+                        user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                        return;
+                    });
+                } else { // reject
+                    UserSchema.removeFriend(user._id, invitedByUser._id);
+                    console.log('Requête rejetée avec succès');
+                    user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    return;
+                }                
+            });
         });
     }
 

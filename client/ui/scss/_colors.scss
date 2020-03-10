@@ -1,6 +1,18 @@
-$mp_orange: #fd8000;
-$mp_blue: #79e9f7;
-$window_header: #066875;
-$window_body: #24a9ba;
-$box_header: #2dc8dc;
-$box_body: #0da6b8;
+// Couleurs principales
+$orange: #fd8000;
+$blue: rgb(0,82,186);
+
+// Backgrounds
+$gradient-background: radial-gradient(circle, rgba(36,214,242,1) 0%, rgba(0,170,245,1) 35%, rgba(0,82,186,1) 100%);
+
+// Notifications
+$notification-body: rgba($color: black, $alpha: 0.2);
+$button-primary: #35d859;
+$button-secondary: rgba($color: black, $alpha: 0.3);
+
+// Cards
+$card-header: rgba($color: black, $alpha: 0.5);
+$card-body: rgba($color: black, $alpha: 0.3);
+$input: rgba($color: black, $alpha: 0.3);
+
+$popup-background: rgba($color: white, $alpha: 0.7);
