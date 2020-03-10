@@ -110,6 +110,13 @@ socket.on('lobbyPlayRes', (res) => {
         alert(res.status);
 });
 
+socket.on('lobbyFriendInvitationSendRes', (res) => {
+    if (res.error === 0)
+        console.log("lobbyFriendInvitationSendRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 ////////////////////////////
