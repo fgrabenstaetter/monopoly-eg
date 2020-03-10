@@ -231,6 +231,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         const invitationID = $(this).parent().parent().attr('id');
         let error = 0;
         let status = 100;
+
         alert("A implementer");
         console.log("A implementer lobbyInvitationAcceptReq")
 
@@ -282,9 +283,9 @@ function delGroupUser (id) {
 //lobbyInvitationReq
 $('.friend-action').click(function() {
     let friendName = $(this).prev('.friends-name').text();
+    let friendID = -1; //A implementer
 
-    alert("A implementer...");
-    console.log("A implementer lobbyInvitationReq")
+    socket.emit("lobbyInvitationReq",{friendID:friendID});
 });
 
 //lobbyFriendInvitationRes Acceptation
@@ -294,8 +295,7 @@ $('.friend-request .accept-button').click(function() {
     let error = 0;
     let status = 100;
 
-    alert("A implementer");
-    console.log("A implementer lobbyInvitationRes")
+    socket.emit("lobbyFriendInvitationActionReq",{action:1,nickname:senderNickname});
 
     if (!error) {
         $(this).parent().remove();
@@ -313,8 +313,7 @@ $('.friend-request .deny-button').click(function() {
     let error = 0;
     let status = 100;
 
-    alert("A implementer");
-    console.log("A implementer lobbyFriendInvitationRes")
+    socket.emit("lobbyFriendInvitationActionReq",{action:0,nickname:senderNickname});
 
     if (!error) {
         $(this).parent().remove();
