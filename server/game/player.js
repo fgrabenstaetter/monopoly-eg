@@ -1,4 +1,5 @@
 const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
 
 /**
  * Représente un joueur dans une partie
@@ -84,15 +85,21 @@ class Player {
 
     /**
      * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
-     * @return le nombre de rues de couleur color du joueur
+     * @return true si le joueur possède toutes les rues de cette couleur, false sinon
      */
-    sameStreetColorNb (color) {
-        let nb = 0;
+    colorMonopoly (color) {
+        let nb = 0, total = 0;
+
         for (const prop of this.properties) {
             if (prop.type === Constants.PROPERTY_TYPE.STREET && prop.color === color)
                 nb ++;
         }
-        return nb;
+        for (const prop of Properties.STREET) {
+            if (prop.color === color)
+                total ++;
+        }
+
+        return nb === total;
     }
 }
 
