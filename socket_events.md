@@ -532,6 +532,77 @@
             status: string
         }
         ```
+### --- Actions de tour asynchrones
+
+- Les évènnements suivants ne sont effectifs que lorsque la réponse d'une action de tour de jeu ('gameActionRes') l'indique (actionType)
+- Toutes les requêtes suivantes doivent êtres envoyées avant la fin du tour de jeu, sinon elles seront ignorées.
+- Toutes les réponses suivantes sont envoyées à tous les joueurs si la requête est reçue est positive (ex: buy = true pour 'gameTurnPropertyBuyReq').
+
+- **Acheter une propriété**
+    > Choisir si on veux acheter la propriété sur laquelle on se situe, ou non.
+
+    * **Requête:** gameTurnPropertyBuyReq
+        * *Données:*
+        ```javascript
+        {
+            buy: bool
+        }
+        ```
+
+    * **Réponse:** gameTurnPropertyBuyRes
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int,
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
+
+- **Améliorer une propriété**
+    > Choisir si on veux améliorer sa propriété (maison(s) ou hotel), ou non
+
+    * **Requête:** gameTurnPropertyUpgradeReq
+        * *Données:*
+        ```javascript
+        {
+            upgrade: bool,
+            level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel
+        }
+        ```
+
+    * **Réponse:** gameTurnPropertyUpgradeRes
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int,
+            level: int, // idem requête
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
+
+* **Hypothéquer une/des propriété(s) (si forcé)**
+    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple, lorsque le solde actuel n'est plus suffisant (= vente forcée). Ignorer cet évènnement revient à faire une vente automatique.
+
+    * **Requête:** gameTurnPropertyForcedMortageReq
+        * *Données:*
+        ```javascript
+        {
+            auto: bool, // true => vente automatique, false => renseigner la liste ci-dessous
+            properties: [int, ...] // liste des ID de propriétés à hypothéquer
+        }
+        ```
+
+    * **Réponse:** gameTurnPropertyForcedMortageRes
+        * *Données:*
+        ```javascript
+        {
+            properties: [int, ...], // liste des ID des propriétés hypothéquées
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
 
 ### --- Chat et offres
 
