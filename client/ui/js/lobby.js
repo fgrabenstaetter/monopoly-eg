@@ -117,6 +117,20 @@ socket.on('lobbyFriendInvitationSendRes', (res) => {
         alert(res.status);
 });
 
+socket.on("lobbyInvitationRes",(res) => {
+    if (res.error === 0)
+        console.log("lobbyInvitationRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
+socket.on("lobbyFriendInvitationActionRes",(res) => {
+    if (res.error === 0)
+        console.log("lobbyFriendInvitationActionRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
 ////////////////////////////
@@ -304,7 +318,7 @@ $('.friend-request .accept-button').click(function () {
     let status = 100;
 
     socket.emit("lobbyFriendInvitationActionReq",{action:1,nickname:senderNickname});
-    console.log("lobbyFriendInvitationRes");
+    console.log("lobbyFriendInvitationReq");
 
     if (!error) {
         $(this).parent().remove();
@@ -323,7 +337,7 @@ $('.friend-request .deny-button').click(function () {
     let status = 100;
 
     socket.emit("lobbyFriendInvitationActionReq",{action:0,nickname:senderNickname});
-    console.log("lobbyFriendInvitationRes");
+    console.log("lobbyFriendInvitationReq");
 
     if (!error) {
         $(this).parent().remove();
