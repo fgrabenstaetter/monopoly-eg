@@ -73,6 +73,34 @@ class Street extends Property {
 
         return sum / 2;
     }
+
+    /**
+     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     */
+    upgrade (level) {
+        if (level === 4) {
+            this.housesNb = 0;
+            this.hostel = true;
+        } else
+            this.housesNb = level;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     * @return le prix
+     */
+    upgradePrice (level) {
+        if (this.hostel)
+            return 0;
+
+        let price = 0;
+        if (level === 4)
+            price = this.prices.hostel + this.prices.house * 3;
+        else
+            price = this.prices.house * level;
+
+        return price - this.housesNb * this.prices.house;
+    }
 }
 
 module.exports = Street;
