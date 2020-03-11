@@ -158,6 +158,10 @@ class Game {
         });
     }
 
+    //////////////////////////////
+    // ACTUEL TURN SYNC METHODS //
+    //////////////////////////////
+
     playerTurnIsInPrison (diceRes1, diceRes2) {
         const total = diceRes1 + diceRes2;
         if (this.curPlayer.remainingTurnsInJail < 3) {
@@ -271,6 +275,71 @@ class Game {
             this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
         }
         return diceRes;
+    }
+
+    ///////////////////////////////
+    // ACTUAL TURN ASYNC METHODS //
+    ///////////////////////////////
+
+    /**
+     * @return L'ID de la propriété achetée si succès, -1 sinon
+     */
+    curPlayerBuyProperty () {
+        const curCell = this.cells[this.curPlayer.cellInd];
+        if (!curCell.property || curCell.property.owner)
+            return -1;
+        let price;
+        if (curCell.property.type === Constants.PROPERTY_TYPE.STREET)
+            price = curCell.property.emptyPrice;
+        else
+            price = curCell.property.price;
+        if (this.curPlayer.money < price)
+            return -1;
+
+        this.curPlayer.loseMoney(price);
+        this.curPlayer.addProperty(curCell.property);
+
+        return curCell.property.id;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     * @return L'ID de la propriété améliorée si succès, -1 sinon
+     */
+    curPlayerUpgradeProperty (level) {
+        const curCell = this.cells[this.curPlayer.cellInd];
+        if (!curCell.property || curCell.property.owner || curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
+            return -1;
+
+        const price = curCell.property.upgradePrice(level);
+        if (this.curPlayer.money < price)
+            return -1;
+
+        this.curPlayer.loseMoney(price);
+        curCell.property.upgrade(level);
+
+        return curCell.property.id;
+    }
+
+    /**
+     * Attention: méthode apellée lorsque le joueur fait un choix manuel,
+     * Il en faudra une autre pour une vente forcée automatique au timeout de fin du tour
+     * @param propertiesList Liste d'ID de propriétés à hypothéquer
+     * @return true si succès, false sinon
+     */
+    curPlayerManualForcedMortage (propertiesList) {
+        const moneyToObtain = 1000; // TEMPORAIRE POUR TEST
+        let sum = 0;
+        for (const id of propertiesList) {
+            const prop = this.curPlayer.propertyByID(id);
+            if (prop)
+                sum += prop.mortagePrice;
+        }
+
+        if (sum < moneyToObtain)
+            return false;
+
+        return true;
     }
 }
 
