@@ -84,6 +84,19 @@ class Player {
     }
 
     /**
+     * @param id L'ID de la propriété à chercher
+     * @return La propriété si trouvée, sinon false
+     */
+    propertyByID (id) {
+        for (const prop of this.properties) {
+            if (prop.id === id)
+                return prop;
+        }
+
+        return false;
+    }
+
+    /**
      * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
      * @return true si le joueur possède toutes les rues de cette couleur, false sinon
      */
