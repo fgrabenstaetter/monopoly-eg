@@ -428,13 +428,18 @@ class Network {
 
             UserSchema.findById(user.id, (error, userMongo) => {
                 if (!error && userMongo) {
-                    userMongo.getFriends(user, {}, null, {sort: {name: 1}}, (friendsObj) => {
+                    userMongo.getFriends(userMongo, {}, (error, friendsObj) => {
+                        if (!friendsObj || error) {
+                            userMongo.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+        
                         for (let i = 0; i < friendsObj.length; i ++) {
                             // const friend = userMongo.friends[i];
                             UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
                                 if (friend && !error)
                                     friends.push({ id: friend.id, nickname: friend.nickname });
-    
+            
                                 nbInserted++;
                                 if (nbInserted === userMongo.friends.length)
                                     userMongo.socket.emit('lobbyFriendListRes', { friends: friends });
