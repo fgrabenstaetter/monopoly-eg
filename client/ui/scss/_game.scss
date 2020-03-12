@@ -4,6 +4,158 @@
   width: 100%;
   z-index: 1;
 
+  // Dés
+  .dice-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    #view1, #view2 {
+      width: 200px;
+      height: 200px;
+      perspective: 600px;
+      transform: scale(0.5);
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+
+    #dice1, #dice2 {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+    }
+
+    .dot {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 23px;
+      background :#444;
+      box-shadow: inset 5px 0 10px #000;
+    }
+    .dot.center {
+        margin: 77px 0 0 77px;
+    }
+    .dot.dtop {
+        margin-top: 20px;
+    }
+    .dot.dleft {
+        margin-left: 134px;
+    }
+    .dot.dright {
+        margin-left: 20px;
+    }
+    .dot.dbottom {
+        margin-top: 134px;
+    }
+    .dot.center.dleft {
+        margin: 77px 0 0 20px;
+    }
+    .dot.center.dright {
+        margin: 77px 0 0 134px;
+    }
+
+    .diceFace {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      text-align: center;
+      line-height: 200px;
+      font-size: 45px;
+      border: none;
+      box-shadow: inset 0 0 40px #ccc;
+      border-radius: 40px;
+    }
+
+    #dice1 .cover, #dice1 .inner, #dice2 .cover, #dice2 .inner {
+      background: #e0e0e0;
+      box-shadow: none;
+    }
+
+    #dice1 .cover, #dice2 .cover {
+      border-radius: 0;
+      transform: translateZ(0px);
+    }
+    #dice1 .cover.x, #dice2 .cover.x {
+      transform: rotateY(90deg);
+    }
+    #dice1 .cover.z, #dice2 .cover.z {
+      transform: rotateX(90deg);
+    }
+    #dice1 .front, #dice2 .front  {
+      transform: translateZ(100px);
+    }
+    #dice1 .front.inner, #dice2 .front.inner  {
+      transform: translateZ(98px);
+    }
+    #dice1 .back, #dice2 .back {
+      transform: rotateX(-180deg) translateZ(100px);
+    }
+    #dice1 .back.inner, #dice2 .back.inner {
+      transform: rotateX(-180deg) translateZ(98px);
+    }
+    #dice1 .right, #dice2 .right {
+      transform: rotateY(90deg) translateZ(100px);
+    }
+    #dice1 .right.inner, #dice2 .right.inner {
+      transform: rotateY(90deg) translateZ(98px);
+    }
+    #dice1 .left, #dice2 .left {
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+    #dice1 .left.inner, #dice2 .left.inner {
+      transform: rotateY(-90deg) translateZ(98px);
+    }
+    #dice1 .top, #dice2 .top {
+      transform: rotateX(90deg) translateZ(100px);
+    }
+    #dice1 .top.inner, #dice2 .top.inner {
+      transform: rotateX(90deg) translateZ(98px);
+    }
+    #dice1 .bottom, #dice2 .bottom {
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+    #dice1 .bottom.inner, #dice2 .bottom.inner {
+      transform: rotateX(-90deg) translateZ(98px);
+    }
+
+    .front {
+      background-color: white;
+      transform: rotateY(0deg) translateZ(100px);
+    }
+
+    .right {
+      background-color: white;
+      transform: rotateY(90deg) translateZ(100px);
+    }
+
+    .back {
+      background-color: white;
+      transform: rotateY(180deg) translateZ(100px);
+    }
+
+    .left {
+      background-color: white;
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+
+    .top {
+      background-color: white;
+      transform: rotateX(90deg) translateZ(100px);
+    }
+
+    .bottom {
+      background-color: white;
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+  }
+
   // Ligne supérieure du HUD: liste des joueurs
   .container:first-child {
     position: absolute;

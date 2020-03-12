@@ -755,6 +755,213 @@ input {
   z-index: 1;
 }
 
+.ingame-ui-container .dice-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: none;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  opacity: 0;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.ingame-ui-container .dice-container #view1, .ingame-ui-container .dice-container #view2 {
+  width: 200px;
+  height: 200px;
+  -webkit-perspective: 600px;
+          perspective: 600px;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+  -webkit-transition: -webkit-transform 0.15s;
+  transition: -webkit-transform 0.15s;
+  transition: transform 0.15s;
+  transition: transform 0.15s, -webkit-transform 0.15s;
+  display: inline-block;
+}
+
+.ingame-ui-container .dice-container #dice1, .ingame-ui-container .dice-container #dice2 {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.5s;
+  transition: -webkit-transform 0.5s;
+  transition: transform 0.5s;
+  transition: transform 0.5s, -webkit-transform 0.5s;
+}
+
+.ingame-ui-container .dice-container .dot {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 23px;
+  background: #444;
+  -webkit-box-shadow: inset 5px 0 10px #000;
+          box-shadow: inset 5px 0 10px #000;
+}
+
+.ingame-ui-container .dice-container .dot.center {
+  margin: 77px 0 0 77px;
+}
+
+.ingame-ui-container .dice-container .dot.dtop {
+  margin-top: 20px;
+}
+
+.ingame-ui-container .dice-container .dot.dleft {
+  margin-left: 134px;
+}
+
+.ingame-ui-container .dice-container .dot.dright {
+  margin-left: 20px;
+}
+
+.ingame-ui-container .dice-container .dot.dbottom {
+  margin-top: 134px;
+}
+
+.ingame-ui-container .dice-container .dot.center.dleft {
+  margin: 77px 0 0 20px;
+}
+
+.ingame-ui-container .dice-container .dot.center.dright {
+  margin: 77px 0 0 134px;
+}
+
+.ingame-ui-container .dice-container .diceFace {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  line-height: 200px;
+  font-size: 45px;
+  border: none;
+  -webkit-box-shadow: inset 0 0 40px #ccc;
+          box-shadow: inset 0 0 40px #ccc;
+  border-radius: 40px;
+}
+
+.ingame-ui-container .dice-container #dice1 .cover, .ingame-ui-container .dice-container #dice1 .inner, .ingame-ui-container .dice-container #dice2 .cover, .ingame-ui-container .dice-container #dice2 .inner {
+  background: #e0e0e0;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.ingame-ui-container .dice-container #dice1 .cover, .ingame-ui-container .dice-container #dice2 .cover {
+  border-radius: 0;
+  -webkit-transform: translateZ(0px);
+          transform: translateZ(0px);
+}
+
+.ingame-ui-container .dice-container #dice1 .cover.x, .ingame-ui-container .dice-container #dice2 .cover.x {
+  -webkit-transform: rotateY(90deg);
+          transform: rotateY(90deg);
+}
+
+.ingame-ui-container .dice-container #dice1 .cover.z, .ingame-ui-container .dice-container #dice2 .cover.z {
+  -webkit-transform: rotateX(90deg);
+          transform: rotateX(90deg);
+}
+
+.ingame-ui-container .dice-container #dice1 .front, .ingame-ui-container .dice-container #dice2 .front {
+  -webkit-transform: translateZ(100px);
+          transform: translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .front.inner, .ingame-ui-container .dice-container #dice2 .front.inner {
+  -webkit-transform: translateZ(98px);
+          transform: translateZ(98px);
+}
+
+.ingame-ui-container .dice-container #dice1 .back, .ingame-ui-container .dice-container #dice2 .back {
+  -webkit-transform: rotateX(-180deg) translateZ(100px);
+          transform: rotateX(-180deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .back.inner, .ingame-ui-container .dice-container #dice2 .back.inner {
+  -webkit-transform: rotateX(-180deg) translateZ(98px);
+          transform: rotateX(-180deg) translateZ(98px);
+}
+
+.ingame-ui-container .dice-container #dice1 .right, .ingame-ui-container .dice-container #dice2 .right {
+  -webkit-transform: rotateY(90deg) translateZ(100px);
+          transform: rotateY(90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .right.inner, .ingame-ui-container .dice-container #dice2 .right.inner {
+  -webkit-transform: rotateY(90deg) translateZ(98px);
+          transform: rotateY(90deg) translateZ(98px);
+}
+
+.ingame-ui-container .dice-container #dice1 .left, .ingame-ui-container .dice-container #dice2 .left {
+  -webkit-transform: rotateY(-90deg) translateZ(100px);
+          transform: rotateY(-90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .left.inner, .ingame-ui-container .dice-container #dice2 .left.inner {
+  -webkit-transform: rotateY(-90deg) translateZ(98px);
+          transform: rotateY(-90deg) translateZ(98px);
+}
+
+.ingame-ui-container .dice-container #dice1 .top, .ingame-ui-container .dice-container #dice2 .top {
+  -webkit-transform: rotateX(90deg) translateZ(100px);
+          transform: rotateX(90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .top.inner, .ingame-ui-container .dice-container #dice2 .top.inner {
+  -webkit-transform: rotateX(90deg) translateZ(98px);
+          transform: rotateX(90deg) translateZ(98px);
+}
+
+.ingame-ui-container .dice-container #dice1 .bottom, .ingame-ui-container .dice-container #dice2 .bottom {
+  -webkit-transform: rotateX(-90deg) translateZ(100px);
+          transform: rotateX(-90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container #dice1 .bottom.inner, .ingame-ui-container .dice-container #dice2 .bottom.inner {
+  -webkit-transform: rotateX(-90deg) translateZ(98px);
+          transform: rotateX(-90deg) translateZ(98px);
+}
+
+.ingame-ui-container .dice-container .front {
+  background-color: white;
+  -webkit-transform: rotateY(0deg) translateZ(100px);
+          transform: rotateY(0deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container .right {
+  background-color: white;
+  -webkit-transform: rotateY(90deg) translateZ(100px);
+          transform: rotateY(90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container .back {
+  background-color: white;
+  -webkit-transform: rotateY(180deg) translateZ(100px);
+          transform: rotateY(180deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container .left {
+  background-color: white;
+  -webkit-transform: rotateY(-90deg) translateZ(100px);
+          transform: rotateY(-90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container .top {
+  background-color: white;
+  -webkit-transform: rotateX(90deg) translateZ(100px);
+          transform: rotateX(90deg) translateZ(100px);
+}
+
+.ingame-ui-container .dice-container .bottom {
+  background-color: white;
+  -webkit-transform: rotateX(-90deg) translateZ(100px);
+          transform: rotateX(-90deg) translateZ(100px);
+}
+
 .ingame-ui-container .container:first-child {
   position: absolute;
   top: 100px;
