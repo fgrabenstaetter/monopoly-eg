@@ -93,7 +93,7 @@ class Game {
      */
     playerByID (id) {
         for (const player of this.players) {
-            if (player.user.id === id)
+            if (player.id === id)
                 return player;
         }
 
@@ -130,6 +130,14 @@ class Game {
     get curPlayer () {
         return this.players[this.turnPlayerInd];
     }
+
+    /**
+     * @return la cellule sur laquelle est le joueur actuel
+     */
+    get curCell () {
+        return this.cells[this.curPlayer.cellInd];
+    }
+
 
     start () {
         this.startedTime = Date.now();
@@ -219,7 +227,7 @@ class Game {
         console.log('NEXT TURN player = ' + this.curPlayer.user.nickname);
         this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.user.id,
+            playerID: this.curPlayer.id,
             turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
         });
     }
@@ -253,19 +261,19 @@ class Game {
         }
     }
 
-    playerOnPropertyCell (diceRes1, diceRes2, curCell) {
+    playerOnPropertyCell (diceRes1, diceRes2) {
         const total = diceRes1 + diceRes2;
-        index = this.curPlayer.properties.indexOf(curCell.property);
+        index = this.curPlayer.properties.indexOf(this.curCell.property);
         if (index !== -1) {
             // Le joueur est tombé sur une de ses propriétés
             this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_UPGRADE;
-            this.turnActionData.message = "Le joueur " + this.curPlayer.user.nickname + " considère l'amélioration de la propriété " + curCell.property.name;
-            this.turnActionData.args.push(curCell.property.id);
+            this.turnActionData.message = "Le joueur " + this.curPlayer.user.nickname + " considère l'amélioration de la propriété " + this.curCell.property.name;
+            this.turnActionData.args.push(this.curCell.property.id);
         }
         else {
             let cellOwner = null;
             for (const player of this.players) {
-                if (this.player.properties.indexOf(curCell.property) !== -1) {
+                if (this.player.properties.indexOf(this.curCell.property) !== -1) {
                     cellOwner = player;
                     break;
                 }
@@ -273,36 +281,36 @@ class Game {
             if (cellOwner == null) {
                 // Le terrain n'est pas encore acheté => J'ai la possibilité de l'acheter. Le client doit savoir l'action à executer
                 this.turnActionData.type = Constants.GAME_ACTION_TYPE.CAN_BUY;
-                this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + curCell.property.name;
+                this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + " considère l'achat de " + this.curCell.property.name;
             }
             else {
                 // Le terrain appartient à un autre joueur
-                if (this.curPlayer.money < curCell.property.rentalPrice) {
+                if (this.curPlayer.money < this.curCell.property.rentalPrice) {
                     // Le joueur n'a pas assez pour payer
                     // regarder si ses propriétés valent assez pour combler ce montant
                     let sum = this.curPlayer.money;
                     for (const prop of this.curPlayer.properties)
                         sum += prop.mortagePrice;
 
-                    if (sum < curCell.property.rentalPrice) {
+                    if (sum < this.curCell.property.rentalPrice) {
                         // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
                         this.turnActionData.type = Constants.GAME_ACTION_TYPE.NOTHING;
-                        this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' est en faillite (ne peux payer le loyer de ' + curCell.property.owner.user.nickname + ')';
+                        this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' est en faillite (ne peux payer le loyer de ' + this.curCell.property.owner.user.nickname + ')';
                         this.playerFailure(this.curPlayer);
                     } else {
                         // lui demander quelles propriétés il veux hypothéquer
                         // Si il ignore cette action asynchrone, une vente automatique sera effectuée (si pas assez => faillite)
                         this.turnActionData.type = Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE;
-                        this.turnActionData.args[0] = curCell.property.rentalPrice - this.curPlayer.money; // argent manquant à obtenir en hypothéquant les propriétés
-                        this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + curCell.property.owner.user.nickname;
+                        this.turnActionData.args[0] = this.curCell.property.rentalPrice - this.curPlayer.money; // argent manquant à obtenir en hypothéquant les propriétés
+                        this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + this.curCell.property.owner.user.nickname;
                     }
                 }
                 else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
-                    this.curPlayer.loseMoney(curCell.property.rentalPrice);
+                    this.curPlayer.loseMoney(this.curCell.property.rentalPrice);
                     this.turnActionData.type = Constants.GAME_ACTION_TYPE.PAID_RENT;
-                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' a payé ' + curCell.property.rentalPrice + ' à ' + curCell.property.owner.user.nickname;
-                    this.turnActionData.args.push(curCell.property.owner.user.id);
+                    this.turnActionData.message = 'Le joueur ' + this.curPlayer.user.nickname + ' a payé ' + this.curCell.property.rentalPrice + ' à ' + this.curCell.property.owner.user.nickname;
+                    this.turnActionData.args.push(this.curCell.property.owner.id);
                 }
             }
         }
@@ -327,9 +335,8 @@ class Game {
             this.playerTurnIsInPrison(diceRes[0], diceRes[1]);
         }
         else {
-            const curCell = this.curPlayer.cellInd + total;
-            const cellType = Cells[curCell];
-            switch (cellType) {
+            this.curPlayer.cellInd += total;
+            switch (this.curCell.type) {
                 case Constants.CELL_TYPE.PARC:
                     break;
 
@@ -338,7 +345,7 @@ class Game {
                     break;
 
                 case Constants.CELL_TYPE.PROPERTY:
-                    this.playerOnPropertyCell(diceRes[0], diceRes[1], curCell);
+                    this.playerOnPropertyCell(diceRes[0], diceRes[1]);
                     break;
 
                 case Constants.CELL_TYPE.CHANCE:
@@ -369,26 +376,25 @@ class Game {
      * @return L'ID de la propriété achetée si succès, -1 sinon
      */
     curPlayerBuyProperty () {
-        const curCell = this.cells[this.curPlayer.cellInd];
-        if (!curCell.property || curCell.property.owner)
+        if (!this.curCell.property || this.curCell.property.owner)
             return -1;
         let price;
-        if (curCell.property.type === Constants.PROPERTY_TYPE.STREET)
-            price = curCell.property.emptyPrice;
+        if (this.curCell.property.type === Constants.PROPERTY_TYPE.STREET)
+            price = this.curCell.property.emptyPrice;
         else
-            price = curCell.property.price;
+            price = this.curCell.property.price;
         if (this.curPlayer.money < price)
             return -1;
 
         this.curPlayer.loseMoney(price);
-        this.curPlayer.addProperty(curCell.property);
+        this.curPlayer.addProperty(this.curCell.property);
 
         // reset pour que le serveur sache que l'action a bien été effectuée
         this.turnActionData.type = null;
         this.turnActionData.message = null;
         this.turnActionData.args = [];
 
-        return curCell.property.id;
+        return this.curCell.property.id;
     }
 
     /**
@@ -396,23 +402,22 @@ class Game {
      * @return L'ID de la propriété améliorée si succès, -1 sinon
      */
     curPlayerUpgradeProperty (level) {
-        const curCell = this.cells[this.curPlayer.cellInd];
-        if (!curCell.property || curCell.property.owner || curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
+        if (!this.curCell.property || this.curCell.property.owner || this.curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
             return -1;
 
-        const price = curCell.property.upgradePrice(level);
+        const price = this.curCell.property.upgradePrice(level);
         if (this.curPlayer.money < price)
             return -1;
 
         this.curPlayer.loseMoney(price);
-        curCell.property.upgrade(level);
+        this.curCell.property.upgrade(level);
 
         // reset pour que le serveur sache que l'action a bien été effectuée
         this.turnActionData.type = null;
         this.turnActionData.message = null;
         this.turnActionData.args = [];
 
-        return curCell.property.id;
+        return this.curCell.property.id;
     }
 
     /**

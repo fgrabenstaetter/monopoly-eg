@@ -10,6 +10,7 @@ class Player {
      * @param pawn Son pion
      */
     constructor (user, pawn) {
+        this.id = user.id;
         this.user = user;
         this.pawn = pawn;
         this.isReady = false; // synchronisation de tous les joueurs avant lancement de partie
