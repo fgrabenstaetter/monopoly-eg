@@ -553,6 +553,17 @@
             status: string
         }
         ```
+
+- **Un joueur est en faillite**
+
+    * **Réponse:** gamePlayerFailure
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
+        }
+        ```
+
 ### --- Actions de tour asynchrones
 
 - Les événements suivants ne sont effectifs que lorsque la réponse d'une action de tour de jeu ('gameActionRes') l'indique (actionType)
