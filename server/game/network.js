@@ -426,16 +426,19 @@ class Network {
             let friends = [];
             let nbInserted = 0;
 
-            for (let i = 0; i < user.friends.length; i ++) {
-                const friend = user.friends[i];
-                UserSchema.findOne({ id: friendID }, (error, friend) => {
-                    if (!error)
-                        friends.push({ id: friendID, nickname: friend.nickname });
-                    nbInserted ++;
-                    if (nbInserted === user.friends.length)
-                        user.socket.emit('lobbyFriendListRes', { friends: friends });
-                });
-            }
+            UserSchema.findOne({ id: user.id }, (error, userMongo) => {
+                for (let i = 0; i < userMongo.friends.length; i ++) {
+                    // const friend = userMongo.friends[i];
+                    UserSchema.findOne({ id: friendID }, (error, friend) => {
+                        if (friend && !error)
+                            friends.push({ id: friendID, nickname: friend.nickname });
+
+                        nbInserted++;
+                        if (nbInserted === userMongo.friends.length)
+                            userMongo.socket.emit('lobbyFriendListRes', { friends: friends });
+                    });
+                }
+            });
         });
     }
 
