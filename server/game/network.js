@@ -220,7 +220,7 @@ class Network {
 
                 console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
 
-                UserSchema.requestFriend(user._id, invitedUser._id, (error, friendships) => {
+                UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
                     if (error) {
                         console.log('Erreur lors de l\'envoi de l\'invitation');
                         user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
