@@ -430,13 +430,13 @@ class Network {
                 if (!error && userMongo) {
                     userMongo.getFriends(userMongo, {}, (error, friendsObj) => {
                         if (!friendsObj || error) {
-                            userMongo.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            user.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
         
                         // Aucun ami (-> renvoie liste vide)
                         if (friendsObj.length == 0) {
-                            userMongo.socket.emit('lobbyFriendListRes', { friends: [] });
+                            user.socket.emit('lobbyFriendListRes', { friends: [] });
                             return;
                         }
 
@@ -448,7 +448,7 @@ class Network {
             
                                 nbInserted++;
                                 if (nbInserted === userMongo.friends.length)
-                                    userMongo.socket.emit('lobbyFriendListRes', { friends: friends });
+                                    user.socket.emit('lobbyFriendListRes', { friends: friends });
                             });
                         }
                     });
