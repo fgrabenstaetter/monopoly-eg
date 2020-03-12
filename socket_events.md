@@ -294,13 +294,13 @@
 
 - **Recevoir la liste d'amis en attente (invitations non acceptées/rejetées)**
 
-    * **Requête:** lobbyPendingFriendListReq
+    * **Requête:** lobbyRequestedFriendListReq
         * *Données:*
         ```javascript
         null
         ```
 
-    * **Réponse:** lobbyPendingFriendListRes
+    * **Réponse:** lobbyRequestedFriendListRes
         * *Données:*
         ```javascript
         {
