@@ -434,6 +434,12 @@ class Network {
                             return;
                         }
         
+                        // Aucun ami (-> renvoie liste vide)
+                        if (friendsObj.length == 0) {
+                            userMongo.socket.emit('lobbyFriendListRes', { friends: [] });
+                            return;
+                        }
+
                         for (let i = 0; i < friendsObj.length; i ++) {
                             // const friend = userMongo.friends[i];
                             UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
