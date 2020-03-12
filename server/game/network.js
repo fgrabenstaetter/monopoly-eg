@@ -465,7 +465,7 @@ class Network {
 
             UserSchema.findById(user.id, (error, userMongo) => {
                 if (!error && userMongo) {
-                    userMongo.getFriends(userMongo, {"friends.status": Status.Pending}, (error, friendsObj) => {
+                    userMongo.getFriends(userMongo, {"friends.status": "pending"}, (error, friendsObj) => {
                         if (!friendsObj || error) {
                             user.socket.emit('lobbyPendingFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
