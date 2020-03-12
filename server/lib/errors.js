@@ -61,7 +61,7 @@ module.exports = Object.freeze({
         },
         NOT_EXISTS: {
             code: 3,
-            status: 'Cet ami n\'existe pas'
+            status: 'Cet utilisateur n\'existe pas'
         },
         REQUEST_ERROR: {
             code: 4,

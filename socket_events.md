@@ -292,6 +292,27 @@
         }
         ```
 
+- **Recevoir la liste d'amis en attente (invitations non acceptées/rejetées)**
+
+    * **Requête:** lobbyPendingFriendListReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** lobbyPendingFriendListRes
+        * *Données:*
+        ```javascript
+        {
+            friends: [
+                {
+                    id: int,
+                    nickname: string
+                }, ...
+            ]
+        }
+        ```
+
 - **Envoyer une requête d'ami à quelqu'un**
     * **Requête:** lobbyFriendInvitationSendReq
         * *Données:*
