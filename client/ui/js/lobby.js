@@ -35,6 +35,7 @@ socket.on('lobbyCreatedRes', (res) => {
 
 socket.on('lobbyJoinedRes', (res) => {
     console.log('lobbyJoinedRes: ' + Object.keys(res));
+    console.log(res);
     // res.targetUsersNb
     // res.pawn = pion du joueur (non hôte)
     // res.users = liste des users présents (nickname + pion)
@@ -53,6 +54,22 @@ socket.on('lobbyJoinedRes', (res) => {
         users.push(usr);
         addGroupUser(usr.id, usr.pawn);
     }
+});
+
+// demande de la liste d'amis
+socket.emit('lobbyFriendListReq');
+socket.on('lobbyFriendListRes', (res) => {
+    console.log(res);
+})
+// Demande de la liste des demandes d'amis
+socket.emit('lobbyPendingFriendListReq');
+socket.on('lobbyPendingFriendListRes', (res) => {
+    console.log(res);
+})
+
+socket.on('lobbyInvitationReceivedRes', (res) => {
+    console.log("lobbyInvitationReceivedRes reçu -> besoin du nickname du friend")
+    lobbyInvitation(res.invitationID, "senderFriendNickname");
 });
 
 socket.on('lobbyUserJoinedRes', (res) => {
@@ -117,19 +134,28 @@ socket.on('lobbyFriendInvitationSendRes', (res) => {
         alert(res.status);
 });
 
-socket.on("lobbyInvitationRes",(res) => {
+socket.on("lobbyInvitationRes", (res) => {
     if (res.error === 0)
         console.log("lobbyInvitationRes")
     else // hôte uniquement
         alert(res.status);
 });
 
-socket.on("lobbyFriendInvitationActionRes",(res) => {
+socket.on("lobbyFriendInvitationActionRes", (res) => {
     if (res.error === 0)
         console.log("lobbyFriendInvitationActionRes")
     else // hôte uniquement
         alert(res.status);
 });
+
+socket.on("lobbyInvitationAcceptRes", (res) => {
+    if (res.error === 0)
+        console.log("lobbyInvitationAcceptRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
+
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
@@ -144,7 +170,7 @@ $(document).ready(() => {
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
-        filter = input.value.toUpperCase();
+        filter = input.value;
         if (e.keyCode == '13') {
             /**
             * recherche d'un nouvel ami
@@ -253,8 +279,10 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         let error = 0;
         let status = 100;
 
-        alert("A implementer");
-        console.log("A implementer lobbyInvitationAcceptReq")
+
+        socket.emit("lobbyInvitationAcceptReq", invitationID);
+        console.log("lobbyInvitationAcceptReq");
+
 
 
         if (!error) {
@@ -306,7 +334,7 @@ $('.friend-action').click(function () {
     let friendName = $(this).prev('.friends-name').text();
     let friendID = 0; //A implementer
 
-    socket.emit("lobbyInvitationReq",{friendID:friendID});
+    socket.emit("lobbyInvitationReq", { friendID: friendID });
     console.log("lobbyInvitationReq");
 });
 
@@ -317,7 +345,7 @@ $('.friend-request .accept-button').click(function () {
     let error = 0;
     let status = 100;
 
-    socket.emit("lobbyFriendInvitationActionReq",{action:1,nickname:senderNickname});
+    socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
     console.log("lobbyFriendInvitationReq");
 
     if (!error) {
@@ -336,7 +364,7 @@ $('.friend-request .deny-button').click(function () {
     let error = 0;
     let status = 100;
 
-    socket.emit("lobbyFriendInvitationActionReq",{action:0,nickname:senderNickname});
+    socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
     console.log("lobbyFriendInvitationReq");
 
     if (!error) {
