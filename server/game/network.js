@@ -37,7 +37,7 @@ class Network {
 
         // Amis
         this.lobbyFriendListReq             (user, lobby);
-        this.lobbyPendingFriendListReq      (user, lobby);
+        this.lobbyRequestedFriendListReq      (user, lobby);
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
@@ -458,22 +458,22 @@ class Network {
         });
     }
 
-    lobbyPendingFriendListReq (user, lobby) {
-        user.socket.on('lobbyPendingFriendListReq', () => {
+    lobbyRequestedFriendListReq (user, lobby) {
+        user.socket.on('lobbyRequestedFriendListReq', () => {
             let friends = [];
             let nbInserted = 0;
 
             UserSchema.findById(user.id, (error, userMongo) => {
                 if (!error && userMongo) {
-                    userMongo.getFriends(userMongo, {"friends.status": "pending"}, (error, friendsObj) => {
+                    UserSchema.getRequestedFriends(userMongo, (error, friendsObj) => {
                         if (!friendsObj || error) {
-                            user.socket.emit('lobbyPendingFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            user.socket.emit('lobbyRequestedFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
         
                         // Aucun ami (-> renvoie liste vide)
                         if (friendsObj.length == 0) {
-                            user.socket.emit('lobbyPendingFriendListRes', { friends: [] });
+                            user.socket.emit('lobbyRequestedFriendListRes', { friends: [] });
                             return;
                         }
 
@@ -485,7 +485,7 @@ class Network {
             
                                 nbInserted++;
                                 if (nbInserted === userMongo.friends.length)
-                                    user.socket.emit('lobbyPendingFriendListRes', { friends: friends });
+                                    user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
                             });
                         }
                     });
