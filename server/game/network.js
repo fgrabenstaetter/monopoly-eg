@@ -253,7 +253,7 @@ class Network {
 
             UserSchema.findOne({ nickname: userNickname }, (error, invitedByUser) => {
                 if (error || !invitedByUser) {
-                    user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
 
@@ -261,18 +261,18 @@ class Network {
                     UserSchema.requestFriend(user._id, invitedByUser._id, (error, friendships) => {
                         if (error) {
                             console.log('Erreur acceptation invitation');
-                            user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
 
                         console.log('Invitation acceptée pour "' + invitedByUser.nickname + '"');
-                        user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                         return;
                     });
                 } else { // reject
                     UserSchema.removeFriend(user._id, invitedByUser._id);
                     console.log('Requête rejetée avec succès');
-                    user.socket.emit('lobbyActionFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                     return;
                 }
             });
