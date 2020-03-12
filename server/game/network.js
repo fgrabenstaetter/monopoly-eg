@@ -434,7 +434,7 @@ class Network {
                             user.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
-        
+
                         // Aucun ami (-> renvoie liste vide)
                         if (friendsObj.length == 0) {
                             user.socket.emit('lobbyFriendListRes', { friends: [] });
@@ -446,7 +446,7 @@ class Network {
                             UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
                                 if (friend && !error)
                                     friends.push({ id: friend.id, nickname: friend.nickname });
-            
+
                                 nbInserted++;
                                 if (nbInserted === userMongo.friends.length)
                                     user.socket.emit('lobbyFriendListRes', { friends: friends });
@@ -470,7 +470,7 @@ class Network {
                             user.socket.emit('lobbyRequestedFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
-        
+
                         // Aucun ami (-> renvoie liste vide)
                         if (friendsObj.length == 0) {
                             user.socket.emit('lobbyRequestedFriendListRes', { friends: [] });
@@ -482,7 +482,7 @@ class Network {
                             UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
                                 if (friend && !error)
                                     friends.push({ id: friend.id, nickname: friend.nickname });
-            
+
                                 nbInserted++;
                                 if (nbInserted === userMongo.friends.length)
                                     user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
@@ -658,13 +658,13 @@ class Network {
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyForcedMortageReq', {
+                this.io.to(game.name).emit('gameTurnPropertyForcedMortageRes', {
                     properties  : data.properties,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyForcedMortageReq', { error: err.code, status: err.status });
+                player.user.socket.emit('gameTurnPropertyForcedMortageRes', { error: err.code, status: err.status });
         });
     }
 
