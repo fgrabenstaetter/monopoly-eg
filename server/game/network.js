@@ -214,7 +214,7 @@ class Network {
             UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
                 if (error || !invitedUser) {
                     console.log('Ami à inviter "' + data.nickname + '" non trouvé :/');
-                    user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
 
@@ -223,12 +223,12 @@ class Network {
                 UserSchema.requestFriend(user._id, invitedUser._id, (error, friendships) => {
                     if (error) {
                         console.log('Erreur lors de l\'envoi de l\'invitation');
-                        user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                        user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                         return;
                     }
 
                     console.log('Invitation envoyée avec succès !');
-                    user.socket.emit('lobbySendFriendInvitationRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
 
                     // Envoi temps réel (si utilisateur connecté)
                     for (const lobby of this.GLOBAL.lobbies) {
