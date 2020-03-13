@@ -50,24 +50,56 @@ class Street extends Property {
      * @return Le prix d'un loyer de la rue
      */
     get rentalPrice () {
+        let price;
         if (this.hostel)
-            return this.rentalPrices.hostel;
+            price = this.rentalPrices.hostel;
         else if (this.housesNb > 0)
-            return this.rentalPrices.house[this.housesNb - 1];
+            price = this.rentalPrices.house[this.housesNb - 1];
         else
-            return this.rentalPrices.empty;
+            price = this.rentalPrices.empty;
+
+        return price * (this.owner.colorMonopoly(this.color) ? 2 : 1);
     }
 
     /**
      * @return Le prix d'hypothèque de la rue
      */
     get mortagePrice () {
+        let sum = this.prices.empty;
         if (this.hostel)
-            return this.prices.hostel / 2;
-        else if (this.housesNb > 0)
-            return this.prices.house * this.housesNb / 2;
+            sum += this.prices.hostelPrice + this.prices.house * 3;
         else
-            return this.prices.empty / 2;
+            sum += this.prices.house * this.housesNb;
+
+        return sum / 2;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     */
+    upgrade (level) {
+        if (level === 4) {
+            this.housesNb = 0;
+            this.hostel = true;
+        } else
+            this.housesNb = level;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     * @return le prix
+     */
+    upgradePrice (level) {
+        if (this.hostel)
+            return 0;
+
+        let price = 0;
+        if (level === 4)
+            price = this.prices.hostel + this.prices.house * 3;
+        else
+            price = this.prices.house * level;
+
+        return price - this.housesNb * this.prices.house;
     }
 }
 

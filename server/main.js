@@ -19,6 +19,7 @@ const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
 const { UserSchema, UserManager } = require('./models/user');
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 let server;
 let production = false;
@@ -77,12 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    // pour test
-    res.send(`<h1>Bonjour</h1>
-              <b>IP:</b> ` + req.socket.remoteAddress + `<br />
-              <b>Port:</b> ` + req.socket.remotePort + `<br />
-              <a href="/tests">tests console</a>`
-    );
+    res.send('<h1>Bonjour</h1>');
 });
 
 //////////////////////
@@ -117,12 +113,7 @@ app.use( (err, req, res, next) => {
         res.status(401).send('Invalid JWT token');
 });
 
-app.get('/api/tokentest', (req, res) => {
-    res.json(req.user);
-});
-
 app.post('/api/register', (req, res) => {
-
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
         if (err.code !== Errors.SUCCESS.code)
             res.status(400);
@@ -132,7 +123,7 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        let token = null;
+        let token = null, id = null;
 
         if (err.code === Errors.SUCCESS.code) {
             // si le user n'est pas déjà dans la liste, l'y ajouter
@@ -142,13 +133,19 @@ app.post('/api/login', (req, res) => {
                 GLOBAL.users.push(user);
             }
 
+            id = userSchema.id;
             token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
                 expiresIn: 86400 // expires in 24 hours
             });
         } else
             res.status(400);
 
-        res.json({ error: err.code, status: err.status, token: token });
+        res.json({
+            error  : err.code,
+            status : err.status,
+            token  : token,
+            id     : id
+        });
     });
 });
 
@@ -176,10 +173,21 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');
+
+        // si il est dans un lobby, l'y supprimer
         for (const lobby of GLOBAL.lobbies) {
             if (lobby.userByNickname(user.nickname)) {
                 lobby.delUser(user, false);
-                break;
+                return;
+            }
+        }
+
+        // si il est dans une partie de jeu, l'y supprimer
+        for (const game of GLOBAL.games) {
+            const player = game.playerByNickname(user.nickname);
+            if (player) {
+                game.delPlayer(player);
+                return;
             }
         }
     });
@@ -215,125 +223,3 @@ io.on('connection', (socket) => {
         }
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////
-// TESTS ZONE //
-////////////////
-
-// pour les tests (dans ./tests/) uniquement
-app.get('/tests', (req, res) => {
-    res.sendFile(process.env.PWD + '/tests/index.html');
-});
-
-
-// Créer une demande d'ami de userA vers userB (userX = ObjetcId)
-// ex : /test/process-friend-request/5e457cb3d7d620e3e2bc5d22/5e43073fbd410f9edcdae8f7
-// et pour "accepter" -> inverser les deux IDs
-app.get('/test/process-friend-request/:userA/:userB', (req, res) => {
-    UserSchema.requestFriend(req.params.userA, req.params.userB, (err) => {
-        console.log('err', err);
-        console.log(req.params.userA + " requested ----> " + req.params.userB);
-    });
-
-    res.send('ok');
-});
-
-// Récupère les amis de user (user = ObjectId)
-// ex : /test/get-friends/5e43073fbd410f9edcdae8f7
-app.get('/test/get-friends/:user', (req, res) => {
-    UserSchema.getFriends(req.params.user, (err, friendships) => {
-        console.log('err', err);
-        console.log('User ' + req.params.user + ' friends :');
-        console.log(friendships);
-    });
-
-    res.send('ok');
-});
-
-
-app.get('/test/add-user-in-db/:username/:email', (req, res) => {
-    let newUserSchema = new UserSchema({
-        nickname: req.params.username,
-        email: req.params.email,
-        password: '$[hash]'
-    });
-
-    newUserSchema.save((err, result) => {
-        if (err)
-            res.send('Une erreur est survenue :/');
-        else
-            res.send('Utilisateur ajouté dans la base de données !');
-    });
-});
-
-app.get('/test/get-users-from-db', (req, res) => {
-    UserSchema.find((err, users) => {
-        let html = '';
-        for (let i = 0; i < users.length; i++) {
-            html += '<b>' + users[i].nickname + '</b><br>' + users[i].email + '<br>' + users[i].password + '<br><hr>';
-        }
-        res.send(html);
-    });
-});
-
-app.get('/test/delete-users-from-db', (req, res) => {
-    UserSchema.deleteMany({}, (err, result) => {
-        if (err)
-            res.send('Une erreur est survenue :/');
-        else
-            res.send('Tous les utilisateurs ont bien été supprimés de la base de données !');
-    });
-});
-
-const Cell = require('./game/cell');
-app.get('/test/cell-test', (req, res) => {
-    let cells = [
-        new Cell(Constants.CELL_TYPE.PARC, null),
-        new Cell(Constants.CELL_TYPE.PRISON, null),
-        new Cell(-1, null),
-        new Cell(Constants.CELL_TYPE.CHANCE_CARD, null)
-    ];
-
-    console.log(cells);
-
-    res.send('Voir debug dans la console NodeJS // ' + cells[0].name);
-});
-
-
-const Market = require('./game/market');
-const Player = require('./game/player');
-
-var playerOne = new Player(5, 'horse');
-var playerTwo = new Player(7, 'shoe');
-// const Street = require('./game/street');
-// var street = new Street(1, playerOne, null); this generates an exception
-class Street {
-    constructor (id, name) {
-        this.id = id;
-        this.name = name;
-    }
-}
-var street = new Street(1, 'Testing Street');
-var secondStreet = new Street(2, 'Toasting Street');
-
-playerOne.addProperty(street);
-
-market = new Market();
-market.addBid(playerOne, street, 700);
-market.placeOffer(playerOne, street, playerTwo, 400);
-market.placeOffer(playerOne, street, playerTwo, 500);
-market.placeOffer(playerOne, secondStreet, playerTwo, 500);

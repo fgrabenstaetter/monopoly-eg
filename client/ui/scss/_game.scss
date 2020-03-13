@@ -4,12 +4,353 @@
   width: 100%;
   z-index: 1;
 
+  // Dés
+  .dice-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    #view1, #view2 {
+      width: 200px;
+      height: 200px;
+      perspective: 600px;
+      transform: scale(0.5);
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+
+    #dice1, #dice2 {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+    }
+
+    .dot {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 23px;
+      background :#444;
+      box-shadow: inset 5px 0 10px #000;
+    }
+    .dot.center {
+        margin: 77px 0 0 77px;
+    }
+    .dot.dtop {
+        margin-top: 20px;
+    }
+    .dot.dleft {
+        margin-left: 134px;
+    }
+    .dot.dright {
+        margin-left: 20px;
+    }
+    .dot.dbottom {
+        margin-top: 134px;
+    }
+    .dot.center.dleft {
+        margin: 77px 0 0 20px;
+    }
+    .dot.center.dright {
+        margin: 77px 0 0 134px;
+    }
+
+    .diceFace {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      text-align: center;
+      line-height: 200px;
+      font-size: 45px;
+      border: none;
+      box-shadow: inset 0 0 40px #ccc;
+      border-radius: 40px;
+    }
+
+    #dice1 .cover, #dice1 .inner, #dice2 .cover, #dice2 .inner {
+      background: #e0e0e0;
+      box-shadow: none;
+    }
+
+    #dice1 .cover, #dice2 .cover {
+      border-radius: 0;
+      transform: translateZ(0px);
+    }
+    #dice1 .cover.x, #dice2 .cover.x {
+      transform: rotateY(90deg);
+    }
+    #dice1 .cover.z, #dice2 .cover.z {
+      transform: rotateX(90deg);
+    }
+    #dice1 .front, #dice2 .front  {
+      transform: translateZ(100px);
+    }
+    #dice1 .front.inner, #dice2 .front.inner  {
+      transform: translateZ(98px);
+    }
+    #dice1 .back, #dice2 .back {
+      transform: rotateX(-180deg) translateZ(100px);
+    }
+    #dice1 .back.inner, #dice2 .back.inner {
+      transform: rotateX(-180deg) translateZ(98px);
+    }
+    #dice1 .right, #dice2 .right {
+      transform: rotateY(90deg) translateZ(100px);
+    }
+    #dice1 .right.inner, #dice2 .right.inner {
+      transform: rotateY(90deg) translateZ(98px);
+    }
+    #dice1 .left, #dice2 .left {
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+    #dice1 .left.inner, #dice2 .left.inner {
+      transform: rotateY(-90deg) translateZ(98px);
+    }
+    #dice1 .top, #dice2 .top {
+      transform: rotateX(90deg) translateZ(100px);
+    }
+    #dice1 .top.inner, #dice2 .top.inner {
+      transform: rotateX(90deg) translateZ(98px);
+    }
+    #dice1 .bottom, #dice2 .bottom {
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+    #dice1 .bottom.inner, #dice2 .bottom.inner {
+      transform: rotateX(-90deg) translateZ(98px);
+    }
+
+    .front {
+      background-color: white;
+      transform: rotateY(0deg) translateZ(100px);
+    }
+
+    .right {
+      background-color: white;
+      transform: rotateY(90deg) translateZ(100px);
+    }
+
+    .back {
+      background-color: white;
+      transform: rotateY(180deg) translateZ(100px);
+    }
+
+    .left {
+      background-color: white;
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+
+    .top {
+      background-color: white;
+      transform: rotateX(90deg) translateZ(100px);
+    }
+
+    .bottom {
+      background-color: white;
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+  }
+
   // Ligne supérieure du HUD: liste des joueurs
   .container:first-child {
     position: absolute;
     top: 100px;
     left: 50%;
     transform: translate(-50%, 0);
+
+    .player-list {
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .player-entry {
+        margin-bottom: 20px;
+        position: relative;
+
+        .name {
+          font-size: 20px;
+          font-weight: bold;
+          font-family: 'Work Sans', sans-serif;
+          position: relative;
+          background: transparent;
+          z-index: 0;
+        }
+
+        .name::before {
+          content: attr(title);
+          position: absolute;
+          -webkit-text-stroke: 0.2em rgba($color: #010961, $alpha: 0.8);
+          left: 0;
+          z-index: -1;
+        }
+
+        .money {
+          color: white;
+          font-size: 15px;
+        }
+
+        .money::before {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f3d1";
+          margin-right: 10px;
+          font-size: 18px;
+          color: white;
+          vertical-align: text-top;
+        }
+
+        .money::after {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "$";
+          margin-left: 2px;
+          font-size: 16px;
+          color: white;
+          vertical-align: baseline;
+        }
+
+        .popup {
+          width: 500px;
+          height: max-content;
+          position: absolute;
+          background-color: $popup-background;
+          left: 150px;
+          top: -10px;
+          padding: 50px;
+          border-radius: 20px;
+
+          .properties-container {
+            position: relative;
+            height: 207px;
+            width: 100px;
+            display: inline-block;
+            margin: 0 20px 0 0;
+
+            .property {
+              width: 100px;
+              border: none;
+              border-radius: 5px;
+              position: absolute;
+
+              .title {
+                font-size: 8px;
+                text-align: center;
+                color: black;
+                padding: 5px 0;
+                border-radius: 5px 5px 0 0;
+                overflow: hidden;
+              }
+
+              .content {
+                border-radius: 0 0 5px 5px;
+                font-size: 8px;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 110px;
+                background: white;
+                overflow: hidden;
+              }
+
+              &:first-child {
+                top: 0px;
+              }
+
+              &:nth-child(2) {
+                top: 25px;
+              }
+
+              &:nth-child(3) {
+                top: 50px;
+              }
+
+              &:nth-child(4) {
+                top: 75px;
+              }
+            }
+
+            // Classes couleurs propriétés
+            &.yellow {
+              .title {
+                background-color: yellow;
+              }
+            }
+
+            &.blue {
+              .title {
+                background-color: blue;
+                color: white;
+              }
+            }
+
+            &.red {
+              .title {
+                background-color: red;
+                color: white;
+              }
+            }
+          }
+        }
+
+        .popup:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 10px;
+          width: 0;
+          height: 0;
+          border: 10px solid transparent;
+          border-right-color: $popup-background;
+          border-left: 0;
+          margin-top: 10px;
+          margin-left: -10px;
+        }
+
+        &.current::before {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f111";
+          margin-right: 10px;
+          font-size: 10px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 10px;
+          left: -17px;
+        }
+      }
+
+      // couleurs assignées automatiquement aux membres de la liste
+      @import '_players-colors.scss'
+    }
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
@@ -37,12 +378,13 @@
         position: relative;
         margin-top: 20px;
         margin-left: auto;
-        width: 350px;
+        width: 225px;
   
+        // Il faudra rendre le background-color dynamique
         .card-header {
           border-radius: 15px 15px 0px 0px;
           color: white;
-          background-color: $window_header;
+          background-color: orange;
           padding-top: 10px;
           padding-bottom: 10px;
 
@@ -51,10 +393,13 @@
             font-size: 17px;
           }
         }
-  
+
         .card-body {
           border-radius: 0px 0px 15px 15px;
-          background-color: $window_body;
+          background-color: $notification-body;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
 
           .btn {
             height: 32px;
@@ -65,11 +410,11 @@
           }
 
           .btn-primary {
-            background-color: #35d859;
+            background-color: $button-primary;
           }
 
           .btn-secondary {
-            background-color: rgba($color: black, $alpha: 0.3);
+            background-color: $button-secondary;
           }
         }
 

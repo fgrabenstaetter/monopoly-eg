@@ -1,4 +1,5 @@
 const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
 
 /**
  * Représente un joueur dans une partie
@@ -9,9 +10,11 @@ class Player {
      * @param pawn Son pion
      */
     constructor (user, pawn) {
+        this.id = user.id;
         this.user = user;
         this.pawn = pawn;
         this.isReady = false; // synchronisation de tous les joueurs avant lancement de partie
+        this.failure = false;
 
         this.money = 1500; // argent initial
         this.cellInd = 0;
@@ -49,10 +52,13 @@ class Player {
     }
 
     loseMoney (amount) {
-        if(this.money < amount)
+        if(this.money < amount) {
             this.money = 0;
-        else
+            return false;
+        } else {
             this.money = this.money - amount;
+            return true;
+        }
     }
 
     goPrison () {
@@ -80,16 +86,35 @@ class Player {
     }
 
     /**
-     * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
-     * @return le nombre de rues de couleur color du joueur
+     * @param id L'ID de la propriété à chercher
+     * @return La propriété si trouvée, sinon false
      */
-    sameStreetColorNb (color) {
-        let nb = 0;
+    propertyByID (id) {
+        for (const prop of this.properties) {
+            if (prop.id === id)
+                return prop;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
+     * @return true si le joueur possède toutes les rues de cette couleur, false sinon
+     */
+    colorMonopoly (color) {
+        let nb = 0, total = 0;
+
         for (const prop of this.properties) {
             if (prop.type === Constants.PROPERTY_TYPE.STREET && prop.color === color)
                 nb ++;
         }
-        return nb;
+        for (const prop of Properties.STREET) {
+            if (prop.color === color)
+                total ++;
+        }
+
+        return nb === total;
     }
 }
 

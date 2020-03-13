@@ -31,7 +31,11 @@ function updateScroll(){
 function sendMsg () {
     const chatMsg = document.getElementById('chat');
     if (chatMsg.value.trim() != '') {
-        socket.emit('lobbyChatSendReq', {content: chatMsg.value});
+        const inGame = window.location.pathname === '/game';
+        if (inGame)
+            socket.emit('gameChatSendReq', { text: chatMsg.value });
+        else // lobby
+            socket.emit('lobbyChatSendReq', { content: chatMsg.value });
         chatMsg.value = '';
     }
 }
@@ -40,15 +44,15 @@ function sendMsg () {
  * Fonction qui affiche un messag reçu
  * @param msg L'object message reçu par socket
  */
-function addMsg (msg) {
+function addMsg (senderID, text, createdTime) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
-    const msgClass = 'msg-' + (msg.sender === NICKNAME ? 'me' : 'other');
-    const localeDate = new Date(msg.createdTime).toLocaleString();
+    const msgClass = 'msg-' + (senderID === ID ? 'me' : 'other');
+    const localeDate = new Date(createdTime).toLocaleString();
     const html = `
         <div class="` + msgClass + `" title="` + localeDate + `">
-            <div class="msg-author">` + msg.sender + `</div>`
-            + msg.content +
+            <div class="msg-author">` + idToNick(senderID) + `</div>`
+            + text +
         `</div>`;
 
     $('#msgChat').append(html);

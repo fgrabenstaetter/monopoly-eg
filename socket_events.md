@@ -43,7 +43,7 @@
         * *Données:*
         ```javascript
         {
-            friendNickname: string
+            friendID: int
         }
         ```
 
@@ -62,8 +62,8 @@
         ```javascript
         {
             invitationID: int,
-            senderFriendNickname: string,
-            nbUsersInLobby: int
+            nbUsersInLobby: int,
+            senderFriendID: int // connaissance du ID: recevoir liste d'amis au préalable
         }
          ```
 
@@ -96,6 +96,7 @@
                 // premier user = host
                 {
                     nickname: string,
+                    id: int,
                     pawn: int
                 },
                 ...
@@ -103,7 +104,7 @@
             ],
             messages: [ // max 100 messages, les plus récents en dernier
                 {
-                    sender: string,
+                    senderUserID: int,
                     content: string,
                     createdTime: timestamp
                 },
@@ -117,7 +118,8 @@
         * *Données:*
         ```javascript
         {
-            nickname: string
+            nickname: string,
+            id: int,
             pawn: int
         }
         ```
@@ -127,7 +129,7 @@
         * *Données:*
         ```javascript
         {
-            userToKickNickname: string
+            userToKickID: int
         }
         ```
 
@@ -145,12 +147,12 @@
         > Est envoyé à tout le monde dans le lobby. Si le user en question recoit aussi l'event, cela veut dire qu'il n'est pas parti mais qu'il a été kické du lobby (actualiser l'affichage)
 
         * *Données:*
-            > Le pseudo de l'hôte est retourné (*host*) car il change après le départ de l'hôte (uniquement)
+            > L'ID de l'hôte est retourné (*hostID*) car il change après le départ de l'hôte (uniquement)
 
         ```javascript
         {
-            nickname: string,
-            host: string // host nickname
+            userID: int,
+            hostID: int
         }
         ```
 
@@ -164,7 +166,6 @@
         ```javascript
         {
             nb: int // 2 - 8
-
         }
         ```
 
@@ -213,7 +214,7 @@
         * *Données:*
         ```javascript
         {
-            nickname: string, // pseudo de celui qui a changé son pion
+            userID: int,
             pawn: int
         }
         ```
@@ -242,9 +243,9 @@
         * *Données:*
         ```javascript
         {
-            sender: string, // pseudo de l'émetteur
             content: string, // texte
-            createdTime: timestamp
+            createdTime: timestamp,
+            senderUserID: int
         }
         ```
 
@@ -270,17 +271,57 @@
 
 ### --- Amis
 
-- **Envoyer une demande d'ami**
+- **Recevoir la liste d'amis**
 
-    * **Requête:** lobbyFriendInviteReq
+    * **Requête:** lobbyFriendListReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** lobbyFriendListRes
         * *Données:*
         ```javascript
         {
-            receiverNickname: string
+            friends: [
+                {
+                    id: int,
+                    nickname: string
+                }, ...
+            ]
         }
         ```
 
-    * **Réponse:** lobbyFriendInviteRes
+- **Recevoir la liste d'amis en attente (invitations non acceptées/rejetées)**
+
+    * **Requête:** lobbyRequestedFriendListReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** lobbyRequestedFriendListRes
+        * *Données:*
+        ```javascript
+        {
+            friends: [
+                {
+                    id: int,
+                    nickname: string
+                }, ...
+            ]
+        }
+        ```
+
+- **Envoyer une requête d'ami à quelqu'un**
+    * **Requête:** lobbyFriendInvitationSendReq
+        * *Données:*
+        ```javascript
+        {
+            nickname: string
+        }
+         ```
+    * **Réponse:** lobbyFriendInvitationSendRes
         * *Données:*
         ```javascript
         {
@@ -289,41 +330,15 @@
         }
         ```
 
-* **Acceptation / Déclinaison d'une demande d'ami (action du récepteur)**
-    > Envoyé à l'émetteur de la requête après que son récepteur ai accepté ou décliné l'invitation
-
-    * **Réponse:** lobbyFriendInvitationRes
-        * *Données:*
-        ```javascript
-        {
-            receiverNickname: string
-            state: string // accepted | rejected
-        }
-        ```
-
-* **Réception d'une demande d'ami**
-    > Reçu lorsque quelqu'un nous a envoyé une demande d'ami
-
-    * **Réponse:** lobbyFriendInvitationReceivedRes
-        * *Données:*
-        ```javascript
-        {
-            senderNickname: string
-        }
-        ```
-
-* **Accepter / Décliner une demande d'ami**
-    > Accepter ou décliner une demande d'ami qui a été reçue
-
+- **Accepter/rejeter une requête d'ami reçue**
     * **Requête:** lobbyFriendInvitationActionReq
-        * *Données:*
+        * *Données:* action (0 = rejeter, 1 = accepter)
         ```javascript
         {
-            senderNickname: string,
-            action: string // accept | reject
+            action: 0/1
+            nickname: string
         }
-        ```
-
+         ```
     * **Réponse:** lobbyFriendInvitationActionRes
         * *Données:*
         ```javascript
@@ -333,14 +348,26 @@
         }
         ```
 
-* **Supprimer un ami**
+- **Réception d'une demande d'ami**
+    > Reçu lorsque quelqu'un nous a envoyé une demande d'ami
+
+    * **Réponse:** lobbyFriendInvitationReceivedRes
+        * *Données:*
+        ```javascript
+        {
+            id: int,
+            nickname: string
+        }
+        ```
+
+- **Supprimer un ami**
     > Supprimer un ami revient à le supprimer des deux côtés (plus aucun des deux n'a l'autre en ami)
 
     * **Requête:** lobbyFriendDeleteReq
         * *Données:*
         ```javascript
         {
-            friendNickname: string
+            id: int
         }
         ```
 
@@ -355,8 +382,11 @@
 
 ## Game
 
+### --- Début et fin
+
 - **Le client est prêt à recevoir des messages socket du jeu**
-    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on)
+    > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on).
+    Lorsque tous les joueurs ont envoyés cet évènnement, la partie est démarée.
 
     * **Requête:** gameReadyReq
         * *Données:*
@@ -375,13 +405,14 @@
             players: [
                 {
                     nickname: string,
+                    id: int,
                     pawn: int
                 }, ...
             ],
             cells: [
                 {
                     id: int,
-                    type: string, // begin | parc | property | parc | prison | card
+                    type: string, // begin | parc | property | parc | prison | chanceCard | communityCard
                     propertyID: int | null // null ou ID de propriété
                 }, ...
             ],
@@ -393,21 +424,13 @@
                     description: string,
                     customData: selon le type (voir ci-dessous)
                 }, ...
-            ],
-            cards: [
-                {
-                    id: int,
-                    type: string, // chance | commnunity
-                    name: string,
-                    description: string
-                }, ...
             ]
         }
 
         ```
         **customData** dans *properties* peut être:
         ```javascript
-        // si type = street
+        // Si type = street
         {
             color: int,
             prices: {
@@ -422,7 +445,7 @@
             }
         }
 
-        // si type = trainStation
+        // Si type = trainStation
         {
            price: int,
            rentalPrices: [ 1gare (int), 2gare (int), 3gare (int), 4gare (int) ]
@@ -435,51 +458,77 @@
         }
         ```
 
+- **Un joueur a quitté la partie**
+    > Automatiquement émit lorsqu'un joueur quitte la partie
+
+    * **Réponse:** gameQuitRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
+        }
+        ```
+
+### --- Tour de jeu
+
 - **Doit jouer (lancer les dés)**
-    > Signale le nom du joueur qui doit jouer = lancer les dés. Le timeout du tour commence ici
+    > Signale le nom du joueur qui doit jouer = lancer les dés.
+    Le décompte de timeout du tour commence ici.
 
     * **Réponse:** gameTurnRes
         * *Données:*
         ```javascript
         {
-            nickname: string,
-            turnEndTime: timestamp // timestamp de fin forcé du tour
+            turnEndTime: timestamp, // timestamp de fin forcé du tour
+            playerID: int
         }
         ```
 
-- **Action de tour / Lancer les dés**
-    > Uniquement le joueur qui lance les dés envoie la Req, mais tous les joueurs recoivent la Res, un joueur peut lancer les dés plusieurs fois par tour, ex. double valeur aux dés
+- **Lancer les dés**
+    > Un joueur peut parfois lancer les dés plusieurs fois par tour, ex. double valeur aux dés
 
     * **Requête:** gameRollDiceReq
         * *Données:*
         ```javascript
         null
          ```
-
     * **Réponse:** gameRollDiceRes
-        > Contient le résultat des dés ET toutes les infos à mettre à jour (action de jeu)
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
 
+- **Action de tour**
+    > Contient le résultat des dés et toutes les infos à mettre à jour (action de jeu)
+
+    * **Réponse:** gameActionRes
         * *actionType* peut signifier (rien, peutAcheter, doitPayerLoyer, peutConstruireMaison, peutConstruireHotel)
         * *Données:*
         ```javascript
         {
-            playerNickname: string,
             dicesRes: [ int, int ],
             cellID: int,
             gameMessage: string, // message de l'action
             actionType: int,
-            turnEndTime: timestamp, // timeout fin de tour
+            playerID: int,
             updateMoney:
             [
                 // peut être vide (dynamique)
-                nickname: int, // nouveau solde
+                playerID: int, // nouveau solde
                 ...
             ],
             extra: [
                 {
                     // contient 0 ou 1 seul de ces éléments
                     newCardJailEscape: null, // nouvelle carte prison
-                    newCard: int, // ID de la carte chance ou community
+                    newCard: {
+                        type: string, // chance | community
+                        name: string,
+                        description: string
+                    }
                 }, ...
             ]
         }
@@ -495,14 +544,99 @@
         ```
 
     * **Réponse:** gameTurnEndRes
+        > Envoyé automatiquement au joueur lorsque son timeout de tour a expiré
+
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Un joueur est en faillite**
+
+    * **Réponse:** gamePlayerFailure
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
+        }
+        ```
+
+### --- Actions de tour asynchrones
+
+- Les événements suivants ne sont effectifs que lorsque la réponse d'une action de tour de jeu ('gameActionRes') l'indique (actionType)
+- Toutes les requêtes suivantes doivent êtres envoyées avant la fin du tour de jeu si nécéssaire, sinon elles seront ignorées.
+- Toutes les réponses suivantes sont envoyées à tous les joueurs si succès, sinon uniquement à l'émetteur en cas d'erreur avec les champs 'error' et 'status' renseignés.
+
+- **Acheter une propriété**
+    > Envoyer la requête uniquement si on veux acheter la propriété sur laquelle on se situe.
+
+    * **Requête:** gameTurnPropertyBuyReq
         * *Données:*
         ```javascript
         null
         ```
 
-- **Envoyer/Recevoir un message dans le chat du jeu**
+    * **Réponse:** gameTurnPropertyBuyRes
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int,
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
 
-    * **Requête:** gameChatMessageReq
+- **Améliorer une propriété**
+    > Envoyer la requête uniquement si on veux améliorer sa propriété (maison(s) ou hotel)
+
+    * **Requête:** gameTurnPropertyUpgradeReq
+        * *Données:*
+        ```javascript
+        {
+            level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel
+        }
+        ```
+
+    * **Réponse:** gameTurnPropertyUpgradeRes
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int,
+            level: int, // idem requête
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
+
+* **Hypothéquer une/des propriété(s) (si forcé)**
+    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple, lorsque le solde actuel n'est plus suffisant (= vente forcée). Ignorer cet événement pour faire une vente automatique.
+
+    * **Requête:** gameTurnPropertyForcedMortageReq
+        * *Données:*
+        ```javascript
+        {
+            properties: [int, ...] // liste des ID de propriétés à hypothéquer
+        }
+        ```
+
+    * **Réponse:** gameTurnPropertyForcedMortageRes
+        * *Données:*
+        ```javascript
+        {
+            properties: [int, ...], // liste des ID des propriétés hypothéquées
+            playerID: int,
+            playerMoney: int // nouveau solde
+        }
+        ```
+
+### --- Chat et offres
+
+- **Envoyer un message dans le chat du jeu**
+
+    * **Requête:** gameChatSendReq
         * *Données:*
         ```javascript
         {
@@ -510,22 +644,31 @@
         }
         ```
 
-    * **Réponse:** gameChatMessageRes
+    * **Réponse:** gameChatSendRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+- **Recevoir un message dans le chat du jeu**
+
+    * **Réponse:** gameChatReceiveRes
         > Pas forcément un message text brut, peut aussi être une offre (d'achat)
 
         * *Données:*
         ```javascript
         {
-            messID: int,
             type: string, // text | offer
-            nickname: string,
+            playerID: int,
             text: string,
+            createdTime: timestamp,
             offer: { // ou null si type !== offer
                 id, // ID de l'offre (utile pour l'accepter)
                 receiver: string,
                 property: int, // ID de la propriété
-                amount: int,
-                datetimeOffer: datetime
+                amount: int
             }
         }
         ```
@@ -567,16 +710,18 @@
         }
         ```
 
+### --- Enchères, hypothèques et divers
+
 - **Une enchère a démarrée/changée/terminée**
-    > Peut être reçue plusieurs fois (si sur-enchérissement) pour update le prix (alors même bidID)
-        Également reçue lorsque l'enchère est terminée (nom du vainqueur dans text et price = null)
+    > Peut être reçue plusieurs fois (si sur-enchérissement) pour mettre à jour le prix (alors même bidID)
+        Également reçue lorsque l'enchère est terminée (nom du gagnant compris dans text et price = null)
 
     * **Réponse:** gameBidRes
         * *Données:*
         ```javascript
         {
             bidID: int,
-            playerNickname: string,
+            playerID: int,
             text: string,
             price: int | null // null si l'enchère a terminée
         }
@@ -616,25 +761,6 @@
         * *Données:*
         ```javascript
         null
-        ```
-
-- **Abandonner la partie**
-    > Comportement automatiquement exécuté après un certain temps d'inactivité
-
-    * **Requête:** gameQuitReq
-        * *Données:*
-        ```javascript
-        null
-        ```
-
-    * **Réponse:** gameQuitRes
-        > La réponse arrive chez tous les joueurs pour signaler qu'un joueur a abandonné
-
-        * *Données:*
-        ```javascript
-        {
-            playerNickname: string
-        }
         ```
 
 - **Une quête vient d'être accomplie**

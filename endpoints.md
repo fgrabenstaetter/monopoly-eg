@@ -25,5 +25,7 @@ Dans une réponse, **error** vaut **0** lorsqu'il s'agit d'un succès, sinon un 
     * *Réponse:*
     ```javascript
     error: int,
-    status: string
+    status: string,
+    token: string, // jeton JWT
+    id: int // user ID
     ```

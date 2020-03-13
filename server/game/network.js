@@ -1,5 +1,6 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
+const { UserSchema, UserManager } = require('../models/user');
 const Lobby     = require('./lobby');
 
 /**
@@ -24,19 +25,21 @@ class Network {
         user.socket.join(lobby.name);
 
         // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq(user, lobby);
-        this.lobbyInvitationAcceptReq(user, lobby);
-        this.lobbyKickReq(user, lobby);
+        this.lobbyInvitationReq             (user, lobby);
+        this.lobbyInvitationAcceptReq       (user, lobby);
+        this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
-        this.lobbyChangeTargetUsersNbReq(user, lobby);
-        this.lobbyChangePawnReq(user, lobby);
-        this.lobbyChatSendReq(user, lobby);
-        this.lobbyPlayReq(user, lobby);
+        this.lobbyChangeTargetUsersNbReq    (user, lobby);
+        this.lobbyChangePawnReq             (user, lobby);
+        this.lobbyChatSendReq               (user, lobby);
+        this.lobbyPlayReq                   (user, lobby);
 
         // Amis
-        // this.lobbyFriendInviteReq(user, lobby);
-        // this.lobbyFriendInvitationActionReq(user, lobby);
+        this.lobbyFriendListReq             (user, lobby);
+        this.lobbyRequestedFriendListReq      (user, lobby);
+        this.lobbyFriendInvitationSendReq   (user, lobby);
+        this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
 
         user.socket.on('lobbyReadyReq', () => {
@@ -58,8 +61,8 @@ class Network {
         user.socket.off('lobbyPlayReq');
 
         // Amis
-        // user.socket.off('lobbyFriendInviteReq');
-        // user.socket.off('lobbyFriendInvitationActionReq');
+        user.socket.off('lobbyFriendInvitationSendReq');
+        user.socket.off('lobbyFriendInvitationActionReq');
         // user.socket.off('lobbyFriendDeleteReq');
 
         user.socket.leave(lobby.name);
@@ -68,27 +71,45 @@ class Network {
     gamePlayerListen (player, game) {
         player.user.socket.join(game.name);
 
-        this.gameReadyReq(player, game);
-        this.gameRollDiceReq(player, game);
-        this.gameTurnEndReq(player, game);
-        this.gameChatMessageReq(player, game);
-        this.gameOfferSendReq(player, game);
-        this.gameOfferAcceptReq(player, game);
-        this.gameOverbidReq(player, game);
-        this.gameMortageReq(player, game);
-        this.gameQuitReq(player, game);
+        // Début/Fin + tour
+        this.gameReadyReq                     (player, game);
+        this.gameRollDiceReq                  (player, game);
+        this.gameTurnEndReq                   (player, game);
+
+        // Actions de tour asynchrones
+        this.gameTurnPropertyBuyReq           (player, game);
+        this.gameTurnPropertyUpgradeReq       (player, game);
+        this.gameTurnPropertyForcedMortageReq (player, game);
+
+        // Chat + offres
+        this.gameChatSendReq                  (player, game);
+        this.gameOfferSendReq                 (player, game);
+        this.gameOfferAcceptReq               (player, game);
+
+        // Divers
+        this.gameOverbidReq                   (player, game);
+        this.gameMortageReq                   (player, game);
     }
 
     gamePlayerStopListening (player, game) {
+        // Début/Fin + tour
         player.user.socket.off('gameReadyReq');
         player.user.socket.off('gameRollDiceReq');
         player.user.socket.off('gameTurnEndReq');
-        player.user.socket.off('gameChatMessageReq');
+
+        // Actions de tour asynchrones
+        player.user.socket.off('gameTurnPropertyBuyReq');
+        player.user.socket.off('gameTurnPropertyUpgradeReq');
+        player.user.socket.off('gameTurnPropertyForcedMortageReq');
+
+        // Chat + offres
+        player.user.socket.off('gameChatSendReq');
         player.user.socket.off('gameOfferSendReq');
         player.user.socket.off('gameOfferAcceptReq');
+
+        // Divers
         player.user.socket.off('gameOverbidReq');
         player.user.socket.off('gameMortageReq');
-        player.user.socket.off('gameQuitReq');
 
         player.user.socket.leave(game.name);
     }
@@ -112,9 +133,9 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                sender      : mess.senderUser.nickname,
-                content     : mess.content,
-                createdTime : mess.createdTime
+                senderUserID : mess.senderUser.id,
+                content      : mess.content,
+                createdTime  : mess.createdTime
             });
         }
 
@@ -122,6 +143,7 @@ class Network {
         for (const usr of lobby.users) {
             users.push({
                 nickname : usr.nickname,
+                id       : usr.id,
                 pawn     : lobby.userPawn(usr)
             });
         }
@@ -136,6 +158,7 @@ class Network {
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
             nickname : user.nickname,
+            id       : user.id,
             pawn     : lobby.pawns[lobby.users.indexOf(user)]
         });
     }
@@ -145,15 +168,15 @@ class Network {
             let err = Errors.SUCCESS;
             let friendUser = null;
 
-            if (!data.friendNickname)
+            if (!data.friendID)
                 err = Errors.MISSING_FIELD;
-            else if (user.friends.indexOf(data.friendNickname) === -1)
+            else if (user.friends.indexOf(data.friendID) === -1)
                 err = Errors.FRIEND_NOT_EXISTS;
             else if (lobby.users.length >= lobby.targetUsersNb)
                 err = Errors.LOBBY_FULL;
             else {
                 for (const user of this.GLOBAL.users) {
-                    if (user.nickname === data.friendNickname) {
+                    if (user.friendID === data.friendID) {
                         friendUser = user;
                         break;
                     }
@@ -163,7 +186,7 @@ class Network {
                     err = Errors.FRIEND_NOT_CONNECTED;
                 else {
                     for (const game of this.GLOBAL.games) {
-                        const tmp = game.playerByNickname(data.friendNickname);
+                        const tmp = game.playerByID(data.friendID);
                         if (tmp) {
                             err = Errors.FRIEND_IN_GAME;
                             break;
@@ -172,16 +195,88 @@ class Network {
                 }
 
                 if (err.code === Errors.SUCCESS.code) {
-                    const invitId = lobby.addInvitation(user.nickname, data.friendNickname);
+                    const invitId = lobby.addInvitation(user.id, data.friendID);
                     friendUser.socket.emit('lobbyInvitationReceivedRes', {
-                        invitationID         : invitId,
-                        senderFriendNickname : user.nickname,
-                        nbUsersInLobby       : lobby.users.length
+                        invitationID   : invitId,
+                        senderFriendID : user.id,
+                        nbUsersInLobby : lobby.users.length
                     });
                 }
 
                 user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
             }
+        });
+    }
+
+    lobbyFriendInvitationSendReq (user, lobby) {
+        user.socket.on('lobbyFriendInvitationSendReq', (data) => {
+            console.log('"' + user.nickname + '" invite "' + data.nickname + '" en ami');
+
+            UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
+                if (error || !invitedUser) {
+                    console.log('Ami à inviter "' + data.nickname + '" non trouvé :/');
+                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+
+                console.log('Envoi de l\'invitation à "' + invitedUser.nickname + '"');
+
+                UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
+                    if (error) {
+                        console.log('Erreur lors de l\'envoi de l\'invitation');
+                        user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                        return;
+                    }
+
+                    console.log('Invitation envoyée avec succès !');
+                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                    // Envoi temps réel (si utilisateur connecté)
+                    for (const lobby of this.GLOBAL.lobbies) {
+                        const invitedUserInLobby = lobby.userByID(invitedUser);
+                        if (invitedUserInLobby) {
+                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                            break;
+                        }
+                    }
+
+                    return;
+                });
+            });
+        });
+    }
+
+    lobbyFriendInvitationActionReq (user, lobby) {
+        user.socket.on('lobbyFriendInvitationActionReq', (data) => {
+
+            let action = data.action; // 0 = reject; 1 = accept
+            let userNickname = data.nickname;
+
+            UserSchema.findOne({ nickname: userNickname }, (error, invitedByUser) => {
+                if (error || !invitedByUser) {
+                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+
+                if (action) { // accept
+                    UserSchema.requestFriend(user._id, invitedByUser._id, (error, friendships) => {
+                        if (error) {
+                            console.log('Erreur acceptation invitation');
+                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+
+                        console.log('Invitation acceptée pour "' + invitedByUser.nickname + '"');
+                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                        return;
+                    });
+                } else { // reject
+                    UserSchema.removeFriend(user._id, invitedByUser._id);
+                    console.log('Requête rejetée avec succès');
+                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    return;
+                }
+            });
         });
     }
 
@@ -196,11 +291,11 @@ class Network {
                 const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
                     err = Errors.LOBBY.INVITATION_NOT_EXISTS;
-                else if (invitObj.to !== user.nickname)
+                else if (invitObj.to !== user.id)
                     err = Errors.UNKNOW;
                 else {
                     for (const lobby of this.GLOBAL.lobbies) {
-                        const usr = lobby.userByNickname(invitObj.from);
+                        const usr = lobby.userByID(invitObj.from);
                         if (usr) {
                             friendLobby = lobby;
                             break;
@@ -214,7 +309,7 @@ class Network {
                     else {
                         // quitter son lobby
                         for (const lobby of this.GLOBAL.lobbies) {
-                            const usr = lobby.userByNickname(user);
+                            const usr = lobby.userByID(user.id);
                             if (usr) {
                                 lobby.delUser(user);
                                 user.socket.leave(lobby.name);
@@ -237,12 +332,12 @@ class Network {
             let err = Errors.SUCCESS;
             let userToKick = null;
 
-            if (!data.userToKickNickname)
+            if (!data.userToKickID)
                 err = Errors.MISSING_FIELD;
-            else if (data.userToKickNickname === user.nickname)
+            else if (data.userToKickID === user.id)
                 err = Errors.UNKNOW;
             else {
-                userToKick = lobby.userByNickname(data.userToKickNickname);
+                userToKick = lobby.userByID(data.userToKickID);
                 if (!userToKick)
                     err = Errors.LOBBY.NOT_IN_LOBBY;
             }
@@ -280,8 +375,8 @@ class Network {
                 err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyUserPawnChangedRes', {
-                    nickname : user.nickname,
-                    pawn     : data.pawn
+                    userID : user.id,
+                    pawn   : data.pawn
                 });
             }
 
@@ -300,9 +395,9 @@ class Network {
                 // broadcast lobby (also sender)
                 console.log('tchat send req for ' + user.nickname)
                 this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-                    sender      : mess.senderUser.nickname,
-                    content     : mess.content,
-                    createdTime : mess.createdTime
+                    senderUserID : mess.senderUser.id,
+                    content      : mess.content,
+                    createdTime  : mess.createdTime
                 });
             }
 
@@ -327,6 +422,78 @@ class Network {
         });
     }
 
+    lobbyFriendListReq (user, lobby) {
+        user.socket.on('lobbyFriendListReq', () => {
+            let friends = [];
+            let nbInserted = 0;
+
+            UserSchema.findById(user.id, (error, userMongo) => {
+                if (!error && userMongo) {
+                    userMongo.getFriends(userMongo, {}, (error, friendsObj) => {
+                        if (!friendsObj || error) {
+                            user.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+
+                        // Aucun ami (-> renvoie liste vide)
+                        if (friendsObj.length == 0) {
+                            user.socket.emit('lobbyFriendListRes', { friends: [] });
+                            return;
+                        }
+
+                        for (let i = 0; i < friendsObj.length; i ++) {
+                            // const friend = userMongo.friends[i];
+                            UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
+                                if (friend && !error)
+                                    friends.push({ id: friend.id, nickname: friend.nickname });
+
+                                nbInserted++;
+                                if (nbInserted === userMongo.friends.length)
+                                    user.socket.emit('lobbyFriendListRes', { friends: friends });
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    lobbyRequestedFriendListReq (user, lobby) {
+        user.socket.on('lobbyRequestedFriendListReq', () => {
+            let friends = [];
+            let nbInserted = 0;
+
+            UserSchema.findById(user.id, (error, userMongo) => {
+                if (!error && userMongo) {
+                    UserSchema.getRequestedFriends(userMongo, (error, friendsObj) => {
+                        if (!friendsObj || error) {
+                            user.socket.emit('lobbyRequestedFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+
+                        // Aucun ami (-> renvoie liste vide)
+                        if (friendsObj.length == 0) {
+                            user.socket.emit('lobbyRequestedFriendListRes', { friends: [] });
+                            return;
+                        }
+
+                        for (let i = 0; i < friendsObj.length; i ++) {
+                            // const friend = userMongo.friends[i];
+                            UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
+                                if (friend && !error)
+                                    friends.push({ id: friend.id, nickname: friend.nickname });
+
+                                nbInserted++;
+                                if (nbInserted === userMongo.friends.length)
+                                    user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+
     /////////////////
     // GAME EVENTS //
     /////////////////
@@ -339,11 +506,12 @@ class Network {
                 game.start();
 
                 // envoyer les données initiales de jeu à tous les joueurs
-                let players = [], cells = [], properties = [], cards = [], cellsCounter = 0;
+                let players = [], cells = [], properties = [], cellsCounter = 0;
 
                 for (const player of game.players) {
                     players.push({
                         nickname : player.user.nickname,
+                        id       : player.user.id,
                         pawn     : player.pawn
                     });
                 }
@@ -385,44 +553,141 @@ class Network {
                     }
                 }
 
-                // for (const card of game.cards) {
-                //     cards.push({
-                //         id          : card.id,
-                //         type        : card.typeStr,
-                //         name        : card.name,
-                //         description : card.description
-                //     });
-                // }
-
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime : game.forcedEndTime,
                     players     : players,
                     cells       : cells,
-                    properties  : properties,
-                    cards       : cards
+                    properties  : properties
                 });
             }
         });
     }
 
     gameRollDiceReq (player, game) {
-        player.user.socket.on('gameRollDiceReq', (data) => {
+        player.user.socket.on('gameRollDiceReq', () => {
             let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else {
+                const diceRes = game.rollDice();
+                this.io.to(game.name).emit('gameActionRes', {
+                    playerID : player.user.id,
+                    dicesRes       : diceRes,
+                    cellID         : player.cellInd,
+                    gameMessage    : 'vide pour linstant',
+                    actionType     : 0, // tmp
+                    updateMoney    : [ ], // tmp
+                    extra          : [ ] // tmp
+                });
+            }
 
+            player.user.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
         });
     }
 
     gameTurnEndReq (player, game) {
         player.user.socket.on('gameTurnEndReq', (data) => {
             let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else
+                game.endTurn();
 
+            player.user.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
         });
     }
 
-    gameChatMessageReq (player, game) {
-        player.user.socket.on('gameChatMessageReq', (data) => {
+    gameTurnPropertyBuyReq (player, game) {
+        player.user.socket.on('gameTurnPropertyBuyReq', (data) => {
             let err = Errors.SUCCESS;
+            let propertyID;
 
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
+                err = Errors.UNKNOW;
+
+            if (err === Errors.SUCCESS) {
+                this.io.to(game.name).emit('gameTurnPropertyBuyRes', {
+                    propertyID  : propertyID,
+                    playerID    : player.user.id,
+                    playerMoney : player.money
+                });
+            } else
+                player.user.socket.emit('gameTurnPropertyBuyRes', { error: err.code, status: err.status });
+        });
+    }
+
+    gameTurnPropertyUpgradeReq (player, game) {
+        player.user.socket.on('gameTurnPropertyUpgradeReq', (data) => {
+            let err = Errors.SUCCESS;
+            let propertyID;
+
+            if (!data.level)
+                err = Errors.MISSING_FIELD;
+            else if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else if ((propertyID = game.curPlayerUpgradeProperty(data.level)) === -1) // upgrade ici
+                err = Errors.UNKNOW;
+
+            if (err === Errors.SUCCESS) {
+                this.io.to(game.name).emit('gameTurnPropertyUpgradeRes', {
+                    propertyID  : propertyID,
+                    level       : data.level,
+                    playerID    : player.user.id,
+                    playerMoney : player.money
+                });
+            } else
+                player.user.socket.emit('gameTurnPropertyUpgradeRes', { error: err.code, status: err.status });
+        });
+    }
+
+    gameTurnPropertyForcedMortageReq (player, game) {
+        player.user.socket.on('gameTurnPropertyForcedMortageReq', (data) => {
+            let err = Errors.SUCCESS;
+            let propertyID;
+
+            if (!data.properties)
+                err = Errors.MISSING_FIELD;
+            else if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
+                err = Errors.UNKNOW;
+
+            if (!game.curPlayerManualForcedMortage(data.properties))
+                err = Errors.UNKNOW;
+
+            if (err === Errors.SUCCESS) {
+                this.io.to(game.name).emit('gameTurnPropertyForcedMortageRes', {
+                    properties  : data.properties,
+                    playerID    : player.user.id,
+                    playerMoney : player.money
+                });
+            } else
+                player.user.socket.emit('gameTurnPropertyForcedMortageRes', { error: err.code, status: err.status });
+        });
+    }
+
+    gameChatSendReq (player, game) {
+        player.user.socket.on('gameChatSendReq', (data) => {
+            let err = Errors.SUCCESS;
+            if (!data.text)
+                err = Errors.MISSING_FIELD;
+            else if (!game.allPlayersReady)
+                err = Errors.GAME.NOT_STARTED;
+            else {
+                // envoyer le message (texte brut)
+                const mess = game.chat.addMessage(player.user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
+                this.io.to(game.name).emit('gameChatReceiveRes', {
+                    type        : 'text',
+                    playerID    : player.user.id,
+                    text        : mess.content,
+                    createdTime : mess.createdTime,
+                    offer       : null
+                });
+            }
+
+            player.user.socket.emit('gameChatSendRes', { error: err.code, status: err.status });
         });
     }
 
@@ -449,13 +714,6 @@ class Network {
 
     gameMortageReq (player, game) {
         player.user.socket.on('gameMortageReq', (data) => {
-            let err = Errors.SUCCESS;
-
-        });
-    }
-
-    gameQuitReq (player, game) {
-        player.user.socket.on('gameQuitReq', (data) => {
             let err = Errors.SUCCESS;
 
         });
