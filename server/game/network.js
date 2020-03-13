@@ -1,7 +1,7 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
-const { UserSchema, UserManager } = require('../models/user');
 const Lobby     = require('./lobby');
+const { UserSchema, UserManager } = require('../models/user');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -554,29 +554,29 @@ class Network {
         });
     }
 
-    gameTurnPropertyBuyReq (player, game) {
-        player.user.socket.on('gameTurnPropertyBuyReq', (data) => {
+    gamePropertyBuyReq (player, game) {
+        player.user.socket.on('gamePropertyBuyReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
+            else if ((propertyID = game.asyncActionBuyProperty()) === -1) // achat ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyBuyRes', {
+                this.io.to(game.name).emit('gamePropertyBuyRes', {
                     propertyID  : propertyID,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyBuyRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
         });
     }
 
-    gameTurnPropertyUpgradeReq (player, game) {
-        player.user.socket.on('gameTurnPropertyUpgradeReq', (data) => {
+    gamePropertyUpgradeReq (player, game) {
+        player.user.socket.on('gamePropertyUpgradeReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -584,23 +584,23 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerUpgradeProperty(data.level)) === -1) // upgrade ici
+            else if ((propertyID = game.asyncActionUpgradeProperty(data.level)) === -1) // upgrade ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyUpgradeRes', {
+                this.io.to(game.name).emit('gamePropertyUpgradeRes', {
                     propertyID  : propertyID,
                     level       : data.level,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyUpgradeRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
         });
     }
 
-    gameTurnPropertyForcedMortageReq (player, game) {
-        player.user.socket.on('gameTurnPropertyForcedMortageReq', (data) => {
+    gamePropertyForcedMortageReq (player, game) {
+        player.user.socket.on('gamePropertyForcedMortageReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -608,20 +608,17 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
-                err = Errors.UNKNOW;
-
-            if (!game.curPlayerManualForcedMortage(data.properties))
+            else if (!game.asyncActionManualForcedMortage(data.properties)) // hypothécation ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyForcedMortageRes', {
+                this.io.to(game.name).emit('gamePropertyForcedMortageRes', {
                     properties  : data.properties,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyForcedMortageRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
         });
     }
 

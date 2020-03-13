@@ -74,6 +74,7 @@ class Player {
      */
     addProperty (prop) {
         this.properties.push(prop);
+        prop.owner = this;
     }
 
     /**
@@ -83,6 +84,7 @@ class Player {
         const ind = this.properties.indexOf(prop);
         if (ind !== -1)
             this.properties.splice(ind, 1);
+        prop.owner = null;
     }
 
     /**

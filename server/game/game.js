@@ -1,12 +1,10 @@
 const Constants = require('../lib/constants');
-const Cells = require('../lib/cells');
-const Deck = require('./deck');
-const Player = require('./player');
-const Chat = require('./chat');
-
-const chanceCardsMeta = require('./../lib/chanceCards');
+const Cells     = require('../lib/cells');
+const Deck      = require('./deck');
+const Player    = require('./player');
+const Chat      = require('./chat');
+const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -36,9 +34,9 @@ class Game {
         this.bankMoney = 4000;
 
         this.turnActionData = { // pour le client (envoi Network)
-            message: null,
-            type: null,
-            args: []
+            message : null,
+            type    : null, // voir socket_events event 'gameActionRes'
+            args    : []
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -149,68 +147,12 @@ class Game {
     }
 
     /**
-     * Gérer les actions nécéssaires si une action asynchrone de tour a été ignorer par un joueur a la fin de son tour
-     */
-    dealWithTurnAsyncAction () {
-        switch (this.turnActionData.type) {
-            case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
-                this.playerAutoMortage(this.curPlayer);
-            break;
-        }
-    }
-
-    /**
-     * @param player Le player a foutre a la rue
-     */
-    playerFailure (player) {
-        // la banque récupère tout son fric et propriétés
-        for (const prop of player.properties)
-            prop.owner = null; // owner = banque
-        this.bankProperties = this.bankProperties.concat(player.properties);
-        this.bankMoney += player.money;
-
-        player.properties = [];
-        player.loseMoney(player.money);
-        player.failure = true;
-
-        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailure', { playerID: player.id });
-    }
-
-    /**
-     * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
-     */
-    playerAutoMortage (player) {
-        const moneyToObtain = this.turnActionData.args[0]; // argent déjà soustrait à cette valeur !
-        let sum = 0;
-        let properties = []; // id list
-        for (const prop of player.properties) {
-            sum += prop.mortagePrice;
-            properties.push(prop.id);
-            if (sum >= moneyToObtain)
-                break;
-        }
-
-
-        if (sum < moneyToObtain) // failure
-            this.playerFailure(player);
-        else {
-            // succès
-            player.money = sum - moneyToObtain;
-            this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
-                properties  : properties,
-                playerID    : player.id,
-                playerMoney : player.money
-            });
-        }
-    }
-
-    /**
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
     nextTurn () {
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires et reset la propriété
         if (this.turnActionData.type != null) {
-            this.dealWithTurnAsyncAction();
+            this.asyncActionExpired();
             this.turnActionData.type = null;
             this.turnActionData.message = null;
             this.turnActionData.args = [];
@@ -371,7 +313,7 @@ class Game {
     /**
      * @return L'ID de la propriété achetée si succès, -1 sinon
      */
-    curPlayerBuyProperty () {
+    asyncActionBuyProperty () {
         if (!this.curCell.property || this.curCell.property.owner)
             return -1;
         let price;
@@ -397,7 +339,7 @@ class Game {
      * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
      * @return L'ID de la propriété améliorée si succès, -1 sinon
      */
-    curPlayerUpgradeProperty (level) {
+    asyncActionUpgradeProperty (level) {
         if (!this.curCell.property || this.curCell.property.owner || this.curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
             return -1;
 
@@ -422,7 +364,7 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      * @return true si succès, false sinon
      */
-    curPlayerManualForcedMortage (propertiesList) {
+    asyncActionManualForcedMortage (propertiesList) {
         const moneyToObtain = this.turnActionData.args[0];
         let sum = 0;
         for (const id of propertiesList) {
@@ -444,6 +386,66 @@ class Game {
         this.turnActionData.args = [];
 
         return true;
+    }
+
+    ///////////////////////
+    // DIVERSES MÉTHODES //
+    ///////////////////////
+
+    /**
+     * Gérer les actions nécéssaires si une action asynchrone de tour a été ignorer par un joueur a la fin de son tour
+     */
+    asyncActionExpired () {
+        switch (this.turnActionData.type) {
+            case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
+                this.playerAutoMortage(this.curPlayer);
+            break;
+        }
+    }
+
+    /**
+     * @param player Le player a foutre a la rue
+     */
+    playerFailure (player) {
+        // la banque récupère tout son fric et propriétés
+        for (const prop of player.properties) {
+            player.delProperty(prop);
+            this.bank.properties.push(prop);
+        }
+
+        this.bank.money += player.money;
+        player.loseMoney(player.money);
+        player.failure = true;
+
+        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailure', { playerID: player.id });
+    }
+
+    /**
+     * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
+     */
+    playerAutoMortage (player) {
+        const moneyToObtain = this.turnActionData.args[0]; // argent déjà soustrait à cette valeur !
+        let sum = 0;
+        let properties = []; // id list
+        for (const prop of player.properties) {
+            sum += prop.mortagePrice;
+            properties.push(prop.id);
+            if (sum >= moneyToObtain)
+                break;
+        }
+
+
+        if (sum < moneyToObtain) // failure
+            this.playerFailure(player);
+        else {
+            // succès
+            player.money = sum - moneyToObtain;
+            this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
+                properties  : properties,
+                playerID    : player.id,
+                playerMoney : player.money
+            });
+        }
     }
 }
 
