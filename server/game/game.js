@@ -30,8 +30,17 @@ class Game {
         this.cards = []; //tmp
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.bankProperties = [];
-        this.bankMoney = 4000;
+
+        this.bank = {
+            money      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+            properties : []
+        }
+
+        // ajout des propriétés du plateau dans la banque
+        for (const cell of this.cells) {
+            if (cell.property)
+                this.bank.properties.push(cell.property);
+        }
 
         this.turnActionData = { // pour le client (envoi Network)
             message : null,
@@ -324,6 +333,8 @@ class Game {
         if (this.curPlayer.money < price)
             return -1;
 
+        if (this.curCell.property.owner)
+            this.curCell.property.owner.delProperty(this.curCell.property);
         this.curPlayer.loseMoney(price);
         this.curPlayer.addProperty(this.curCell.property);
 
