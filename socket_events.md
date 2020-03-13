@@ -512,7 +512,8 @@
             dicesRes: [ int, int ],
             cellID: int,
             gameMessage: string, // message de l'action
-            actionType: int,
+            actionType: string, // nothing | hasPaid | canBuy | canUpgrade | shouldMortage
+            actionArgs: custom array, // selon actionType (voir plus bas)
             playerID: int,
             updateMoney:
             [
@@ -532,6 +533,20 @@
                 }, ...
             ]
         }
+        ```
+
+        **actionArgs** ci-dessus peut être:
+        ```javascript
+        // Si actionType = nothing
+            []
+        // Si actionType = hasPaid
+            []
+        // Si actionType = canBuy
+            []
+        // Si actionType = canUpgrade
+            []
+        // Si actionType = shouldMortage
+            [minimumPropertiesValueToMortage]
         ```
 
 - **Terminer son tour**
@@ -573,13 +588,13 @@
 - **Acheter une propriété**
     > Envoyer la requête uniquement si on veux acheter la propriété sur laquelle on se situe.
 
-    * **Requête:** gameTurnPropertyBuyReq
+    * **Requête:** gamePropertyBuyReq
         * *Données:*
         ```javascript
         null
         ```
 
-    * **Réponse:** gameTurnPropertyBuyRes
+    * **Réponse:** gamePropertyBuyRes
         * *Données:*
         ```javascript
         {
@@ -592,7 +607,7 @@
 - **Améliorer une propriété**
     > Envoyer la requête uniquement si on veux améliorer sa propriété (maison(s) ou hotel)
 
-    * **Requête:** gameTurnPropertyUpgradeReq
+    * **Requête:** gamePropertyUpgradeReq
         * *Données:*
         ```javascript
         {
@@ -600,7 +615,7 @@
         }
         ```
 
-    * **Réponse:** gameTurnPropertyUpgradeRes
+    * **Réponse:** gamePropertyUpgradeRes
         * *Données:*
         ```javascript
         {
@@ -614,7 +629,7 @@
 * **Hypothéquer une/des propriété(s) (si forcé)**
     > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple, lorsque le solde actuel n'est plus suffisant (= vente forcée). Ignorer cet événement pour faire une vente automatique.
 
-    * **Requête:** gameTurnPropertyForcedMortageReq
+    * **Requête:** gamePropertyForcedMortageReq
         * *Données:*
         ```javascript
         {
@@ -622,7 +637,7 @@
         }
         ```
 
-    * **Réponse:** gameTurnPropertyForcedMortageRes
+    * **Réponse:** gamePropertyForcedMortageRes
         * *Données:*
         ```javascript
         {
