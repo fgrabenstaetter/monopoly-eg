@@ -48,70 +48,27 @@ class Network {
         });
     }
 
-    lobbyUserStopListening (user, lobby) {
-        // Inviter / Rejoindre / Quitter
-        user.socket.off('lobbyInvitationReq');
-        user.socket.off('lobbyInvitationAcceptReq');
-        user.socket.off('lobbyKickReq');
-
-        // Paramètres + Chat
-        user.socket.off('lobbyChangeTargetUsersNbReq');
-        user.socket.off('lobbyChangePawnReq');
-        user.socket.off('lobbyChatSendReq');
-        user.socket.off('lobbyPlayReq');
-
-        // Amis
-        user.socket.off('lobbyFriendInvitationSendReq');
-        user.socket.off('lobbyFriendInvitationActionReq');
-        // user.socket.off('lobbyFriendDeleteReq');
-
-        user.socket.leave(lobby.name);
-    }
-
     gamePlayerListen (player, game) {
         player.user.socket.join(game.name);
 
         // Début/Fin + tour
-        this.gameReadyReq                     (player, game);
-        this.gameRollDiceReq                  (player, game);
-        this.gameTurnEndReq                   (player, game);
+        this.gameReadyReq                 (player, game);
+        this.gameRollDiceReq              (player, game);
+        this.gameTurnEndReq               (player, game);
 
         // Actions de tour asynchrones
-        this.gameTurnPropertyBuyReq           (player, game);
-        this.gameTurnPropertyUpgradeReq       (player, game);
-        this.gameTurnPropertyForcedMortageReq (player, game);
+        this.gamePropertyBuyReq           (player, game);
+        this.gamePropertyUpgradeReq       (player, game);
+        this.gamePropertyForcedMortageReq (player, game);
 
         // Chat + offres
-        this.gameChatSendReq                  (player, game);
-        this.gameOfferSendReq                 (player, game);
-        this.gameOfferAcceptReq               (player, game);
+        this.gameChatSendReq              (player, game);
+        this.gameOfferSendReq             (player, game);
+        this.gameOfferAcceptReq           (player, game);
 
         // Divers
-        this.gameOverbidReq                   (player, game);
-        this.gameMortageReq                   (player, game);
-    }
-
-    gamePlayerStopListening (player, game) {
-        // Début/Fin + tour
-        player.user.socket.off('gameReadyReq');
-        player.user.socket.off('gameRollDiceReq');
-        player.user.socket.off('gameTurnEndReq');
-
-        // Actions de tour asynchrones
-        player.user.socket.off('gameTurnPropertyBuyReq');
-        player.user.socket.off('gameTurnPropertyUpgradeReq');
-        player.user.socket.off('gameTurnPropertyForcedMortageReq');
-
-        // Chat + offres
-        player.user.socket.off('gameChatSendReq');
-        player.user.socket.off('gameOfferSendReq');
-        player.user.socket.off('gameOfferAcceptReq');
-
-        // Divers
-        player.user.socket.off('gameOverbidReq');
-        player.user.socket.off('gameMortageReq');
-
-        player.user.socket.leave(game.name);
+        this.gameOverbidReq               (player, game);
+        this.gameMortageReq               (player, game);
     }
 
     //////////////////

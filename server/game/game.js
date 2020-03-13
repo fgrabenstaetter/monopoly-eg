@@ -52,9 +52,6 @@ class Game {
     }
 
     delete () {
-        for (const player of this.players)
-            this.GLOBAL.network.gamePlayerStopListening(player);
-
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
@@ -69,7 +66,6 @@ class Game {
          if (ind === -1)
             return;
 
-        // this.players.gamePlayerStopListening(player, game); // pas besoin car suppression = socket disconnect
         this.players.splice(ind, 1);
         this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.user.nickname });
     }

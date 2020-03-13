@@ -51,9 +51,8 @@ class Lobby {
 
     /**
      * @param user L'objet correspond à l'utilisateur à retirer du lobby
-     * @param stopListeners Si il faut arêter toutes les écoutes d'events socket.io du user sur ce lobby ou non (false nécéssaire lors du socket disconnect)
      */
-    delUser (user, stopListeners = true) {
+    delUser (user) {
         const ind = this.users.indexOf(user);
         if (ind === -1)
             return;
@@ -71,9 +70,6 @@ class Lobby {
                 hostID: newHost.id
             });
         }
-
-        if (stopListeners)
-            this.GLOBAL.network.lobbyUserStopListening(user, this);
     }
 
     /**
