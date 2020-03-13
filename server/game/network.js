@@ -37,7 +37,7 @@ class Network {
 
         // Amis
         this.lobbyFriendListReq             (user, lobby);
-        this.lobbyRequestedFriendListReq      (user, lobby);
+        this.lobbyRequestedFriendListReq    (user, lobby);
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
@@ -448,7 +448,7 @@ class Network {
                                     friends.push({ id: friend.id, nickname: friend.nickname });
 
                                 nbInserted++;
-                                if (nbInserted === userMongo.friends.length)
+                                if (nbInserted === friendsObj.length)
                                     user.socket.emit('lobbyFriendListRes', { friends: friends });
                             });
                         }
@@ -484,7 +484,7 @@ class Network {
                                     friends.push({ id: friend.id, nickname: friend.nickname });
 
                                 nbInserted++;
-                                if (nbInserted === userMongo.friends.length)
+                                if (nbInserted === friendsObj.length)
                                     user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
                             });
                         }
