@@ -58,16 +58,8 @@ class Street extends Property {
         else
             price = this.rentalPrices.empty;
 
-        let cpt = 0;
-        for (const prop in this.owner.properties) {
-            if (prop.color === this.color)
-                cpt++;
-        }
-        if (cpt !== 3)
-            return price;
-        else
-            return price * 2;
-    }
+        return price * (this.owner.colorMonopoly(this.color) ? 2 : 1);
+}
 
     /**
      * @return Le prix d'hypothèque de la rue
@@ -76,10 +68,8 @@ class Street extends Property {
         let sum = this.prices.empty;
         if (this.hostel)
             sum += this.prices.hostelPrice + this.prices.house * 3;
-        else {
-            if (this.housesNb !== 0)
-                sum += this.prices.house * this.housesNb;
-        }
+        else
+            sum += this.prices.house * this.housesNb;
 
         return sum / 2;
     }
