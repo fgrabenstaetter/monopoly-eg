@@ -197,12 +197,14 @@ input {
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
+  /*
   scrollbar-width: none;
   -ms-overflow-style: none;
-}
 
-.tchat-container .-webkit-scrollbar {
-  display: none;
+  .-webkit-scrollbar {
+    display: none;
+  }
+  */
 }
 
 .tchat-container .msg-author {
@@ -312,6 +314,10 @@ input {
   .tchat-container {
     max-height: 150px;
   }
+}
+
+.simplebar-scrollbar:before {
+  background-color: #0052ba;
 }
 
 .resolution-overlay-container {
