@@ -7,6 +7,11 @@
   -ms-user-select: none; /* Internet Explorer/Edge */
 
   scrollbar-width: none; // meilleure solution pour le moment
+  -ms-overflow-style: none;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 input {
