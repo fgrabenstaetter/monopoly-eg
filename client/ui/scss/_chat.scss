@@ -5,13 +5,15 @@
   overflow-x: hidden;
   overflow-y: auto;
 
+  /*
   scrollbar-width: none;
   -ms-overflow-style: none;
 
   .-webkit-scrollbar {
     display: none;
   }
-  
+  */
+
   .msg-author {
     margin-bottom: 7px;
   }
@@ -120,4 +122,9 @@
   .tchat-container {
     max-height: 150px;
   }
+}
+
+// SimpleBar
+.simplebar-scrollbar:before {
+  background-color: $blue;
 }

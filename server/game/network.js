@@ -1,7 +1,7 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
-const { UserSchema, UserManager } = require('../models/user');
 const Lobby     = require('./lobby');
+const { UserSchema, UserManager } = require('../models/user');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -37,7 +37,7 @@ class Network {
 
         // Amis
         this.lobbyFriendListReq             (user, lobby);
-        this.lobbyRequestedFriendListReq      (user, lobby);
+        this.lobbyRequestedFriendListReq    (user, lobby);
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
@@ -48,70 +48,27 @@ class Network {
         });
     }
 
-    lobbyUserStopListening (user, lobby) {
-        // Inviter / Rejoindre / Quitter
-        user.socket.off('lobbyInvitationReq');
-        user.socket.off('lobbyInvitationAcceptReq');
-        user.socket.off('lobbyKickReq');
-
-        // Paramètres + Chat
-        user.socket.off('lobbyChangeTargetUsersNbReq');
-        user.socket.off('lobbyChangePawnReq');
-        user.socket.off('lobbyChatSendReq');
-        user.socket.off('lobbyPlayReq');
-
-        // Amis
-        user.socket.off('lobbyFriendInvitationSendReq');
-        user.socket.off('lobbyFriendInvitationActionReq');
-        // user.socket.off('lobbyFriendDeleteReq');
-
-        user.socket.leave(lobby.name);
-    }
-
     gamePlayerListen (player, game) {
         player.user.socket.join(game.name);
 
         // Début/Fin + tour
-        this.gameReadyReq                     (player, game);
-        this.gameRollDiceReq                  (player, game);
-        this.gameTurnEndReq                   (player, game);
+        this.gameReadyReq                 (player, game);
+        this.gameRollDiceReq              (player, game);
+        this.gameTurnEndReq               (player, game);
 
         // Actions de tour asynchrones
-        this.gameTurnPropertyBuyReq           (player, game);
-        this.gameTurnPropertyUpgradeReq       (player, game);
-        this.gameTurnPropertyForcedMortageReq (player, game);
+        this.gamePropertyBuyReq           (player, game);
+        this.gamePropertyUpgradeReq       (player, game);
+        this.gamePropertyForcedMortageReq (player, game);
 
         // Chat + offres
-        this.gameChatSendReq                  (player, game);
-        this.gameOfferSendReq                 (player, game);
-        this.gameOfferAcceptReq               (player, game);
+        this.gameChatSendReq              (player, game);
+        this.gameOfferSendReq             (player, game);
+        this.gameOfferAcceptReq           (player, game);
 
         // Divers
-        this.gameOverbidReq                   (player, game);
-        this.gameMortageReq                   (player, game);
-    }
-
-    gamePlayerStopListening (player, game) {
-        // Début/Fin + tour
-        player.user.socket.off('gameReadyReq');
-        player.user.socket.off('gameRollDiceReq');
-        player.user.socket.off('gameTurnEndReq');
-
-        // Actions de tour asynchrones
-        player.user.socket.off('gameTurnPropertyBuyReq');
-        player.user.socket.off('gameTurnPropertyUpgradeReq');
-        player.user.socket.off('gameTurnPropertyForcedMortageReq');
-
-        // Chat + offres
-        player.user.socket.off('gameChatSendReq');
-        player.user.socket.off('gameOfferSendReq');
-        player.user.socket.off('gameOfferAcceptReq');
-
-        // Divers
-        player.user.socket.off('gameOverbidReq');
-        player.user.socket.off('gameMortageReq');
-
-        player.user.socket.leave(game.name);
+        this.gameOverbidReq               (player, game);
+        this.gameMortageReq               (player, game);
     }
 
     //////////////////
@@ -448,7 +405,7 @@ class Network {
                                     friends.push({ id: friend.id, nickname: friend.nickname });
 
                                 nbInserted++;
-                                if (nbInserted === userMongo.friends.length)
+                                if (nbInserted === friendsObj.length)
                                     user.socket.emit('lobbyFriendListRes', { friends: friends });
                             });
                         }
@@ -484,7 +441,7 @@ class Network {
                                     friends.push({ id: friend.id, nickname: friend.nickname });
 
                                 nbInserted++;
-                                if (nbInserted === userMongo.friends.length)
+                                if (nbInserted === friendsObj.length)
                                     user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
                             });
                         }
@@ -597,29 +554,29 @@ class Network {
         });
     }
 
-    gameTurnPropertyBuyReq (player, game) {
-        player.user.socket.on('gameTurnPropertyBuyReq', (data) => {
+    gamePropertyBuyReq (player, game) {
+        player.user.socket.on('gamePropertyBuyReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
+            else if ((propertyID = game.asyncActionBuyProperty()) === -1) // achat ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyBuyRes', {
+                this.io.to(game.name).emit('gamePropertyBuyRes', {
                     propertyID  : propertyID,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyBuyRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
         });
     }
 
-    gameTurnPropertyUpgradeReq (player, game) {
-        player.user.socket.on('gameTurnPropertyUpgradeReq', (data) => {
+    gamePropertyUpgradeReq (player, game) {
+        player.user.socket.on('gamePropertyUpgradeReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -627,23 +584,23 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerUpgradeProperty(data.level)) === -1) // upgrade ici
+            else if ((propertyID = game.asyncActionUpgradeProperty(data.level)) === -1) // upgrade ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyUpgradeRes', {
+                this.io.to(game.name).emit('gamePropertyUpgradeRes', {
                     propertyID  : propertyID,
                     level       : data.level,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyUpgradeRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
         });
     }
 
-    gameTurnPropertyForcedMortageReq (player, game) {
-        player.user.socket.on('gameTurnPropertyForcedMortageReq', (data) => {
+    gamePropertyForcedMortageReq (player, game) {
+        player.user.socket.on('gamePropertyForcedMortageReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -651,20 +608,17 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.curPlayerBuyProperty()) === -1) // achat ici
-                err = Errors.UNKNOW;
-
-            if (!game.curPlayerManualForcedMortage(data.properties))
+            else if (!game.asyncActionManualForcedMortage(data.properties)) // hypothécation ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gameTurnPropertyForcedMortageRes', {
+                this.io.to(game.name).emit('gamePropertyForcedMortageRes', {
                     properties  : data.properties,
                     playerID    : player.user.id,
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gameTurnPropertyForcedMortageRes', { error: err.code, status: err.status });
+                player.user.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
         });
     }
 

@@ -1,12 +1,10 @@
 const Constants = require('../lib/constants');
-const Cells = require('../lib/cells');
-const Deck = require('./deck');
-const Player = require('./player');
-const Chat = require('./chat');
-
-const chanceCardsMeta = require('./../lib/chanceCards');
+const Cells     = require('../lib/cells');
+const Deck      = require('./deck');
+const Player    = require('./player');
+const Chat      = require('./chat');
+const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -32,13 +30,22 @@ class Game {
         this.cards = []; //tmp
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.bankProperties = [];
-        this.bankMoney = 4000;
+
+        this.bank = {
+            money      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+            properties : []
+        }
+
+        // ajout des propriétés du plateau dans la banque
+        for (const cell of this.cells) {
+            if (cell.property)
+                this.bank.properties.push(cell.property);
+        }
 
         this.turnActionData = { // pour le client (envoi Network)
-            message: null,
-            type: null,
-            args: []
+            message : null,
+            type    : null, // voir socket_events event 'gameActionRes'
+            args    : []
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -52,9 +59,6 @@ class Game {
     }
 
     delete () {
-        for (const player of this.players)
-            this.GLOBAL.network.gamePlayerStopListening(player);
-
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
@@ -69,7 +73,6 @@ class Game {
          if (ind === -1)
             return;
 
-        // this.players.gamePlayerStopListening(player, game); // pas besoin car suppression = socket disconnect
         this.players.splice(ind, 1);
         this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.user.nickname });
     }
@@ -153,72 +156,12 @@ class Game {
     }
 
     /**
-     * Gérer les actions nécéssaires si une action asynchrone de tour a été ignorer par un joueur a la fin de son tour
-     */
-    dealWithTurnAsyncAction () {
-        switch (this.turnActionData.type) {
-            case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
-                this.playerAutoMortage(this.curPlayer);
-            break;
-        }
-    }
-
-    /**
-     * @param player Le player a foutre a la rue
-     */
-    playerFailure (player) {
-        // la banque récupère tout son fric et propriétés
-        for (const prop of player.properties)
-            prop.owner = null; // owner = banque
-        this.bankProperties = this.bankProperties.concat(player.properties);
-        this.bankMoney += player.money;
-
-        player.properties = [];
-        player.loseMoney(player.money);
-        player.failure = true;
-
-        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailure', { playerID: player.id });
-    }
-
-    /**
-     * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
-     */
-    playerAutoMortage (player) {
-        const moneyToObtain = this.turnActionData.args[0]; // argent déjà soustrait à cette valeur !
-        let sum = 0;
-        let properties = []; // id list
-        for (const prop of player.properties) {
-            sum += prop.mortagePrice;
-            properties.push(prop.id);
-            if (sum >= moneyToObtain)
-                break;
-        }
-
-
-        if (sum < moneyToObtain) // failure
-            this.playerFailure(player);
-        else {
-            // succès
-            player.money = sum - moneyToObtain;
-            this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
-                properties  : properties,
-                playerID    : player.id,
-                playerMoney : player.money
-            });
-        }
-    }
-
-    /**
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
     nextTurn () {
-        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires et reset la propriété
-        if (this.turnActionData.type != null) {
-            this.dealWithTurnAsyncAction();
-            this.turnActionData.type = null;
-            this.turnActionData.message = null;
-            this.turnActionData.args = [];
-        }
+        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+        if (this.turnActionData.type != null)
+            this.asyncActionExpired();
 
         do
             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
@@ -236,28 +179,26 @@ class Game {
     // ACTUEL TURN SYNC METHODS //
     //////////////////////////////
 
-    playerTurnIsInPrison (diceRes1, diceRes2) {
-        const total = diceRes1 + diceRes2;
-        if (this.curPlayer.remainingTurnsInJail < 3) {
+    playerTurnIsInPrison (diceRes, useExitJailCard = false) {
+        if (this.curPlayer.remainingTurnsInJail > 0) {
             if (useExitJailCard) {
-                this.curPlayer.cellInd += total;
-                this.curPlayer.jailJokerCards--;
+                this.curPlayer.jailJokerCards --;
                 this.curPlayer.escapePrison();
-            }
-            else if (diceRes1 == diceRes2) {
+            } else if (diceRes1 === diceRes2)
+                this.curPlayer.escapePrison();
+            else
+                this.curPlayer.remainingTurnsInJail --;
+        } else {
+            //lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
+            //if (!lose) {
+            //    //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
+            //}
+            //else {
+            // pour linstant sortir = gratuit
+                const total = diceRes[0] + diceRes[1];
                 this.curPlayer.cellInd += total;
                 this.curPlayer.escapePrison();
-            }
-        }
-        else {
-            lose = this.curPlayer.loseMoney(Constants.GAME_PARAM.EXIT_JAIL_PRICE)
-            if (!lose) {
-                //Le joueur n'a pas assez pour payer, il faut traiter le cas (règles ?)
-            }
-            else {
-                this.curPlayer.cellInd += total;
-                this.curPlayer.escapePrison();
-            }
+            // }
         }
     }
 
@@ -318,24 +259,23 @@ class Game {
 
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
-     * @return [int, int] le résultat des dés
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
+     * @return [int, int] le résultat des dés
      */
     rollDice (useExitJailCard = false) {
-        for (let i = 0; i < turnActionData.args.length; i++) {
-            //Supprimer tous les arguments envoyer au client avant d'en rajouter de nouveaux avant l'utilisation de ce tableau
-            this.turnActionData.args.splice(i, 1);
-        }
+        this.resetTurnActionData();
+
         const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
-        const total = diceRes[0] + diceRes[1];
-        const oldPos = this.curPlayer.cellInd;
-        //  ... actions du tour
-        //  this.curPlayer
-        if (this.curPlayer.isInPrison) {
-            this.playerTurnIsInPrison(diceRes[0], diceRes[1]);
-        }
-        else {
-            this.curPlayer.cellInd += total;
+
+        if (this.curPlayer.isInPrison)
+            this.playerTurnIsInPrison(diceRes);
+
+        // peux être sorti de prison !
+        if (!this.curPlayer.isInPrison) {
+            const oldPos  = this.curPlayer.cellInd;
+            const total   = diceRes[0] + diceRes[1];
+            this.curPlayer.cellInd += total; // ne pas oublier modulo
+
             switch (this.curCell.type) {
                 case Constants.CELL_TYPE.PARC:
                     break;
@@ -345,7 +285,7 @@ class Game {
                     break;
 
                 case Constants.CELL_TYPE.PROPERTY:
-                    this.playerOnPropertyCell(diceRes[0], diceRes[1]);
+                    this.playerOnPropertyCell(diceRes);
                     break;
 
                 case Constants.CELL_TYPE.CHANCE:
@@ -360,11 +300,13 @@ class Game {
                     //Ne fait rien => Gain de money ajouté à la fin de la fonction
                     break;
             }
+
+            if (oldPos > this.curPlayer.cellInd) {
+                //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
+                this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+            }
         }
-        if (oldPos > this.curPlayer.cellInd) {
-            //Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
-            this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-        }
+
         return diceRes;
     }
 
@@ -375,7 +317,7 @@ class Game {
     /**
      * @return L'ID de la propriété achetée si succès, -1 sinon
      */
-    curPlayerBuyProperty () {
+    asyncActionBuyProperty () {
         if (!this.curCell.property || this.curCell.property.owner)
             return -1;
         let price;
@@ -386,14 +328,12 @@ class Game {
         if (this.curPlayer.money < price)
             return -1;
 
+        if (this.curCell.property.owner)
+            this.curCell.property.owner.delProperty(this.curCell.property);
         this.curPlayer.loseMoney(price);
         this.curPlayer.addProperty(this.curCell.property);
 
-        // reset pour que le serveur sache que l'action a bien été effectuée
-        this.turnActionData.type = null;
-        this.turnActionData.message = null;
-        this.turnActionData.args = [];
-
+        this.resetTurnActionData();
         return this.curCell.property.id;
     }
 
@@ -401,7 +341,7 @@ class Game {
      * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
      * @return L'ID de la propriété améliorée si succès, -1 sinon
      */
-    curPlayerUpgradeProperty (level) {
+    asyncActionUpgradeProperty (level) {
         if (!this.curCell.property || this.curCell.property.owner || this.curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
             return -1;
 
@@ -412,11 +352,7 @@ class Game {
         this.curPlayer.loseMoney(price);
         this.curCell.property.upgrade(level);
 
-        // reset pour que le serveur sache que l'action a bien été effectuée
-        this.turnActionData.type = null;
-        this.turnActionData.message = null;
-        this.turnActionData.args = [];
-
+        this.resetTurnActionData();
         return this.curCell.property.id;
     }
 
@@ -426,7 +362,7 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      * @return true si succès, false sinon
      */
-    curPlayerManualForcedMortage (propertiesList) {
+    asyncActionManualForcedMortage (propertiesList) {
         const moneyToObtain = this.turnActionData.args[0];
         let sum = 0;
         for (const id of propertiesList) {
@@ -442,12 +378,74 @@ class Game {
         for (prop of propertiesList)
             this.curPlayer.delProperty(prop);
 
-        // reset pour que le serveur sache que l'action a bien été effectuée
+        this.resetTurnActionData();
+        return true;
+    }
+
+    ///////////////////////
+    // DIVERSES MÉTHODES //
+    ///////////////////////
+
+    resetTurnActionData () {
         this.turnActionData.type = null;
         this.turnActionData.message = null;
         this.turnActionData.args = [];
+    }
 
-        return true;
+    /**
+     * Gérer les actions nécéssaires si une action asynchrone de tour a été ignorer par un joueur a la fin de son tour
+     */
+    asyncActionExpired () {
+        switch (this.turnActionData.type) {
+            case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
+                this.playerAutoMortage(this.curPlayer);
+            break;
+        }
+    }
+
+    /**
+     * @param player Le player a foutre a la rue
+     */
+    playerFailure (player) {
+        // la banque récupère tout son fric et propriétés
+        for (const prop of player.properties) {
+            player.delProperty(prop);
+            this.bank.properties.push(prop);
+        }
+
+        this.bank.money += player.money;
+        player.loseMoney(player.money);
+        player.failure = true;
+
+        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailure', { playerID: player.id });
+    }
+
+    /**
+     * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
+     */
+    playerAutoMortage (player) {
+        const moneyToObtain = this.turnActionData.args[0]; // argent déjà soustrait à cette valeur !
+        let sum = 0;
+        let properties = []; // id list
+        for (const prop of player.properties) {
+            sum += prop.mortagePrice;
+            properties.push(prop.id);
+            if (sum >= moneyToObtain)
+                break;
+        }
+
+
+        if (sum < moneyToObtain) // failure
+            this.playerFailure(player);
+        else {
+            // succès
+            player.money = sum - moneyToObtain;
+            this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
+                properties  : properties,
+                playerID    : player.id,
+                playerMoney : player.money
+            });
+        }
     }
 }
 

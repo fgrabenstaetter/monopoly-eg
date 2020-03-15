@@ -18,8 +18,8 @@ const User        = require('./game/user');
 const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
+const ObjectId    = require('mongoose').Types.ObjectId;
 const { UserSchema, UserManager } = require('./models/user');
-const ObjectId = require('mongoose').Types.ObjectId; 
 
 let server;
 let production = false;

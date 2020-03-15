@@ -1,3 +1,15 @@
+// Animation bouton JOUER pendant matchmaking
+$(function() {
+    $("#play").click(function() {
+        if ($("#play").hasClass("loading")) {
+            $(this).removeClass("loading");
+        }
+        else {
+            $(this).addClass("loading");
+        }
+    });
+});
+
 let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
     for (const row of users) {
@@ -44,9 +56,6 @@ socket.on('lobbyJoinedRes', (res) => {
     // nb par défaut de joueurs désiré
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
-    for (const mess of res.messages)
-        addMsg(mess.senderUserID, mess.content, mess.createdTime);
-
     // l'hote est le premier user de la liste res.users
     hostID = res.users[0].id;
 
@@ -54,6 +63,9 @@ socket.on('lobbyJoinedRes', (res) => {
         users.push(usr);
         addGroupUser(usr.id, usr.pawn);
     }
+
+    for (const mess of res.messages)
+        addMsg(mess.senderUserID, mess.content, mess.createdTime);
 });
 
 // demande de la liste d'amis
@@ -374,3 +386,6 @@ $('.friend-request .deny-button').click(function () {
         alert("erreur : " + status)
     }
 });
+
+// exemple
+lobbyInvitation(0, "biloute");

@@ -59,7 +59,7 @@ class Street extends Property {
             price = this.rentalPrices.empty;
 
         return price * (this.owner.colorMonopoly(this.color) ? 2 : 1);
-    }
+}
 
     /**
      * @return Le prix d'hypothèque de la rue

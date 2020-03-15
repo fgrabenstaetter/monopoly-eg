@@ -162,8 +162,27 @@ input {
   padding-top: 20px;
 }
 
+.profile-overlay-container .profile-row {
+  padding-right: 75px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.profile-overlay-container .username {
+  margin-right: 20px;
+  color: white;
+  font-size: 22px;
+  font-family: "LilitaOne", sans-serif;
+}
+
 .profile-overlay-container img {
-  margin-right: 50px;
   height: 60px;
   width: 60px;
   border-radius: 100%;
@@ -178,12 +197,14 @@ input {
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
+  /*
   scrollbar-width: none;
   -ms-overflow-style: none;
-}
 
-.tchat-container .-webkit-scrollbar {
-  display: none;
+  .-webkit-scrollbar {
+    display: none;
+  }
+  */
 }
 
 .tchat-container .msg-author {
@@ -293,6 +314,10 @@ input {
   .tchat-container {
     max-height: 150px;
   }
+}
+
+.simplebar-scrollbar:before {
+  background-color: #0052ba;
 }
 
 .resolution-overlay-container {
@@ -506,7 +531,7 @@ input {
   margin-left: 10px;
   font-size: 13px;
   overflow: hidden;
-  overflow-wrap: unset;
+  overflow-wrap: normal;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
@@ -677,6 +702,31 @@ input {
   border-radius: 25px;
   font-size: 20px;
   padding: 6px 30px;
+}
+
+.lobby-ui-container .container:nth-child(2) .btn.loading {
+  background-size: 30px 30px;
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
+  -webkit-animation: barberpole 0.5s linear infinite;
+          animation: barberpole 0.5s linear infinite;
+}
+
+@-webkit-keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+
+@keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
 }
 
 .lobby-ui-container .container:nth-child(2) .btn:hover {

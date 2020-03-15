@@ -12,24 +12,26 @@
                     </div>
                     <div class="friends-entries-container">
                         <div class="friend-request">
-                            <div class="friend-request-text"></div>
+                            <div class="friend-request-text">
+                                <span data-id="">FullMerinos</span> souhaite vous ajouter à sa liste d'amis
+                            </div>
                             <div class="accept-button"></div>
                             <div class="deny-button"></div>
                         </div>
                         <div id="friendList">
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar1.jpg">
-                                <div class="friends-name">Unknown67</div>
+                                <div class="friends-name" data-id="">Unknown67</div>
                                 <div class="friend-action"></div>
                             </div>
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar2.jpg">
-                                <div class="friends-name">Kirby</div>
+                                <div class="friends-name" data-id="">Kirby</div>
                                 <div class="friend-action"></div>
                             </div>
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar3.jpg">
-                                <div class="friends-name">NomBeaucoupTropLong</div>
+                                <div class="friends-name" data-id="">NomBeaucoupTropLong</div>
                                 <div class="friend-action"></div>
                             </div>
                         </div>
@@ -41,7 +43,7 @@
             <div class="avatar">
                 <div class="avatar-model" style="background-color:#d4faff; text-align:center; line-height:250px; width:250px; height:250px; color:white;">AVATAR</div>
                 <div class="avatar-ui">
-                    <div class="avatar-bubble"></div>
+                    <div class="avatar-bubble">CHANGER DE PION</div>
                     <i class="fas fa-sync-alt"></i>
                 </div>
             </div>
@@ -54,6 +56,7 @@
                 <div class="card-body">
                     <div class="group-entries-container">
                         <div>
+                            <!-- penser à ajouter data-id à la balise friends-name gérée ici -->
                         </div>
                     </div>
                 </div>
@@ -64,7 +67,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <div class="tchat-container" id="msgChat">
+            <div class="tchat-container" id="msgChat" data-simplebar>
                 <div class="msg-other">
                     <div class="msg-author">Kirby</div>
                     Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre
@@ -139,4 +142,4 @@
 
 <script src="js/chat.js"></script>
 <script src="js/lobby.js"></script>
-<script src="js/populateBtn.js"></script>
+<script src="js/populate.js"></script>
