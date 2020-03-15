@@ -698,6 +698,31 @@ input {
   padding: 6px 30px;
 }
 
+.lobby-ui-container .container:nth-child(2) .btn.loading {
+  background-size: 30px 30px;
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
+  -webkit-animation: barberpole 0.5s linear infinite;
+          animation: barberpole 0.5s linear infinite;
+}
+
+@-webkit-keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+
+@keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+
 .lobby-ui-container .container:nth-child(2) .btn:hover {
   color: white;
 }

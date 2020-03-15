@@ -1,3 +1,15 @@
+// Animation bouton JOUER pendant matchmaking
+$(function() {
+    $("#play").click(function() {
+        if ($("#play").hasClass("loading")) {
+            $(this).removeClass("loading");
+        }
+        else {
+            $(this).addClass("loading");
+        }
+    });
+});
+
 let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
     for (const row of users) {
