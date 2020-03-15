@@ -1,6 +1,6 @@
 // Animation bouton JOUER pendant matchmaking
-$(function() {
-    $("#play").click(function() {
+$(function () {
+    $("#play").click(function () {
         if ($("#play").hasClass("loading")) {
             $(this).removeClass("loading");
         }
@@ -68,16 +68,34 @@ socket.on('lobbyJoinedRes', (res) => {
         addMsg(mess.senderUserID, mess.content, mess.createdTime);
 });
 
+/** Système de gestion d'amis
+ * Vocabulaire : 
+ *  Pending: demande reçue besoin de valider/refuser
+ *  Requested : demande envoyée en attente de validation/refus
+ */
 // demande de la liste d'amis
 socket.emit('lobbyFriendListReq');
 socket.on('lobbyFriendListRes', (res) => {
+    console.log("========== lobbyFriendListRes==============")
     console.log(res);
 })
-// Demande de la liste des demandes d'amis
+
 socket.emit('lobbyPendingFriendListReq');
 socket.on('lobbyPendingFriendListRes', (res) => {
+    console.log("========== lobbyPendingFriendListRes ==============")
     console.log(res);
 })
+
+socket.emit('lobbyRequestedFriendListReq');
+socket.on('lobbyRequestedFriendListRes', (res) => {
+    console.log("========== lobbyRequestedFriendListRes ==============")
+    console.log(res);
+})
+
+
+/** Système d'interactions avec les amis
+ * 
+ */
 
 socket.on('lobbyInvitationReceivedRes', (res) => {
     console.log("lobbyInvitationReceivedRes reçu -> besoin du nickname du friend")

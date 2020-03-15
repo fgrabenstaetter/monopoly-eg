@@ -383,9 +383,8 @@ class Network {
     lobbyFriendListReq (user, lobby) {
         user.socket.on('lobbyFriendListReq', () => {
             let friends = [];
-            let nbInserted = 0;
 
-            UserSchema.getFriends(user.id, {}, (error, friendsObj) => {
+            UserSchema.getAcceptedFriends(user.id, (error, friendsObj) => {
                 if (!friendsObj || error) {
                     user.socket.emit('lobbyFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                     return;
