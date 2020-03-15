@@ -4,8 +4,21 @@
   width: 100%;
   padding-top: 20px;
 
+  .profile-row {
+    padding-right: 75px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .username {
+    margin-right: 20px;
+    color: white;
+    font-size: 22px;
+    font-family: "LilitaOne", sans-serif;
+  }
+
   img {
-    margin-right: 50px;
     height: 60px;
     width: 60px;
     border-radius: 100%;

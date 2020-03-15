@@ -162,8 +162,27 @@ input {
   padding-top: 20px;
 }
 
+.profile-overlay-container .profile-row {
+  padding-right: 75px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.profile-overlay-container .username {
+  margin-right: 20px;
+  color: white;
+  font-size: 22px;
+  font-family: "LilitaOne", sans-serif;
+}
+
 .profile-overlay-container img {
-  margin-right: 50px;
   height: 60px;
   width: 60px;
   border-radius: 100%;

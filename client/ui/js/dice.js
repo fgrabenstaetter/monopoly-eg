@@ -114,7 +114,7 @@ $(document).ready(function(){
 		rotations = random(5,10);
 		showDices();
 		await sleep(300);
-		rollDice(1,6,rotations);
+		rollDice(1,4,rotations);
 		rollDice(2,2,rotations);
 		await sleep(rotations*500+3000);
 		hideDices();
