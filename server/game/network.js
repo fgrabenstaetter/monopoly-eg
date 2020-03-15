@@ -38,6 +38,7 @@ class Network {
         // Amis
         this.lobbyFriendListReq             (user, lobby);
         this.lobbyRequestedFriendListReq    (user, lobby);
+        this.lobbyPendingFriendListReq      (user, lobby);
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
