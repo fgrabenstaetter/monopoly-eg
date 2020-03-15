@@ -57,14 +57,4 @@ describe("Test sur la classe Street", function() {
         street.hostel = true;
         assert.equal(800, street.rentalPrice);
     });
-
-    it("Le prix d'hypothèque en fonction des maisons ou hôtel doit varier", function() {
-        assert.equal(1000, street.mortagePrice);
-        street.hostel = false;
-        assert.equal(600, street.mortagePrice);
-        street.housesNb = 2;
-        assert.equal(400, street.mortagePrice);
-        street.housesNb = 1;
-        assert.equal(200, street.mortagePrice);
-    });
 });

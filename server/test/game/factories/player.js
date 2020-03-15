@@ -1,6 +1,5 @@
 const Player = require('./../../../game/player');
 
-const {createPawns} = require('./pawn');
 const {createUser} = require('./user');
 
 

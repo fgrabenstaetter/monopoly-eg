@@ -4,7 +4,6 @@ var assert = require('chai').assert,
 const Card = require('../../game/card');
 
 const {createGame} = require('./factories/game');
-const {createPawns} = require('./factories/pawn');
 const {createUser} = require('./factories/user');
 
 
