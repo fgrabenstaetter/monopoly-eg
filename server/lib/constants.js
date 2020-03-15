@@ -37,11 +37,7 @@ const Constants = {
         BANK_INITIAL_MONEY       : 4000
     },
     // Action d'un tour de jeu
-    GAME_ACTION_TYPE: {
-        // Actions ne nécessitant pas une action d'un joueur
-        NOTHING     : 'nothing',
-        PAID_RENT   : 'hasPaid',
-        // Actions nécessitant une action d'un joueur
+    GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',
         CAN_UPGRADE    : 'canUpgrade',
         SHOULD_MORTAGE : 'shouldMortage'

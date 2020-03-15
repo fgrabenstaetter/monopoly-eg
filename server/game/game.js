@@ -42,10 +42,10 @@ class Game {
                 this.bank.properties.push(cell.property);
         }
 
-        this.turnActionData = { // pour le client (envoi Network)
-            message : null,
-            type    : null, // voir socket_events event 'gameActionRes'
-            args    : []
+        this.turnData = { // pour le client (envoi Network)
+            actionMessage    : null,
+            asyncRequestType : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs : null // liste
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -333,7 +333,7 @@ class Game {
         this.curPlayer.loseMoney(price);
         this.curPlayer.addProperty(this.curCell.property);
 
-        this.resetTurnActionData();
+        this.resetTurnData();
         return this.curCell.property.id;
     }
 
@@ -352,7 +352,7 @@ class Game {
         this.curPlayer.loseMoney(price);
         this.curCell.property.upgrade(level);
 
-        this.resetTurnActionData();
+        this.resetTurnData();
         return this.curCell.property.id;
     }
 
@@ -363,7 +363,7 @@ class Game {
      * @return true si succès, false sinon
      */
     asyncActionManualForcedMortage (propertiesList) {
-        const moneyToObtain = this.turnActionData.args[0];
+        const moneyToObtain = this.turnData.asyncRequestArgs[0];
         let sum = 0;
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
@@ -378,7 +378,7 @@ class Game {
         for (prop of propertiesList)
             this.curPlayer.delProperty(prop);
 
-        this.resetTurnActionData();
+        this.resetTurnData();
         return true;
     }
 
@@ -386,17 +386,26 @@ class Game {
     // DIVERSES MÉTHODES //
     ///////////////////////
 
-    resetTurnActionData () {
-        this.turnActionData.type = null;
-        this.turnActionData.message = null;
-        this.turnActionData.args = [];
+    /**
+     * @param actionMessage Le message à afficher côté client (ou null)
+     * @param asyncRequestType Le type de requête asynchrone que le client pourra faire ensuite (ou null)
+     * @param asyncRequestArgs Liste d'arguments pour la requête asynchrone possible à envoyer au joueur (ou null)
+     */
+    setTurnData (asyncRequestType, asyncRequestArgs, actionMessage) {
+        this.turnData.asyncRequestType = asyncRequestType;
+        this.turnData.asyncRequestArgs = asyncRequestArgs;
+        this.turnData.actionMessage          = actionMessage;
+    }
+
+    resetTurnData () {
+        this.setTurnData(null, null, null);
     }
 
     /**
      * Gérer les actions nécéssaires si une action asynchrone de tour a été ignorer par un joueur a la fin de son tour
      */
     asyncActionExpired () {
-        switch (this.turnActionData.type) {
+        switch (this.turnData.asyncRequestType) {
             case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
                 this.playerAutoMortage(this.curPlayer);
             break;
@@ -424,7 +433,7 @@ class Game {
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
      */
     playerAutoMortage (player) {
-        const moneyToObtain = this.turnActionData.args[0]; // argent déjà soustrait à cette valeur !
+        const moneyToObtain = this.turnData.asyncRequestArgs[0]; // argent déjà soustrait à cette valeur !
         let sum = 0;
         let properties = []; // id list
         for (const prop of player.properties) {

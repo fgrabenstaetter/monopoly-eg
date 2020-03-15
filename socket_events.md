@@ -510,11 +510,11 @@
         ```javascript
         {
             dicesRes: [ int, int ],
-            cellID: int,
-            gameMessage: string, // message de l'action
-            actionType: string, // nothing | hasPaid | canBuy | canUpgrade | shouldMortage
-            actionArgs: custom array, // selon actionType (voir plus bas)
             playerID: int,
+            cellID: int,
+            actionMessage: string, // message lié à l'action de tour
+            asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortage'
+            asyncRequestArgs: array ou null, // selon asyncRequestType (voir plus bas)
             updateMoney:
             [
                 // peut être vide (dynamique)
@@ -535,17 +535,13 @@
         }
         ```
 
-        **actionArgs** ci-dessus peut être:
+        **asyncRequestArgs** ci-dessus peut être:
         ```javascript
-        // Si actionType = nothing
-            []
-        // Si actionType = hasPaid
-            []
-        // Si actionType = canBuy
-            []
-        // Si actionType = canUpgrade
-            []
-        // Si actionType = shouldMortage
+        // Si asyncRequestType = canBuy
+            [price]
+        // Si asyncRequestType = canUpgrade
+            [level1Price, level2Price, level3Price, level4price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+        // Si asyncRequestType = shouldMortage
             [minimumPropertiesValueToMortage]
         ```
 
