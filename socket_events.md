@@ -292,7 +292,7 @@
         }
         ```
 
-- **Recevoir la liste d'amis en attente (invitations non acceptées/rejetées)**
+- **Recevoir la liste d'amis demandés (mais pas encore acceptées/rejetées par le receveur)**
 
     * **Requête:** lobbyRequestedFriendListReq
         * *Données:*
@@ -301,6 +301,27 @@
         ```
 
     * **Réponse:** lobbyRequestedFriendListRes
+        * *Données:*
+        ```javascript
+        {
+            friends: [
+                {
+                    id: int,
+                    nickname: string
+                }, ...
+            ]
+        }
+        ```
+
+- **Recevoir la liste d'amis en attente (invitations que l'on a reçues mais pas encore acceptées/rejetées)**
+
+    * **Requête:** lobbyPendingFriendListReq
+        * *Données:*
+        ```javascript
+        null
+        ```
+
+    * **Réponse:** lobbyPendingFriendListRes
         * *Données:*
         ```javascript
         {
