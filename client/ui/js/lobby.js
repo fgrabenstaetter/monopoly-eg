@@ -213,7 +213,7 @@ $(document).ready(() => {
             element = document.getElementsByClassName('friend-entry');
             for (i = 0; i < element.length; i++) {
                 txtValue = element[i].getElementsByClassName('friends-name')[0].innerHTML;
-                if (txtValue.toUpperCase().indexOf(filter) > -1)
+                if (txtValue.toUpperCase().indexOf(filter.toUpperCase()) > -1)
                     element[i].style.display = '';
                 else
                     element[i].style.display = 'none';
