@@ -1,18 +1,10 @@
+// Styling
 .tchat-container {
   width: 100%;
   max-width: 240px;
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
-
-  /*
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  .-webkit-scrollbar {
-    display: none;
-  }
-  */
 
   .msg-author {
     margin-bottom: 7px;
