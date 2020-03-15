@@ -420,33 +420,49 @@ class Network {
             let friends = [];
             let nbInserted = 0;
 
-            UserSchema.findById(user.id, (error, userMongo) => {
-                if (!error && userMongo) {
-                    UserSchema.getRequestedFriends(userMongo, (error, friendsObj) => {
-                        if (!friendsObj || error) {
-                            user.socket.emit('lobbyRequestedFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                            return;
-                        }
-
-                        // Aucun ami (-> renvoie liste vide)
-                        if (friendsObj.length == 0) {
-                            user.socket.emit('lobbyRequestedFriendListRes', { friends: [] });
-                            return;
-                        }
-
-                        for (let i = 0; i < friendsObj.length; i ++) {
-                            // const friend = userMongo.friends[i];
-                            UserSchema.findOne({ id: friendsObj[i]._id }, (error, friend) => {
-                                if (friend && !error)
-                                    friends.push({ id: friend.id, nickname: friend.nickname });
-
-                                nbInserted++;
-                                if (nbInserted === friendsObj.length)
-                                    user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
-                            });
-                        }
-                    });
+            UserSchema.getRequestedFriends(user.id, (error, friendsObj) => {
+                if (!friendsObj || error) {
+                    user.socket.emit('lobbyRequestedFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                    return;
                 }
+
+                // Aucun ami (-> renvoie liste vide)
+                if (friendsObj.length == 0) {
+                    user.socket.emit('lobbyRequestedFriendListRes', { friends: [] });
+                    return;
+                }
+
+                for (let i = 0; i < friendsObj.length; i ++) {
+                    friends.push({ id: friendsObj[i].friend._id, nickname: friendsObj[i].friend.nickname });
+                }
+
+                user.socket.emit('lobbyRequestedFriendListRes', { friends: friends });
+            });
+        });
+    }
+
+    lobbyPendingFriendListReq (user, lobby) {
+        user.socket.on('lobbyPendingFriendListReq', () => {
+            let friends = [];
+            let nbInserted = 0;
+
+            UserSchema.getPendingFriends(user.id, (error, friendsObj) => {
+                if (!friendsObj || error) {
+                    user.socket.emit('lobbyPendingFriendListRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                    return;
+                }
+
+                // Aucun ami (-> renvoie liste vide)
+                if (friendsObj.length == 0) {
+                    user.socket.emit('lobbyPendingFriendListRes', { friends: [] });
+                    return;
+                }
+
+                for (let i = 0; i < friendsObj.length; i ++) {
+                    friends.push({ id: friendsObj[i].friend._id, nickname: friendsObj[i].friend.nickname });
+                }
+
+                user.socket.emit('lobbyPendingFriendListRes', { friends: friends });
             });
         });
     }
