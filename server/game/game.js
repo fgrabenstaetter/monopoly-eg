@@ -1,8 +1,10 @@
-const Constants = require('../lib/constants');
-const Cells     = require('../lib/cells');
-const Deck      = require('./deck');
-const Player    = require('./player');
 const Chat      = require('./chat');
+const Constants = require('../lib/constants');
+const Deck      = require('./deck');
+const Map = require('./map');
+const Player    = require('./player');
+
+const cellsMeta = require('./../lib/cells');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const propertiesMeta = require('./../lib/properties');
@@ -27,8 +29,6 @@ class Game {
         this.turnTimeout = null;
         this.chat = new Chat();
 
-        this.cells = Cells;
-
         this.map = new Map(cellsMeta, propertiesMeta);
 
         this.chanceDeck = new Deck(chanceCardsMeta);
@@ -39,11 +39,14 @@ class Game {
             properties : []
         }
 
+        /*
         // ajout des propriétés du plateau dans la banque
         for (const cell of this.cells) {
             if (cell.property)
                 this.bank.properties.push(cell.property);
         }
+        TODO: fix this
+        */
 
         this.turnData = { // pour le client (envoi Network)
             actionMessage    : null,
@@ -57,6 +60,10 @@ class Game {
         for (let i = 0, l = users.length; i < l; i ++) {
             this.players.push(new Player(users[i], pawns[i]));
         }
+
+    }
+
+    globalGameState () {
 
     }
 
@@ -104,6 +111,7 @@ class Game {
 
         return null;
     }
+
 
     get name () {
         return 'game-' + this.id;
@@ -160,30 +168,22 @@ class Game {
     /**
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
-    nextTurn () {
-<<<<<<< HEAD
-        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
-        if (this.turnData.asyncRequestType != null)
-            this.asyncActionExpired();
-=======
-        resultat_des = map.jeterLesDets()
-        map.movePlayer(currentPlayer, resultat_des);
+     nextTurn () {
+         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+         if (this.turnData.asyncRequestType != null)
+             this.asyncActionExpired();
 
-        switch (this.cells[this.players[this.turnPlayerInd].cellInd].type) {
-            case Constants.CELL_TYPE.PARC:
->>>>>>> e751057... Implementation de la classe Map
+         do
+             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
+         while (this.curPlayer.failure)
 
-        do
-            this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
-        while (this.curPlayer.failure)
-
-        console.log('NEXT TURN player = ' + this.curPlayer.nickname);
-        this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
-        this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.id,
-            turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
-        });
-    }
+         console.log('NEXT TURN player = ' + this.curPlayer.nickname);
+         this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
+         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
+             playerID: this.curPlayer.id,
+             turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
+         });
+     }
 
 
     /**

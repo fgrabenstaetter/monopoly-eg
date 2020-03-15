@@ -1,21 +1,53 @@
-const NewCell = require('./newCell');
+const Cell = require('./Cell');
+const Constants = require('./../lib/constants');
+const Property = require('./Property');
 
 
 class Map {
-    constructor (cellsMeta) {
+    constructor (cellsMeta, propertiesMeta) {
         this.cells = [];
+        this.publicCompaniesCount = 0;
+        this.colorsCount = {}
 
+        for (let color in Constants.STREET_COLORS)
+            this.colorsCount[color] = 0;
+
+        let properties = this.loadProperties(propertiesMeta);
         for (let cellMeta of cellsMeta) {
-            let cell = new NewCell(
+            let property = properties[cellMeta.token];
+            let cell = new Cell(
                 cellMeta.id,
                 cellMeta.token,
                 cellMeta.name,
                 cellMeta.description,
-                cellMeta.type
+                cellMeta.type,
+                property
             );
 
             this.cells.push(cell);
+
+            if (property != null) {
+                if (property.type == Constants.PROPERTY_TYPES.STREET)
+                    this.colorsCount[property.color] = this.colorsCount[property.color] + 1;
+    
+                if (property.type == Constants.PROPERTY_TYPES.PUBLIC_COMPANY)
+                    this.publicCompaniesCount = this.publicCompaniesCount + 1;
+            }
         }
+
+        this.cellStats = {};
+        for (let cell of this.cells) {
+
+        }
+    }
+
+    loadProperties (propertiesMeta) {
+        let properties = {};
+        for (let propertyMeta of propertiesMeta) {
+            let property = new Property(propertyMeta);
+            properties[property.token] = property;
+        }
+        return properties;
     }
 
     /**

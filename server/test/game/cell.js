@@ -1,46 +1,85 @@
-const Cell = require('../../game/cell');
-const Property = require('../../game/property');
-const PublicCompany = require('../../game/publicCompany');
-const Street = require('../../game/street');
-const Constants = require('../../lib/constants');
-const Properties = require('../../lib/properties');
-const User = require('../../game/user');
-const assert = require('assert');
+const chai = require('chai');
+const spies = require('chai-spies');
+const assert = chai.assert;
+const expect = chai.expect;
+chai.use(spies);
 
-describe("Test sur la classe Cell", function() {
-    const userSchema1 = {
-        nickname: 'François',
-        email: 'francois@gmail.com',
-        friends: ['Danyl', 'Boris', 'Matthias'],
-        inscriptionDatetime: 152888912,
-        level: 1,
-        exp: 0
-    };
-    const userSchema2 = {
-        nickname: 'Danyl',
-        email: 'danyl@gmail.com',
-        friends: ['François', 'Matthias', 'Boris'],
-        inscriptionDatetime: 152888912,
-        level: 1,
-        exp: 0
-    };
+const {createGame} = require('./factories/game');
+const {createUser} = require('./factories/user');
 
-    const user1 = new User(userSchema1);
-    const user2 = new User(userSchema2);
-    //3e arg à compléter lorsque la classe Game sera prête à l'emploi
-    const proCell1 = new Street(user1, Properties.STREET[0]);
-    //3e arg à compléter lorsque la classe Game sera prête à l'emploi
-    const proCell2 = new Street(user2, Properties.TRAIN_STATION[1]);
+const Constants = require('./../../lib/constants');
+const Deck = require('./../../game/deck');
+const Cell = require('./../../game/Cell');
 
-    it("La cellule est de type STREET", function() {
-        const testStreet = new Cell(Constants.CELL_TYPE.PROPERTY, proCell1);
-        assert.equal(Constants.CELL_TYPE.PROPERTY, testStreet.type);
-        assert.notEqual(Constants.CELL_TYPE.PRISON, testStreet.type);
+
+describe('Cell', function() {
+    describe('constructor()', function () {
+        it('doit assigner correctement id, token, name, description, type', function() {
+            let cell = new Cell(
+                id=1,
+                token='test',
+                name='Test Cell',
+                description='Teest',
+                type=Constants.CELL_TYPES.START
+            );
+
+            assert.equal(cell.id, 1);
+            assert.equal(cell.token, 'test');
+            assert.equal(cell.name, 'Test Cell');
+            assert.equal(cell.description, 'Teest');
+            assert.equal(cell.type, Constants.CELL_TYPES.START);
+        });
+
+        it('doit creer une erreur si le type est inconnu', function () {
+            function unknownCellType () {
+                new Cell(1, 'test', 'Test Cell', 'Teest', 'unknown');
+            };
+            assert.throws(unknownCellType, 'Type de cellule inconnu - unknown');
+        });
     });
 
-    it("Le nom de TRAIN_STATION[1] est Gare de Mulhouse", function() {
-        const street = new Cell(Constants.CELL_TYPE.PROPERTY, proCell2);
-        assert.equal("Gare de Mulhouse", street.name);
-        //assert.notEqual("Gare de Strasbourg", street.name);
+    describe('startEffect()', function () {
+        it('doit augmenter l\'argent du joueur par 200', function () {
+            let game = createGame();
+            let cell = game.map.getCellById(0);
+            let player = game.players[0];
+            let currentMoney = player.money;
+
+            cell.execute(game, player);
+
+            assert.equal(player.money, currentMoney + 200);
+        });
+    });
+
+    describe('communnityChestEffect()', function () {
+        it('doit executer communnityChestDeck.drawCard()', function () {
+            let game = createGame();
+            let player = game.players[0];
+            let communityChestCell = game.map.getCellByToken('communityChest');
+
+            const spy = chai.spy.on(game.communityChestDeck, 'drawCard');
+
+            communityChestCell.execute(game, player);
+            expect(spy).to.have.been.called();
+        });
+    });
+
+    describe('chanceEffect()', function () {
+        it('doit executer chanceDeck.drawCard()', function () {
+            let game = createGame();
+            let player = game.players[0];
+            let chanceCell = game.map.getCellByToken('chance');
+
+            const spy = chai.spy.on(game.chanceDeck, 'drawCard');
+
+            chanceCell.execute(game, player);
+            expect(spy).to.have.been.called();
+        });
+    });
+
+    describe('propertyEffect', function ()  {
+        it('doit executer cell.property.execute()', function () {
+
+        });
     });
 });
