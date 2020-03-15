@@ -87,7 +87,7 @@ class Street extends Property {
 
     /**
      * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
-     * @return le prix
+     * @return le prix cumulé pour avoir ce niveau d'amélioration
      */
     upgradePrice (level) {
         if (this.hostel)
@@ -100,6 +100,26 @@ class Street extends Property {
             price = this.prices.house * level;
 
         return price - this.housesNb * this.prices.house;
+    }
+
+
+    /**
+     * @return La liste des niveaux d'amélioration avec leur prix assez d'argent, ou null sinon (déjà ce niveau ou trop cher)
+     * Si un montant est donnée, il s'agit du montant cumulatif ! Exemple: aucune maison ni hotel, prix niveau 2 = prix niveau 1 + prix niveau 2
+     */
+    get availableUpgradeLevels () {
+        const canLevel1 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(1);
+        const canLevel2 = !this.hostel && this.housesNb <= 1  && this.owner.money >= this.upgradePrice(2);
+        const canLevel3 = !this.hostel && this.housesNb <= 2  && this.owner.money >= this.upgradePrice(3);
+        const canLevel4 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(4);
+
+        let list = [], sum = 0;
+        list.push(canLevel1 ? sum += this.upgradePrice(1) : null);
+        list.push(canLevel2 ? sum += this.upgradePrice(2) : null);
+        list.push(canLevel3 ? sum += this.upgradePrice(3) : null);
+        list.push(canLevel4 ? sum += this.upgradePrice(4) : null);
+
+        return list;
     }
 }
 

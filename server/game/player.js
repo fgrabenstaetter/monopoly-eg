@@ -10,16 +10,15 @@ class Player {
      * @param pawn Son pion
      */
     constructor (user, pawn) {
-        this.id = user.id;
-        this.user = user;
-        this.pawn = pawn;
-        this.isReady = false; // synchronisation de tous les joueurs avant lancement de partie
-        this.failure = false;
-
-        this.money = 1500; // argent initial
-        this.cellInd = 0;
+        this.user       = user;
+        this.pawn       = pawn;
+        this.isReady    = false; // synchronisation de tous les joueurs avant lancement de partie
+        this.failure    = false;
+        this.money      = 1500; // argent initial
+        this.cellPos    = 0;
         this.properties = [];
-        this.jailJokerCards = 0;
+
+        this.jailJokerCards       = 0;
         this.remainingTurnsInJail = 0;
     }
 
@@ -41,6 +40,10 @@ class Player {
         }
 
         return nb;
+    }
+
+    get id () {
+        return this.user.id;
     }
 
     get nickname () {
@@ -65,7 +68,7 @@ class Player {
         this.remainingTurnsInJail = 3;
     }
 
-    escapePrison () {
+    quitPrison () {
         this.remainingTurnsInJail = 0;
     }
 

@@ -1,12 +1,11 @@
 const Constants = {
     // CELL
     CELL_TYPE: {
-        PARC      : 0,
+        PARC      : 0, // case qui ne sert a rien
         PRISON    : 1,
         PROPERTY  : 2,
         CHANCE    : 3,
         COMMUNITY : 4,
-        START     : 5
     },
 
     // PROPERTY
