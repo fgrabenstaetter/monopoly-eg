@@ -13,6 +13,12 @@ $(document).ready( () => {
         updateScroll();
     });
 });
+
+socket.on('lobbyChatReceiveRes', (msg) => {
+    console.log('lobbyChatReceiveRes');
+    addMsg(msg);
+});
+
 /** Fonction qui remet la barre de défilement en bas
 */
 function updateScroll(){
