@@ -1,25 +1,23 @@
 const Constants = {
-    // CELL
-    CELL_TYPE: {
-        PARC      : 0,
-        PRISON    : 1,
-        PROPERTY  : 2,
-        CHANCE    : 3,
-        COMMUNITY : 4,
-        START     : 5
+    CELL_TYPES: {
+        START: 'START',
+        PROPERTY: 'PROPERTY',
+        COMMUNITY_CHEST: 'COMMUNITY_CHEST',
+        CHANCE: 'CHANCE',
+        PRISON: 'PRISON',
+        OTHER: 'OTHER' // custom effects, like "Pay $200 Income Tax"
     },
+    PROPERTY_TYPES: {
+        TRAIN_STATION: 'TRAIN_STATION',
+        STREET: 'STREET',
+        PUBLIC_COMPANY: 'PUBLIC_COMPANY'
 
-    // PROPERTY
-    PROPERTY_TYPE: {
-        TRAIN_STATION  : 0,
-        STREET         : 1,
-        PUBLIC_COMPANY : 2,
     },
-    PROPERTY_COLOR: {
-        RED:   0,
-        GREEN: 1,
-        BLUE:  2,
-        PINK:  3
+    STREET_COLORS: {
+        RED: 'RED',
+        GREEN: 'GREEN',
+        BLUE: 'BLUE',
+        PINK: 'PINK'
     },
 
     // CHAT
@@ -37,11 +35,7 @@ const Constants = {
         BANK_INITIAL_MONEY       : 4000
     },
     // Action d'un tour de jeu
-    GAME_ACTION_TYPE: {
-        // Actions ne nécessitant pas une action d'un joueur
-        NOTHING     : 'nothing',
-        PAID_RENT   : 'hasPaid',
-        // Actions nécessitant une action d'un joueur
+    GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',
         CAN_UPGRADE    : 'canUpgrade',
         SHOULD_MORTAGE : 'shouldMortage'

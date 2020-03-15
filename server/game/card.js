@@ -31,7 +31,7 @@ class Card {
     }
 
     jailBreak (game, player) {
-        player.escapePrison();
+        player.quitPrison();
     }
 
     jailTime (game, player) {

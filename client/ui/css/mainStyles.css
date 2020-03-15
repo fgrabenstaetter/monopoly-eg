@@ -21,6 +21,12 @@
   /* Firefox */
   -ms-user-select: none;
   /* Internet Explorer/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+* ::-webkit-scrollbar {
+  display: none;
 }
 
 input {
@@ -197,14 +203,6 @@ input {
   max-height: 230px;
   overflow-x: hidden;
   overflow-y: auto;
-  /*
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  .-webkit-scrollbar {
-    display: none;
-  }
-  */
 }
 
 .tchat-container .msg-author {
@@ -501,7 +499,7 @@ input {
 
 @media (max-height: 820px) {
   .lobby-ui-container .container:first-child .box.friendlist .friends-entries-container, .lobby-ui-container .container:first-child .box.grouplist .friends-entries-container {
-    height: 150px;
+    height: 175px;
   }
   .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
     max-height: 211px;
@@ -1375,6 +1373,7 @@ input {
   line-height: 1;
   overflow: hidden;
   position: relative;
+  text-align: center;
   -webkit-box-shadow: 0 1px 1px #ccc;
           box-shadow: 0 1px 1px #ccc;
 }
@@ -1405,7 +1404,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button .tz-bar {
-  background-color: rgba(255, 98, 0, 0.7);
+  background-color: #ff6200;
   height: 3px;
   bottom: 0;
   left: 0;

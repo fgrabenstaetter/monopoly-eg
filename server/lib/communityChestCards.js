@@ -1,4 +1,4 @@
-communityChestCards = [{
+const communityChestCards = [{
     'token': 'advanceGo',
     'description': 'Advance to "Go". (Collect $200)',
     'effectType': 'advance',

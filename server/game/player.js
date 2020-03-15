@@ -10,16 +10,15 @@ class Player {
      * @param pawn Son pion
      */
     constructor (user, pawn) {
-        this.id = user.id;
-        this.user = user;
-        this.pawn = pawn;
-        this.isReady = false; // synchronisation de tous les joueurs avant lancement de partie
-        this.failure = false;
-
-        this.money = 1500; // argent initial
-        this.cellInd = 0;
+        this.user       = user;
+        this.pawn       = pawn;
+        this.isReady    = false; // synchronisation de tous les joueurs avant lancement de partie
+        this.failure    = false;
+        this.money      = 1500; // argent initial
+        this.currentCell = null;
         this.properties = [];
-        this.jailJokerCards = 0;
+
+        this.jailJokerCards       = 0;
         this.remainingTurnsInJail = 0;
     }
 
@@ -35,12 +34,15 @@ class Player {
      */
     get trainStationsNb () {
         let nb = 0;
-        for (const prop of this.properties) {
-            if (prop.type === Constants.PROPERTY_TYPE.TRAIN_STATION)
+        for (let prop of this.properties)
+            if (prop.type === Constants.PROPERTY_TYPES.TRAIN_STATION)
                 nb ++;
-        }
 
         return nb;
+    }
+
+    get id () {
+        return this.user.id;
     }
 
     get nickname () {
@@ -65,26 +67,35 @@ class Player {
         this.remainingTurnsInJail = 3;
     }
 
-    escapePrison () {
+    quitPrison () {
         this.remainingTurnsInJail = 0;
     }
 
     /**
-     * @param prop La propriété à ajouter au joueur
+     * @param property La propriété à ajouter au joueur
      */
-    addProperty (prop) {
-        this.properties.push(prop);
-        prop.owner = this;
+    addProperty (property) {
+        property.owner = this;
+        this.properties.push(property);
     }
 
     /**
-     * @param prop La propriété à supprimer du joueur
+     * @param propertyToken le token de la propriete a verifier
      */
-    delProperty (prop) {
-        const ind = this.properties.indexOf(prop);
+    getProperty (propertyToken) {
+        for (let property of this.properties)
+            if (property.token == propertyToken)
+                return property;
+    }
+
+    /**
+     * @param property La propriété à supprimer du joueur
+     */
+    delProperty (property) {
+        const ind = this.properties.indexOf(property);
         if (ind !== -1)
             this.properties.splice(ind, 1);
-        prop.owner = null;
+        property.owner = null;
     }
 
     /**
@@ -100,23 +111,26 @@ class Player {
         return false;
     }
 
+    getPropertiesByType (type) {
+        let properties = [];
+        for (let property of this.properties)
+            if (property.type == type)
+                properties.push(property);
+
+        return properties;
+    }
+
     /**
      * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
      * @return true si le joueur possède toutes les rues de cette couleur, false sinon
      */
-    colorMonopoly (color) {
-        let nb = 0, total = 0;
-
-        for (const prop of this.properties) {
-            if (prop.type === Constants.PROPERTY_TYPE.STREET && prop.color === color)
+    sameStreetColorNb (color) {
+        let nb = 0;
+        for (const prop of this.getPropertiesByType(Constants.PROPERTY_TYPES.STREET)) {
+            if (prop.color === color)
                 nb ++;
         }
-        for (const prop of Properties.STREET) {
-            if (prop.color === color)
-                total ++;
-        }
-
-        return nb === total;
+        return nb;
     }
 }
 
