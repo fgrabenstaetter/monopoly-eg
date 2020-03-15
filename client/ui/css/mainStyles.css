@@ -1355,6 +1355,13 @@ input {
 
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 {
   padding: 0;
+  /* Hide the original text of the button. Then the loading or finished
+          text will be shown in the :after element above it. */
+  /* If the .in-progress class is set on the button, show the
+          contents of the data-loading attribute on the butotn */
+  /* The same goes for the .finished class */
+  /* The colorful bar that grows depending on the progress */
+  /* The bar can be either horizontal, or vertical */
 }
 
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button {
@@ -1362,6 +1369,60 @@ input {
   height: 50px;
   border-radius: 25px;
   font-size: 20px;
-  padding: 6px 20px;
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 14px 60px;
+  line-height: 1;
+  overflow: hidden;
+  position: relative;
+  -webkit-box-shadow: 0 1px 1px #ccc;
+          box-shadow: 0 1px 1px #ccc;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished {
+  color: transparent !important;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  padding-top: inherit;
+  color: #fff !important;
+  left: 0;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after {
+  content: attr(data-loading);
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
+  content: attr(data-finished);
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button .tz-bar {
+  background-color: rgba(255, 98, 0, 0.7);
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  position: absolute;
+  z-index: 1;
+  border-radius: 0 0 2px 2px;
+  -webkit-transition: width 0.5s, height 0.5s;
+  transition: width 0.5s, height 0.5s;
+  height: 100%;
+  border-radius: 2px;
+}
+
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button .tz-bar.background-vertical {
+  height: 0;
+  top: 0;
+  width: 100%;
+  border-radius: 2px;
 }
 /*# sourceMappingURL=mainStyles.css.map */
