@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 const {createPlayer} = require('./factories/player');
 
 const Constants = require('./../../lib/constants');
-const Map = require('./../../game/Map');
+const Map = require('./../../game/map');
 
 
 let getCellsMeta = function () {

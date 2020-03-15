@@ -1,6 +1,6 @@
-const Cell = require('./Cell');
+const Cell = require('./cell');
 const Constants = require('./../lib/constants');
-const Property = require('./Property');
+const Property = require('./property');
 
 
 class Map {
@@ -29,7 +29,7 @@ class Map {
             if (property != null) {
                 if (property.type == Constants.PROPERTY_TYPES.STREET)
                     this.colorsCount[property.color] = this.colorsCount[property.color] + 1;
-    
+
                 if (property.type == Constants.PROPERTY_TYPES.PUBLIC_COMPANY)
                     this.publicCompaniesCount = this.publicCompaniesCount + 1;
             }

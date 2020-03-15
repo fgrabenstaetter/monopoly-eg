@@ -4,7 +4,7 @@ const {createGame} = require('./factories/game');
 const {createPlayer} = require('./factories/player');
 
 const Constants = require('./../../lib/constants');
-const Map = require('./../../game/Map');
+const Map = require('./../../game/map');
 const Player = require('../../game/player');
 const Property = require('./../../game/property');
 const User = require('../../game/user');

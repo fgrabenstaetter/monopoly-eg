@@ -9,7 +9,7 @@ const {createUser} = require('./factories/user');
 
 const Constants = require('./../../lib/constants');
 const Deck = require('./../../game/deck');
-const Cell = require('./../../game/Cell');
+const Cell = require('./../../game/cell');
 
 
 describe('Cell', function() {
