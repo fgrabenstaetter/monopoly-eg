@@ -191,12 +191,17 @@ class Network {
 
                     // Envoi temps réel (si utilisateur connecté)
                     for (const lobby of this.GLOBAL.lobbies) {
-                        const invitedUserInLobby = lobby.userByID(invitedUser);
+                        console.log("-> recherche du membre " + invitedUser._id + " invité dans le lobby #" + lobby.id);
+                        const invitedUserInLobby = lobby.userByID(invitedUser._id);
                         if (invitedUserInLobby) {
+                            console.log("-> membre trouvé dans ce lobby !");
                             invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                            console.log("-> invitation envoyée par socket au membre");
                             break;
                         }
                     }
+
+                    console.log("fin de la fonction d'invitation d'ami");
 
                     return;
                 });
