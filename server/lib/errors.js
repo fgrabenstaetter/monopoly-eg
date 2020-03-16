@@ -74,6 +74,14 @@ module.exports = Object.freeze({
         CANT_INVITE_YOURSELF: {
             code: 6,
             status: 'Vous ne pouvez pas vous inviter vous-même en ami'
+        },
+        ALREADY_INVITED: {
+            code: 7,
+            status: 'Vous avez déjà demandé cette personne en ami (en attente de sa réponse)'
+        },
+        ALREADY_INVITED_BY_THIS_MEMBER: {
+            code: 8,
+            status: 'Vous avez déjà été demandé en ami par cette personne !'
         }
     },
 

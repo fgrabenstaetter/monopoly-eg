@@ -201,26 +201,27 @@ class Network {
                         }
 
                         // On vérifie si l'invitation n'a pas déjà été envoyée
-                        let addFriend = true;
+                        let alreadyRequested = false;
+                        let alreadyRequestedBy = false;
                         if (requestedFriends && requestedFriends.length > 0) {
                             for (let i = 0; i < requestedFriends.length; i++) {
                                 if (requestedFriends[i].friend._id.equals(invitedUser._id)) {
-                                    addFriend = false;
+                                    alreadyRequested = true;
                                     break;
                                 }
                             }
                         }
 
-                        if (addFriend && pendingFriends && pendingFriends.length > 0) {
+                        if (!alreadyRequested && pendingFriends && pendingFriends.length > 0) {
                             for (let i = 0; i < pendingFriends.length; i++) {
                                 if (pendingFriends[i].friend._id.equals(invitedUser._id)) {
-                                    addFriend = false;
+                                    alreadyRequestedBy = true;
                                     break;
                                 }
                             }
                         }
 
-                        if (addFriend) {
+                        if (!alreadyRequested && !alreadyRequestedBy) {
                             UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
                                 if (error) {
                                     user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
@@ -239,8 +240,10 @@ class Network {
 
                                 return;
                             });
+                        } else if (alreadyRequestedBy) {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.code, status: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.status });
                         } else {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED.code, status: Errors.FRIENDS.ALREADY_INVITED.status });
                         }
                     });
                 });
