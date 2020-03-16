@@ -381,6 +381,19 @@
         }
         ```
 
+- **Réception de la notification d'acceptation d'une demande d'ami**
+    > Reçu lorsque quelqu'un a accepté une demande d'ami qu'on lui a envoyé
+
+    * **Réponse:** lobbyFriendInvitationAcceptedRes
+        * *Données:*
+        ```javascript
+        {
+            id: int,
+            nickname: string
+        }
+        ```
+
+
 - **Supprimer un ami**
     > Supprimer un ami revient à le supprimer des deux côtés (plus aucun des deux n'a l'autre en ami)
 

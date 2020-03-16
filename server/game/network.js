@@ -191,16 +191,11 @@ class Network {
 
                     // Envoi temps réel (si utilisateur connecté)
                     for (const u of this.GLOBAL.users) {
-                        console.log("-> recherche du membre " + invitedUser._id + " vs " + u.id);
                         if (invitedUser._id == u.id) {
-                            console.log("-> membre trouvé !");
                             u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
-                            console.log("-> invitation envoyée par socket au membre");
                             break;
                         }
                     }
-
-                    console.log("fin de la fonction d'invitation d'ami");
 
                     return;
                 });
@@ -228,13 +223,20 @@ class Network {
                             return;
                         }
 
-                        console.log('Invitation acceptée pour "' + invitedByUser.nickname + '"');
                         user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                        // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
+                        for (const u of this.GLOBAL.users) {
+                            if (invitedByUser._id == u.id) {
+                                u.socket.emit('lobbyFriendInvitationAcceptedRes', { id: user.id, nickname: user.nickname });
+                                break;
+                            }
+                        }
+
                         return;
                     });
                 } else { // reject
                     UserSchema.removeFriend(user.id, invitedByUser._id);
-                    console.log('Requête rejetée avec succès');
                     user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                     return;
                 }
