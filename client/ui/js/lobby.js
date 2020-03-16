@@ -431,24 +431,24 @@ function friendRequest(id, name) {
  */
 // Fonction ajout d'un ami dans la liste d'amis
 function addFriend(id, name, avatar) {
-    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div><div class="delFriend">suppr</div></div>');
+    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>');
 
     $(".modal-container").append('<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>')
 
     $('.friend-entry .friend-action').unbind();
-    $('.delFriend').unbind();
+    $('.delete-friend-button').unbind();
 
     //lobbyInvitationReq
     $('.friend-entry .friend-action').click(function () {
         let friendName = $(this).prev('.friends-name').text();
         let friendID = $(this).parent().find('.friends-name').attr('data-id');
         console.log("oui" + friendID);
-        //socket.emit("lobbyInvitationReq", { friendID: friendID });
+        socket.emit("lobbyInvitationReq", { friendID: friendID });
         console.log("lobbyInvitationReq");
 
     });
 
-    $('.delFriend').click(function () {
+    $('.delete-friend-button').click(function () {
         const friendID = $(this).parent().find('.friends-name').attr('data-id');
         let error = 0;
         let status = 100;
@@ -456,8 +456,9 @@ function addFriend(id, name, avatar) {
         console.log("lobbyFriendDeleteReq");
 
         if (!error) {
-            $(this).parent().remove();
-            $('#' + name + 'Modal').remove();
+            $('#' + name + 'Modal').hide();
+            //$(this).parent().remove();
+            //$('#' + name + 'Modal').remove();
         }
     });
 }
