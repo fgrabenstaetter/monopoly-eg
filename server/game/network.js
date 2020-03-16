@@ -243,7 +243,7 @@ class Network {
             let err = Errors.SUCCESS;
             let friendLobby = null;
 
-            if (!data.invitationID)
+            if (!data || !data.invitationID)
                 err = Errors.MISSING_FIELD;
             else {
                 const invitObj = lobby.delInvitation(data.invitationID);
