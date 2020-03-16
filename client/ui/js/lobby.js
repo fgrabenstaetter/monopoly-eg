@@ -229,7 +229,12 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
         alert(res.status);
 });
 
+socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
 
+    console.log("lobbyFriendInvitationAcceptedRes");
+    addFriend(res.id, res.nickname, "img/ui/avatar1.jpg");
+
+});
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
