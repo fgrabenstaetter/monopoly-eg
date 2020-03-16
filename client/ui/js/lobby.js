@@ -256,6 +256,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
+            alert('invitation envoyée à ' + filter);
         }
         else {
             element = document.getElementsByClassName('friend-entry');
