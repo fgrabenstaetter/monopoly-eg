@@ -221,7 +221,7 @@ class Network {
                 }
 
                 if (action) { // accept
-                    UserSchema.requestFriend(user._id, invitedByUser._id, (error, friendships) => {
+                    UserSchema.requestFriend(user.id, invitedByUser._id, (error, friendships) => {
                         if (error) {
                             console.log('Erreur acceptation invitation');
                             user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
@@ -233,7 +233,7 @@ class Network {
                         return;
                     });
                 } else { // reject
-                    UserSchema.removeFriend(user._id, invitedByUser._id);
+                    UserSchema.removeFriend(user.id, invitedByUser._id);
                     console.log('Requête rejetée avec succès');
                     user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
                     return;
