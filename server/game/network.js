@@ -194,7 +194,7 @@ class Network {
                         console.log("-> recherche du membre " + invitedUser._id + " vs " + u.id);
                         if (invitedUser._id = u.id) {
                             console.log("-> membre trouvé !");
-                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                            u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                             console.log("-> invitation envoyée par socket au membre");
                             break;
                         }
