@@ -26,7 +26,7 @@ let production = false;
 if (foundArg('production'))
     production = true;
 
-mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 const JWT_SECRET = 'J@-(icrwUsD*IH5';
 
 ////////////////////////////////////////////
