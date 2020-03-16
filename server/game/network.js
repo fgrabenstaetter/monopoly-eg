@@ -190,11 +190,10 @@ class Network {
                     user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
 
                     // Envoi temps réel (si utilisateur connecté)
-                    for (const lobby of this.GLOBAL.lobbies) {
-                        console.log("-> recherche du membre " + invitedUser._id + " invité dans le lobby #" + lobby.id);
-                        const invitedUserInLobby = lobby.userByID(invitedUser._id);
-                        if (invitedUserInLobby) {
-                            console.log("-> membre trouvé dans ce lobby !");
+                    for (const u of this.GLOBAL.users) {
+                        console.log("-> recherche du membre " + invitedUser._id + " vs " + u.id);
+                        if (invitedUser._id = u.id) {
+                            console.log("-> membre trouvé !");
                             invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                             console.log("-> invitation envoyée par socket au membre");
                             break;
