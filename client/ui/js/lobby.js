@@ -102,6 +102,10 @@ socket.emit('lobbyFriendListReq');
 socket.on('lobbyFriendListRes', (res) => {
     console.log("========== lobbyFriendListRes==============")
     console.log(res);
+    if (res.friends.length != 0)
+        for (let i = 0; i < res.friends.length; i++) {
+            addFriend(res.friends[i].id, res.friends[i].nickname, "img/ui/avatar1.jpg");
+        }
 })
 
 socket.emit('lobbyPendingFriendListReq');
@@ -137,6 +141,9 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
     lobbyInvitation(res.invitationID, "senderFriendNickname");
 });
 
+
+/**Gestion du lobby
+ */
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     users.push({ nickname: res.nickname, id: res.id });
@@ -397,6 +404,7 @@ function friendRequest(id, name) {
 
         if (!error) {
             $(this).parent().remove();
+            socket.emit('lobbyFriendListReq');
         }
         else {
             alert("erreur : " + status)
