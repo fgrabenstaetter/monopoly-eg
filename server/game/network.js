@@ -188,64 +188,51 @@ class Network {
                     return;
                 }
 
-                UserSchema.getRequestedFriends(user.id, (error, requestedFriends) => {
+                UserSchema.getFriends(user.id, (error, friends) => {
                     if (error) {
                         user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                         return;
                     }
 
-                    UserSchema.getPendingFriends(user.id, (error, pendingFriends) => {
-                        if (error) {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                            return;
-                        }
-
-                        // On vérifie si l'invitation n'a pas déjà été envoyée
-                        let alreadyRequested = false;
-                        let alreadyRequestedBy = false;
-                        if (requestedFriends && requestedFriends.length > 0) {
-                            for (let i = 0; i < requestedFriends.length; i++) {
-                                if (requestedFriends[i].friend._id.equals(invitedUser._id)) {
-                                    alreadyRequested = true;
-                                    break;
-                                }
+                    // On vérifie si l'invitation n'a pas déjà été envoyée (ou si users pas déjà amis)
+                    let friendFound = false;
+                    if (friends && friends.length > 0) {
+                        for (let i = 0; i < friends.length; i++) {
+                            if (friends[i].friend._id.equals(invitedUser._id)) {
+                                friendFound = friends[i].status;
+                                break;
                             }
                         }
+                    }
 
-                        if (!alreadyRequested && pendingFriends && pendingFriends.length > 0) {
-                            for (let i = 0; i < pendingFriends.length; i++) {
-                                if (pendingFriends[i].friend._id.equals(invitedUser._id)) {
-                                    alreadyRequestedBy = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (!alreadyRequested && !alreadyRequestedBy) {
-                            UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
-                                if (error) {
-                                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                                    return;
-                                }
-
-                                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
-
-                                // Envoi temps réel (si utilisateur connecté)
-                                for (const u of this.GLOBAL.users) {
-                                    if (invitedUser._id == u.id) {
-                                        u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
-                                        break;
-                                    }
-                                }
-
-                                return;
-                            });
-                        } else if (alreadyRequestedBy) {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.code, status: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.status });
-                        } else {
+                    if (friendFound) {
+                        if (friendFound == 'accepted') {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_FRIENDS.code, status: Errors.FRIENDS.ALREADY_FRIENDS.status });
+                        } else if (friendFound == 'requested') {
                             user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED.code, status: Errors.FRIENDS.ALREADY_INVITED.status });
+                        } else if (friendFound == 'pending') {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.code, status: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.status });
                         }
-                    });
+                    } else {
+                        UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
+                            if (error) {
+                                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                                return;
+                            }
+
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                            // Envoi temps réel (si utilisateur connecté)
+                            for (const u of this.GLOBAL.users) {
+                                if (invitedUser._id == u.id) {
+                                    u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                                    break;
+                                }
+                            }
+
+                            return;
+                        });
+                    }
                 });
             });
         });

@@ -81,7 +81,11 @@ module.exports = Object.freeze({
         },
         ALREADY_INVITED_BY_THIS_MEMBER: {
             code: 8,
-            status: 'Vous avez déjà été demandé en ami par cette personne !'
+            status: 'Vous avez déjà été demandé en ami par cette personne (acceptez sa demande !)'
+        },
+        ALREADY_FRIENDS: {
+            code: 9,
+            status: 'Vous êtes déjà ami avec cette personne'
         }
     },
 
