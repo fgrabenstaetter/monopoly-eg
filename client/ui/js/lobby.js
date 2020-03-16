@@ -1,22 +1,22 @@
 // Fonction d'ajout d'un message d'invitation d'ami
-function friendRequest (id, name) {
-    $( ".friends-entries-container" ).prepend( "<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>" );
+function friendRequest(id, name) {
+    $(".friends-entries-container").prepend("<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>");
 }
 
 $(function () {
-    $("#friend-request-trigger").click(function(){
-        friendRequest (2,"FullMerinos");
+    $("#friend-request-trigger").click(function () {
+        friendRequest(2, "FullMerinos");
     });
 });
 
 // Fonction ajout d'un ami dans la liste d'amis
-function addFriend (id, name, avatar) {
-    $(".friends-entries-container").append( '<div class="friend-entry"><img class="friends-avatar" src=' + avatar + '><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>' )
+function addFriend(id, name, avatar) {
+    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + '><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>')
 }
 
 $(function () {
-    $("#add-friend-trigger").click(function(){
-        addFriend (2,"FullMerinos","img/ui/avatar1.jpg");
+    $("#add-friend-trigger").click(function () {
+        addFriend(2, "FullMerinos", "img/ui/avatar1.jpg");
     });
 });
 
@@ -108,6 +108,10 @@ socket.emit('lobbyPendingFriendListReq');
 socket.on('lobbyPendingFriendListRes', (res) => {
     console.log("========== lobbyPendingFriendListRes ==============")
     console.log(res);
+    if (res.friends.length != 0)
+        for (let i = 0; i < res.friends.length; i++) {
+            friendRequest(res.friends[i].id, res.friends[i].nickname);
+        }
 })
 
 socket.emit('lobbyRequestedFriendListReq');
@@ -118,9 +122,16 @@ socket.on('lobbyRequestedFriendListRes', (res) => {
 
 
 /** Système d'interactions avec les amis
- * 
  */
 
+// récéption d'une demande d'ami
+socket.on('lobbyFriendInvitationReceivedRes', (res) => {
+    console.log("lobbyFriendInvitationReceivedRes =>");
+    console.log(res);
+    friendRequest(res.id, res.nickname);
+});
+
+//Invitation d'un amis pour rejoindre son lobby
 socket.on('lobbyInvitationReceivedRes', (res) => {
     console.log("lobbyInvitationReceivedRes reçu -> besoin du nickname du friend")
     lobbyInvitation(res.invitationID, "senderFriendNickname");
