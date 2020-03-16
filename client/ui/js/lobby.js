@@ -93,7 +93,7 @@ socket.on('lobbyJoinedRes', (res) => {
 });
 
 /** Système de gestion d'amis
- * Vocabulaire : 
+ * Vocabulaire :
  *  Pending: demande reçue besoin de valider/refuser
  *  Requested : demande envoyée en attente de validation/refus
  */
@@ -231,7 +231,6 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 $(document).ready(() => {
 
     // $('.progress-button').progressInitialize();
-
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
@@ -269,7 +268,6 @@ $(document).ready(() => {
 
         $(this).progressTimed(2);
     });
-
 });
 
 /**
@@ -338,6 +336,10 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 
     $('#inviteGameContainer').append(html);
 
+    $('.notification-container .btn-primary').unbind();
+    $('.notification-container .btn-secondary').unbind();
+
+
     //lobbyInvitationAcceptReq
     $('.notification-container .btn-primary').click(function () {
         const invitationID = $(this).parent().parent().attr('id');
@@ -364,6 +366,102 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
     });
 }
 
+
+/**
+ * Cree et affiche une demande d'ami
+ * @param id Identifiant de l'invitation
+ * @param name Nom de la personne qui a inviter le joueur
+ */
+function friendRequest(id, name) {
+    $(".friends-entries-container").prepend("<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>");
+    const mid = id
+    console.log("mid : " + mid + " id : " + $(this).parent());
+    console.log($(this).parent());
+    if ($(this).parent().attr('id') == mid) {
+        console.log("ok");
+    }
+
+    $('.friend-request .accept-button').unbind();
+    $('.friend-request .deny-button').unbind();
+
+    //lobbyInvitationAcceptReq
+    //lobbyFriendInvitationRes Acceptation
+    $('.friend-request .accept-button').click(function () {
+        const senderNickname = $(this).parent().attr('id');
+        const action = 'accept';
+        let error = 0;
+        let status = 100;
+
+        socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
+        console.log("lobbyFriendInvitationReq");
+
+        if (!error) {
+            $(this).parent().remove();
+        }
+        else {
+            alert("erreur : " + status)
+        }
+
+    });
+
+    // lobbyFriendInvitationRes Deny
+    $('.friend-request .deny-button').click(function () {
+        const senderNickname = $(this).parent().attr('id');
+        const action = 'reject';
+        let error = 0;
+        let status = 100;
+
+        socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
+        console.log("lobbyFriendInvitationReq");
+
+        if (!error) {
+            $(this).parent().remove();
+        }
+        else {
+            alert("erreur : " + status)
+        }
+    });
+}
+
+/**
+ * Cree et affiche un ami dans la liste des amis
+ * @param id Identifiant de l'ami
+ * @param name Nom de l'ami
+ * @param avatar Avatar de l'ami
+ */
+// Fonction ajout d'un ami dans la liste d'amis
+function addFriend(id, name, avatar) {
+    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div><div class="delFriend">suppr</div></div>');
+
+    $(".modal-container").append('<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>')
+
+    $('.friend-entry .friend-action').unbind();
+    $('.delFriend').unbind();
+
+    //lobbyInvitationReq
+    $('.friend-entry .friend-action').click(function () {
+        let friendName = $(this).prev('.friends-name').text();
+        let friendID = $(this).parent().find('.friends-name').attr('data-id');
+        console.log("oui" + friendID);
+        //socket.emit("lobbyInvitationReq", { friendID: friendID });
+        console.log("lobbyInvitationReq");
+
+    });
+
+    $('.delFriend').click(function () {
+        const friendID = $(this).parent().find('.friends-name').attr('data-id');
+        let error = 0;
+        let status = 100;
+        alert("lobbyFriendDeleteReq a implementer")
+        console.log("lobbyFriendDeleteReq");
+
+        if (!error) {
+            $(this).parent().remove();
+            $('#' + name + 'Modal').remove();
+        }
+    });
+}
+
 function addGroupUser(id, pawn) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
@@ -375,6 +473,8 @@ function addGroupUser(id, pawn) {
         </div>`;
 
     $('.grouplist .group-entries-container > div').append(html);
+
+    $('.grouplist .friend-action').unbind();
 
     // actualisation de l'event click (car html modifié)
     $('.grouplist .friend-action').click(function () {
@@ -393,52 +493,6 @@ function delGroupUser(id) {
         }
     }
 }
-
-//lobbyInvitationReq
-$('.friend-action').click(function () {
-    let friendName = $(this).prev('.friends-name').text();
-    let friendID = 0; //A implementer
-
-    socket.emit("lobbyInvitationReq", { friendID: friendID });
-    console.log("lobbyInvitationReq");
-});
-
-//lobbyFriendInvitationRes Acceptation
-$('.friend-request .accept-button').click(function () {
-    const senderNickname = $(this).parent().attr('id');
-    const action = 'accept';
-    let error = 0;
-    let status = 100;
-
-    socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
-    console.log("lobbyFriendInvitationReq");
-
-    if (!error) {
-        $(this).parent().remove();
-    }
-    else {
-        alert("erreur : " + status)
-    }
-
-});
-
-// lobbyFriendInvitationRes Deny
-$('.friend-request .deny-button').click(function () {
-    const senderNickname = $(this).parent().attr('id');
-    const action = 'reject';
-    let error = 0;
-    let status = 100;
-
-    socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
-    console.log("lobbyFriendInvitationReq");
-
-    if (!error) {
-        $(this).parent().remove();
-    }
-    else {
-        alert("erreur : " + status)
-    }
-});
 
 // exemple
 lobbyInvitation(0, "biloute");
