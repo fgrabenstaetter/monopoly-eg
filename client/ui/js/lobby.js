@@ -1,3 +1,14 @@
+// Fonction d'ajout d'un message d'invitation d'ami
+function friendRequest (id, name) {
+    $( ".friends-entries-container" ).prepend( "<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>" );
+}
+
+$(function () {
+    $(".friend-action").click(function(){
+        friendRequest (2,"FullMerinos");
+    });
+});
+
 // Animation bouton JOUER pendant matchmaking
 $(function () {
     $("#play").click(function () {
@@ -10,6 +21,8 @@ $(function () {
     });
 });
 
+
+// ??
 let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
     for (const row of users) {
