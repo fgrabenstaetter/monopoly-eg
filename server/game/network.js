@@ -131,8 +131,8 @@ class Network {
 
             if (!data.friendID)
                 err = Errors.MISSING_FIELD;
-            else if (user.friends.indexOf(data.friendID) === -1)
-                err = Errors.FRIEND_NOT_EXISTS;
+            // else if (user.friends.indexOf(data.friendID) === -1)
+            //     err = Errors.FRIEND_NOT_EXISTS;
             else if (lobby.users.length >= lobby.targetUsersNb)
                 err = Errors.LOBBY_FULL;
             else {
