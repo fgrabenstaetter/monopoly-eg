@@ -387,13 +387,13 @@ function friendRequest(id, name) {
     //lobbyInvitationAcceptReq
     //lobbyFriendInvitationRes Acceptation
     $('.friend-request .accept-button').click(function () {
-        const senderNickname = $(this).parent().attr('id');
+        const senderNickname = $(this).parent().find(".friend-request-text span").text();
         const action = 'accept';
         let error = 0;
         let status = 100;
 
         socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
-        console.log("lobbyFriendInvitationReq");
+        console.log("lobbyFriendInvitationActionReq");
 
         if (!error) {
             $(this).parent().remove();
@@ -406,13 +406,13 @@ function friendRequest(id, name) {
 
     // lobbyFriendInvitationRes Deny
     $('.friend-request .deny-button').click(function () {
-        const senderNickname = $(this).parent().attr('id');
+        const senderNickname = $(this).parent().find(".friend-request-text span").text()
         const action = 'reject';
         let error = 0;
         let status = 100;
 
         socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
-        console.log("lobbyFriendInvitationReq");
+        console.log("lobbyFriendInvitationActionReq");
 
         if (!error) {
             $(this).parent().remove();
