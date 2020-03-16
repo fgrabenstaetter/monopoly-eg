@@ -4,8 +4,19 @@ function friendRequest (id, name) {
 }
 
 $(function () {
-    $(".friend-action").click(function(){
+    $("#friend-request-trigger").click(function(){
         friendRequest (2,"FullMerinos");
+    });
+});
+
+// Fonction ajout d'un ami dans la liste d'amis
+function addFriend (id, name, avatar) {
+    $(".friends-entries-container").append( '<div class="friend-entry"><img class="friends-avatar" src=' + avatar + '><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>' )
+}
+
+$(function () {
+    $("#add-friend-trigger").click(function(){
+        addFriend (2,"FullMerinos","img/ui/avatar1.jpg");
     });
 });
 

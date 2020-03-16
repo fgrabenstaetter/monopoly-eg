@@ -24,17 +24,17 @@
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar1.jpg">
                                 <div class="friends-name" data-id="">Unknown67</div>
-                                <div class="friend-action"></div>
+                                <div class="friend-action">inviter</div>
                             </div>
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar2.jpg">
                                 <div class="friends-name" data-id="">Kirby</div>
-                                <div class="friend-action"></div>
+                                <div class="friend-action">inviter</div>
                             </div>
                             <div class="friend-entry">
                                 <img class="friends-avatar" src="img/ui/avatar3.jpg">
                                 <div class="friends-name" data-id="">NomBeaucoupTropLong</div>
-                                <div class="friend-action"></div>
+                                <div class="friend-action">inviter</div>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,8 @@
                 </div>
                 <div class="msg-me">
                     <div class="msg-author">Moi</div>
-                    Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe
+                    <button class="btn-primary" id="friend-request-trigger">friendRequest</button>
+                    <button class="btn-primary" id="add-friend-trigger">addFriend</button>
                 </div>
             </div>
 
@@ -118,19 +119,9 @@
             </div>
         </div>
         <div class="col-md-4 notification-container" id="inviteGameContainer">
-            <div class="card notification"  style="display: none;">
-                <div class="card-header">
-                    INVITATION 1
-                </div>
-                <div class="card-body">
-                    <p class="card-text">FullMerinos vous invite à rejoindre sa partie</p>
-                    <button class="btn btn-primary">ACCEPTER</button>
-                    <button class="btn btn-secondary">REFUSER</button>
-                </div>
-            </div>
             <div class="card notification" style="display: none;">
                 <div class="card-header">
-                    INVITATION 2
+                    INVITATION
                 </div>
                 <div class="card-body">
                     <p class="card-text">Kirby vous invite à rejoindre sa partie</p>
