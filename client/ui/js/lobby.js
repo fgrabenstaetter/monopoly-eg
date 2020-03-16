@@ -234,6 +234,27 @@ $(document).ready(() => {
         $(this).progressTimed(2);
     });
 
+    //lobbyInvitationReq
+    $('.friend-entry .friend-action').click(function () {
+        let friendName = $(this).prev('.friends-name').text();
+        let friendID = $(this).parent().find('.friends-name').attr('data-id');
+        console.log("oui" + friendID);
+        //socket.emit("lobbyInvitationReq", { friendID: friendID });
+        console.log("lobbyInvitationReq");
+
+    });
+
+    $('.delFriend').click(function () {
+        const friendID = $(this).parent().find('.friends-name').attr('data-id');
+        let error = 0;
+        let status = 100;
+        alert("lobbyFriendDeleteReq a implementer")
+        console.log("lobbyFriendDeleteReq");
+
+        if (!error) {
+            $(this).parent().remove();
+        }
+    });
 });
 
 /**
@@ -387,6 +408,26 @@ function friendRequest(invitationID, senderFriendNickname) {
 }
 
 
+/**
+ * Cree et affiche un ami dans la liste des amis
+ * @param friendID Identifiant de l'ami
+ * @param senderFriendNickname Nom de l'ami
+ */
+function addFriend2List(friendID, friendNickname) {
+    const entryID = friendID;
+    // a changer pour implementer la suppression amis
+    const html = `
+    <div class="friend-entry">
+        <img class="friends-avatar" src="img/ui/avatar1.jpg">
+        <div class="friends-name" data-id="` + entryID + `">` + friendNickname + `</div>
+        <div class="friend-action"></div>
+        <div class="delFriend">suppression</div>
+    </div>`;
+
+    $('#friendList').append(html);
+
+}
+
 function addGroupUser(id, pawn) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
@@ -417,14 +458,6 @@ function delGroupUser(id) {
     }
 }
 
-//lobbyInvitationReq
-$('.friend-action').click(function () {
-    let friendName = $(this).prev('.friends-name').text();
-    let friendID = 0; //A implementer
-
-    socket.emit("lobbyInvitationReq", { friendID: friendID });
-    console.log("lobbyInvitationReq");
-});
-
 // exemple
 lobbyInvitation(0, "biloute");
+addFriend2List(1, "abc");
