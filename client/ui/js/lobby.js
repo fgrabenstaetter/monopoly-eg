@@ -316,6 +316,10 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 
     $('#inviteGameContainer').append(html);
 
+    $('.notification-container .btn-primary').unbind();
+    $('.notification-container .btn-secondary').unbind();
+
+
     //lobbyInvitationAcceptReq
     $('.notification-container .btn-primary').click(function () {
         const invitationID = $(this).parent().parent().attr('id');
@@ -449,6 +453,8 @@ function addGroupUser(id, pawn) {
         </div>`;
 
     $('.grouplist .group-entries-container > div').append(html);
+
+    $('.grouplist .friend-action').unbind();    
 
     // actualisation de l'event click (car html modifié)
     $('.grouplist .friend-action').click(function () {
