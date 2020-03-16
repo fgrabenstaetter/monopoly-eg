@@ -202,8 +202,10 @@ socket.on('lobbyPlayRes', (res) => {
 /**Vérifications des Res asynchrones 
 */
 socket.on('lobbyFriendInvitationSendRes', (res) => {
-    if (res.error === 0)
+    if (res.error === 0) {
         console.log("lobbyFriendInvitationSendRes")
+        alert('invitation envoyée ');
+    }
     else // hôte uniquement
         alert(res.status);
 });
@@ -256,7 +258,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
-            alert('invitation envoyée à ' + filter);
+
         }
         else {
             element = document.getElementsByClassName('friend-entry');
