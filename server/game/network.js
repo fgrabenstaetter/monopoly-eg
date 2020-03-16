@@ -3,6 +3,9 @@ const Errors    = require('../lib/errors');
 const Lobby     = require('./lobby');
 const { UserSchema, UserManager } = require('../models/user');
 
+const mongoose    = require('mongoose');
+const ObjectId    = require('mongoose').Types.ObjectId;
+
 /**
  * Simplifie et centralise toutes les communications socket
  */
@@ -236,8 +239,16 @@ class Network {
                         return;
                     });
                 } else { // reject
-                    UserSchema.removeFriend(user.id, invitedByUser._id);
-                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    
+                    UserSchema.findById(user.id, (error, userMongo) => {
+                        if (error || !userMongo) {
+                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                            return;
+                        }
+                        UserSchema.removeFriend(userMongo, invitedByUser);
+                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    });
+
                     return;
                 }
             });
