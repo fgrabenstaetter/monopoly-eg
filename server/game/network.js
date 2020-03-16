@@ -190,13 +190,17 @@ class Network {
                     user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
 
                     // Envoi temps réel (si utilisateur connecté)
-                    for (const lobby of this.GLOBAL.lobbies) {
-                        const invitedUserInLobby = lobby.userByID(invitedUser);
-                        if (invitedUserInLobby) {
-                            invitedUserInLobby.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                    for (const u of this.GLOBAL.users) {
+                        console.log("-> recherche du membre " + invitedUser._id + " vs " + u.id);
+                        if (invitedUser._id == u.id) {
+                            console.log("-> membre trouvé !");
+                            u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                            console.log("-> invitation envoyée par socket au membre");
                             break;
                         }
                     }
+
+                    console.log("fin de la fonction d'invitation d'ami");
 
                     return;
                 });
