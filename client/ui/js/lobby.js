@@ -199,6 +199,8 @@ socket.on('lobbyPlayRes', (res) => {
         alert(res.status);
 });
 
+/**Vérifications des Res asynchrones 
+*/
 socket.on('lobbyFriendInvitationSendRes', (res) => {
     if (res.error === 0)
         console.log("lobbyFriendInvitationSendRes")
