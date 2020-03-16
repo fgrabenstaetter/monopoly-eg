@@ -5,18 +5,20 @@ function friendRequest (id, name) {
 
 $(function () {
     $("#friend-request-trigger").click(function(){
-        friendRequest (2,"FullMerinos");
+        friendRequest (4,"FullMerinos");
     });
 });
 
 // Fonction ajout d'un ami dans la liste d'amis
 function addFriend (id, name, avatar) {
-    $(".friends-entries-container").append( '<div class="friend-entry"><img class="friends-avatar" src=' + avatar + '><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>' )
+    $(".friends-entries-container").append( '<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>' );
+
+    $(".modal-container").append( '<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>' )
 }
 
 $(function () {
     $("#add-friend-trigger").click(function(){
-        addFriend (2,"FullMerinos","img/ui/avatar1.jpg");
+        addFriend (4,"FullMerinos","img/ui/avatar1.jpg");
     });
 });
 
