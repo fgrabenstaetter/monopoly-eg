@@ -173,6 +173,11 @@ class Network {
         user.socket.on('lobbyFriendInvitationSendReq', (data) => {
             console.log('"' + user.nickname + '" invite "' + data.nickname + '" en ami');
 
+            if (user.nickname == data.nickname) {
+                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.CANT_INVITE_YOURSELF.code, status: Errors.FRIENDS.CANT_INVITE_YOURSELF.status });
+                return;
+            }
+
             UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
                 if (error || !invitedUser) {
                     console.log('Ami à inviter "' + data.nickname + '" non trouvé :/');

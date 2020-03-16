@@ -70,6 +70,10 @@ module.exports = Object.freeze({
         INVITATION_ACTION_PROCESS_ERROR: {
             code: 5,
             status: 'Erreur action traitement de la requête d\'ami'
+        },
+        CANT_INVITE_YOURSELF: {
+            code: 6,
+            status: 'Vous ne pouvez pas vous inviter vous-même en ami'
         }
     },
 
