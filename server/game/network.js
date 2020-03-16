@@ -192,7 +192,7 @@ class Network {
                     // Envoi temps réel (si utilisateur connecté)
                     for (const u of this.GLOBAL.users) {
                         console.log("-> recherche du membre " + invitedUser._id + " vs " + u.id);
-                        if (invitedUser._id = u.id) {
+                        if (invitedUser._id == u.id) {
                             console.log("-> membre trouvé !");
                             u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                             console.log("-> invitation envoyée par socket au membre");
