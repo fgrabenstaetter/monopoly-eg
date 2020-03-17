@@ -11,12 +11,6 @@ function friendRequest(id, name) {
         </div>`);
 }
 
-$(function () {
-    $("#friend-request-trigger").click(function () {
-        friendRequest(2, "FullMerinos");
-    });
-});
-
 /**
  * Cree et affiche un ami dans la liste des amis
  * @param id Identifiant de l'ami
@@ -78,10 +72,6 @@ function addFriend(id, name, avatar) {
         }
     });
 }
-
-addFriend(2, "FullMerinos", "img/ui/avatar1.jpg");
-addFriend(3, "F", "img/ui/avatar1.jpg");
-addFriend(4, "ABC", "img/ui/avatar1.jpg");
 
 // Animation bouton JOUER pendant matchmaking
 $(function () {
@@ -200,8 +190,9 @@ socket.on('lobbyFriendInvitationReceivedRes', (res) => {
 
 //Invitation d'un amis pour rejoindre son lobby
 socket.on('lobbyInvitationReceivedRes', (res) => {
-    console.log("lobbyInvitationReceivedRes reçu -> besoin du nickname du friend")
-    lobbyInvitation(res.invitationID, "senderFriendNickname");
+    console.log("lobbyInvitationReceivedRes");
+    console.log(res);
+    lobbyInvitation(res.invitationID, res.senderFriendNickname);
 });
 
 
@@ -288,9 +279,10 @@ socket.on("lobbyFriendInvitationActionRes", (res) => {
 });
 
 socket.on("lobbyInvitationAcceptRes", (res) => {
-    if (res.error === 0)
+    if (res.error === 0) {
         console.log("lobbyInvitationAcceptRes")
-    else // hôte uniquement
+        window.location = '/lobby';
+    } else // hôte uniquement
         alert(res.status);
 });
 
@@ -427,7 +419,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         let status = 100;
 
 
-        socket.emit("lobbyInvitationAcceptReq", invitationID);
+        socket.emit("lobbyInvitationAcceptReq", { invitationID: invitationID });
         console.log("lobbyInvitationAcceptReq");
 
 
@@ -545,6 +537,3 @@ function delGroupUser(id) {
         }
     }
 }
-
-// exemple
-lobbyInvitation(0, "biloute");
