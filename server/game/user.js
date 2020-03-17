@@ -12,7 +12,7 @@ class User {
         this.id = userSchema.id;
         this.nickname = userSchema.nickname;
         this.email    = userSchema.email;
-        // this.friends  = userSchema.friends;
+        this.friends  = userSchema.friends;
         this.level    = userSchema.level;
         this.exp      = userSchema.exp;
         this.inscriptionDatetime = userSchema.inscriptionDatetime;
