@@ -9,16 +9,47 @@ $(function () {
     });
 });
 
-// Fonction ajout d'un ami dans la liste d'amis
+/**
+ * Cree et affiche un ami dans la liste des amis
+ * @param id Identifiant de l'ami
+ * @param name Nom de l'ami
+ * @param avatar Avatar de l'ami
+ */
 function addFriend(id, name, avatar) {
-    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + '><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>')
+    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>');
+
+    $(".modal-container").append('<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>')
+
+    $('.friend-entry .friend-action').unbind();
+    $('.delete-friend-button').unbind();
+
+    //lobbyInvitationReq
+    $('.friend-entry .friend-action').click(function () {
+        let friendID = $(this).parent().find('.friends-name').attr('data-id');
+        socket.emit("lobbyInvitationReq", { friendID: id });
+        console.log("lobbyInvitationReq");
+
+    });
+
+    $('.delete-friend-button').click(function () {
+        const friendID = $(this).attr('data-id');
+        let error = 0;
+        let status = 100;
+        alert("lobbyFriendDeleteReq a implementer")
+        console.log("lobbyFriendDeleteReq");
+
+        if (!error) {
+            $(this).parent().parent().remove();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            $('.friend-entry').find('[data-id="' + friendID + '"]').parent().remove();
+        }
+    });
 }
 
-$(function () {
-    $("#add-friend-trigger").click(function () {
-        addFriend(2, "FullMerinos", "img/ui/avatar1.jpg");
-    });
-});
+addFriend(2, "FullMerinos", "img/ui/avatar1.jpg");
+addFriend(3, "F", "img/ui/avatar1.jpg");
+addFriend(4, "ABC", "img/ui/avatar1.jpg");
 
 // Animation bouton JOUER pendant matchmaking
 $(function () {
@@ -441,45 +472,7 @@ function friendRequest(id, name) {
     });
 }
 
-/**
- * Cree et affiche un ami dans la liste des amis
- * @param id Identifiant de l'ami
- * @param name Nom de l'ami
- * @param avatar Avatar de l'ami
- */
-// Fonction ajout d'un ami dans la liste d'amis
-function addFriend(id, name, avatar) {
-    $(".friends-entries-container").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>');
 
-    $(".modal-container").append('<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>')
-
-    $('.friend-entry .friend-action').unbind();
-    $('.delete-friend-button').unbind();
-
-    //lobbyInvitationReq
-    $('.friend-entry .friend-action').click(function () {
-        let friendName = $(this).prev('.friends-name').text();
-        let friendID = $(this).parent().find('.friends-name').attr('data-id');
-        console.log("oui" + friendID);
-        socket.emit("lobbyInvitationReq", { friendID: id });
-        console.log("lobbyInvitationReq");
-
-    });
-
-    $('.delete-friend-button').click(function () {
-        const friendID = $(this).parent().find('.friends-name').attr('data-id');
-        let error = 0;
-        let status = 100;
-        alert("lobbyFriendDeleteReq a implementer")
-        console.log("lobbyFriendDeleteReq");
-
-        if (!error) {
-            $('.modal-backdrop fade show').remove();
-            //$(this).parent().remove();
-            $('#' + name + 'Modal').remove();
-        }
-    });
-}
 
 function addGroupUser(id, pawn) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
