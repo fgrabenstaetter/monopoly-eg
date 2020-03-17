@@ -322,8 +322,10 @@ class Network {
                     }
                 }
 
-                if (err.code === Errors.SUCCESS.code)
+                if (err.code === Errors.SUCCESS.code) {
                     friendLobby.addUser(user);
+                    friendLobby.invitedUsers.push(user);
+                }
 
                 user.socket.emit('lobbyInvitationAcceptRes', { error: err.code, status: err.status });
             }
