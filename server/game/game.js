@@ -444,7 +444,7 @@ class Game {
         player.loseMoney(player.money);
         player.failure = true;
 
-        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailure', { playerID: player.id });
+        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id });
     }
 
     /**

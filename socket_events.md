@@ -602,7 +602,7 @@
 
 - **Un joueur est en faillite**
 
-    * **Réponse:** gamePlayerFailure
+    * **Réponse:** gamePlayerFailureRes
         * *Données:*
         ```javascript
         {
