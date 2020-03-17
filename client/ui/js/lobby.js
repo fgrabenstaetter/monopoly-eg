@@ -87,7 +87,7 @@ $(function () {
 
 
 // ??
-let users = []; // = liste de { nickname: string, id: int }
+let users = [{ nickname: '[Server]', id: -1 }]; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
     for (const row of users) {
         if (row.nickname === nick)
@@ -120,6 +120,8 @@ socket.on('lobbyCreatedRes', (res) => {
     imHost();
     users.push({ nickname: NICKNAME, id: ID });
     addGroupUser(ID, res.pawn);
+
+    $('.profile-row > .username').text(NICKNAME);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -143,6 +145,9 @@ socket.on('lobbyJoinedRes', (res) => {
 
     for (const mess of res.messages)
         addMsg(mess.senderUserID, mess.content, mess.createdTime);
+
+    // afficher pseudo
+    $('.profile-row > .username').text(NICKNAME);
 });
 
 /** Système de gestion d'amis
@@ -532,5 +537,3 @@ function delGroupUser(id) {
         }
     }
 }
-
-$('.profile-row > .username').text(NICKNAME);

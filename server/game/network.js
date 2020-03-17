@@ -83,6 +83,9 @@ class Network {
                 targetUsersNb: lobby.targetUsersNb,
                 pawn: lobby.userPawn(user)
             });
+
+            // message de bienvenue
+            this.lobbySendMessage(lobby, null, 'Bienvenue dans ce lobby créé par ' + user.nickname + ' !');
             return;
         }
 
@@ -90,7 +93,7 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                senderUserID: mess.senderUser.id,
+                senderUserID: mess.senderUser ? mess.senderUser.id : -1, // -1 => Server
                 content: mess.content,
                 createdTime: mess.createdTime
             });
@@ -396,17 +399,22 @@ class Network {
             if (!msg.content)
                 err = Errors.MISSING_FIELD;
             else {
-                const mess = lobby.chat.addMessage(user, msg.content, Constants.CHAT_MESSAGE_TYPE.TEXT);
-                // broadcast lobby (also sender)
                 console.log('tchat send req for ' + user.nickname)
-                this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-                    senderUserID: mess.senderUser.id,
-                    content: mess.content,
-                    createdTime: mess.createdTime
-                });
+                this.lobbySendMessage(lobby, user, msg.content);
             }
 
             user.socket.emit('lobbyChatSendRes', { error: err.code, status: err.status });
+        });
+    }
+
+    // cette méthode n'est pas associée à un event socket !
+    lobbySendMessage (lobby, user, content) {
+        const mess = lobby.chat.addMessage(user, content, Constants.CHAT_MESSAGE_TYPE.TEXT);
+        // broadcast lobby (also sender)
+        this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
+            senderUserID: user ? mess.senderUser.id : -1, // -1 => Server
+            content: mess.content,
+            createdTime: mess.createdTime
         });
     }
 

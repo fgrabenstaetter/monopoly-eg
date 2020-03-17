@@ -48,6 +48,9 @@ class Lobby {
             this.targetUsersNb = this.users.length;
 
         this.GLOBAL.network.lobbyUserListen(user, this);
+
+        if (!this.isHost(user)) // message de rejoint
+            this.GLOBAL.network.lobbySendMessage(this, null, user.nickname + ' a rejoint !');
     }
 
     /**
