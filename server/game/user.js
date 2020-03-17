@@ -32,7 +32,7 @@ class User {
                 return cb([]);
 
             for (let i = 0; i < friendships.length; i++)
-                friends.push(toString(friendships[i].friend._id));
+                friends.push(friendships[i].friend._id.toString());
             
             return cb(friends);
         });
