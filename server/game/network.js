@@ -1,5 +1,6 @@
 const Constants = require('../lib/constants');
 const Errors = require('../lib/errors');
+const Lobby = require('./lobby');
 const { UserSchema, UserManager } = require('../models/user');
 
 /**
@@ -126,8 +127,6 @@ class Network {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
                 
-                console.log(friends);
-
                 if (!data.friendID)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
@@ -136,7 +135,7 @@ class Network {
                     err = Errors.LOBBY.FULL;
                 else {
                     for (const user of this.GLOBAL.users) {
-                        if (user.friendID === data.friendID) {
+                        if (user.id === data.friendID) {
                             friendUser = user;
                             break;
                         }
@@ -155,7 +154,7 @@ class Network {
                     }
 
                     if (err.code === Errors.SUCCESS.code) {
-                        const invitId = lobby.addInvitation(user.id, data.friendID);
+                        const invitId = Lobby.addInvitation(user.id, data.friendID);
                         friendUser.socket.emit('lobbyInvitationReceivedRes', {
                             invitationID: invitId,
                             senderFriendID: user.id,
@@ -163,8 +162,6 @@ class Network {
                         });
                     }
                 }
-
-                console.log(err);
 
                 user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
             });
