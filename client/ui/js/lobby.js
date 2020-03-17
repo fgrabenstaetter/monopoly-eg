@@ -24,7 +24,7 @@ $(function () {
  * @param avatar Avatar de l'ami
  */
 function addFriend(id, name, avatar) {
-    $(".friends-entries-container").append(`
+    $("#friendList").append(`
         <div class="friend-entry">
             <img class="friends-avatar" src="` + avatar + `" data-toggle="modal" data-target="#` + name + `Modal" />
             <div class="friends-name" data-id="` + id + `">` + name + `</div>
@@ -321,7 +321,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
-
+            $('#friendBar').val('');
         }
         else {
             element = document.getElementsByClassName('friend-entry');
