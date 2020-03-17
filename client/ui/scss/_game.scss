@@ -168,13 +168,14 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      margin-top: -20px;
 
       .player-entry {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         position: relative;
 
         .name {
-          font-size: 20px;
+          font-size: 17px;
           font-weight: bold;
           font-family: 'Work Sans', sans-serif;
           position: relative;
@@ -192,7 +193,7 @@
 
         .money {
           color: white;
-          font-size: 15px;
+          font-size: 13px;
         }
 
         .money::before {
@@ -207,7 +208,7 @@
           font-weight: 900;
           content: "\f3d1";
           margin-right: 10px;
-          font-size: 18px;
+          font-size: 15px;
           color: white;
           vertical-align: text-top;
         }
@@ -224,7 +225,7 @@
           font-weight: 900;
           content: "$";
           margin-left: 2px;
-          font-size: 16px;
+          font-size: 13px;
           color: white;
           vertical-align: baseline;
         }
@@ -234,16 +235,16 @@
           height: max-content;
           position: absolute;
           background-color: $popup-background;
-          padding: 50px;
+          padding: 30px;
           border-radius: 20px;
           left: 170px;
 
           &.top {
-            top: -10px;
+            top: -31px;
           }
 
           &.bottom {
-            bottom: -10px;
+            bottom: -3px;
           }
 
           .properties-container {
@@ -254,7 +255,7 @@
             margin: 0 20px 0 0;
 
             .property {
-              width: 100px;
+              width: 90px;
               border: none;
               border-radius: 5px;
               position: absolute;
@@ -275,7 +276,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 110px;
+                height: 100px;
                 background: white;
                 overflow: hidden;
               }
@@ -324,7 +325,6 @@
           content: '';
           position: absolute;
           left: 0;
-          top: 10px;
           width: 0;
           height: 0;
           border: 10px solid transparent;
@@ -332,6 +332,14 @@
           border-left: 0;
           margin-top: 10px;
           margin-left: -10px;
+        }
+
+        .top:after {
+          top: 25px;
+        }
+
+        .bottom:after {
+          bottom: 25px;
         }
 
         &.current::before {
@@ -355,9 +363,22 @@
         }
       }
 
+      @media (max-height: 820px) {
+        .player-entry {
+          margin-bottom: 0px;
+        }
+      }
+
       // couleurs assignées automatiquement aux membres de la liste
       @import '_players-colors.scss';
     }
+
+    @media (max-height: 820px) {
+      .player-list {
+        margin-top: -40px;
+      }
+    }
+
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications

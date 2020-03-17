@@ -1042,15 +1042,16 @@ input {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  margin-top: -20px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
   font-family: 'Work Sans', sans-serif;
   position: relative;
@@ -1068,7 +1069,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
   color: white;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::before {
@@ -1083,7 +1084,7 @@ input {
   font-weight: 900;
   content: "\f3d1";
   margin-right: 10px;
-  font-size: 18px;
+  font-size: 15px;
   color: white;
   vertical-align: text-top;
 }
@@ -1100,7 +1101,7 @@ input {
   font-weight: 900;
   content: "$";
   margin-left: 2px;
-  font-size: 16px;
+  font-size: 13px;
   color: white;
   vertical-align: baseline;
 }
@@ -1112,17 +1113,17 @@ input {
   height: max-content;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.7);
-  padding: 50px;
+  padding: 30px;
   border-radius: 20px;
   left: 170px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
-  top: -10px;
+  top: -31px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup.bottom {
-  bottom: -10px;
+  bottom: -3px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
@@ -1134,7 +1135,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
-  width: 100px;
+  width: 90px;
   border: none;
   border-radius: 5px;
   position: absolute;
@@ -1162,7 +1163,7 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  height: 110px;
+  height: 100px;
   background: white;
   overflow: hidden;
 }
@@ -1201,7 +1202,6 @@ input {
   content: '';
   position: absolute;
   left: 0;
-  top: 10px;
   width: 0;
   height: 0;
   border: 10px solid transparent;
@@ -1209,6 +1209,14 @@ input {
   border-left: 0;
   margin-top: 10px;
   margin-left: -10px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .top:after {
+  top: 25px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .bottom:after {
+  bottom: 25px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry.current::before {
@@ -1229,6 +1237,12 @@ input {
   position: absolute;
   top: 10px;
   left: -17px;
+}
+
+@media (max-height: 820px) {
+  .ingame-ui-container .container:first-child .player-list .player-entry {
+    margin-bottom: 0px;
+  }
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:first-of-type .name {
@@ -1261,6 +1275,12 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(8) .name {
   color: orange;
+}
+
+@media (max-height: 820px) {
+  .ingame-ui-container .container:first-child .player-list {
+    margin-top: -40px;
+  }
 }
 
 .ingame-ui-container .container:nth-child(2) {
