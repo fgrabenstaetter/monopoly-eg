@@ -188,6 +188,22 @@
             color: yellow;
           }
         }
+
+        .add-new-friend-button {
+          border: rgba($color: white, $alpha: 0.6) 1px solid;
+          border-radius: 3px;
+          margin: 20px auto 20px auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: rgba($color: white, $alpha: 0.6);
+          cursor: pointer;
+          width: max-content;
+
+          &:hover {
+            color: white;
+            border-color: white;
+          }
+        }
       }
     }
 
