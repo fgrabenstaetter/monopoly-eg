@@ -35,7 +35,7 @@ class User {
 
             for (let i = 0; i < friendships.length; i++)
                 friends.push(friendships[i].friend._id);
-            
+
             return friends;
         });
     }

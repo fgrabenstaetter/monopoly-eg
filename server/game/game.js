@@ -51,7 +51,8 @@ class Game {
         this.turnData = { // pour le client (envoi Network)
             actionMessage    : null,
             asyncRequestType : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs : null // liste
+            asyncRequestArgs : null, // liste
+            nbDoubleDices    : 0 // ++ à chaque double et si >= 3 => prison
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -172,6 +173,7 @@ class Game {
          // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
          if (this.turnData.asyncRequestType != null)
              this.asyncActionExpired();
+         this.turnData.nbDoubleDices = 0;
 
          do
              this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
@@ -197,6 +199,12 @@ class Game {
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes);
+        else if (diceRes[0] === diceRes[1]) {
+            this.turnData.nbDoubleDices ++;
+            if (this.turnData.nbDoubleDices === 3)
+                this.curPlayer.goPrison();
+        }
+
 
         // peux être sorti de prison !
         if (!this.curPlayer.isInPrison) {

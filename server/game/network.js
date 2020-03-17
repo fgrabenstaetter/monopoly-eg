@@ -139,7 +139,6 @@ class Network {
                     }
                 }
 
-
                 if (!friendUser) {
                     err = Errors.FRIENDS.NOT_CONNECTED;
 
