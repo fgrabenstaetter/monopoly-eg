@@ -1112,10 +1112,17 @@ input {
   height: max-content;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.7);
-  left: 150px;
-  top: -10px;
   padding: 50px;
   border-radius: 20px;
+  left: 170px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
+  top: -10px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup.bottom {
+  bottom: -10px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {

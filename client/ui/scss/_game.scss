@@ -234,10 +234,17 @@
           height: max-content;
           position: absolute;
           background-color: $popup-background;
-          left: 150px;
-          top: -10px;
           padding: 50px;
           border-radius: 20px;
+          left: 170px;
+
+          &.top {
+            top: -10px;
+          }
+
+          &.bottom {
+            bottom: -10px;
+          }
 
           .properties-container {
             position: relative;
