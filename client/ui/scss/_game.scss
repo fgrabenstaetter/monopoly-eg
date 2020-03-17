@@ -169,6 +169,7 @@
       flex-direction: column;
       justify-content: center;
       margin-top: -20px;
+      z-index: 10;
 
       .player-entry {
         margin-bottom: 10px;
@@ -249,71 +250,35 @@
 
           .properties-container {
             position: relative;
-            height: 207px;
-            width: 100px;
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
             margin: 0 20px 0 0;
+            height: max-content;
 
             .property {
-              width: 90px;
-              border: none;
+              display: flex;
+              flex-direction: row;
+              width: 100px;
+              border: black 1px solid;
               border-radius: 5px;
-              position: absolute;
-
-              .title {
-                font-size: 8px;
-                text-align: center;
-                color: black;
-                padding: 5px 0;
-                border-radius: 5px 5px 0 0;
-                overflow: hidden;
-              }
-
-              .content {
-                border-radius: 0 0 5px 5px;
-                font-size: 8px;
-                text-align: center;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100px;
-                background: white;
-                overflow: hidden;
-              }
-
-              &:first-child {
-                top: 0px;
-              }
-
-              &:nth-child(2) {
-                top: 25px;
-              }
-
-              &:nth-child(3) {
-                top: 50px;
-              }
-
-              &:nth-child(4) {
-                top: 75px;
-              }
             }
 
             // Classes couleurs propriétés
             &.yellow {
-              .title {
+              .property {
                 background-color: yellow;
               }
             }
 
             &.blue {
-              .title {
+              .property {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-              .title {
+              .property {
                 background-color: red;
                 color: white;
               }

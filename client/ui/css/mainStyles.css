@@ -1043,6 +1043,7 @@ input {
       -ms-flex-pack: center;
           justify-content: center;
   margin-top: -20px;
+  z-index: 10;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry {
@@ -1128,72 +1129,42 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
   position: relative;
-  height: 207px;
-  width: 100px;
-  display: inline-block;
-  margin: 0 20px 0 0;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
-  width: 90px;
-  border: none;
-  border-radius: 5px;
-  position: absolute;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property .title {
-  font-size: 8px;
-  text-align: center;
-  color: black;
-  padding: 5px 0;
-  border-radius: 5px 5px 0 0;
-  overflow: hidden;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property .content {
-  border-radius: 0 0 5px 5px;
-  font-size: 8px;
-  text-align: center;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  height: 100px;
-  background: white;
-  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 0 20px 0 0;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:first-child {
-  top: 0px;
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100px;
+  border: black 1px solid;
+  border-radius: 5px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(2) {
-  top: 25px;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(3) {
-  top: 50px;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(4) {
-  top: 75px;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .title {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
   background-color: yellow;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .title {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
   background-color: blue;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .title {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
   background-color: red;
   color: white;
 }
