@@ -1,10 +1,6 @@
 const Constants = require('../lib/constants');
 const Errors = require('../lib/errors');
-const Lobby = require('./lobby');
 const { UserSchema, UserManager } = require('../models/user');
-
-const mongoose = require('mongoose');
-const ObjectId = require('mongoose').Types.ObjectId;
 
 /**
  * Simplifie et centralise toutes les communications socket

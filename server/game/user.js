@@ -1,4 +1,5 @@
 const Constants = require('../lib/constants');
+const { UserSchema, UserManager } = require('./user');
 
 /**
  * Représente un utilisateur (client connecté)
