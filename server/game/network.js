@@ -135,6 +135,8 @@ class Network {
                     err = Errors.FRIENDS.NOT_EXISTS;
                 else if (lobby.users.length >= lobby.targetUsersNb)
                     err = Errors.LOBBY.FULL;
+                else if (lobby.userByID(data.friendID))
+                    err = Errors.FRIENDS.ALREADY_SAME_LOBBY;
                 else {
                     for (const user of this.GLOBAL.users) {
                         if (user.id === data.friendID) {
@@ -175,7 +177,7 @@ class Network {
         user.socket.on('lobbyFriendInvitationSendReq', (data) => {
             console.log('"' + user.nickname + '" invite "' + data.nickname + '" en ami');
 
-            if (user.nickname == data.nickname) {
+            if (user.nickname === data.nickname) {
                 user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.CANT_INVITE_YOURSELF.code, status: Errors.FRIENDS.CANT_INVITE_YOURSELF.status });
                 return;
             }

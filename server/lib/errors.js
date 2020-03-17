@@ -86,6 +86,10 @@ module.exports = Object.freeze({
         ALREADY_FRIENDS: {
             code: 9,
             status: 'Vous êtes déjà ami avec cette personne'
+        },
+        ALREADY_SAME_LOBBY: {
+            code: 10,
+            status: 'Votre ami est déjà dans ce lobby'
         }
     },
 
