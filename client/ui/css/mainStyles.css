@@ -199,6 +199,10 @@ input {
   color: white;
   font-size: 22px;
   font-family: "LilitaOne", sans-serif;
+  width: 110px;
+  text-align: right;
+  white-space: nowrap;
+  direction: rtl;
 }
 
 .profile-overlay-container .profile-row img {
@@ -331,10 +335,6 @@ input {
   .tchat-container {
     max-height: 150px;
   }
-}
-
-.simplebar-scrollbar:before {
-  background-color: #0052ba;
 }
 
 .resolution-overlay-container {
