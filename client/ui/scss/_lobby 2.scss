@@ -1,0 +1,395 @@
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT DANS LE LOBBY ***/
+
+.lobby-ui-container {
+  width: 100%;
+
+  // Ligne supérieure du lobby: fenêtre de la liste d'amis + avatars
+  .container:first-child {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    // Fenêtres liste d'amis et liste du groupe
+    .box {
+      width: 220px;
+      border-radius: 0;
+      border: none;
+      background: transparent;
+
+      .card-header {
+        border-radius: 0;
+        background-color: $card-header;
+        font-family: 'LilitaOne', sans-serif;
+        color: white;
+        font-size: 17px;
+      }
+
+      input {
+        height: 30px;
+        border-radius: 15px;
+        border: none;
+        background-color: $input;
+        color: rgba($color: white, $alpha: 0.7);
+        font-size: 13px;
+        position: relative;
+        margin: 15px auto auto auto;
+        width: 190px;
+      }
+
+      input::placeholder {
+        color: rgba($color: white, $alpha: 0.7);
+      }
+
+      // à compléter plus tard
+      .fa-search {
+        position: absolute;
+        display: none;
+      }
+
+      .card-body {
+        border-radius: 0;
+        background-color: $card-body;
+        color: white;
+        font-size: 14px;
+        padding: 0;
+      }
+
+      // Spécifique à la liste d'amis et la liste du groupe
+      &.friendlist, &.grouplist {
+        display: flex;
+        justify-content: space-between;
+
+        .friend-request {
+          background: $notification-body;
+          margin: 0 0 5px 0;
+          width: 220px;
+          padding: 20px;
+          text-align: left;
+
+          .friend-request-text {
+            font-size: 13px;
+            margin: 0 0 10px 0;
+            color: white;
+          }
+
+          .accept-button {
+            border: white 1px solid;
+            border-radius: 3px;
+            margin-left: 0;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+            display: inline-block;
+            background-color: white;
+          }
+
+          .deny-button {
+            border: rgba($color: white, $alpha: 0.7) 1px solid;
+            border-radius: 3px;
+            margin-left: 5px;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+            display: inline-block;
+            background-color: rgba($color: white, $alpha: 0.7);
+          }
+        }
+
+        .friends-entries-container {
+          overflow-y: scroll;
+          height: 300px;
+          padding: 0;
+          margin: 0;
+        }
+
+        .group-entries-container {
+          overflow-y: scroll;
+          max-height: 361px;
+          padding: 0;
+          margin: 0;
+        }
+
+        @media (max-height: 820px) {
+          .friends-entries-container {
+            height: 175px;
+          }
+
+          .group-entries-container {
+            max-height: 211px;
+          }
+        }
+
+        .friend-entry, .group-entry {
+          display: flex;
+          align-items: center;
+          margin: 15px;
+
+          .friends-avatar {
+            max-height: 35px;
+            max-width: 35px;
+            border-radius: 3px;
+            border: 3px solid rgba($color: white, $alpha: 0.7);
+            box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+            cursor: pointer;
+          }
+
+          .friends-name {
+            margin-left: 10px;
+            font-size: 13px;
+            overflow: hidden;
+            overflow-wrap: normal;
+            cursor: pointer;
+          }
+
+          .friend-action {
+            border: rgba($color: white, $alpha: 0.6) 1px solid;
+            border-radius: 3px;
+            margin-left: auto;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: rgba($color: white, $alpha: 0.6);
+            cursor: pointer;
+          }
+
+          .friend-action:hover {
+            color: white;
+            border-color: white;
+          }
+        }
+
+        .group-entry {
+          &.leader {
+            .friend-action {
+              display: none;
+            }
+          }
+
+          .friend-action {
+            color: white;
+            background-color: rgba($color: red, $alpha: 0.7);
+          }
+
+          &.leader::after {
+            font-family: "Font Awesome\ 5 Pro";
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            font-weight: 900;
+            content: "\f521";
+            margin-left: 10px;
+            font-size: 12px;
+            color: yellow;
+          }
+        }
+      }
+    }
+
+    // Avatars
+    .avatar-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: -1;
+
+      .avatar {
+        width: 250px;
+        height: 310px;
+        transform: translate(0, 25%);
+        margin: 0 20px;
+
+        .avatar-ui {
+          display: flex;
+          justify-content: center;
+          padding: 20px 0 0 0;
+
+          .avatar-bubble, i {
+            align-self: center;
+            background-color: rgba($color: white, $alpha: 0.3);
+            color: white;
+          }
+
+          .avatar-bubble {
+            height: 40px;
+            padding: 8px 25px 0 25px;
+            font-family: 'LilitaOne', sans-serif;
+            position: relative;
+          }
+
+          .avatar-bubble:after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-left-color: rgba($color: white, $alpha: 0.3);
+            border-right: 0;
+            margin-top: -6px;
+            margin-right: -6px;
+          }
+
+          i {
+            height: 40px;
+            width: 40px;
+            margin-left: 20px;
+            text-align: center;
+            padding-top: 10px;
+            border: solid 2px white;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+
+  // Ligne inférieure du lobby: chat + counter + bouton "JOUER" + notifications
+  // NB: le style du chat est spécifié dans un fichier externe ("_chat.scss")
+  .container:nth-child(2) {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    .nb-joueurs-container {
+      position: relative;
+
+      #nbJoueurs {
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+        padding: 0;
+      }
+
+      div:first-of-type {
+        position: absolute; bottom: 0; right: 0; margin-right: 15px;
+      }
+
+      .stylized {
+        border-color: rgba($color: black, $alpha: 0.5);
+        background-color: rgba($color: black, $alpha: 0.3);
+      }
+
+      .arrow-right, .arrow-left {
+        position: absolute;
+        top: 15px;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+      }
+
+      .arrow-right {
+        left: 55px;
+        border-left:17px solid rgba($color: white, $alpha: 0.5);
+      }
+
+      .arrow-left {
+        right: 55px;
+        border-right:17px solid rgba($color: white, $alpha: 0.5);
+      }
+    }
+
+    // Bouton "JOUER"
+    .btn {
+      height: 50px;
+      border-radius: 25px;
+      font-size: 20px;
+      padding: 6px 30px;
+
+      &.loading {
+        background-size: 30px 30px;
+        background-image: linear-gradient(
+          45deg, 
+          rgba(black, 0.1)  25%, 
+          transparent       25%, 
+          transparent       50%, 
+          rgba(black, 0.1)  50%, 
+          rgba(black, 0.1)  75%, 
+          transparent       75%, 
+          transparent
+        );
+        animation: barberpole 0.5s linear infinite;
+      }
+
+      @keyframes barberpole {
+        from { background-position: 0 0; }
+        to   { background-position: 60px 30px; }
+      }
+    }
+
+    .btn:hover {
+      color: white;
+    }
+
+    // Notifications
+    .notification-container {
+      display: flex;
+      align-items: bottom;
+      flex-direction: column-reverse;
+      overflow-y: hidden;
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+
+      .notification {
+        border-radius: 15px;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+        position: relative;
+        margin-top: 20px;
+        margin-left: auto;
+        width: 300px;
+  
+        .card-header {
+          height: 40px;
+          border-radius: 15px 15px 0px 0px;
+          font-family: 'LilitaOne', sans-serif;
+          font-size: 14px;
+          color: white;
+          background-color: rgba($color: black, $alpha: 0.5);
+          padding-top: 10px;
+        }
+  
+        .card-body {
+          border-radius: 0px 0px 15px 15px;
+          background-color: rgba($color: black, $alpha: 0.3);
+          padding: 10px;
+
+          .card-text {
+            color: white;
+            font-size: 13px;
+            margin: 10px 0 20px 0;
+          }
+
+          .btn {
+            height: 28px;
+            font-size: 11px;
+            width: 110px;
+            margin: 0 10px 10px 10px;
+            padding: 0;
+          }
+
+          .btn-primary {
+            background-color: $button-primary;
+          }
+
+          .btn-secondary {
+            background-color: $button-secondary;
+          }
+        }
+      }
+    }
+  }
+}

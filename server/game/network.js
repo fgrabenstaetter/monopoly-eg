@@ -125,7 +125,7 @@ class Network {
             user.getFriends((friends) => {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
-                
+
                 if (!data.friendID)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
@@ -157,6 +157,7 @@ class Network {
                         friendUser.socket.emit('lobbyInvitationReceivedRes', {
                             invitationID: invitId,
                             senderFriendID: user.id,
+                            senderFriendNickname: user.nickname,
                             nbUsersInLobby: lobby.users.length
                         });
                     }
