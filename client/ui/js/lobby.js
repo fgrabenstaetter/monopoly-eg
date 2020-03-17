@@ -199,7 +199,7 @@ socket.on('lobbyPlayRes', (res) => {
         alert(res.status);
 });
 
-/**Vérifications des Res asynchrones 
+/**Vérifications des Res asynchrones
 */
 socket.on('lobbyFriendInvitationSendRes', (res) => {
     if (res.error === 0) {
@@ -486,8 +486,8 @@ function addGroupUser(id, pawn) {
     const isHost = id === hostID;
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
-            <img class="friends-avatar" src="img/ui/avatar1.jpg">
-            <div class="friends-name">` + idToNick(id) + `</div>
+            <img class="friends-avatar" src="img/ui/avatar1.jpg" data-toggle="modal" data-target="#` + idToNick(id) + `" />
+            <div data-id="` + id + `"` + `class="friends-name">` + idToNick(id) + `</div>
             <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 
