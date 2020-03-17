@@ -157,6 +157,7 @@ class Network {
                         friendUser.socket.emit('lobbyInvitationReceivedRes', {
                             invitationID: invitId,
                             senderFriendID: user.id,
+                            senderFriendNickname: user.nickname,
                             nbUsersInLobby: lobby.users.length
                         });
                     }
