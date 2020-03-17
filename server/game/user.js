@@ -12,7 +12,6 @@ class User {
         this.id = userSchema.id;
         this.nickname = userSchema.nickname;
         this.email    = userSchema.email;
-        this.friends  = userSchema.friends;
         this.level    = userSchema.level;
         this.exp      = userSchema.exp;
         this.inscriptionDatetime = userSchema.inscriptionDatetime;
@@ -21,6 +20,23 @@ class User {
 
         this.levelUpExp = 100;
         this.socket = null;
+    }
+
+    /**
+     * Renvoie les amis (tableau d'ids) de User
+     */
+    get friends() {
+        let friends = [];
+
+        UserSchema.getAcceptedFriends(this.id, (error, friendships) => {
+            if (!friendships || error || friendships.length == 0)
+                return [];
+
+            for (let i = 0; i < friendships.length; i++)
+                friends.push(friendships[i].friend._id);
+            
+            return friends;
+        });
     }
 
     /**
