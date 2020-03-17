@@ -289,7 +289,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
-
+            $('#friendBar').val('');
         }
         else {
             element = document.getElementsByClassName('friend-entry');
