@@ -168,13 +168,15 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      margin-top: -20px;
+      z-index: 10;
 
       .player-entry {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         position: relative;
 
         .name {
-          font-size: 20px;
+          font-size: 17px;
           font-weight: bold;
           font-family: 'Work Sans', sans-serif;
           position: relative;
@@ -192,7 +194,7 @@
 
         .money {
           color: white;
-          font-size: 15px;
+          font-size: 13px;
         }
 
         .money::before {
@@ -207,7 +209,7 @@
           font-weight: 900;
           content: "\f3d1";
           margin-right: 10px;
-          font-size: 18px;
+          font-size: 15px;
           color: white;
           vertical-align: text-top;
         }
@@ -224,7 +226,7 @@
           font-weight: 900;
           content: "$";
           margin-left: 2px;
-          font-size: 16px;
+          font-size: 13px;
           color: white;
           vertical-align: baseline;
         }
@@ -234,78 +236,49 @@
           height: max-content;
           position: absolute;
           background-color: $popup-background;
-          left: 150px;
-          top: -10px;
-          padding: 50px;
+          padding: 30px;
           border-radius: 20px;
+          left: 170px;
+
+          &.top {
+            top: -31px;
+          }
+
+          &.bottom {
+            bottom: -3px;
+          }
 
           .properties-container {
             position: relative;
-            height: 207px;
-            width: 100px;
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
             margin: 0 20px 0 0;
+            height: max-content;
 
             .property {
+              display: flex;
+              flex-direction: row;
               width: 100px;
-              border: none;
+              border: black 1px solid;
               border-radius: 5px;
-              position: absolute;
-
-              .title {
-                font-size: 8px;
-                text-align: center;
-                color: black;
-                padding: 5px 0;
-                border-radius: 5px 5px 0 0;
-                overflow: hidden;
-              }
-
-              .content {
-                border-radius: 0 0 5px 5px;
-                font-size: 8px;
-                text-align: center;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 110px;
-                background: white;
-                overflow: hidden;
-              }
-
-              &:first-child {
-                top: 0px;
-              }
-
-              &:nth-child(2) {
-                top: 25px;
-              }
-
-              &:nth-child(3) {
-                top: 50px;
-              }
-
-              &:nth-child(4) {
-                top: 75px;
-              }
             }
 
             // Classes couleurs propriétés
             &.yellow {
-              .title {
+              .property {
                 background-color: yellow;
               }
             }
 
             &.blue {
-              .title {
+              .property {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-              .title {
+              .property {
                 background-color: red;
                 color: white;
               }
@@ -317,7 +290,6 @@
           content: '';
           position: absolute;
           left: 0;
-          top: 10px;
           width: 0;
           height: 0;
           border: 10px solid transparent;
@@ -325,6 +297,14 @@
           border-left: 0;
           margin-top: 10px;
           margin-left: -10px;
+        }
+
+        .top:after {
+          top: 25px;
+        }
+
+        .bottom:after {
+          bottom: 25px;
         }
 
         &.current::before {
@@ -348,9 +328,22 @@
         }
       }
 
+      @media (max-height: 820px) {
+        .player-entry {
+          margin-bottom: 0px;
+        }
+      }
+
       // couleurs assignées automatiquement aux membres de la liste
       @import '_players-colors.scss';
     }
+
+    @media (max-height: 820px) {
+      .player-list {
+        margin-top: -40px;
+      }
+    }
+
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications

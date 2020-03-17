@@ -1,6 +1,14 @@
 // Fonction d'ajout d'un message d'invitation d'ami
 function friendRequest(id, name) {
-    $(".friends-entries-container").prepend("<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>");
+    $(".friends-entries-container").prepend(`
+        <div class="friend-request">
+            <div class="friend-request-text">
+                <span data-id="` + id + `">` + name + `</span>
+                souhaite vous ajouter à sa liste d'amis
+            </div>
+            <div class="accept-button">accepter</div>
+            <div class="deny-button">refuser</div>
+        </div>`);
 }
 
 $(function () {
@@ -16,9 +24,33 @@ $(function () {
  * @param avatar Avatar de l'ami
  */
 function addFriend(id, name, avatar) {
-    $("#friendList").append('<div class="friend-entry"><img class="friends-avatar" src=' + avatar + ' data-toggle="modal" data-target="#' + name + 'Modal"><div class="friends-name" data-id="' + id + '">' + name + '</div><div class="friend-action">inviter</div></div>');
+    $("#friendList").append(`
+        <div class="friend-entry">
+            <img class="friends-avatar" src="` + avatar + `" data-toggle="modal" data-target="#` + name + `Modal" />
+            <div class="friends-name" data-id="` + id + `">` + name + `</div>
+            <div class="friend-action">inviter</div>
+        </div>`);
 
-    $(".modal-container").append('<div class="modal fade" id="' + name + 'Modal" tabindex="-1" role="dialog" aria-labelledby="' + name + 'ModalLabel" aria-hidden="true" data-id="' + id + '"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="' + name + 'ModalLabel">' + name + '</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button class="btn btn-danger delete-friend-button" data-id="' + id + '">supprimer</button></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>')
+    $(".modal-container").append(`
+        <div class="modal fade" id="` + name + `Modal" tabindex="-1" role="dialog" aria-labelledby="` + name + `ModalLabel" aria-hidden="true" data-id="` + id + `">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="` + name + `ModalLabel">` + name + `</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <button class="btn btn-danger delete-friend-button" data-id="` + id + `">supprimer</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>`);
 
     $('.friend-entry .friend-action').unbind();
     $('.delete-friend-button').unbind();
@@ -290,7 +322,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
-
+            $('#friendBar').val('');
         }
         else {
             element = document.getElementsByClassName('friend-entry');
@@ -422,7 +454,15 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
  * @param name Nom de la personne qui a inviter le joueur
  */
 function friendRequest(id, name) {
-    $(".friends-entries-container").prepend("<div class=\"friend-request\"> <div class=\"friend-request-text\"><span data-id=\"" + id + "\">" + name + "</span> souhaite vous ajouter à sa liste d'amis</div><div class=\"accept-button\">accepter</div><div class=\"deny-button\">refuser</div></div>");
+    $(".friends-entries-container").prepend(`
+        <div class="friend-request">
+            <div class="friend-request-text">
+                <span data-id="` + id + `">` + name + `</span> souhaite vous ajouter à sa liste d'amis
+            </div>
+            <div class="accept-button">accepter</div>
+            <div class="deny-button">refuser</div>
+        </div>`);
+
     const mid = id
     console.log("mid : " + mid + " id : " + $(this).parent());
     console.log($(this).parent());
@@ -481,7 +521,7 @@ function addGroupUser(id, pawn) {
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
             <img class="friends-avatar" src="img/ui/avatar1.jpg" data-toggle="modal" data-target="#` + idToNick(id) + `" />
-            <div data-id="` + id + `"` + `class="friends-name">` + idToNick(id) + `</div>
+            <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + idToNick(id) + `">` + idToNick(id) + `</div>
             <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 

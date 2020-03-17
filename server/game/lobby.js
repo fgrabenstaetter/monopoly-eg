@@ -7,7 +7,7 @@ class Lobby {
 
     /**
      * Objets d'invitation de lobby
-     * { from: fromUserID: int, toUserID: int, invitationID: int }
+     * { fromUserID: int, toUserID: int, invitationID: int }
      */
     static invitations = [];
     static invitationIDCounter = 0;
