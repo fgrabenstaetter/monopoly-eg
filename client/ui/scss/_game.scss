@@ -269,11 +269,25 @@
               white-space: nowrap;
             }
 
+            &.blue, &.red, &.orange, &.pink, &.brown, &.green {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
+            &.yellow, &.pink, &.cyan {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
             // Classes couleurs propriétés
             &.yellow {
               .property {
-                background-color: yellow;
-                color: black;
+                background-color: rgb(228, 228, 65);
+                color: white;
               }
             }
 
@@ -300,7 +314,7 @@
 
             &.pink {
               .property {
-                background-color: pink;
+                background-color: rgb(223, 184, 191);
                 color: white;
               }
             }
@@ -314,8 +328,8 @@
 
             &.cyan {
               .property {
-                background-color: cyan;
-                color: black;
+                background-color: rgb(35, 212, 212);
+                color: white;
               }
             }
 
@@ -354,9 +368,10 @@
 
             &.company {
               .property {
-                background-color: #f7f5f5;
+                background-color: rgb(58, 58, 58);
                 text-align: left;
                 padding-left: 12px;
+                color: white;
 
                 &.eau:before {
                   font-family: "Font Awesome\ 5 Pro";
@@ -371,7 +386,7 @@
                   content: "\f043";
                   margin-right: 10px;
                   font-size: 15px;
-                  color: black;
+                  color: white;
                   vertical-align: text-top;
                 }
 
@@ -388,7 +403,7 @@
                   content: "\f0eb";
                   margin-right: 10px;
                   font-size: 15px;
-                  color: black;
+                  color: white;
                   vertical-align: text-top;
                 }
               }

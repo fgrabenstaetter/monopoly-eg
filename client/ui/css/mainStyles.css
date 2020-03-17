@@ -1179,9 +1179,19 @@ input {
   white-space: nowrap;
 }
 
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
+
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
-  background-color: yellow;
-  color: black;
+  background-color: #e4e441;
+  color: white;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
@@ -1200,7 +1210,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property {
-  background-color: pink;
+  background-color: #dfb8bf;
   color: white;
 }
 
@@ -1210,8 +1220,8 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
-  background-color: cyan;
-  color: black;
+  background-color: #23d4d4;
+  color: white;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
@@ -1244,9 +1254,10 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
-  background-color: #f7f5f5;
+  background-color: #3a3a3a;
   text-align: left;
   padding-left: 12px;
+  color: white;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.eau:before {
@@ -1262,7 +1273,7 @@ input {
   content: "\f043";
   margin-right: 10px;
   font-size: 15px;
-  color: black;
+  color: white;
   vertical-align: text-top;
 }
 
@@ -1279,7 +1290,7 @@ input {
   content: "\f0eb";
   margin-right: 10px;
   font-size: 15px;
-  color: black;
+  color: white;
   vertical-align: text-top;
 }
 
