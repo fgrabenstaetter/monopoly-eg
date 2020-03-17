@@ -532,3 +532,5 @@ function delGroupUser(id) {
         }
     }
 }
+
+$('.profile-row > .username').text(NICKNAME);
