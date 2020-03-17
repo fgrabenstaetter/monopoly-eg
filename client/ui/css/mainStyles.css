@@ -523,6 +523,7 @@ input {
   border: 3px solid rgba(255, 255, 255, 0.7);
   -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-name {
@@ -530,6 +531,7 @@ input {
   font-size: 13px;
   overflow: hidden;
   overflow-wrap: normal;
+  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {

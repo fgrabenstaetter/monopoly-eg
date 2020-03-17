@@ -102,6 +102,10 @@ socket.emit('lobbyFriendListReq');
 socket.on('lobbyFriendListRes', (res) => {
     console.log("========== lobbyFriendListRes==============")
     console.log(res);
+    if (res.friends.length != 0)
+        for (let i = 0; i < res.friends.length; i++) {
+            addFriend(res.friends[i].id, res.friends[i].nickname, "img/ui/avatar1.jpg");
+        }
 })
 
 socket.emit('lobbyPendingFriendListReq');
@@ -137,6 +141,9 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
     lobbyInvitation(res.invitationID, "senderFriendNickname");
 });
 
+
+/**Gestion du lobby
+ */
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     users.push({ nickname: res.nickname, id: res.id });
@@ -192,9 +199,13 @@ socket.on('lobbyPlayRes', (res) => {
         alert(res.status);
 });
 
+/**Vérifications des Res asynchrones
+*/
 socket.on('lobbyFriendInvitationSendRes', (res) => {
-    if (res.error === 0)
+    if (res.error === 0) {
         console.log("lobbyFriendInvitationSendRes")
+        alert('invitation envoyée ');
+    }
     else // hôte uniquement
         alert(res.status);
 });
@@ -220,7 +231,12 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
         alert(res.status);
 });
 
+socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
 
+    console.log("lobbyFriendInvitationAcceptedRes");
+    addFriend(res.id, res.nickname, "img/ui/avatar1.jpg");
+
+});
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
@@ -242,6 +258,7 @@ $(document).ready(() => {
             */
             socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
             console.log("lobbyFriendInvitationSendReq");
+
         }
         else {
             element = document.getElementsByClassName('friend-entry');
@@ -387,16 +404,17 @@ function friendRequest(id, name) {
     //lobbyInvitationAcceptReq
     //lobbyFriendInvitationRes Acceptation
     $('.friend-request .accept-button').click(function () {
-        const senderNickname = $(this).parent().attr('id');
+        const senderNickname = $(this).parent().find(".friend-request-text span").text();
         const action = 'accept';
         let error = 0;
         let status = 100;
 
         socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
-        console.log("lobbyFriendInvitationReq");
+        console.log("lobbyFriendInvitationActionReq");
 
         if (!error) {
             $(this).parent().remove();
+            socket.emit('lobbyFriendListReq');
         }
         else {
             alert("erreur : " + status)
@@ -406,13 +424,13 @@ function friendRequest(id, name) {
 
     // lobbyFriendInvitationRes Deny
     $('.friend-request .deny-button').click(function () {
-        const senderNickname = $(this).parent().attr('id');
+        const senderNickname = $(this).parent().find(".friend-request-text span").text()
         const action = 'reject';
         let error = 0;
         let status = 100;
 
-        socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: name });
-        console.log("lobbyFriendInvitationReq");
+        socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
+        console.log("lobbyFriendInvitationActionReq");
 
         if (!error) {
             $(this).parent().remove();
@@ -468,8 +486,8 @@ function addGroupUser(id, pawn) {
     const isHost = id === hostID;
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
-            <img class="friends-avatar" src="img/ui/avatar1.jpg">
-            <div class="friends-name">` + idToNick(id) + `</div>
+            <img class="friends-avatar" src="img/ui/avatar1.jpg" data-toggle="modal" data-target="#` + idToNick(id) + `" />
+            <div data-id="` + id + `"` + `class="friends-name">` + idToNick(id) + `</div>
             <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 
