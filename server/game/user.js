@@ -17,8 +17,6 @@ class User {
         this.exp      = userSchema.exp;
         this.inscriptionDatetime = userSchema.inscriptionDatetime;
 
-        this.userSchema = userSchema;
-
         this.levelUpExp = 100;
         this.socket = null;
     }
@@ -26,17 +24,17 @@ class User {
     /**
      * Renvoie les amis (tableau d'ids) de User
      */
-    get friends() {
+    getFriends(cb) {
         let friends = [];
 
         UserSchema.getAcceptedFriends(this.id, (error, friendships) => {
             if (!friendships || error || friendships.length == 0)
-                return [];
+                return cb([]);
 
             for (let i = 0; i < friendships.length; i++)
-                friends.push(friendships[i].friend._id);
+                friends.push(friendships[i].friend._id.toString());
 
-            return friends;
+            return cb(friends);
         });
     }
 

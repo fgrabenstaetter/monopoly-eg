@@ -186,7 +186,7 @@ class Lobby {
      * @param toID L'ID pseudo de l'utilisateur qui doit recevoir l'invitation
      * @return L'ID de l'invitation créée
      */
-    static addInvitation (fromID, toID) {
+    addInvitation (fromID, toID) {
         this.invitations.push( {
             fromUserID: from,
             toUserID: to,
@@ -199,7 +199,7 @@ class Lobby {
      * @param id L'ID de l'invitation à supprimer
      * @return L'objet invitation si trouvé, false sinon
      */
-    static delInvitation (id) {
+    delInvitation (id) {
         for (let i = 0, l = this.invitations.length; i < l; i ++) {
             if (this.invitations[i].id === id) {
                 const save = this.invitations[i];
