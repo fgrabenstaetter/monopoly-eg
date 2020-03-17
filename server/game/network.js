@@ -122,10 +122,12 @@ class Network {
 
     lobbyInvitationReq(user, lobby) {
         user.socket.on('lobbyInvitationReq', (data) => {
-            let err = Errors.SUCCESS;
-            let friendUser = null;
-
             user.getFriends((friends) => {
+                let err = Errors.SUCCESS;
+                let friendUser = null;
+                
+                console.log(friends);
+
                 if (!data.friendID)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
@@ -160,9 +162,11 @@ class Network {
                             nbUsersInLobby: lobby.users.length
                         });
                     }
-
-                    user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
                 }
+
+                console.log(err);
+
+                user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
             });
         });
     }
