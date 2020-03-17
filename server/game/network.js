@@ -125,7 +125,7 @@ class Network {
             user.getFriends((friends) => {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
-                
+
                 if (!data.friendID)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
