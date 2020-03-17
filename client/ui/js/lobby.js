@@ -168,7 +168,8 @@ socket.on('lobbyFriendInvitationReceivedRes', (res) => {
 
 //Invitation d'un amis pour rejoindre son lobby
 socket.on('lobbyInvitationReceivedRes', (res) => {
-    console.log("lobbyInvitationReceivedRes reçu -> besoin du nickname du friend")
+    console.log("lobbyInvitationReceivedRes");
+    console.log(res);
     lobbyInvitation(res.invitationID, "senderFriendNickname");
 });
 
@@ -395,7 +396,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         let status = 100;
 
 
-        socket.emit("lobbyInvitationAcceptReq", invitationID);
+        socket.emit("lobbyInvitationAcceptReq", { invitationID: invitationID });
         console.log("lobbyInvitationAcceptReq");
 
 
