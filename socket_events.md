@@ -62,8 +62,9 @@
         ```javascript
         {
             invitationID: int,
-            nbUsersInLobby: int,
-            senderFriendID: int // connaissance du ID: recevoir liste d'amis au préalable
+            senderFriendID: int,
+            senderFriendNickname: string,
+            nbUsersInLobby: int
         }
          ```
 
