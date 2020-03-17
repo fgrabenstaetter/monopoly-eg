@@ -205,21 +205,16 @@ io.on('connection', (socket) => {
         }
     }
 
-    //
+    // DECOMMENTER POUR UN SEUL LOBBY PUBLIC
+    // if (GLOBAL.lobbies.length === 0)
+    //     GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
+    // else {
+    //     if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb)
+    //         return;
+    //     else
+    //         GLOBAL.lobbies[0].addUser(user);
+    // }
 
-    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-    // Créer le lobby
-    if (GLOBAL.lobbies.length === 0) {
-        console.log('Création du lobby global par ' + user.nickname);
-        GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
-    } else {
-        // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb) {
-            console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
-            return;
-        } else {
-            GLOBAL.lobbies[0].addUser(user);
-            console.log(user.nickname + ' a rejoin le lobby global (' + GLOBAL.lobbies[0].users.length + '/' + GLOBAL.lobbies[0].maxUsersNb + ')');
-        }
-    }
+    // LOBBY SÉPARÉ
+    GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
 });
