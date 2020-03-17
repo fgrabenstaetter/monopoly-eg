@@ -197,7 +197,7 @@ io.on('connection', (socket) => {
     // regarder si le joueur est dans une partie
     // nécessaire car pour passer du lobby au jeu, le client change de page .. et donc doit se reconnecter à un nouveau socket
     for (const game of GLOBAL.games) {
-        const player = game.playerByNickname(user.id);
+        const player = game.playerByID(user.id);
         if (player) {
             // le joueur est dans une partie !
             GLOBAL.network.gamePlayerListen(player, game);
