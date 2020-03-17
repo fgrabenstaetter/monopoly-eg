@@ -574,22 +574,14 @@ input {
   color: yellow;
 }
 
-.lobby-ui-container .container:first-child .box.friendlist .add-new-friend-button, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend-button {
-  border: rgba(255, 255, 255, 0.6) 1px solid;
-  border-radius: 3px;
+.lobby-ui-container .container:first-child .box.friendlist .add-new-friend, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend {
+  text-align: center;
   margin: 20px auto 20px auto;
   padding: 2px 5px;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-}
-
-.lobby-ui-container .container:first-child .box.friendlist .add-new-friend-button:hover, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend-button:hover {
-  color: white;
-  border-color: white;
+  max-width: 160px;
 }
 
 .lobby-ui-container .container:first-child .avatar-container {
