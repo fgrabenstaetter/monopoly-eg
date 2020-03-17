@@ -230,13 +230,13 @@
         }
 
         .popup {
-          width: 500px;
-          height: max-content;
           position: absolute;
           background-color: $popup-background;
           padding: 30px;
           border-radius: 20px;
           left: 170px;
+          display: flex;
+          flex-direction: row;
 
           &.top {
             top: -31px;
@@ -250,15 +250,20 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            margin: 0 20px 0 0;
+            margin: 0;
             height: max-content;
 
             .property {
-              display: flex;
-              flex-direction: row;
-              width: 100px;
-              border: black 1px solid;
+              text-align: center;
+              width: 120px;
+              border: none;
               border-radius: 5px;
+              padding: 10px 5px;
+              font-size: 10px;
+              margin: 5px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
 
             // Classes couleurs propriétés
