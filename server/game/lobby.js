@@ -188,8 +188,8 @@ class Lobby {
      */
     addInvitation (fromID, toID) {
         this.invitations.push( {
-            fromUserID: from,
-            toUserID: to,
+            fromUserID: fromID,
+            toUserID: toID,
             invitationID: this.invitationIDCounter
         });
         return this.invitationIDCounter ++;
