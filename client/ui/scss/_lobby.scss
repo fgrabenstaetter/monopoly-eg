@@ -188,6 +188,16 @@
             color: yellow;
           }
         }
+
+        .add-new-friend {
+          text-align: center;
+          margin: 20px auto 20px auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: rgba($color: white, $alpha: 0.6);
+          cursor: pointer;
+          max-width: 160px;
+        }
       }
     }
 

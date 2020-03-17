@@ -574,6 +574,16 @@ input {
   color: yellow;
 }
 
+.lobby-ui-container .container:first-child .box.friendlist .add-new-friend, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend {
+  text-align: center;
+  margin: 20px auto 20px auto;
+  padding: 2px 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  max-width: 160px;
+}
+
 .lobby-ui-container .container:first-child .avatar-container {
   display: -webkit-box;
   display: -ms-flexbox;
