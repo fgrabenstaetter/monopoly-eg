@@ -70,7 +70,7 @@ createProperty('2', 'blue', 'Rue de la ville');
 createProperty('1', 'blue', 'Rue étrange');
 createProperty('1', 'station', 'Université');
 createProperty('1', 'station', 'Homme de Fer');
-createProperty('4', 'company', 'Eau');
+createProperty('1', 'company', 'Eau');
 createProperty('1', 'company', 'Électricité');
 createProperty('6', 'orange', 'Avenue des Vosges');
 createProperty('1', 'pink', 'Rue de la rue');
