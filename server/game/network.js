@@ -131,9 +131,9 @@ class Network {
                 if (!data.friendID)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
-                    err = Errors.FRIEND_NOT_EXISTS;
+                    err = Errors.FRIENDS.NOT_EXISTS;
                 else if (lobby.users.length >= lobby.targetUsersNb)
-                    err = Errors.LOBBY_FULL;
+                    err = Errors.LOBBY.FULL;
                 else {
                     for (const user of this.GLOBAL.users) {
                         if (user.friendID === data.friendID) {
