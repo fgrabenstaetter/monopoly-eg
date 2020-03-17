@@ -291,14 +291,14 @@ class Network {
             if (!data || !data.invitationID)
                 err = Errors.MISSING_FIELD;
             else {
-                const invitObj = lobby.delInvitation(data.invitationID);
+                const invitObj = lobby.delInvitation(parseInt(data.invitationID));
                 if (!invitObj)
                     err = Errors.LOBBY.INVITATION_NOT_EXISTS;
-                else if (invitObj.to !== user.id)
+                else if (invitObj.toUserID !== user.id)
                     err = Errors.UNKNOW;
                 else {
                     for (const lobby of this.GLOBAL.lobbies) {
-                        const usr = lobby.userByID(invitObj.from);
+                        const usr = lobby.userByID(invitObj.fromUserID);
                         if (usr) {
                             friendLobby = lobby;
                             break;
