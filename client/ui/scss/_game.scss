@@ -180,6 +180,7 @@
           position: relative;
           background: transparent;
           z-index: 0;
+          cursor: pointer;
         }
 
         .name::before {
@@ -239,11 +240,11 @@
           flex-direction: row;
 
           &.top {
-            top: -31px;
+            top: -20px;
           }
 
           &.bottom {
-            bottom: -3px;
+            bottom: 1px;
           }
 
           .properties-container {
@@ -303,11 +304,11 @@
         }
 
         .top:after {
-          top: 25px;
+          top: 10px;
         }
 
         .bottom:after {
-          bottom: 25px;
+          bottom: 20px;
         }
 
         &.current::before {

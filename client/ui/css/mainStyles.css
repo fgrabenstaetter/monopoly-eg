@@ -230,7 +230,7 @@ input {
 
 .tchat-container .msg-me {
   position: relative;
-  background: #00e54f;
+  background: #02c446;
   padding: 5px 10px;
   color: white;
   font-size: 13px;
@@ -249,7 +249,7 @@ input {
   width: 0;
   height: 0;
   border: 6px solid transparent;
-  border-left-color: #00e54f;
+  border-left-color: #02c446;
   border-right: 0;
   margin-top: -6px;
   margin-right: -6px;
@@ -1075,6 +1075,7 @@ input {
   position: relative;
   background: transparent;
   z-index: 0;
+  cursor: pointer;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name::before {
@@ -1140,11 +1141,11 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
-  top: -31px;
+  top: -20px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup.bottom {
-  bottom: -3px;
+  bottom: 1px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
@@ -1203,11 +1204,11 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .top:after {
-  top: 25px;
+  top: 10px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .bottom:after {
-  bottom: 25px;
+  bottom: 20px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry.current::before {
