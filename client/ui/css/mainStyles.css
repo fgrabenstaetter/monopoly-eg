@@ -1129,6 +1129,7 @@ input {
   position: absolute;
   background-color: rgba(255, 255, 255, 0.7);
   padding: 30px;
+  width: 450px;
   border-radius: 20px;
   left: 170px;
   display: -webkit-box;
@@ -1138,6 +1139,8 @@ input {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
@@ -1178,6 +1181,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
   background-color: yellow;
+  color: black;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
@@ -1188,6 +1192,95 @@ input {
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
   background-color: red;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property {
+  background-color: orange;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property {
+  background-color: pink;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property {
+  background-color: brown;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+  background-color: cyan;
+  color: black;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+  background-color: green;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property {
+  background-color: white;
+  color: black;
+  text-align: left;
+  padding-left: 12px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station :before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f239";
+  margin-right: 10px;
+  font-size: 15px;
+  color: black;
+  vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
+  background-color: #f7f5f5;
+  text-align: left;
+  padding-left: 12px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.eau:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f043";
+  margin-right: 10px;
+  font-size: 15px;
+  color: black;
+  vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.electricite:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f0eb";
+  margin-right: 10px;
+  font-size: 15px;
+  color: black;
+  vertical-align: text-top;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
