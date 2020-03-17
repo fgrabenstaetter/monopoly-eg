@@ -176,7 +176,7 @@ io.on('connection', (socket) => {
 
         // si il est dans un lobby, l'y supprimer
         for (const lobby of GLOBAL.lobbies) {
-            if (lobby.userByNickname(user.nickname)) {
+            if (lobby.userByID(user.id)) {
                 lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
                 return;
             }
@@ -184,7 +184,7 @@ io.on('connection', (socket) => {
 
         // si il est dans une partie de jeu, l'y supprimer
         for (const game of GLOBAL.games) {
-            const player = game.playerByNickname(user.nickname);
+            const player = game.playerByID(user.id);
             if (player) {
                 game.delPlayer(player);
                 return;
