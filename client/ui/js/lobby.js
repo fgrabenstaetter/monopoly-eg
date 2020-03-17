@@ -170,7 +170,7 @@ socket.on('lobbyFriendInvitationReceivedRes', (res) => {
 socket.on('lobbyInvitationReceivedRes', (res) => {
     console.log("lobbyInvitationReceivedRes");
     console.log(res);
-    lobbyInvitation(res.invitationID, "senderFriendNickname");
+    lobbyInvitation(res.invitationID, res.senderFriendNickname);
 });
 
 
