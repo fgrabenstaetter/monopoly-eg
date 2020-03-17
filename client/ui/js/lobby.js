@@ -234,11 +234,6 @@ socket.on('lobbyUserLeftRes', (res) => {
         imHost();
 });
 
-socket.on('lobbyChatReceiveRes', (mess) => {
-    console.log('lobbyChatReceiveRes');
-    addMsg(mess.senderUserID, mess.content, mess.createdTime);
-});
-
 socket.on('lobbyTargetUsersNbChangedRes', (res) => {
     document.getElementById('nbJoueurs').textContent = res.nb;
 
