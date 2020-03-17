@@ -443,7 +443,7 @@ function addFriend(id, name, avatar) {
         let friendName = $(this).prev('.friends-name').text();
         let friendID = $(this).parent().find('.friends-name').attr('data-id');
         console.log("oui" + friendID);
-        socket.emit("lobbyInvitationReq", { friendID: friendID });
+        socket.emit("lobbyInvitationReq", { friendID: id });
         console.log("lobbyInvitationReq");
 
     });
@@ -456,9 +456,9 @@ function addFriend(id, name, avatar) {
         console.log("lobbyFriendDeleteReq");
 
         if (!error) {
-            $('#' + name + 'Modal').hide();
+            $('.modal-backdrop fade show').remove();
             //$(this).parent().remove();
-            //$('#' + name + 'Modal').remove();
+            $('#' + name + 'Modal').remove();
         }
     });
 }
