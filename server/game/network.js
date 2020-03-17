@@ -125,46 +125,45 @@ class Network {
             let err = Errors.SUCCESS;
             let friendUser = null;
 
-            if (!data.friendID)
-                err = Errors.MISSING_FIELD;
-            else if (user.friends.indexOf(data.friendID) === -1)
-                err = Errors.FRIEND_NOT_EXISTS;
-            else if (lobby.users.length >= lobby.targetUsersNb)
-                err = Errors.LOBBY_FULL;
-            else {
-                for (const user of this.GLOBAL.users) {
-                    if (user.friendID === data.friendID) {
-                        friendUser = user;
-                        break;
-                    }
-                }
-
-
-                if (!friendUser) {
-                    err = Errors.FRIENDS.NOT_CONNECTED;
-
-                }
+            user.getFriends((friends) => {
+                if (!data.friendID)
+                    err = Errors.MISSING_FIELD;
+                else if (friends.indexOf(data.friendID) === -1)
+                    err = Errors.FRIEND_NOT_EXISTS;
+                else if (lobby.users.length >= lobby.targetUsersNb)
+                    err = Errors.LOBBY_FULL;
                 else {
-                    for (const game of this.GLOBAL.games) {
-                        const tmp = game.playerByID(data.friendID);
-                        if (tmp) {
-                            err = Errors.FRIENDS.IN_GAME;
+                    for (const user of this.GLOBAL.users) {
+                        if (user.friendID === data.friendID) {
+                            friendUser = user;
                             break;
                         }
                     }
-                }
 
-                if (err.code === Errors.SUCCESS.code) {
-                    const invitId = lobby.addInvitation(user.id, data.friendID);
-                    friendUser.socket.emit('lobbyInvitationReceivedRes', {
-                        invitationID: invitId,
-                        senderFriendID: user.id,
-                        nbUsersInLobby: lobby.users.length
-                    });
-                }
+                    if (!friendUser) {
+                        err = Errors.FRIENDS.NOT_CONNECTED;
+                    } else {
+                        for (const game of this.GLOBAL.games) {
+                            const tmp = game.playerByID(data.friendID);
+                            if (tmp) {
+                                err = Errors.FRIENDS.IN_GAME;
+                                break;
+                            }
+                        }
+                    }
 
-                user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
-            }
+                    if (err.code === Errors.SUCCESS.code) {
+                        const invitId = lobby.addInvitation(user.id, data.friendID);
+                        friendUser.socket.emit('lobbyInvitationReceivedRes', {
+                            invitationID: invitId,
+                            senderFriendID: user.id,
+                            nbUsersInLobby: lobby.users.length
+                        });
+                    }
+
+                    user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
+                }
+            });
         });
     }
 
