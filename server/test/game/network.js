@@ -1,32 +1,66 @@
-const ioClient = require("socket.io-client");
-const io = require("socket.io");
-const chai = require("chai");
-const Network = require("../../game/network");
-const User = require('../../game/user');
+const ioClient    = require('socket.io-client');
+const assert      = require('assert')
+const app         = require('express')();
+const http        = require('http');
+const Constants   = require('../../lib/constants');
+const Errors      = require('../../lib/errors');
+const User        = require('../../game/user');
+const Lobby       = require('../../game/lobby');
+const Matchmaking = require('../../game/matchmaking');
+const Network     = require('../../game/network');
 
-describe("Test sur la classe Network + Sockets", function() {
-    const userSchema1 = {
-        nickname: 'François',
-        email: 'francois@gmail.com',
-        friends: ['Danyl', 'Boris', 'Matthias'],
-        inscriptionDatetime: 152888912,
-        level: 1,
-        exp: 0
-    };
-    const userSchema2 = {
-        nickname: 'Danyl',
-        email: 'danyl@gmail.com',
-        friends: ['François', 'Matthias', 'Boris'],
-        inscriptionDatetime: 152888912,
-        level: 1,
-        exp: 0
-    };
+describe('Network + sockets', () => {
 
-    const user1 = new User(userSchema1);
-    user1.socket = io;
-    const user2 = new User(userSchema2);
-    const network = new Network(io, [user1, user2], [{}], [{}]);
-    /*it("Doit renvoyer l'ID de l'invit + le pseudo de l'ami", function() {
-        network.lobbyInvitationReq(user1, network.lobbies[0]);
-    });*/
+    const port = 3002;
+    const server = http.createServer(app).listen(port);
+    const ioServer = require('socket.io')(server);
+    let clientSocket, serverSocket;
+    let user = new User({
+        id                  : 12489324,
+        nickname            : 'Danyl',
+        email               : 'danyl@gmail.com',
+        level               : 2,
+        exp                 : 0,
+        inscriptionDatetime : 834823492323
+    });
+
+    let GLOBAL = {
+        users   : [],
+        lobbies : [],
+        games   : []
+    };
+    GLOBAL.matchmaking = new Matchmaking(GLOBAL);
+    GLOBAL.network     = new Network(ioServer, GLOBAL);
+
+    ioServer.on('connection', (sock) => {
+        serverSocket = sock;
+        user.socket = serverSocket;
+        sock.emit('YES');
+    });
+
+    beforeEach( (done) => {
+        GLOBAL.users = [];
+        GLOBAL.lobbies = [];
+        GLOBAL.games = [];
+
+        clientSocket = ioClient.connect('http://localhost:' + port);
+        clientSocket.on('YES', () => {
+            done();
+        });
+    });
+
+    afterEach( (done) => {
+        if(serverSocket.connected)
+            serverSocket.disconnect();
+        done();
+    });
+
+    it('Réception de lobbyCreatedRes par l\'hôte', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        clientSocket.on('lobbyCreatedRes', (data) => {
+            done();
+        });
+        clientSocket.emit('lobbyReadyReq');
+    });
 });

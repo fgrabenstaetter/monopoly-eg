@@ -179,7 +179,7 @@ class Game {
              this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
          while (this.curPlayer.failure)
 
-         console.log('NEXT TURN player = ' + this.curPlayer.nickname);
+         // console.log('NEXT TURN player = ' + this.curPlayer.nickname);
          this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
          this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
              playerID: this.curPlayer.id,
