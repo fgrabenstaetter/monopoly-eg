@@ -234,10 +234,12 @@
           position: absolute;
           background-color: $popup-background;
           padding: 30px;
+          width: 450px;
           border-radius: 20px;
           left: 170px;
           display: flex;
           flex-direction: row;
+          flex-wrap: wrap;
 
           &.top {
             top: -20px;
@@ -267,10 +269,25 @@
               white-space: nowrap;
             }
 
+            &.blue, &.red, &.orange, &.pink, &.brown, &.green {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
+            &.yellow, &.pink, &.cyan {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
             // Classes couleurs propriétés
             &.yellow {
               .property {
-                background-color: yellow;
+                background-color: rgb(228, 228, 65);
+                color: white;
               }
             }
 
@@ -285,6 +302,110 @@
               .property {
                 background-color: red;
                 color: white;
+              }
+            }
+
+            &.orange {
+              .property {
+                background-color: orange;
+                color: white;
+              }
+            }
+
+            &.pink {
+              .property {
+                background-color: rgb(223, 184, 191);
+                color: white;
+              }
+            }
+
+            &.brown {
+              .property {
+                background-color: brown;
+                color: white;
+              }
+            }
+
+            &.cyan {
+              .property {
+                background-color: rgb(35, 212, 212);
+                color: white;
+              }
+            }
+
+            &.green {
+              .property {
+                background-color: green;
+                color: white;
+              }
+            }
+
+            &.station {
+              .property {
+                background-color: white;
+                color: black;
+                text-align: left;
+                padding-left: 12px;
+              }
+
+              :before {
+                font-family: "Font Awesome\ 5 Pro";
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                display: inline-block;
+                font-style: normal;
+                font-variant: normal;
+                text-rendering: auto;
+                line-height: 1;
+                font-weight: 900;
+                content: "\f239";
+                margin-right: 10px;
+                font-size: 15px;
+                color: black;
+                vertical-align: text-top;
+              }
+            }
+
+            &.company {
+              .property {
+                background-color: rgb(58, 58, 58);
+                text-align: left;
+                padding-left: 12px;
+                color: white;
+
+                &.eau:before {
+                  font-family: "Font Awesome\ 5 Pro";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f043";
+                  margin-right: 10px;
+                  font-size: 15px;
+                  color: white;
+                  vertical-align: text-top;
+                }
+
+                &.electricite:before {
+                  font-family: "Font Awesome\ 5 Pro";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f0eb";
+                  margin-right: 10px;
+                  font-size: 15px;
+                  color: white;
+                  vertical-align: text-top;
+                }
               }
             }
           }
