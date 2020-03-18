@@ -38,6 +38,10 @@ describe('Network + sockets', () => {
         sock.emit('YES');
     });
 
+    after( () => {
+        process.exit(0);
+    });
+
     beforeEach( (done) => {
         GLOBAL.users = [];
         GLOBAL.lobbies = [];
@@ -48,10 +52,9 @@ describe('Network + sockets', () => {
             done();
         });
     });
-
     afterEach( (done) => {
-        if(serverSocket.connected)
-            serverSocket.disconnect();
+        serverSocket.disconnect();
+        clientSocket.close();
         done();
     });
 
