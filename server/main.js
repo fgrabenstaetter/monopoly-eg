@@ -223,7 +223,6 @@ io.on('connection', (socket) => {
             if (ind !== -1)
                 lobby.invitedUsers.splice(ind, 1);
             GLOBAL.network.lobbyUserListen(usr, lobby);
-            console.log('TROUVER');
             return;
         }
     }
