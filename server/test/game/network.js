@@ -67,3 +67,18 @@ describe('Network + sockets', () => {
         clientSocket.emit('lobbyReadyReq');
     });
 });
+
+// CODE DE DANYL
+//
+//server.once("connection", function (socket) {
+//    serverSocket = socket;
+//});
+
+//clientSocket = client.connect();
+
+//describe('Fast and isolated socket tests', function() {
+//    //Exemple de test socket => Adapter avec network, appels de méthodes!
+//    it('Les sockets devraient communiquer sans server', function(done) {
+//        serverSocket.on('message', function (message) {
+//        console.log(message);
+//        assert.equal('Hello World!', message);
