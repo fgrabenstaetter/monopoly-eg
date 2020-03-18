@@ -170,16 +170,17 @@
       justify-content: center;
 
       .player-entry {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         position: relative;
 
         .name {
-          font-size: 20px;
+          font-size: 17px;
           font-weight: bold;
           font-family: 'Work Sans', sans-serif;
           position: relative;
           background: transparent;
           z-index: 0;
+          cursor: pointer;
         }
 
         .name::before {
@@ -192,7 +193,7 @@
 
         .money {
           color: white;
-          font-size: 15px;
+          font-size: 13px;
         }
 
         .money::before {
@@ -207,7 +208,7 @@
           font-weight: 900;
           content: "\f3d1";
           margin-right: 10px;
-          font-size: 18px;
+          font-size: 15px;
           color: white;
           vertical-align: text-top;
         }
@@ -224,90 +225,187 @@
           font-weight: 900;
           content: "$";
           margin-left: 2px;
-          font-size: 16px;
+          font-size: 13px;
           color: white;
           vertical-align: baseline;
         }
 
         .popup {
-          width: 500px;
-          height: max-content;
           position: absolute;
           background-color: $popup-background;
-          left: 150px;
-          top: -10px;
-          padding: 50px;
+          padding: 30px;
+          width: 450px;
           border-radius: 20px;
+          left: 170px;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+
+          &.top {
+            top: -20px;
+          }
+
+          &.bottom {
+            bottom: 1px;
+          }
 
           .properties-container {
             position: relative;
-            height: 207px;
-            width: 100px;
-            display: inline-block;
-            margin: 0 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            height: max-content;
 
             .property {
-              width: 100px;
+              text-align: center;
+              width: 120px;
               border: none;
               border-radius: 5px;
-              position: absolute;
+              padding: 10px 5px;
+              font-size: 10px;
+              margin: 5px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
 
-              .title {
-                font-size: 8px;
-                text-align: center;
-                color: black;
-                padding: 5px 0;
-                border-radius: 5px 5px 0 0;
-                overflow: hidden;
+            &.blue, &.red, &.orange, &.pink, &.brown, &.green {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
               }
+            }
 
-              .content {
-                border-radius: 0 0 5px 5px;
-                font-size: 8px;
-                text-align: center;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 110px;
-                background: white;
-                overflow: hidden;
-              }
-
-              &:first-child {
-                top: 0px;
-              }
-
-              &:nth-child(2) {
-                top: 25px;
-              }
-
-              &:nth-child(3) {
-                top: 50px;
-              }
-
-              &:nth-child(4) {
-                top: 75px;
+            &.yellow, &.pink, &.cyan {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
               }
             }
 
             // Classes couleurs propriétés
             &.yellow {
-              .title {
-                background-color: yellow;
+              .property {
+                background-color: rgb(228, 228, 65);
+                color: white;
               }
             }
 
             &.blue {
-              .title {
+              .property {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-              .title {
+              .property {
                 background-color: red;
                 color: white;
+              }
+            }
+
+            &.orange {
+              .property {
+                background-color: orange;
+                color: white;
+              }
+            }
+
+            &.pink {
+              .property {
+                background-color: rgb(223, 184, 191);
+                color: white;
+              }
+            }
+
+            &.brown {
+              .property {
+                background-color: brown;
+                color: white;
+              }
+            }
+
+            &.cyan {
+              .property {
+                background-color: rgb(35, 212, 212);
+                color: white;
+              }
+            }
+
+            &.green {
+              .property {
+                background-color: green;
+                color: white;
+              }
+            }
+
+            &.station {
+              .property {
+                background-color: white;
+                color: black;
+                text-align: left;
+                padding-left: 12px;
+              }
+
+              :before {
+                font-family: "Font Awesome\ 5 Pro";
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                display: inline-block;
+                font-style: normal;
+                font-variant: normal;
+                text-rendering: auto;
+                line-height: 1;
+                font-weight: 900;
+                content: "\f239";
+                margin-right: 10px;
+                font-size: 15px;
+                color: black;
+                vertical-align: text-top;
+              }
+            }
+
+            &.company {
+              .property {
+                background-color: rgb(58, 58, 58);
+                text-align: left;
+                padding-left: 12px;
+                color: white;
+
+                &.eau:before {
+                  font-family: "Font Awesome\ 5 Pro";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f043";
+                  margin-right: 10px;
+                  font-size: 15px;
+                  color: white;
+                  vertical-align: text-top;
+                }
+
+                &.electricite:before {
+                  font-family: "Font Awesome\ 5 Pro";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f0eb";
+                  margin-right: 10px;
+                  font-size: 15px;
+                  color: white;
+                  vertical-align: text-top;
+                }
               }
             }
           }
@@ -317,7 +415,6 @@
           content: '';
           position: absolute;
           left: 0;
-          top: 10px;
           width: 0;
           height: 0;
           border: 10px solid transparent;
@@ -325,6 +422,14 @@
           border-left: 0;
           margin-top: 10px;
           margin-left: -10px;
+        }
+
+        .top:after {
+          top: 10px;
+        }
+
+        .bottom:after {
+          bottom: 20px;
         }
 
         &.current::before {
@@ -348,9 +453,22 @@
         }
       }
 
+      @media (max-height: 820px) {
+        .player-entry {
+          margin-bottom: 0px;
+        }
+      }
+
       // couleurs assignées automatiquement aux membres de la liste
       @import '_players-colors.scss';
     }
+
+    @media (max-height: 820px) {
+      .player-list {
+        margin-top: -40px;
+      }
+    }
+
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
@@ -452,7 +570,7 @@
           font-size: 20px;
           color:#fff !important;
           text-decoration: none !important;
-          padding:14px 60px;
+          padding: 11px;
           line-height:1;
           overflow: hidden;
           position:relative;
@@ -460,6 +578,7 @@
           box-shadow:0 1px 1px #ccc;
          
         }
+
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
       

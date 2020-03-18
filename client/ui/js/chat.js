@@ -14,9 +14,9 @@ $(document).ready( () => {
     });
 });
 
-socket.on('lobbyChatReceiveRes', (msg) => {
+socket.on('lobbyChatReceiveRes', (mess) => {
     console.log('lobbyChatReceiveRes');
-    addMsg(msg);
+    addMsg(mess.senderUserID, mess.content, mess.createdTime);
 });
 
 /** Fonction qui remet la barre de défilement en bas

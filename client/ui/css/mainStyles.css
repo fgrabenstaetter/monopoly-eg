@@ -145,11 +145,15 @@ input {
 .options-overlay-container {
   position: absolute;
   z-index: 2;
-  width: 100%;
-  padding-top: 20px;
+  top: 20px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
 }
 
 .options-overlay-container i {
+  position: relative;
+  left: 535px;
   height: 40px;
   width: 40px;
   text-align: center;
@@ -161,15 +165,22 @@ input {
   border-radius: 100%;
 }
 
+@media (max-width: 1199.98px) {
+  .options-overlay-container i {
+    left: 445px;
+  }
+}
+
 .profile-overlay-container {
   position: absolute;
   z-index: 2;
-  width: 100%;
-  padding-top: 20px;
+  top: 20px;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
 }
 
 .profile-overlay-container .profile-row {
-  padding-right: 75px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -179,22 +190,34 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  position: relative;
+  left: 400px;
 }
 
-.profile-overlay-container .username {
+.profile-overlay-container .profile-row .username {
   margin-right: 20px;
   color: white;
   font-size: 22px;
   font-family: "LilitaOne", sans-serif;
+  width: 110px;
+  text-align: right;
+  white-space: nowrap;
+  direction: rtl;
 }
 
-.profile-overlay-container img {
+.profile-overlay-container .profile-row img {
   height: 60px;
   width: 60px;
   border-radius: 100%;
   border: 4px solid white;
   -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1199.98px) {
+  .profile-overlay-container .profile-row {
+    left: 310px;
+  }
 }
 
 .tchat-container {
@@ -211,7 +234,7 @@ input {
 
 .tchat-container .msg-me {
   position: relative;
-  background: #00e54f;
+  background: #02c446;
   padding: 5px 10px;
   color: white;
   font-size: 13px;
@@ -230,7 +253,7 @@ input {
   width: 0;
   height: 0;
   border: 6px solid transparent;
-  border-left-color: #00e54f;
+  border-left-color: #02c446;
   border-right: 0;
   margin-top: -6px;
   margin-right: -6px;
@@ -312,10 +335,6 @@ input {
   .tchat-container {
     max-height: 150px;
   }
-}
-
-.simplebar-scrollbar:before {
-  background-color: #0052ba;
 }
 
 .resolution-overlay-container {
@@ -447,7 +466,7 @@ input {
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-request, .lobby-ui-container .container:first-child .box.grouplist .friend-request {
   background: rgba(0, 0, 0, 0.2);
-  margin: 0;
+  margin: 0 0 5px 0;
   width: 220px;
   padding: 20px;
   text-align: left;
@@ -462,7 +481,7 @@ input {
 .lobby-ui-container .container:first-child .box.friendlist .friend-request .accept-button, .lobby-ui-container .container:first-child .box.grouplist .friend-request .accept-button {
   border: white 1px solid;
   border-radius: 3px;
-  margin-left: auto;
+  margin-left: 0;
   padding: 2px 5px;
   font-size: 12px;
   color: black;
@@ -474,7 +493,7 @@ input {
 .lobby-ui-container .container:first-child .box.friendlist .friend-request .deny-button, .lobby-ui-container .container:first-child .box.grouplist .friend-request .deny-button {
   border: rgba(255, 255, 255, 0.7) 1px solid;
   border-radius: 3px;
-  margin-left: auto;
+  margin-left: 5px;
   padding: 2px 5px;
   font-size: 12px;
   color: black;
@@ -523,6 +542,7 @@ input {
   border: 3px solid rgba(255, 255, 255, 0.7);
   -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-name {
@@ -530,6 +550,7 @@ input {
   font-size: 13px;
   overflow: hidden;
   overflow-wrap: normal;
+  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
@@ -570,6 +591,16 @@ input {
   margin-left: 10px;
   font-size: 12px;
   color: yellow;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .add-new-friend, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend {
+  text-align: center;
+  margin: 20px auto 20px auto;
+  padding: 2px 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  max-width: 160px;
 }
 
 .lobby-ui-container .container:first-child .avatar-container {
@@ -1033,17 +1064,18 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
   font-family: 'Work Sans', sans-serif;
   position: relative;
   background: transparent;
   z-index: 0;
+  cursor: pointer;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .name::before {
@@ -1056,7 +1088,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
   color: white;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::before {
@@ -1071,7 +1103,7 @@ input {
   font-weight: 900;
   content: "\f3d1";
   margin-right: 10px;
-  font-size: 18px;
+  font-size: 15px;
   color: white;
   vertical-align: text-top;
 }
@@ -1088,101 +1120,184 @@ input {
   font-weight: 900;
   content: "$";
   margin-left: 2px;
-  font-size: 16px;
+  font-size: 13px;
   color: white;
   vertical-align: baseline;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup {
-  width: 500px;
-  height: -webkit-max-content;
-  height: -moz-max-content;
-  height: max-content;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.7);
-  left: 150px;
-  top: -10px;
-  padding: 50px;
+  padding: 30px;
+  width: 450px;
   border-radius: 20px;
+  left: 170px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
+  top: -20px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup.bottom {
+  bottom: 1px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
   position: relative;
-  height: 207px;
-  width: 100px;
-  display: inline-block;
-  margin: 0 20px 0 0;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
-  width: 100px;
-  border: none;
-  border-radius: 5px;
-  position: absolute;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property .title {
-  font-size: 8px;
-  text-align: center;
-  color: black;
-  padding: 5px 0;
-  border-radius: 5px 5px 0 0;
-  overflow: hidden;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property .content {
-  border-radius: 0 0 5px 5px;
-  font-size: 8px;
-  text-align: center;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  height: 110px;
-  background: white;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 0;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
+  text-align: center;
+  width: 120px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 5px;
+  font-size: 10px;
+  margin: 5px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:first-child {
-  top: 0px;
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(2) {
-  top: 25px;
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(3) {
-  top: 50px;
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
+  background-color: #e4e441;
+  color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property:nth-child(4) {
-  top: 75px;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .title {
-  background-color: yellow;
-}
-
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .title {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
   background-color: blue;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .title {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
   background-color: red;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property {
+  background-color: orange;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property {
+  background-color: #dfb8bf;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property {
+  background-color: brown;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+  background-color: #23d4d4;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+  background-color: green;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property {
+  background-color: white;
+  color: black;
+  text-align: left;
+  padding-left: 12px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station :before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f239";
+  margin-right: 10px;
+  font-size: 15px;
+  color: black;
+  vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
+  background-color: #3a3a3a;
+  text-align: left;
+  padding-left: 12px;
+  color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.eau:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f043";
+  margin-right: 10px;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.electricite:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f0eb";
+  margin-right: 10px;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
   content: '';
   position: absolute;
   left: 0;
-  top: 10px;
   width: 0;
   height: 0;
   border: 10px solid transparent;
@@ -1190,6 +1305,14 @@ input {
   border-left: 0;
   margin-top: 10px;
   margin-left: -10px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .top:after {
+  top: 10px;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .bottom:after {
+  bottom: 20px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry.current::before {
@@ -1210,6 +1333,12 @@ input {
   position: absolute;
   top: 10px;
   left: -17px;
+}
+
+@media (max-height: 820px) {
+  .ingame-ui-container .container:first-child .player-list .player-entry {
+    margin-bottom: 0px;
+  }
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:first-of-type .name {
@@ -1242,6 +1371,12 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(8) .name {
   color: orange;
+}
+
+@media (max-height: 820px) {
+  .ingame-ui-container .container:first-child .player-list {
+    margin-top: -40px;
+  }
 }
 
 .ingame-ui-container .container:nth-child(2) {
@@ -1369,7 +1504,7 @@ input {
   font-size: 20px;
   color: #fff !important;
   text-decoration: none !important;
-  padding: 14px 60px;
+  padding: 11px;
   line-height: 1;
   overflow: hidden;
   position: relative;

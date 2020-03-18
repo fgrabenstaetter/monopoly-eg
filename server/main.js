@@ -26,7 +26,7 @@ let production = false;
 if (foundArg('production'))
     production = true;
 
-mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 const JWT_SECRET = 'J@-(icrwUsD*IH5';
 
 ////////////////////////////////////////////
@@ -177,7 +177,7 @@ io.on('connection', (socket) => {
         // si il est dans un lobby, l'y supprimer
         for (const lobby of GLOBAL.lobbies) {
             if (lobby.userByNickname(user.nickname)) {
-                lobby.delUser(user, false);
+                lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
                 return;
             }
         }
@@ -197,7 +197,7 @@ io.on('connection', (socket) => {
     // regarder si le joueur est dans une partie
     // nécessaire car pour passer du lobby au jeu, le client change de page .. et donc doit se reconnecter à un nouveau socket
     for (const game of GLOBAL.games) {
-        const player = game.playerByNickname(user.nickname);
+        const player = game.playerByID(user.id);
         if (player) {
             // le joueur est dans une partie !
             GLOBAL.network.gamePlayerListen(player, game);
@@ -205,21 +205,29 @@ io.on('connection', (socket) => {
         }
     }
 
-    //
+    // DECOMMENTER POUR UN SEUL LOBBY PUBLIC
+    // if (GLOBAL.lobbies.length === 0)
+    //     GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
+    // else {
+    //     if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb)
+    //         return;
+    //     else
+    //         GLOBAL.lobbies[0].addUser(user);
+    // }
 
-    // <--- TEMPORAIRE ---> (lobby global => 1 seul lobby pour tout le monde)
-    // Créer le lobby
-    if (GLOBAL.lobbies.length === 0) {
-        console.log('Création du lobby global par ' + user.nickname);
-        GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
-    } else {
-        // rejoindre le lobby
-        if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb) {
-            console.log('(user ' + user.nickname + ') Lobby global PLEIN, aurevoir');
+    // regarder si le joueur est déjà dans un lobby  === a été invité
+    for (const lobby of GLOBAL.lobbies) {
+        const usr = lobby.userByID(user.id);
+        if (usr) {
+            const ind = lobby.invitedUsers.indexOf(usr);
+            if (ind !== -1)
+                lobby.invitedUsers.splice(ind, 1);
+            GLOBAL.network.lobbyUserListen(usr, lobby);
+            console.log('TROUVER');
             return;
-        } else {
-            GLOBAL.lobbies[0].addUser(user);
-            console.log(user.nickname + ' a rejoin le lobby global (' + GLOBAL.lobbies[0].users.length + '/' + GLOBAL.lobbies[0].maxUsersNb + ')');
         }
     }
+
+    // LOBBY SÉPARÉ
+    GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
 });

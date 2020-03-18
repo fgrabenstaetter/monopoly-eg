@@ -2,10 +2,6 @@
 $('.friend-entry .friend-action').text('inviter'); // Dans liste amis
 $('.group-entry .friend-action').text('exclure'); // Dans liste groupe
 
-// Boutons
-$('.accept-button').text('accepter');
-$('.deny-button').text('refuser');
-
 // Ingame: notifications d'achat
 $('.ingame-ui-container .sale .state').text('À VENDRE');
 $('.ingame-ui-container .sale .btn-primary').text('ACHETER');

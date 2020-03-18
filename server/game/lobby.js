@@ -7,20 +7,21 @@ class Lobby {
 
     /**
      * Objets d'invitation de lobby
-     * { from: fromUserID: int, toUserID: int, invitationID: int }
+     * { fromUserID: int, toUserID: int, invitationID: int }
      */
-    invitations = [];
-    invitationIDCounter = 0;
-    lobbyIDCounter = 0;
+    static invitations = [];
+    static invitationIDCounter = 0;
+    static lobbyIDCounter = 0;
 
     /**
      * @param user Utilisateur qui crée le lobby (= hôte)
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (user, GLOBAL) {
+    constructor(user, GLOBAL) {
         this.GLOBAL = GLOBAL;
+        this.invitedUsers = []; // ne pas supprime les users ici si ils se deco !
         this.chat = new Chat();
-        this.id = this.lobbyIDCounter ++;
+        this.id = Lobby.lobbyIDCounter++;
 
         // le user à l'indice 0 => hôte
         this.users = [];
@@ -37,7 +38,7 @@ class Lobby {
     /**
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
-    addUser (user) {
+    addUser(user) {
         if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
             return false;
 
@@ -47,15 +48,21 @@ class Lobby {
             this.targetUsersNb = this.users.length;
 
         this.GLOBAL.network.lobbyUserListen(user, this);
+
+        if (!this.isHost(user)) // message de rejoint
+            this.GLOBAL.network.lobbySendMessage(this, null, user.nickname + ' a rejoint !');
     }
 
     /**
      * @param user L'objet correspond à l'utilisateur à retirer du lobby
      */
-    delUser (user) {
+    delUser(user) {
         const ind = this.users.indexOf(user);
         if (ind === -1)
             return;
+        const isInvited = this.invitedUsers.indexOf(user) !== -1;
+        if (isInvited)
+            return; // NE PAS LE SUPPRIMER CAR IL VIENT DACCEPTER LINVITATION LOBBY DUN AMI
 
         this.pawns.splice(ind, 1);
         this.users.splice(ind, 1);
@@ -76,7 +83,7 @@ class Lobby {
      *
      * @param network Gestionnaire de réseau dont les users seront retirés
      */
-    delete () {
+    delete() {
         if (this.users.length === 0)
             return;
 
@@ -87,7 +94,7 @@ class Lobby {
     /**
      * @param newNb le nouveau nombre de joueur souhaité pour la partie à jouer
      */
-    changeTargetUsersNb (newNb) {
+    changeTargetUsersNb(newNb) {
         if (newNb < 2)
             this.targetUsersNb = 2;
         else if (newNb > 8)
@@ -98,7 +105,7 @@ class Lobby {
             this.targetUsersNb = newNb;
     }
 
-    searchGame () {
+    searchGame() {
         this.GLOBAL.matchmaking.addLobby(this);
         this.open = false;
     }
@@ -107,7 +114,7 @@ class Lobby {
      * @param nickname Le pseudo de l'utilisateur à chercher
      * @return l'utilisateur (user) si trouvé, sinon null
      */
-    userByNickname (nickname) {
+    userByNickname(nickname) {
         for (const user of this.users) {
             if (user.nickname === nickname)
                 return user;
@@ -120,7 +127,7 @@ class Lobby {
      * @param id L'ID de l'utilisateur à chercher
      * @return l'utilisateur (user) si trouvé, sinon null
      */
-    userByID (id) {
+    userByID(id) {
         for (const user of this.users) {
             if (user.id === id)
                 return user;
@@ -134,7 +141,7 @@ class Lobby {
      * @param user L'utilisateur dont on veut récupérer le pion
      * @return son pion (int) si user trouvé, sinon null
      */
-    userPawn (user) {
+    userPawn(user) {
         const ind = this.users.indexOf(user);
         if (ind !== -1)
             return this.pawns[ind];
@@ -146,7 +153,7 @@ class Lobby {
      * @param pawn Le nouveau pion
      * @return true si succès, false sinon (pion déjà utilisé)
      */
-    changePawn (user, pawn) {
+    changePawn(user, pawn) {
         const ok = this.pawns.indexOf(pawn) === -1;
         if (!ok)
             return false;
@@ -159,15 +166,15 @@ class Lobby {
      * @param user L'utilisateur qu'on veut tester hote ou non
      * @return true si il est l'hôte, false sinon
      */
-    isHost (user) {
+    isHost(user) {
         return this.users[0] === user;
     }
 
     /**
      * @return un pion disponible
      */
-    get nextPawn () {
-        for (let i = 0; i < 7; i ++) {
+    get nextPawn() {
+        for (let i = 0; i < 7; i++) {
             if (this.pawns.indexOf(i) === -1)
                 return i;
         }
@@ -186,24 +193,27 @@ class Lobby {
      * @param toID L'ID pseudo de l'utilisateur qui doit recevoir l'invitation
      * @return L'ID de l'invitation créée
      */
-    static addInvitation (fromID, toID) {
-        this.invitations.push( {
-            fromUserID: from,
-            toUserID: to,
-            invitationID: this.invitationIDCounter
+    addInvitation(fromID, toID) {
+        Lobby.invitations.push({
+            fromUserID: fromID,
+            toUserID: toID,
+            invitationID: Lobby.invitationIDCounter
         });
-        return this.invitationIDCounter ++;
+        console.log(Lobby.invitations);
+
+        return Lobby.invitationIDCounter++;
     }
 
     /*
      * @param id L'ID de l'invitation à supprimer
      * @return L'objet invitation si trouvé, false sinon
      */
-    static delInvitation (id) {
-        for (let i = 0, l = this.invitations.length; i < l; i ++) {
-            if (this.invitations[i].id === id) {
-                const save = this.invitations[i];
-                this.invitations.splice(i, 1);
+    delInvitation(id) {
+        console.log(Lobby.invitations);
+        for (let i = 0, l = Lobby.invitations.length; i < l; i++) {
+            if (Lobby.invitations[i].invitationID === id) {
+                const save = Lobby.invitations[i];
+                Lobby.invitations.splice(i, 1);
                 return save;
             }
         }

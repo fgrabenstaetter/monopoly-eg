@@ -11,30 +11,23 @@
                         <i class="fa fa-search"></i>
                     </div>
                     <div class="friends-entries-container">
+                        <!-- Friend Request
                         <div class="friend-request">
                             <div class="friend-request-text">
                                 <span data-id="">FullMerinos</span> souhaite vous ajouter à sa liste d'amis
                             </div>
-                            <div class="accept-button"></div>
-                            <div class="deny-button"></div>
+                            <div class="accept-button">accepter</div>
+                            <div class="deny-button">refuser</div>
                         </div>
+                        -->
                         <div id="friendList">
-                            <div class="friend-entry">
-                                <img class="friends-avatar" src="img/ui/avatar1.jpg">
-                                <div class="friends-name" data-id="">Unknown67</div>
-                                <div class="friend-action"></div>
-                            </div>
-                            <div class="friend-entry">
-                                <img class="friends-avatar" src="img/ui/avatar2.jpg">
-                                <div class="friends-name" data-id="">Kirby</div>
-                                <div class="friend-action"></div>
-                            </div>
-                            <div class="friend-entry">
-                                <img class="friends-avatar" src="img/ui/avatar3.jpg">
-                                <div class="friends-name" data-id="">NomBeaucoupTropLong</div>
-                                <div class="friend-action"></div>
-                            </div>
+                            <!--<div class="friend-entry">
+                                <img class="friends-avatar" src="img/ui/avatar1.jpg" data-toggle="modal" data-target="#Unknown67Modal">
+                                <div class="friends-name" data-id="1" data-toggle="modal" data-target="#Unknown67Modal">Unknown67</div>
+                                <div class="friend-action">inviter</div>
+                            </div>-->
                         </div>
+                        <div class="add-new-friend">"entrée" pour ajouter un nouvel ami</div>
                     </div>
                 </div>
             </div>
@@ -68,30 +61,14 @@
     <div class="row">
         <div class="col-md-4">
             <div class="tchat-container" id="msgChat">
-                <div class="msg-other">
-                    <div class="msg-author">Kirby</div>
-                    Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre
-                </div>
-                <div class="msg-me">
-                    <div class="msg-author">Moi</div>
-                    Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe
-                </div>
-                <div class="msg-other">
-                    <div class="msg-author">Kirby</div>
-                    Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre
-                </div>
-                <div class="msg-me">
-                    <div class="msg-author">Moi</div>
-                    Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe
-                </div>
-                <div class="msg-other">
-                    <div class="msg-author">Kirby</div>
-                    Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre
-                </div>
-                <div class="msg-me">
-                    <div class="msg-author">Moi</div>
-                    Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe
-                </div>
+                <!-- <div class="msg-other"> -->
+                <!--     <div class="msg-author">Kirby</div> -->
+                <!--     Salut tu veux bien jouer avec moi au Monopoly ? Je m'ennuie beaucoup et j'ai 17h à perdre -->
+                <!-- </div> -->
+                <!-- <div class="msg-me"> -->
+                <!--     <div class="msg-author">Moi</div> -->
+                <!--     Ça tombe bien moi aussi ! Je t'invite tout de suite. Quelle chance que ce fantastique jeu en ligne existe -->
+                <!-- </div> -->
             </div>
 
             <div class="tchat-container">
@@ -116,19 +93,9 @@
             </div>
         </div>
         <div class="col-md-4 notification-container" id="inviteGameContainer">
-            <div class="card notification"  style="display: none;">
-                <div class="card-header">
-                    INVITATION 1
-                </div>
-                <div class="card-body">
-                    <p class="card-text">FullMerinos vous invite à rejoindre sa partie</p>
-                    <button class="btn btn-primary">ACCEPTER</button>
-                    <button class="btn btn-secondary">REFUSER</button>
-                </div>
-            </div>
             <div class="card notification" style="display: none;">
                 <div class="card-header">
-                    INVITATION 2
+                    INVITATION
                 </div>
                 <div class="card-body">
                     <p class="card-text">Kirby vous invite à rejoindre sa partie</p>
@@ -138,6 +105,29 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-container" id="modal">
+    <!--<div class="modal fade" id="Unknown67Modal" tabindex="-1" role="dialog" aria-labelledby="Unknown67ModalLabel" aria-hidden="true" data-id="1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Unknown67ModalLabel">Unknown67</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-danger delete-friend-button" data-id="1">supprimer</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
 </div>
 
 <script src="js/chat.js"></script>

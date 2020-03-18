@@ -70,6 +70,26 @@ module.exports = Object.freeze({
         INVITATION_ACTION_PROCESS_ERROR: {
             code: 5,
             status: 'Erreur action traitement de la requête d\'ami'
+        },
+        CANT_INVITE_YOURSELF: {
+            code: 6,
+            status: 'Vous ne pouvez pas vous inviter vous-même en ami'
+        },
+        ALREADY_INVITED: {
+            code: 7,
+            status: 'Vous avez déjà demandé cette personne en ami (en attente de sa réponse)'
+        },
+        ALREADY_INVITED_BY_THIS_MEMBER: {
+            code: 8,
+            status: 'Vous avez déjà été demandé en ami par cette personne (acceptez sa demande !)'
+        },
+        ALREADY_FRIENDS: {
+            code: 9,
+            status: 'Vous êtes déjà ami avec cette personne'
+        },
+        ALREADY_SAME_LOBBY: {
+            code: 10,
+            status: 'Votre ami est déjà dans ce lobby'
         }
     },
 

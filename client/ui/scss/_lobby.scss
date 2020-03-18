@@ -62,7 +62,7 @@
 
         .friend-request {
           background: $notification-body;
-          margin: 0;
+          margin: 0 0 5px 0;
           width: 220px;
           padding: 20px;
           text-align: left;
@@ -76,7 +76,7 @@
           .accept-button {
             border: white 1px solid;
             border-radius: 3px;
-            margin-left: auto;
+            margin-left: 0;
             padding: 2px 5px;
             font-size: 12px;
             color: black;
@@ -88,7 +88,7 @@
           .deny-button {
             border: rgba($color: white, $alpha: 0.7) 1px solid;
             border-radius: 3px;
-            margin-left: auto;
+            margin-left: 5px;
             padding: 2px 5px;
             font-size: 12px;
             color: black;
@@ -133,6 +133,7 @@
             border-radius: 3px;
             border: 3px solid rgba($color: white, $alpha: 0.7);
             box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+            cursor: pointer;
           }
 
           .friends-name {
@@ -140,6 +141,7 @@
             font-size: 13px;
             overflow: hidden;
             overflow-wrap: normal;
+            cursor: pointer;
           }
 
           .friend-action {
@@ -185,6 +187,16 @@
             font-size: 12px;
             color: yellow;
           }
+        }
+
+        .add-new-friend {
+          text-align: center;
+          margin: 20px auto 20px auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: rgba($color: white, $alpha: 0.6);
+          cursor: pointer;
+          max-width: 160px;
         }
       }
     }
