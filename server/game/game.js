@@ -1,13 +1,12 @@
-const Chat      = require('./chat');
-const Constants = require('../lib/constants');
-const Deck      = require('./deck');
-const Map = require('./map');
-const Player    = require('./player');
-
-const cellsMeta = require('./../lib/cells');
+const Chat                    = require('./chat');
+const Constants               = require('../lib/constants');
+const Deck                    = require('./deck');
+const Map                     = require('./map');
+const Player                  = require('./player');
+const cellsMeta               = require('./../lib/cells');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-const propertiesMeta = require('./../lib/properties');
+const propertiesMeta          = require('./../lib/properties');
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -38,15 +37,6 @@ class Game {
             money      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
             properties : []
         }
-
-        /*
-        // ajout des propriétés du plateau dans la banque
-        for (const cell of this.cells) {
-            if (cell.property)
-                this.bank.properties.push(cell.property);
-        }
-        TODO: fix this
-        */
 
         this.turnData = { // pour le client (envoi Network)
             actionMessage    : null,
@@ -152,13 +142,21 @@ class Game {
      * @return la cellule sur laquelle est le joueur actuel
      */
     get curCell () {
-        return this.cells[this.curPlayer.cellPos];
+        return this.map.cells[this.curPlayer.cellPos];
     }
 
 
-    start () {
+    /**
+     * @param immediate false pour attendre le timeout de lancement, false sinon (utile tests unitaires)
+     */
+    start (immediate = false) {
+        if (!this.allPlayersReady)
+            return false;
         this.startedTime = Date.now();
-        setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
+        if (immediate)
+            this.nextTurn();
+        else
+            setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
     }
 
     /**
@@ -182,7 +180,6 @@ class Game {
              this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
          while (this.curPlayer.failure)
 
-         // console.log('NEXT TURN player = ' + this.curPlayer.nickname);
          this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
          this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
              playerID: this.curPlayer.id,
@@ -213,22 +210,22 @@ class Game {
         if (!this.curPlayer.isInPrison) {
             const oldPos  = this.curPlayer.cellPos;
             const total   = diceRes[0] + diceRes[1];
-            this.curPlayer.cellPos = (this.curPlayer.cellPos + total) % this.cells.length;
+            this.curPlayer.cellPos = (this.curPlayer.cellPos + total) % this.map.cells.length;
 
             switch (this.curCell.type) {
-                case Constants.CELL_TYPE.PRISON:
+                case Constants.CELL_TYPES.PRISON:
                     this.turnPlayerPrisonCell();
                     break;
 
-                case Constants.CELL_TYPE.PROPERTY:
+                case Constants.CELL_TYPES.PROPERTY:
                     this.turnPlayerPropertyCell(diceRes);
                     break;
 
-                case Constants.CELL_TYPE.CHANCE:
+                case Constants.CELL_TYPES.CHANCE:
                     this.turnPlayerChanceCardCell();
                     break;
 
-                case Constants.CELL_TYPE.COMMUNITY:
+                case Constants.CELL_TYPES.COMMUNITY_CHEST:
                     this.turnPlayerCommunityCardCell();
                     break;
 
@@ -270,7 +267,7 @@ class Game {
 
     turnPlayerPropertyCell (diceRes1, diceRes2) {
         const total = diceRes1 + diceRes2;
-        index = this.curPlayer.properties.indexOf(this.curCell.property);
+        const index = this.curPlayer.properties.indexOf(this.curCell.property);
         if (index !== -1) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnData(Constants.GAME_ACTION_TYPE.CAN_UPGRADE, this.curCell.property.availableUpgradeLevels,
@@ -341,11 +338,7 @@ class Game {
     asyncActionBuyProperty () {
         if (!this.curCell.property || this.curCell.property.owner)
             return -1;
-        let price;
-        if (this.curCell.property.type === Constants.PROPERTY_TYPE.STREET)
-            price = this.curCell.property.emptyPrice;
-        else
-            price = this.curCell.property.price;
+        const price = this.curCell.property.buyingPrice;
         if (this.curPlayer.money < price)
             return -1;
 

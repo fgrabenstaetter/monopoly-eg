@@ -15,7 +15,7 @@ class Player {
         this.isReady    = false; // synchronisation de tous les joueurs avant lancement de partie
         this.failure    = false;
         this.money      = 1500; // argent initial
-        this.currentCell = null;
+        this.cellPos    = 0;
         this.properties = [];
 
         this.jailJokerCards       = 0;

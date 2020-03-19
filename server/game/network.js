@@ -542,7 +542,7 @@ class Network {
                 //     });
 
                 //     // propriétés
-                //     if (cell.type === Constants.CELL_TYPE.PROPERTY) {
+                //     if (cell.type === Constants.CELL_TYPES.PROPERTY) {
                 //         let propertyData = {
                 //             id: cell.property.id,
                 //             type: cell.property.typeStr,
@@ -588,7 +588,7 @@ class Network {
                 err = Errors.GAME.NOT_MY_TURN;
             else {
                 const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
-                for (const player of game.players.length)
+                for (const player of game.players)
                     moneySav.push(player.money);
 
                 const diceRes = game.rollDice();

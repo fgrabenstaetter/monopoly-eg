@@ -6,6 +6,7 @@ const Constants   = require('../../lib/constants');
 const Errors      = require('../../lib/errors');
 const User        = require('../../game/user');
 const Lobby       = require('../../game/lobby');
+const Game        = require('../../game/game');
 const Matchmaking = require('../../game/matchmaking');
 const Network     = require('../../game/network');
 
@@ -108,8 +109,7 @@ describe('Network + sockets', () => {
             assert.ok(data.cells);
             assert.ok(data.properties);
 
-            nb ++;
-            if (nb === 2)
+            if (++ nb === 2)
                 done();
         }
 
@@ -128,5 +128,83 @@ describe('Network + sockets', () => {
         });
 
         clientSocket.emit('lobbyPlayReq');
+    });
+
+    it('Réception de gameTurnRes + cohérence données', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.start(true);
+
+        let nb = 0;
+        function process (data) {
+            assert.strictEqual(data.error, Errors.SUCCESS.CODE);
+            assert.strictEqual(data.playerID, game.curPlayer.id);
+            assert.ok(data.turnEndTime);
+            if (++ nb === 2)
+                done();
+        }
+
+        clientSocket.on('gameTurnRes', (data) => {
+            process(data);
+        });
+        clientSocket2.on('gameTurnRes', (data) => {
+            process(data);
+        });
+    });
+
+    it('Un joueur dont ce n\'est pas le tour ne peux pas lancer les dés', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.start(true);
+
+        let sock;
+        if (game.curPlayer.user.socket === serverSocket)
+            sock = clientSocket2;
+        else
+            sock = clientSocket;
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.GAME.NOT_MY_TURN.code);
+            done();
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Le joueur actuel lance les dés + cohérence données action de jeu', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.start(true);
+
+        let sock, id, nb = 0;
+        if (game.curPlayer.user.socket === serverSocket) {
+            sock = clientSocket;
+            id = user.id;
+        } else {
+            sock = clientSocket2;
+            id = user2.id;
+        }
+
+        sock.on('gameActionRes', (data) => {
+            assert.strictEqual(data.dicesRes.length, 2);
+            assert.strictEqual(data.playerID, id);
+            assert.strictEqual(data.cellID, game.playerByID(id).cellPos);
+            assert.notStrictEqual(data.actionMessage, undefined);
+            assert.notStrictEqual([null, 'canBuy', 'canUpgrade', 'shouldMortage'].indexOf(data.asyncRequestType), -1);
+            assert.notStrictEqual(data.asyncRequestArgs, undefined);
+            assert.ok(data.updateMoney);
+            assert.ok(data.extra);
+            if (++ nb === 2) done();
+        });
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+            if (++ nb === 2) done();
+        });
+        sock.emit('gameRollDiceReq');
     });
 });
