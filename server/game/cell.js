@@ -1,79 +1,49 @@
 const Constants = require('./../lib/constants');
 
-
+/**
+ * Représente une case du plateau de jeu
+ */
 class Cell {
-    constructor (id, token, name, description, type, property=null) {
-        this.id = id;
-        this.token = token;
-        this.name = name;
-        this.description = description;
+    /**
+     * @param type Type de case (voir CELL_TYPE)
+     * @param property Propriété associée à la case (le cas échéant)
+     */
+    constructor (type, property = null) {
         this.type = type;
         this.property = property;
-
-        if (!(this.type in Constants.CELL_TYPES))
-            throw 'Type de cellule inconnu - ' + this.type;
-
-        this.effectCallback = {
-            START: this.startEffect,
-            PROPERTY: this.propertyEffect,
-            COMMUNITY_CHEST: this.communnityChestEffect,
-            CHANCE: this.chanceEffect,
-            OTHER: this.otherEffect
-        }[this.type];
     }
 
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-     */
-    execute (game, player) {
-        this.effectCallback(game, player);
-    };
+    get name () {
+        switch (this.type) {
+            case Constants.CELL_TYPE.START:
+                return 'Début';
+            case Constants.CELL_TYPE.PARC:
+                return 'Parc';
+            case Constants.CELL_TYPE.PRISON:
+                return 'Prison';
+            case Constants.CELL_TYPE.PROPERTY:
+                return this.property.name;
+            case Constants.CELL_TYPE.CHANCE_CARD:
+                return 'Carte chance';
+            case Constants.CELL_TYPE.COMMUNITY_CARD:
+                return 'Carte de communauté';
+        }
+    }
 
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-        Si le joueur passe par start, il recoit $200
-     */
-    startEffect (game, player) {
-        player.addMoney(200);
-    };
-
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-        Si le joueur arrive sur une propriete, on execute l'effet de la propriete
-     */
-    propertyEffect (game, player) {
-        this.property.execute(game, player);
-    };
-
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-        On retire une carte depuis communityChestDeck du jeu
-     */
-    communnityChestEffect (game, player) {
-        game.communityChestDeck.drawCard(game, player);
-    };
-
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-        On retire une carte depuis chanceDeck du jeu
-     */
-    chanceEffect (game, player) {
-        game.chanceDeck.drawCard(game, player);
-    };
-
-    /**
-     @param game l'instance actuelle du jeu
-     @param player le joueur actuel
-        Temporaire, ne fait rien, utilise pour des cellules nouvelles
-     */
-    otherEffect (game, player) {
-
-    };
+    get typeStr () {
+        switch (this.type) {
+            case Constants.CELL_TYPE.PRISON:
+                return 'prison';
+            case Constants.CELL_TYPE.PROPERTY:
+                return 'property';
+            case Constants.CELL_TYPE.CHANCE_CARD:
+                return 'chance';
+            case Constants.CELL_TYPE.COMMUNITY_CARD:
+                return 'community';
+            case Constants.CELL_TYPE.OTHER:
+                return 'other';
+        }
+    }
 }
 
 module.exports = Cell;

@@ -1,92 +1,39 @@
-const Constants = require('./../lib/constants');
+const Properties = require('../lib/properties');
+const Constants = require('../lib/constants');
 
+/**
+ * Représente une propriété (rue, gare ou compagnie)
+ */
+class Property { // classe abstraite
 
-class Property {
-    constructor(meta) {
-        this.token = meta.token;
-        this.name = meta.name;
-        this.description = meta.description;
-        this.buyingPrice = meta.buyingPrice;
-        this.rentalPrice = meta.rentalPrice;
-        this.type = meta.type;
-        this.owner = null;
+    idCounter = 0;
 
-        this.calculateRent = {
-            TRAIN_STATION: this.trainStationRent,
-            STREET: this.streetRent,
-            PUBLIC_COMPANY: this.publicCompanyRent
-        }[this.type];
-
-        if (this.type == Constants.PROPERTY_TYPES.STREET) {
-            this.housesCount = 0;
-            this.hasHotel = false;
-            this.color = meta.color;
-        }
-    }
-
-    /**
-     @param
+    /*
+     * @param owner Propriétaire de la propriété (Player) ou null si à la banque
+     * @param type Type de la propriété (PROPERTY_TYPE, voir constants.js)
+     * @param data L'objet qui contient les données de la propriété (voir properties.js)
      */
-    execute (game, player) {
-        if(this.owner == null) {
-            // la propriete n'est achetee par personne, on propose de l'acheter
-        } else if (this.owner == player) {
-            // on est arrive sur notre propre propriete, on peut construire
-        } else {
-            // si la propriete est achetee deja, il faut payer le loyer
-            this.payRent(game, player);
+    constructor (owner, type, data) {
+        this.id = this.idCounter ++;
+        this.isMortgaged = false;
+        this.owner = owner;
+        this.type = type;
+        // implémenté chez les classes filles uniquement
+        this.load(data);
+    }
+
+    get typeStr () {
+        switch (this.type) {
+            case Constants.PROPERTY_TYPE.STREET:
+                return 'street';
+            case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                return 'publicCompany';
+            case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                return 'trainStation';
+            default:
+                return null;
         }
     }
-
-    payRent(game, player) {
-        let rentAmount = this.calculateRent(game);
-    }
-
-    trainStationRent (game) {
-        // pour chaque train station que le joueur possede, on double
-        let tranStationsCount = this.owner.getPropertiesByType(Constants.PROPERTY_TYPES.TRAIN_STATION).length;
-        return {
-            1: 25,
-            2: 50,
-            3: 100,
-            4: 200
-        }[tranStationsCount];
-    }
-
-    streetRent (game) {
-        // si on a un hotel, retourne directement le prix de hotel
-        if (this.hasHotel)
-            return this.rentalPrice['hotel']
-
-        // si on n'a pas de maisons, c'est soit prix ordinaire soit monopole
-        if (this.housesCount == 0) {
-            if (this.owner.sameStreetColorNb(this.color) == game.map.colorsCount[this.color])
-                // monopole quand le joueur detient toutes les rues de cette couleur
-                return this.rentalPrice['monopoly'];
-            else
-                // prix ordinaire
-                return this.rentalPrice['simple'];
-        }
-
-        // sinon, ca depend du nombre de maisons
-        return this.rentalPrice[this.housesCount.toString()];
-    }
-
-    publicCompanyRent (game) {
-        let companiesCount = this.owner.getPropertiesByType(Constants.PROPERTY_TYPES.PUBLIC_COMPANY).length;
-
-        let multiplier = null;
-        if (companiesCount == game.map.publicCompaniesCount)
-            // si le joueur detienne tous les entreprises, c'est 10x dice roll
-            multiplier = 10;
-        else
-            // sinon c'est 4x dice roll
-            multiplier = 4;
-
-        let diceRoll = game.map.throwDices();
-        let res = (diceRoll[0] + diceRoll[1]) * multiplier;
-        return res;
-    }
- }
+}
 
 module.exports = Property;

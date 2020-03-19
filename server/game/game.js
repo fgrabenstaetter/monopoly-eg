@@ -1,12 +1,11 @@
 const Chat                    = require('./chat');
 const Constants               = require('../lib/constants');
 const Deck                    = require('./deck');
-const Map                     = require('./map');
 const Player                  = require('./player');
-const cellsMeta               = require('./../lib/cells');
+const Cells                   = require('./../lib/cells');
+const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-const propertiesMeta          = require('./../lib/properties');
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -21,17 +20,16 @@ class Game {
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor (users, pawns, GLOBAL) {
-        this.GLOBAL = GLOBAL;
-        this.players = [];
-        this.id = this.gameIDCounter ++;
-        this.turnPlayerInd = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
-        this.turnTimeout = null;
-        this.chat = new Chat();
+        this.GLOBAL             = GLOBAL;
+        this.players            = [];
+        this.id                 = this.gameIDCounter ++;
+        this.turnPlayerInd      = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
+        this.turnTimeout        = null;
+        this.chat               = new Chat();
 
-        this.map = new Map(cellsMeta, propertiesMeta);
-
-        this.chanceDeck = new Deck(chanceCardsMeta);
+        this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
+        this.cells              = Cells;
 
         this.bank = {
             money      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
@@ -142,7 +140,7 @@ class Game {
      * @return la cellule sur laquelle est le joueur actuel
      */
     get curCell () {
-        return this.map.cells[this.curPlayer.cellPos];
+        return this.cells[this.curPlayer.cellPos];
     }
 
 
@@ -210,22 +208,22 @@ class Game {
         if (!this.curPlayer.isInPrison) {
             const oldPos  = this.curPlayer.cellPos;
             const total   = diceRes[0] + diceRes[1];
-            this.curPlayer.cellPos = (this.curPlayer.cellPos + total) % this.map.cells.length;
+            this.curPlayer.cellPos = (this.curPlayer.cellPos + total) % this.cells.length;
 
             switch (this.curCell.type) {
-                case Constants.CELL_TYPES.PRISON:
+                case Constants.CELL_TYPE.PRISON:
                     this.turnPlayerPrisonCell();
                     break;
 
-                case Constants.CELL_TYPES.PROPERTY:
+                case Constants.CELL_TYPE.PROPERTY:
                     this.turnPlayerPropertyCell(diceRes);
                     break;
 
-                case Constants.CELL_TYPES.CHANCE:
+                case Constants.CELL_TYPE.CHANCE:
                     this.turnPlayerChanceCardCell();
                     break;
 
-                case Constants.CELL_TYPES.COMMUNITY_CHEST:
+                case Constants.CELL_TYPE.COMMUNITY:
                     this.turnPlayerCommunityCardCell();
                     break;
 
