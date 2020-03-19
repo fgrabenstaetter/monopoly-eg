@@ -534,42 +534,42 @@ class Network {
                     });
                 }
 
-                for (const cell of game.cells) {
-                    cells.push({
-                        id: cellsCounter++,
-                        type: cell.typeStr,
-                        propertyID: cell.property ? cell.property.id : null
-                    });
+                // for (const cell of game.cells) {
+                //     cells.push({
+                //         id: cellsCounter++,
+                //         type: cell.typeStr,
+                //         propertyID: cell.property ? cell.property.id : null
+                //     });
 
-                    // propriétés
-                    if (cell.type === Constants.CELL_TYPE.PROPERTY) {
-                        let propertyData = {
-                            id: cell.property.id,
-                            type: cell.property.typeStr,
-                            name: cell.property.name,
-                            description: cell.property.description
-                        };
+                //     // propriétés
+                //     if (cell.type === Constants.CELL_TYPE.PROPERTY) {
+                //         let propertyData = {
+                //             id: cell.property.id,
+                //             type: cell.property.typeStr,
+                //             name: cell.property.name,
+                //             description: cell.property.description
+                //         };
 
-                        switch (cell.property.type) {
-                            case Constants.PROPERTY_TYPE.STREET:
-                                propertyData.color = cell.property.color;
-                                propertyData.prices = cell.property.prices;
-                                propertyData.rentalPrices = cell.property.rentalPrices;
-                                break;
+                //         switch (cell.property.type) {
+                //             case Constants.PROPERTY_TYPE.STREET:
+                //                 propertyData.color = cell.property.color;
+                //                 propertyData.prices = cell.property.prices;
+                //                 propertyData.rentalPrices = cell.property.rentalPrices;
+                //                 break;
 
-                            case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
-                                propertyData.price = cell.property.price;
-                                propertyData.rentalPrice = cell.property.rentalPrice;
-                                break;
+                //             case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                //                 propertyData.price = cell.property.price;
+                //                 propertyData.rentalPrice = cell.property.rentalPrice;
+                //                 break;
 
-                            case Constants.PROPERTY_TYPE.TRAIN_STATION:
-                                propertyData.price = cell.property.price;
-                                propertyData.rentalPrices = cell.property.rentalPrices;
-                        }
+                //             case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                //                 propertyData.price = cell.property.price;
+                //                 propertyData.rentalPrices = cell.property.rentalPrices;
+                //         }
 
-                        properties.push(propertyData);
-                    }
-                }
+                //         properties.push(propertyData);
+                //     }
+                // }
 
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime: game.forcedEndTime,

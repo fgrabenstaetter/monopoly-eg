@@ -59,9 +59,12 @@ class Game {
         this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
 
         for (let i = 0, l = users.length; i < l; i ++) {
-            this.players.push(new Player(users[i], pawns[i]));
+            const player = new Player(users[i], pawns[i]);
+            this.players.push(player);
+            // nécéssaire uniquement pour tests unitaires (env normal: socket change et donc inutile
+            if (this.GLOBAL.network)
+                this.GLOBAL.network.gamePlayerListen(player, this);
         }
-
     }
 
     globalGameState () {
