@@ -50,7 +50,7 @@ function getRenderer () {
 	renderer.gammaFactor = 2.2;
 
 	//On ajoute l'objet à la page html
-	var element = document.getElementsByClassName(board-container);
+	var element = document.getElementsByClassName('board-container');
 	element.appendChild(renderer.domElement);
 	return renderer;
 }
@@ -76,7 +76,7 @@ function deleteHotel (hotelProperty) {
 
 
 function loaderPlateau (load, test) {
-  load.load('/plateau/'+test+'.gltf', (gltf) => {
+  load.load('models/plateau/'+test+'.gltf', (gltf) => {
     const root = gltf.scene;
     scene.add(root);
   });
@@ -97,7 +97,7 @@ for(var i = 0; i < 12; i++){
 
 function loaderCases (cases) {
 	var load = new THREE.GLTFLoader();
-	load.load('/plateau/'+cases+'.gltf', (gltf) => {
+	load.load('models/plateau/'+cases+'.gltf', (gltf) => {
 		const root = gltf.scene;
 		window[cases] = gltf.scene;
 		scene.add(root);
@@ -122,7 +122,7 @@ for(var i = 0; i < 40; i++){
 
 function loaderPawn (pawn) {
 	var load = new THREE.GLTFLoader();
-	load.load('/pions/'+pawn+'.gltf', (gltf) => {
+	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
 		root.position.set(0.335*11.5,2,0.335*11.5);
@@ -134,7 +134,7 @@ function loaderPawn (pawn) {
 
 function loaderHouseProperty (houseProperty) {
 	var load = new THREE.GLTFLoader();
-	load.load('/maisonPro/'+houseProperty+'.gltf', (gltf) => {
+	load.load('models/maisonPro/'+houseProperty+'.gltf', (gltf) => {
 		const root = gltf.scene;
 		window[houseProperty] = gltf.scene;
 		scene.add(root);
@@ -144,7 +144,7 @@ function loaderHouseProperty (houseProperty) {
 
 function loaderHotelProperty (hotelPropriete) {
 	var load = new THREE.GLTFLoader();
-	load.load('/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
+	load.load('models/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
 		const root = gltf.scene;
 		window[hotelPropriete] = gltf.scene;
 		scene.add(root);
