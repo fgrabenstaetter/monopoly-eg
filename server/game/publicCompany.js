@@ -26,6 +26,19 @@ class PublicCompany extends Property {
     get mortagePrice () {
         return this.price / 2;
     }
+
+    /**
+     * @param diceRes [int, int] résultats des dés
+     * @return le prix de loyer
+     */
+    rentalPrice (diceRes) {
+        const total = diceRes[0] + diceRes[1];
+        let multiplier = 4;
+        if (this.owner.haveAllCompanies)
+            multiplier = 10;
+
+        return total * multiplier;
+    }
 }
 
 module.exports = PublicCompany;

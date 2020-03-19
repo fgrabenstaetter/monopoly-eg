@@ -34,11 +34,23 @@ class Player {
      */
     get trainStationsNb () {
         let nb = 0;
-        for (let prop of this.properties)
-            if (prop.type === Constants.PROPERTY_TYPES.TRAIN_STATION)
+        for (const prop of this.properties)
+            if (prop.type === Constants.PROPERTY_TYPE.TRAIN_STATION)
                 nb ++;
 
         return nb;
+    }
+
+    /**
+     * @return true si le joueur a toutes les compagnies, false sinon
+     */
+    get haveAllCompanies () {
+        let nb = 0;
+        for (const prop of this.properties)
+            if (prop.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY)
+                nb ++;
+
+        return nb === Properties.PUBLIC_COMPANY.length;
     }
 
     get id () {
@@ -83,7 +95,7 @@ class Player {
      * @param propertyToken le token de la propriete a verifier
      */
     getProperty (propertyToken) {
-        for (let property of this.properties)
+        for (const property of this.properties)
             if (property.token == propertyToken)
                 return property;
     }
@@ -113,7 +125,7 @@ class Player {
 
     getPropertiesByType (type) {
         let properties = [];
-        for (let property of this.properties)
+        for (const property of this.properties)
             if (property.type == type)
                 properties.push(property);
 
@@ -124,13 +136,19 @@ class Player {
      * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
      * @return true si le joueur possède toutes les rues de cette couleur, false sinon
      */
-    sameStreetColorNb (color) {
-        let nb = 0;
-        for (const prop of this.getPropertiesByType(Constants.PROPERTY_TYPES.STREET)) {
-            if (prop.color === color)
+    colorMonopoly (color) {
+        let nb = 0, total = 0;
+
+        for (const prop of this.properties) {
+            if (prop.type === Constants.PROPERTY_TYPE.STREET && prop.color === color)
                 nb ++;
         }
-        return nb;
+        for (const prop of Properties.STREET) {
+            if (prop.color === color)
+                total ++;
+        }
+
+        return nb === total;
     }
 }
 
