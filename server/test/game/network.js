@@ -89,6 +89,7 @@ describe('Network + sockets', () => {
             done();
         });
         clientSocket.emit('lobbyReadyReq');
+        done();
     });
 
     it('Réception gameStartedRes + cohérence données reçues', (done) => {
@@ -128,5 +129,22 @@ describe('Network + sockets', () => {
         });
 
         clientSocket.emit('lobbyPlayReq');
+    });
+
+    it('Kick d\'un user quittant un lobby', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        lobby.addUser(user2);
+        console.log(lobby.users.length);
+        assert.equal(2, lobby.users.length);
+        lobby.delUser(user2);
+
+        clientSocket2.emit('lobbyUserLeftRes');
+        clientSocket.on('lobbyUserLeftRes', (data) => {
+            assert.equal(data.userID, user2.id);
+            assert.equal(data.hostID, user.id);
+            console.log(data);
+            done();
+        });
     });
 });
