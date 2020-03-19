@@ -5,12 +5,12 @@ describe("Test sur la classe User", function() {
     const userSchema = {
         nickname: 'François',
         email: 'francois@gmail.com',
-        friends: ['Danyl', 'Boris', 'Matthias'],
         inscriptionDatetime: 152888912,
         level: 1,
         exp: 0
     };
-    const user = new User(userSchema);
+    let user = new User(userSchema);
+    user.friends = ['Danyl', 'Boris', 'Matthias'],
 
     it("Expérience de base doit être à 0", function() {
         assert.equal(0, user.exp);

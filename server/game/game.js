@@ -59,9 +59,12 @@ class Game {
         this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
 
         for (let i = 0, l = users.length; i < l; i ++) {
-            this.players.push(new Player(users[i], pawns[i]));
+            const player = new Player(users[i], pawns[i]);
+            this.players.push(player);
+            // nécéssaire uniquement pour tests unitaires (env normal: socket change et donc inutile
+            if (this.GLOBAL.network)
+                this.GLOBAL.network.gamePlayerListen(player, this);
         }
-
     }
 
     globalGameState () {
@@ -179,7 +182,7 @@ class Game {
              this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++ this.turnPlayerInd;
          while (this.curPlayer.failure)
 
-         console.log('NEXT TURN player = ' + this.curPlayer.nickname);
+         // console.log('NEXT TURN player = ' + this.curPlayer.nickname);
          this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
          this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
              playerID: this.curPlayer.id,

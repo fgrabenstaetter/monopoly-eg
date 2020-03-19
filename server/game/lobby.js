@@ -199,7 +199,7 @@ class Lobby {
             toUserID: toID,
             invitationID: Lobby.invitationIDCounter
         });
-        console.log(Lobby.invitations);
+        // console.log(Lobby.invitations);
 
         return Lobby.invitationIDCounter++;
     }
@@ -209,7 +209,7 @@ class Lobby {
      * @return L'objet invitation si trouvé, false sinon
      */
     delInvitation(id) {
-        console.log(Lobby.invitations);
+        // console.log(Lobby.invitations);
         for (let i = 0, l = Lobby.invitations.length; i < l; i++) {
             if (Lobby.invitations[i].invitationID === id) {
                 const save = Lobby.invitations[i];
