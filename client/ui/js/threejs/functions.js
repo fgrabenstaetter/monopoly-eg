@@ -54,36 +54,45 @@ function getRenderer () {
 	return renderer;
 }
 
+let scene = getScene();
+let camera = getCamera();
+let light = getLight(scene);
+let renderer = getRenderer();
+
 
 function render () {	
-	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 	if (counter!=0)
 		movement(varPawn,varMovement);
 
 	renderer.render(scene, camera);
+	console.log(renderer.info.render);
 }
-
+render();
 
 function deleteHouse (houseProperty) {
+	requestAnimationFrame(render);
 	scene.remove(window[houseProperty]);
 }
 
 
 function deleteHotel (hotelProperty) {
+	requestAnimationFrame(render);
 	scene.remove(window[hotelProperty]);
 }
 
 
 function loaderPlateau (load, test) {
   load.load('models/plateau/'+test+'.gltf', (gltf) => {
+	requestAnimationFrame(render);
     const root = gltf.scene;
     scene.add(root);
   });
 }
 
 var plateauObjects = [
-				'collections', 'eau', 'egout', 'orangerie',
-				'maison', 'parlement', 'pont', 'rail',
+				'collections', 'eau', 'egout', 'egout',
+				 'orangerie', 'maison', 'parlement', 'pont', 'rail',
 				'route', 'tram', 'campus', 'cascade'
 ]
 
@@ -97,6 +106,7 @@ for(var i = 0; i < 12; i++){
 function loaderCases (cases) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/plateau/'+cases+'.gltf', (gltf) => {
+		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[cases] = gltf.scene;
 		scene.add(root);
@@ -122,6 +132,7 @@ for(var i = 0; i < 40; i++){
 function loaderPawn (pawn) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
+		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
 		root.position.set(0.335*11.5,2,0.335*11.5);
@@ -134,6 +145,7 @@ function loaderPawn (pawn) {
 function loaderHouseProperty (houseProperty) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+houseProperty+'.gltf', (gltf) => {
+		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[houseProperty] = gltf.scene;
 		scene.add(root);
@@ -144,6 +156,7 @@ function loaderHouseProperty (houseProperty) {
 function loaderHotelProperty (hotelPropriete) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
+		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[hotelPropriete] = gltf.scene;
 		scene.add(root);
@@ -190,80 +203,101 @@ function movement (pawn, vdp) {
 	// La route d'en bas - Du coin droit vers le coin gauche
 	if (ppx != vdpx && ((ppz == vdpz) || (ppz != vdpz)) && ppz == zmax && vdpz == zmax) {
 		// Pour revenir sur la même route (un tour du plateau)
-		if (ppx == xmin && ppz == zmax)
+		if (ppx == xmin && ppz == zmax){
+			requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
-		else
+		} else {
+			requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-
+		}
 	// La route d'en bas vers une case de la route à gauche
-	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax)
+	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
+		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 
 	// La route d'en bas - Du coin gauche vers le coin gauche d'en haut
-	else if (ppx == xmin && vdpx == xmin && ppx == vdpx && ppz != vdpz) {
+	} else if (ppx == xmin && vdpx == xmin && ppx == vdpx && ppz != vdpz) {
 		// Pour revenir sur la même route (un tour du plateau)
-		if (ppx == xmin && ppz == zmin)
+		if (ppx == xmin && ppz == zmin){
+			requestAnimationFrame(render);
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
-		else 
+		}else {
+			requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
-
+		}
 	// La route gauche vers une case de la route en haut
-	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin)
+	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin){
+		requestAnimationFrame(render);
 		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 
 	// La route d'en haut - Le coin haut gauche vers le coin haut droite
-	else if (ppx != vdpx && ppz == vdpz && ppz == zmin && vdpz == zmin) {
+	} else if (ppx != vdpx && ppz == vdpz && ppz == zmin && vdpz == zmin) {
 		// Pour revenir sur la même route (un tour du plateau)
-		if (ppx == xmax && ppz == zmin)
+		if (ppx == xmax && ppz == zmin) {
+			requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
-		else
+		} else {
+			requestAnimationFrame(render);
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
-
+		}
 	// L'opposer de la route d'en bas ->  haut (case 9 -> case 21)
-	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpx && ppz == zmax && vdpz == zmin)
+	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpx && ppz == zmax && vdpz == zmin) {
+		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 
 	// La route d'en haut - Le coin haut droite vers le coin bas droite
-	else if (ppx == xmax && vdpx == xmax && ppx == vdpx && ppz != vdpz) {
+	} else if (ppx == xmax && vdpx == xmax && ppx == vdpx && ppz != vdpz) {
 		// Pour revenir sur la même route (un tour du plateau)
-		if (ppx == xmax && ppz == zmax)
+		if (ppx == xmax && ppz == zmax) {
+			requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-		else
+		} else {
+			requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
-
+		}
 	// La route d'en haut vers une case de la route à droite
-	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmax && ppz == zmin)
+	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmax && ppz == zmin) {
+		requestAnimationFrame(render);
 		window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 
 	// L'opposer de la route de gauche ->  droit (case 19 -> case 31)
-	else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmin && vdpx == xmax)
+	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmin && vdpx == xmax) {
+		requestAnimationFrame(render);
 		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 
 	// La route de droite vers une case de la route en bas
-	else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmax)
+	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmax) {
+		requestAnimationFrame(render);
 		window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 
 	// L'opposer de la route du haut ->  bas (case 29 -> case 1)
-	else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpz && ppz == zmin && vdpz == xmax)
+	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpz && ppz == zmin && vdpz == xmax) {
+		requestAnimationFrame(render);
 		window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 
 	// L'opposer de la route de droite ->  gauche (case 39 -> case 11)
-	else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmax && vdpx == xmin)
+	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmax && vdpx == xmin) {
+		requestAnimationFrame(render);
 		window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 
 	// La route de gauche vers une case de la route en bas
-	else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmax)
+	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmax) {
+		requestAnimationFrame(render);
 		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 
 	// La route d'en haut vers une case de la route de gauche
-	else if((ppx != vdpx) && (ppz != vdpz) && (ppz == zmin) && (vdpx == xmin))
+	} else if((ppx != vdpx) && (ppz != vdpz) && (ppz == zmin) && (vdpx == xmin)) {
+		requestAnimationFrame(render);
 		window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 
 	// La route de droite vers une case de la route d'en haut
-	else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmin)
+	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmin) {
+		requestAnimationFrame(render);
 		window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 
 	// La route d'en bas vers une case de la route de droite
-	else if(ppx != vdpx && ppz != vdpz && ppz == vdpx)
+	} else if(ppx != vdpx && ppz != vdpz && ppz == vdpx) {
+		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+}
 }
