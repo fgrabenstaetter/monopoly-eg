@@ -24,7 +24,9 @@ let homePage = `
 
 let gamePage = `
         <div class="background-container"></div>
-        <canvas id="c"></canvas>
+        <div class="board-container">
+                <canvas id="c"></canvas>
+        </div>
         <div class="ingame-ui-container"></div>
         <div class="options-overlay-container"></div>
         <div class="profile-overlay-container"></div>
