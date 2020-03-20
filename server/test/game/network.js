@@ -112,6 +112,33 @@ describe('Network + sockets', () => {
         });
     });
 
+    it('Changement de pion', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        clientSocket.emit('lobbyChangePawnReq', {pawn: 6});
+
+        clientSocket.on('lobbyUserPawnChangedRes', (data) => {
+            console.log(data);
+            assert.equal(data.userID, user.id);
+            assert.equal(data.pawn, 6);
+            done();
+        });
+    });
+
+    it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        const random = Math.floor(Math.random()*(8-2+1)+2);
+
+        clientSocket.emit('lobbyChangeTargetUsersNbReq', {nb: random});
+
+        clientSocket.on('lobbyTargetUsersNbChangedRes', (data) => {
+            console.log(data);
+            assert.equal(data.nb, lobby.targetUsersNb);
+            done();
+        });
+    });
+
     ////////////////
     // GAME TESTS //
     ////////////////
