@@ -6,7 +6,6 @@ let renderer;
 
 function getScene () {
 	let scene = new THREE.Scene();
-	scene.background = new THREE.Color(0x78e9f8);
 
 	return scene;
 }
@@ -41,8 +40,8 @@ function getLight (scene) {
 
 function getRenderer () {
 	//Creation du render
-	renderer = new THREE.WebGLRenderer({ antialias: false });
-	renderer.setClearColor(0xffffff, 1);
+	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
