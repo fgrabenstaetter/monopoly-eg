@@ -42,8 +42,6 @@ function getRenderer () {
 	//Creation du render
 	const canvas = document.querySelector('#c');
 	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, canvas });
-// 	const canvas = document.querySelector('#c');
-//   const renderer = new THREE.WebGLRenderer({canvas});
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	//renderer.setSize(window.innerWidth, window.innerHeight);
@@ -51,7 +49,7 @@ function getRenderer () {
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
 	renderer.gammaFactor = 2.2;
-	render.autoClear = false;
+	renderer.autoClear = false;
 	//console.log(renderer.renderLists);
 	//On ajoute l'objet à la page html
 	//document.getElementsByClassName('board-container')[0].appendChild(renderer.domElement);
