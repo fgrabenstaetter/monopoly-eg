@@ -11,7 +11,8 @@ describe("Test sur la classe Street", function() {
     });
 
     it("Cette Rue fait partie des cases rouges", function() {
-        assert.equal(Constants.PROPERTY_COLOR.RED, street.color);
+        //console.log(street);
+        assert.equal(Constants.STREET_COLOR.RED, street.color);
     });
 
     it("Le prix du terrain doit être égal à 160", function() {
