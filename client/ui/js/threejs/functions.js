@@ -72,7 +72,7 @@ camera = getCamera();
 light = getLight(scene);
 renderer = getRenderer();
 
-function render () {	
+function render () {
 	//requestAnimationFrame(render);
 	if (counter!=0)
 		movement(varPawn,varMovement);
@@ -82,6 +82,11 @@ function render () {
 			camera.aspect = canvas.clientWidth / canvas.clientHeight;
 			camera.updateProjectionMatrix();
 		 }*/
+	
+	const canvas = renderer.domElement;
+	camera.aspect = canvas.clientWidth / canvas.clientHeight;
+	camera.updateProjectionMatrix();
+
 	renderer.render(scene, camera);
 }
 render();
