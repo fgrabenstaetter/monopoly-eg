@@ -1,9 +1,9 @@
 'use strict'
-const User = require('../../game/user');
-const Lobby = require('../../game/lobby');
-const Matchmaking = require('../../game/matchmaking');
-const Game = require('../../game/game');
-const Network = require('../../game/network');
+const User = require('../game/user');
+const Lobby = require('../game/lobby');
+const Matchmaking = require('../game/matchmaking');
+const Game = require('../game/game');
+const Network = require('../game/network');
 const Express = require('express');
 const Http = require('http');
 const ioserver = require('socket.io');

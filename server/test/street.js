@@ -1,8 +1,8 @@
-const Street = require('../../game/street');
-const User = require('../../game/user');
-const Player = require('../../game/player');
-const Constants = require('../../lib/constants');
-const Properties = require('../../lib/properties');
+const Street = require('../game/street');
+const User = require('../game/user');
+const Player = require('../game/player');
+const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
 const assert = require('assert');
 
 describe("Test sur la classe Street", function() {

@@ -1,9 +1,9 @@
 'use strict'
-const User = require('../../game/user');
-const Lobby = require('../../game/lobby');
-const Matchmaking = require('../../game/matchmaking');
-const Game = require('../../game/game');
-const Network = require('../../game/network');
+const User = require('../game/user');
+const Lobby = require('../game/lobby');
+const Matchmaking = require('../game/matchmaking');
+const Game = require('../game/game');
+const Network = require('../game/network');
 const Express = require('express');
 const Http = require('http');
 const ioserver = require('socket.io');
@@ -18,7 +18,7 @@ let GLOBAL = {
     games: [], // Parties de jeu actuellement en cours
 }
 
-describe("Test sur la classe Matchmaking", function() {
+describe("Matchmaking", function() {
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',

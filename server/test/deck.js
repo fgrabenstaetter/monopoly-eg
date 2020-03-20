@@ -1,10 +1,10 @@
 var assert = require('chai').assert;
 
-const Deck = require('./../../game/deck');
+const Deck = require('../game/deck');
 
 const {createGame} = require('./factories/game');
-const chanceCardsMeta = require('./../../lib/chanceCards');
-const communityChestCardsMeta = require('./../../lib/communityChestCards');
+const chanceCardsMeta = require('../lib/chanceCards');
+const communityChestCardsMeta = require('../lib/communityChestCards');
 
 
 describe('Deck', function() {

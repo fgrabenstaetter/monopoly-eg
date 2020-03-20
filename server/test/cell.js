@@ -1,9 +1,9 @@
-const Cell          = require('../../game/cell');
-const Property      = require('../../game/property');
-const PublicCompany = require('../../game/publicCompany');
-const Street        = require('../../game/street');
-const Constants     = require('../../lib/constants');
-const Properties    = require('../../lib/properties');
+const Cell          = require('../game/cell');
+const Property      = require('../game/property');
+const PublicCompany = require('../game/publicCompany');
+const Street        = require('../game/street');
+const Constants     = require('../lib/constants');
+const Properties    = require('../lib/properties');
 const assert        = require('assert');
 
 describe("Test sur la classe Cell", function() {

@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 
-const Market = require('../../game/market');
+const Market = require('../game/market');
 
 const {createGame} = require('./factories/game');
 

@@ -1,6 +1,6 @@
-const PublicCompany = require('../../game/publicCompany');
-const Constants = require('../../lib/constants');
-const Properties = require('../../lib/properties');
+const PublicCompany = require('../game/publicCompany');
+const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
 const assert = require('assert');
 
 describe("Test sur la classe PublicCompany", function() {

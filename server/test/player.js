@@ -1,10 +1,10 @@
-const User = require('../../game/user');
-const Player = require('../../game/player');
-const Properties = require('../../lib/properties');
-const Street = require('../../game/street');
+const User = require('../game/user');
+const Player = require('../game/player');
+const Properties = require('../lib/properties');
+const Street = require('../game/street');
 const assert = require('assert');
 
-describe("Test sur la classe Player", function() {
+describe("Player", function() {
     const userSchema = {
         nickname: 'Matthias',
         email: 'matthiass@gmail.com',
@@ -34,7 +34,6 @@ describe("Test sur la classe Player", function() {
 
     it("Le joueur possède maintenant la Rue de Londres", function() {
         player.addProperty(street);
-        console.log(Properties.STREET[0]);
         assert.equal(1, player.properties.length);
         assert.equal("Rue de Londres", player.properties[0].name);
     });

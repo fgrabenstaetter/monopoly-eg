@@ -1,7 +1,7 @@
 var assert = require('chai').assert,
     expect = require('chai').expect;
 
-const Card = require('../../game/card');
+const Card = require('../game/card');
 
 const {createGame} = require('./factories/game');
 const {createUser} = require('./factories/user');

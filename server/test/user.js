@@ -1,4 +1,4 @@
-const User = require('../../game/user');
+const User = require('../game/user');
 const assert = require('assert');
 
 describe("Test sur la classe User", function() {

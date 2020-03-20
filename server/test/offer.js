@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 
 
-const Offer = require('../../game/offer');
+const Offer = require('../game/offer');
 const {createPlayer} = require('./factories/player');
 
 

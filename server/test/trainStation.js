@@ -1,8 +1,8 @@
-const TrainStation = require('../../game/trainStation');
-const Constants = require('../../lib/constants');
-const Properties = require('../../lib/properties');
-const User = require('../../game/user');
-const Player = require('../../game/player');
+const TrainStation = require('../game/trainStation');
+const Constants = require('../lib/constants');
+const Properties = require('../lib/properties');
+const User = require('../game/user');
+const Player = require('../game/player');
 const assert = require('assert');
 
 describe("Test sur la classe TrainStation", function() {

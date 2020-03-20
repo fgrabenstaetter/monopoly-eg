@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 
-const Bid = require('../../game/bid');
+const Bid = require('../game/bid');
 
 const {createGame} = require('./factories/game');
 const {createPlayer} = require('./factories/player');
