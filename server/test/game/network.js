@@ -166,6 +166,23 @@ describe('Network + sockets', () => {
         });
     });
 
+    it('Lancement d\'une game avec 2 utilisateurs dans un lobby pour une partie à 2 joueurs', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        lobby.addUser(user2);
+        GLOBAL.lobbies.push(lobby);
+        assert.equal(true, lobby.open);
+        lobby.changeTargetUsersNb(2);
+        clientSocket.emit('lobbyPlayReq');
+        clientSocket.on('lobbyPlayRes', (data) => {
+            assert.equal(false, lobby.open);
+            //La game a été lancée
+            assert.equal(Errors.SUCCESS.code, data.error);
+            assert.equal(Errors.SUCCESS.status, data.status);
+            assert.equal(1, GLOBAL.games.length);
+            done();
+        });
+    });
+
     ////////////////
     // GAME TESTS //
     ////////////////
