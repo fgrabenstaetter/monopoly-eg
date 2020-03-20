@@ -1,13 +1,13 @@
 const Constants = require('../lib/constants');
-const Property = require('./property');
+const Property  = require('./property');
 
 /**
  * Représente une carte "compagnie publique"
  */
 class PublicCompany extends Property {
 
-    constructor (owner, data) {
-        super(owner, Constants.PROPERTY_TYPE.PUBLIC_COMPANY, data);
+    constructor (data) {
+        super(Constants.PROPERTY_TYPE.PUBLIC_COMPANY, data);
     }
 
     /**

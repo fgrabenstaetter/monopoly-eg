@@ -51,9 +51,6 @@ describe('Network + sockets', () => {
         sock.emit('YES');
     });
 
-    after( () => {
-        process.exit(0);
-    });
 
     beforeEach( (done) => {
         GLOBAL.lobbies = [];
@@ -291,7 +288,7 @@ describe('Network + sockets', () => {
         sock.on('gameActionRes', (data) => {
             assert.strictEqual(data.dicesRes.length, 2);
             assert.strictEqual(data.playerID, id);
-            assert.strictEqual(data.cellID, game.playerByID(id).cellPos);
+            assert.strictEqual(data.cellPos, game.playerByID(id).cellPos);
             assert.notStrictEqual(data.actionMessage, undefined);
             assert.notStrictEqual([null, 'canBuy', 'canUpgrade', 'shouldMortage'].indexOf(data.asyncRequestType), -1);
             assert.notStrictEqual(data.asyncRequestArgs, undefined);

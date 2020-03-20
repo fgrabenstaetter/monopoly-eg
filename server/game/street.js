@@ -8,8 +8,8 @@ const Properties = require('../lib/properties')
  */
 class Street extends Property {
 
-    constructor (owner, data) {
-        super(owner, Constants.PROPERTY_TYPE.STREET, data);
+    constructor (data) {
+        super(Constants.PROPERTY_TYPE.STREET, data);
         this.housesNb = 0;
         this.hostel = false;
     }

@@ -1,5 +1,5 @@
 const Constants = require('../lib/constants');
-const Errors = require('../lib/errors');
+const Errors    = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
 
 /**
@@ -24,22 +24,22 @@ class Network {
         user.socket.join(lobby.name);
 
         // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq(user, lobby);
-        this.lobbyInvitationAcceptReq(user, lobby);
-        this.lobbyKickReq(user, lobby);
+        this.lobbyInvitationReq             (user, lobby);
+        this.lobbyInvitationAcceptReq       (user, lobby);
+        this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
-        this.lobbyChangeTargetUsersNbReq(user, lobby);
-        this.lobbyChangePawnReq(user, lobby);
-        this.lobbyChatSendReq(user, lobby);
-        this.lobbyPlayReq(user, lobby);
+        this.lobbyChangeTargetUsersNbReq    (user, lobby);
+        this.lobbyChangePawnReq             (user, lobby);
+        this.lobbyChatSendReq               (user, lobby);
+        this.lobbyPlayReq                   (user, lobby);
 
         // Amis
-        this.lobbyFriendListReq(user, lobby);
-        this.lobbyRequestedFriendListReq(user, lobby);
-        this.lobbyPendingFriendListReq(user, lobby);
-        this.lobbyFriendInvitationSendReq(user, lobby);
-        this.lobbyFriendInvitationActionReq(user, lobby);
+        this.lobbyFriendListReq             (user, lobby);
+        this.lobbyRequestedFriendListReq    (user, lobby);
+        this.lobbyPendingFriendListReq      (user, lobby);
+        this.lobbyFriendInvitationSendReq   (user, lobby);
+        this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
 
         user.socket.on('lobbyReadyReq', () => {
@@ -52,23 +52,23 @@ class Network {
         player.user.socket.join(game.name);
 
         // Début/Fin + tour
-        this.gameReadyReq(player, game);
-        this.gameRollDiceReq(player, game);
-        this.gameTurnEndReq(player, game);
+        this.gameReadyReq                 (player, game);
+        this.gameRollDiceReq              (player, game);
+        this.gameTurnEndReq               (player, game);
 
         // Actions de tour asynchrones
-        this.gamePropertyBuyReq(player, game);
-        this.gamePropertyUpgradeReq(player, game);
-        this.gamePropertyForcedMortageReq(player, game);
+        this.gamePropertyBuyReq           (player, game);
+        this.gamePropertyUpgradeReq       (player, game);
+        this.gamePropertyForcedMortageReq (player, game);
 
         // Chat + offres
-        this.gameChatSendReq(player, game);
-        this.gameOfferSendReq(player, game);
-        this.gameOfferAcceptReq(player, game);
+        this.gameChatSendReq              (player, game);
+        this.gameOfferSendReq             (player, game);
+        this.gameOfferAcceptReq           (player, game);
 
         // Divers
-        this.gameOverbidReq(player, game);
-        this.gameMortageReq(player, game);
+        this.gameOverbidReq               (player, game);
+        this.gameMortageReq               (player, game);
     }
 
     //////////////////
@@ -93,33 +93,33 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                senderUserID: mess.senderUser ? mess.senderUser.id : -1, // -1 => Server
-                content: mess.content,
-                createdTime: mess.createdTime
+                senderUserID : mess.senderUser ? mess.senderUser.id : -1, // -1 => Server
+                content      : mess.content,
+                createdTime  : mess.createdTime
             });
         }
 
         let users = [];
         for (const usr of lobby.users) {
             users.push({
-                nickname: usr.nickname,
-                id: usr.id,
-                pawn: lobby.userPawn(usr)
+                nickname : usr.nickname,
+                id       : usr.id,
+                pawn     : lobby.userPawn(usr)
             });
         }
 
         // console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
-            targetUsersNb: lobby.targetUsersNb,
-            users: users,
-            messages: messages
+            targetUsersNb : lobby.targetUsersNb,
+            users         : users,
+            messages      : messages
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
-            nickname: user.nickname,
-            id: user.id,
-            pawn: lobby.pawns[lobby.users.indexOf(user)]
+            nickname : user.nickname,
+            id       : user.id,
+            pawn     : lobby.pawns[lobby.users.indexOf(user)]
         });
     }
 
@@ -160,10 +160,10 @@ class Network {
                     if (err.code === Errors.SUCCESS.code) {
                         const invitId = lobby.addInvitation(user.id, data.friendID);
                         friendUser.socket.emit('lobbyInvitationReceivedRes', {
-                            invitationID: invitId,
-                            senderFriendID: user.id,
-                            senderFriendNickname: user.nickname,
-                            nbUsersInLobby: lobby.users.length
+                            invitationID         : invitId,
+                            senderFriendID       : user.id,
+                            senderFriendNickname : user.nickname,
+                            nbUsersInLobby       : lobby.users.length
                         });
                     }
                 }
@@ -385,8 +385,8 @@ class Network {
                 err = Errors.LOBBY.PAWN_ALREADY_USED;
             else {
                 this.io.to(lobby.name).emit('lobbyUserPawnChangedRes', {
-                    userID: user.id,
-                    pawn: data.pawn
+                    userID : user.id,
+                    pawn   : data.pawn
                 });
             }
 
@@ -414,9 +414,9 @@ class Network {
         const mess = lobby.chat.addMessage(user, content, Constants.CHAT_MESSAGE_TYPE.TEXT);
         // broadcast lobby (also sender)
         this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-            senderUserID: user ? mess.senderUser.id : -1, // -1 => Server
-            content: mess.content,
-            createdTime: mess.createdTime
+            senderUserID : user ? mess.senderUser.id : -1, // -1 => Server
+            content      : mess.content,
+            createdTime  : mess.createdTime
         });
     }
 
@@ -528,54 +528,54 @@ class Network {
 
                 for (const player of game.players) {
                     players.push({
-                        nickname: player.nickname,
-                        id: player.id,
-                        pawn: player.pawn
+                        nickname : player.nickname,
+                        id       : player.id,
+                        pawn     : player.pawn
                     });
                 }
 
-                // for (const cell of game.cells) {
-                //     cells.push({
-                //         id: cellsCounter++,
-                //         type: cell.typeStr,
-                //         propertyID: cell.property ? cell.property.id : null
-                //     });
+                for (const cell of game.cells) {
+                    cells.push({
+                        id         : cellsCounter ++,
+                        type       : cell.type,
+                        propertyID : cell.property ? cell.property.id : null
+                    });
 
-                //     // propriétés
-                //     if (cell.type === Constants.CELL_TYPES.PROPERTY) {
-                //         let propertyData = {
-                //             id: cell.property.id,
-                //             type: cell.property.typeStr,
-                //             name: cell.property.name,
-                //             description: cell.property.description
-                //         };
+                    // propriétés
+                    if (cell.type === Constants.CELL_TYPE.PROPERTY) {
+                        let propertyData = {
+                            id          : cell.property.id,
+                            type        : cell.property.type,
+                            name        : cell.property.name,
+                            description : cell.property.description
+                        };
 
-                //         switch (cell.property.type) {
-                //             case Constants.PROPERTY_TYPE.STREET:
-                //                 propertyData.color = cell.property.color;
-                //                 propertyData.prices = cell.property.prices;
-                //                 propertyData.rentalPrices = cell.property.rentalPrices;
-                //                 break;
+                        switch (cell.property.type) {
+                            case Constants.PROPERTY_TYPE.STREET:
+                                propertyData.color        = cell.property.color;
+                                propertyData.prices       = cell.property.prices;
+                                propertyData.rentalPrices = cell.property.rentalPrices;
+                                break;
 
-                //             case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
-                //                 propertyData.price = cell.property.price;
-                //                 propertyData.rentalPrice = cell.property.rentalPrice;
-                //                 break;
+                            case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                                propertyData.price       = cell.property.price;
+                                propertyData.rentalPrice = cell.property.rentalPrice;
+                                break;
 
-                //             case Constants.PROPERTY_TYPE.TRAIN_STATION:
-                //                 propertyData.price = cell.property.price;
-                //                 propertyData.rentalPrices = cell.property.rentalPrices;
-                //         }
+                            case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                                propertyData.price        = cell.property.price;
+                                propertyData.rentalPrices = cell.property.rentalPrices;
+                        }
 
-                //         properties.push(propertyData);
-                //     }
-                // }
+                        properties.push(propertyData);
+                    }
+                }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime: game.forcedEndTime,
-                    players: players,
-                    cells: cells,
-                    properties: properties
+                    gameEndTime : game.forcedEndTime,
+                    players     : players,
+                    cells       : cells,
+                    properties  : properties
                 });
             }
         });
@@ -588,8 +588,9 @@ class Network {
                 err = Errors.GAME.NOT_MY_TURN;
             else {
                 const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
-                for (const player of game.players)
-                    moneySav.push(player.money);
+                for (const playr of game.players)
+                    moneySav.push(playr.money);
+                const nbJailEscapeCardsSave = player.nbJailEscapeCards;
 
                 const diceRes = game.rollDice();
 
@@ -599,15 +600,20 @@ class Network {
                         updateMoneyList.push({ id: game.players[i].id, money: game.players[i].money });
                 }
 
+                const extra = [];
+                if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
+                    extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
+                // ajouter carte chance/communauté si une a été tirée
+
                 this.io.to(game.name).emit('gameActionRes', {
-                    dicesRes: diceRes,
-                    playerID: player.id,
-                    cellID: player.cellPos,
-                    actionMessage: game.turnData.actionMessage,
-                    asyncRequestType: game.turnData.asyncRequestType,
-                    asyncRequestArgs: game.turnData.asyncRequestArgs,
-                    updateMoney: updateMoneyList,
-                    extra: [] // tmp
+                    dicesRes         : diceRes,
+                    playerID         : player.id,
+                    cellPos          : player.cellPos,
+                    actionMessage    : game.turnData.actionMessage,
+                    asyncRequestType : game.turnData.asyncRequestType,
+                    asyncRequestArgs : game.turnData.asyncRequestArgs,
+                    updateMoney      : updateMoneyList,
+                    extra            : extra
                 });
             }
 
@@ -634,14 +640,15 @@ class Network {
 
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.asyncActionBuyProperty()) === -1) // achat ici
+            else if (!game.asyncActionBuyProperty()) // achat ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
                 this.io.to(game.name).emit('gamePropertyBuyRes', {
-                    propertyID: propertyID,
-                    playerID: player.id,
-                    playerMoney: player.money
+                    propertyID  : game.curCell.property.id,
+                    playerID    : player.id,
+                    playerMoney : player.money,
+                    bankMoney   : game.bank.money
                 });
             } else
                 player.user.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
@@ -657,15 +664,15 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if ((propertyID = game.asyncActionUpgradeProperty(data.level)) === -1) // upgrade ici
+            else if (!game.asyncActionUpgradeProperty(data.level)) // upgrade ici
                 err = Errors.UNKNOW;
 
             if (err === Errors.SUCCESS) {
                 this.io.to(game.name).emit('gamePropertyUpgradeRes', {
-                    propertyID: propertyID,
-                    level: data.level,
-                    playerID: player.id,
-                    playerMoney: player.money
+                    propertyID  : game.curCell.property.id,
+                    level       : data.level,
+                    playerID    : player.id,
+                    playerMoney : player.money
                 });
             } else
                 player.user.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
@@ -682,16 +689,11 @@ class Network {
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
             else if (!game.asyncActionManualForcedMortage(data.properties)) // hypothécation ici
-                err = Errors.UNKNOW;
+                err = Errors.GAME.NOT_ENOUGH_FOR_MORTAGE;
 
-            if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gamePropertyForcedMortageRes', {
-                    properties: data.properties,
-                    playerID: player.id,
-                    playerMoney: player.money
-                });
-            } else
+            if (err !== Errors.SUCCESS)
                 player.user.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
+            // else => envoyé par game.playerAutoMortage()
         });
     }
 
@@ -706,11 +708,11 @@ class Network {
                 // envoyer le message (texte brut)
                 const mess = game.chat.addMessage(player.user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
                 this.io.to(game.name).emit('gameChatReceiveRes', {
-                    type: 'text',
-                    playerID: player.id,
-                    text: mess.content,
-                    createdTime: mess.createdTime,
-                    offer: null
+                    type        : 'text',
+                    playerID    : player.id,
+                    text        : mess.content,
+                    createdTime : mess.createdTime,
+                    offer       : null
                 });
             }
 
