@@ -51,9 +51,6 @@ describe('Network + sockets', () => {
         sock.emit('YES');
     });
 
-    after( () => {
-        process.exit(0);
-    });
 
     beforeEach( (done) => {
         GLOBAL.lobbies = [];

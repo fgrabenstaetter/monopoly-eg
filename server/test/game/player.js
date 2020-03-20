@@ -13,7 +13,7 @@ describe("Test sur la classe Player", function() {
     };
     const user = new User(userSchema);
     const player = new Player(user, 0);
-    const street = new Street(user, Properties.STREET[0]);
+    const street = new Street(Properties.STREET[0]);
 
     it("Le joueur ne doit pas encore posséder de propriété", function() {
         assert.equal(0, player.properties.length);
@@ -34,6 +34,7 @@ describe("Test sur la classe Player", function() {
 
     it("Le joueur possède maintenant la Rue de Londres", function() {
         player.addProperty(street);
+        console.log(Properties.STREET[0]);
         assert.equal(1, player.properties.length);
         assert.equal("Rue de Londres", player.properties[0].name);
     });
