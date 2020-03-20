@@ -75,13 +75,14 @@ input {
 
 .board-container {
   position: relative;
-  width: 100%;
+  width: 80%;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
   top: 50vh;
-  -webkit-transform: translate(0, -50%);
-          transform: translate(0, -50%);
+  left: 50vw;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 .board-container #c {
