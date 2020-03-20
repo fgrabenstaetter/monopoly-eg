@@ -130,6 +130,10 @@ module.exports = Object.freeze({
         NOT_STARTED: {
             code: 2,
             status: 'La partie n\'a pas encore démarrée'
+        },
+        NOT_ENOUGH_FOR_MORTAGE: {
+            code: 3,
+            status: 'Le montant total n\'est pas suffisant pour payer le loyer'
         }
     },
 });

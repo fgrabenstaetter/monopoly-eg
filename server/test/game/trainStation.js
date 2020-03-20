@@ -16,8 +16,11 @@ describe("Test sur la classe TrainStation", function() {
     };
     const user = new User(userSchema);
     const player = new Player(user, 0);
-    const tStation = new TrainStation(player, Properties.TRAIN_STATION[0]);
-    const tS2 = new TrainStation(player, Properties.TRAIN_STATION[1]);
+    const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
+    tStation.owner = player;
+    tStation.owner
+    const tS2 = new TrainStation(Properties.TRAIN_STATION[1]);
+    tS2.owner = player;
 
     it("Le nom de la gare est Gare de Strasbourg", function() {
         assert.equal("Gare de Strasbourg", tStation.name);

@@ -1,6 +1,6 @@
 const Constants = require('./constants.js');
 
-//36 cases donc moins de 36 propriétés
+// 40 cases donc moins de 40 propriétés
 const Properties = {
 
     TRAIN_STATION: [

@@ -1,4 +1,4 @@
-const Constants = require('../lib/constants');
+const Constants  = require('../lib/constants');
 const Properties = require('../lib/properties');
 
 /**
@@ -18,7 +18,7 @@ class Player {
         this.cellPos    = 0;
         this.properties = [];
 
-        this.jailJokerCards       = 0;
+        this.nbJailEscapeCards    = 0;
         this.remainingTurnsInJail = 0;
     }
 
@@ -92,15 +92,6 @@ class Player {
     }
 
     /**
-     * @param propertyToken le token de la propriete a verifier
-     */
-    getProperty (propertyToken) {
-        for (const property of this.properties)
-            if (property.token == propertyToken)
-                return property;
-    }
-
-    /**
      * @param property La propriété à supprimer du joueur
      */
     delProperty (property) {
@@ -149,6 +140,20 @@ class Player {
         }
 
         return nb === total;
+    }
+
+    /**
+     * @param pos Le nb de cases à avancer/reculer
+     */
+    moveRelative (pos) {
+        this.cellPos = (this.cellPos + pos) % 40; // 40 cellules au total
+    }
+
+    /*
+     * @param pos La case où aller (0 <= pos < 40)
+     */
+    moveAbsolute (pos) {
+        this.cellPos = pos;
     }
 }
 

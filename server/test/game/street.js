@@ -1,22 +1,10 @@
 const Street = require('../../game/street');
 const Constants = require('../../lib/constants');
 const Properties = require('../../lib/properties');
-const User = require('../../game/user');
-const Player = require('../../game/player');
 const assert = require('assert');
 
 describe("Test sur la classe Street", function() {
-    const userSchema = {
-        nickname: 'Florian',
-        email: 'florian@gmail.com',
-        friends: ['Danyl', 'Boris', 'Matthias'],
-        inscriptionDatetime: 252998912,
-        level: 1,
-        exp: 0
-    };
-    const user = new User(userSchema);
-    const player = new Player(user, 0);
-    const street = new Street(player, Properties.STREET[0]);
+    const street = new Street(Properties.STREET[0]);
 
     it("Ceci est la Rue de Londres", function() {
         assert.equal("Rue de Londres", street.name);

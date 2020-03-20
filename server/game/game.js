@@ -36,6 +36,12 @@ class Game {
             properties : []
         }
 
+        // ajouter les toutes les propriétés des cellules à labanque
+        for (const cell of this.cells)
+            if (cell.type === Constants.CELL_TYPE.PROPERTY)
+                this.bank.properties.push(cell.property);
+
+
         this.turnData = { // pour le client (envoi Network)
             actionMessage    : null,
             asyncRequestType : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
@@ -53,10 +59,6 @@ class Game {
             if (this.GLOBAL.network)
                 this.GLOBAL.network.gamePlayerListen(player, this);
         }
-    }
-
-    globalGameState () {
-
     }
 
     delete () {
@@ -145,7 +147,7 @@ class Game {
 
 
     /**
-     * @param immediate false pour attendre le timeout de lancement, false sinon (utile tests unitaires)
+     * @param immediate false pour attendre le timeout de lancement, true sinon (utile pour tests unitaires)
      */
     start (immediate = false) {
         if (!this.allPlayersReady)
@@ -203,12 +205,11 @@ class Game {
                 this.curPlayer.goPrison();
         }
 
-
         // peux être sorti de prison !
         if (!this.curPlayer.isInPrison) {
             const oldPos  = this.curPlayer.cellPos;
             const total   = diceRes[0] + diceRes[1];
-            this.curPlayer.cellPos = (this.curPlayer.cellPos + total) % this.cells.length;
+            this.curPlayer.moveRelative(total);
 
             switch (this.curCell.type) {
                 case Constants.CELL_TYPE.PRISON:
@@ -227,14 +228,12 @@ class Game {
                     this.turnPlayerCommunityCardCell();
                     break;
 
-                default: // PARC
+                default: // OTHER (parc, carte départ)
                     // this.setTurnData(null, null, null); // pas besoin car déjà vide
             }
 
-            if (oldPos > this.curPlayer.cellPos) {
-                // Ancien indice > Nouvel indice alors on a passé la case départ, on reçoit alors de l'argent de la banque.
+            if (oldPos > this.curPlayer.cellPos) // recevoir argent de la banque
                 this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-            }
         }
 
         return diceRes;
@@ -246,65 +245,84 @@ class Game {
 
     // = Méthodes uniquement appelées par Game (ici) après le lancé de dés du joueur actuel
 
+    /**
+     * @param diceRes [int, int] le résultat des dés
+     * @param useExitJailCard true si le joueur souhaite utiliser sa carte sortie de prison, false sinon
+     */
     turnPlayerAlreadyInPrison (diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
-            if (useExitJailCard) {
-                this.curPlayer.jailJokerCards --;
+            if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
+                this.curPlayer.nbJailEscapeCards --;
                 this.curPlayer.quitPrison();
             } else if (diceRes1 === diceRes2)
                 this.curPlayer.quitPrison();
             else
                 this.curPlayer.remainingTurnsInJail --;
+
         } else {
             // pour linstant sortir = gratuit
             const total = diceRes[0] + diceRes[1];
-            this.curPlayer.cellPos += total;
+            this.curPlayer.moveRelative(total);
             this.curPlayer.quitPrison();
         }
     }
 
-    turnPlayerPropertyCell (diceRes1, diceRes2) {
-        const total = diceRes1 + diceRes2;
-        const index = this.curPlayer.properties.indexOf(this.curCell.property);
-        if (index !== -1) {
+    /**
+     * @param diceRes [int, int] le résultat des dés
+     */
+    turnPlayerPropertyCell (diceRes) {
+        const total = diceRes[0] + diceRes[1];
+        const property = this.curCell.property;
+
+        if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
-            this.setTurnData(Constants.GAME_ACTION_TYPE.CAN_UPGRADE, this.curCell.property.availableUpgradeLevels,
-                'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de la propriété ' + this.curCell.property.name);
+            if (property.type === Constants.PROPERTY_TYPE.STREET) {
+                const avUpgradeLevels = property.availableUpgradeLevels;
+                if (avUpgradeLevels !== [null, null, null, null])
+                    this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_UPGRADE, avUpgradeLevels,
+                        'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de sa propriété ' + property.name);
+                // else => ne peux pax améliorer => rien à faire
+            }
+            // else => rien à faire
 
         } else {
-            if (!this.curCell.property.owner && this.curPlayer.money >= this.curCell.property.emptyPrice) {
-                // Le terrain n'est pas encore acheté et j'ai assez pour l'acheter !
-                this.setTurnData(Constants.GAME_ACTION_TYPE.CAN_BUY, [this.curCell.property.emptyPrice],
-                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + this.curCell.property.name);
+            const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.emptyPrice : property.price;
 
-            } else if (this.curCell.property.owner) {
+            if (!property.owner && this.curPlayer.money >= buyingPrice) {
+                // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
+                this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
+                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
+
+            } else if (property.owner) {
                 // Le terrain appartient à un autre joueur
-                if (this.curPlayer.money < this.curCell.property.rentalPrice) {
+                const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice();
+
+                if (this.curPlayer.money < rentalPrice) {
                     // Le joueur n'a pas assez pour payer
                     // regarder si ses propriétés valent assez pour combler ce montant
                     let sum = this.curPlayer.money;
                     for (const prop of this.curPlayer.properties)
                         sum += prop.mortagePrice;
 
-                    if (sum < this.curCell.property.rentalPrice) {
+                    if (sum < rentalPrice) {
                         // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
                         this.playerFailure(this.curPlayer);
                         this.setTurnData(null, null,
-                            'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + this.curCell.property.owner.nickname + ')');
+                            'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')');
                     } else {
                         // lui demander quelles propriétés il veux hypothéquer
-                        // Si il ignore cette action asynchrone, une vente automatique sera effectuée (si pas assez => faillite)
-                        this.setTurnData(Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE, [this.curCell.property.rentalPrice - this.curPlayer.money],
-                            'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + this.curCell.property.owner.nickname);
+                        // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
+                        this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [rentalPrice],
+                            'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
                     }
-                }
-                else {
+
+                } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
-                    this.curPlayer.loseMoney(this.curCell.property.rentalPrice);
+                    this.curPlayer.loseMoney(property.rentalPrice);
                     this.setTurnData(null, null,
-                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + this.curCell.property.rentalPrice + ' à ' + this.curCell.property.owner.nickname);
+                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + property.rentalPrice + ' de loyer à ' + property.owner.nickname);
                 }
-            }
+            } // else => rien à faire
         }
     }
 
@@ -320,7 +338,7 @@ class Game {
 
     turnPlayerPrisonCell () {
         this.curPlayer.goPrison();
-        this.setTurnData(Constants.GAME_ACTION_TYPE.NOTHING, [],
+        this.setTurnData(null, null,
             this.curPlayer.nickname + ' est envoyé en taule !');
     }
 
@@ -331,65 +349,67 @@ class Game {
     // = Méthodes uniquement appelées par Network après requête du joueur du tour actuel
 
     /**
-     * @return L'ID de la propriété achetée si succès, -1 sinon
+     * @return true si succès, false sinon
      */
     asyncActionBuyProperty () {
-        if (!this.curCell.property || this.curCell.property.owner)
-            return -1;
-        const price = this.curCell.property.buyingPrice;
+        const property = this.curCell.property;
+        if (!property || property.owner)
+            return false;
+        const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
         if (this.curPlayer.money < price)
-            return -1;
+            return false;
 
-        if (this.curCell.property.owner)
-            this.curCell.property.owner.delProperty(this.curCell.property);
         this.curPlayer.loseMoney(price);
-        this.curPlayer.addProperty(this.curCell.property);
+        this.bank.money += price;
+        this.bank.splice(this.bank.properties.indexOf(property), 1);
+        this.curPlayer.addProperty(property);
 
         this.resetTurnData();
-        return this.curCell.property.id;
+        return true;
     }
 
     /**
      * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
-     * @return L'ID de la propriété améliorée si succès, -1 sinon
+     * @return true si succès, false sinon
      */
     asyncActionUpgradeProperty (level) {
-        if (!this.curCell.property || this.curCell.property.owner || this.curCell.property.type !== Constants.PROPERTY_TYPE.STREET)
-            return -1;
+        const property = this.curCell.property;
+        if (!property || property.owner || property.type !== Constants.PROPERTY_TYPE.STREET)
+            return false;
 
-        const price = this.curCell.property.upgradePrice(level);
+        const price = property.upgradePrice(level);
         if (this.curPlayer.money < price)
-            return -1;
+            return false;
 
         this.curPlayer.loseMoney(price);
         this.curCell.property.upgrade(level);
 
         this.resetTurnData();
-        return this.curCell.property.id;
+        return true;
     }
 
     /**
-     * Attention: méthode apellée lorsque le joueur fait un choix manuel,
-     * Il en faudra une autre pour une vente forcée automatique au timeout de fin du tour
+     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée, voir playerAutoMortage)
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
-     * @return true si succès, false sinon
      */
     asyncActionManualForcedMortage (propertiesList) {
-        const moneyToObtain = this.turnData.asyncRequestArgs[0];
-        let sum = 0;
+        const rentalPrice = this.turnData.asyncRequestArgs[0];
+        let sum = this.curPlayer.money;
+        let properties = [];
+
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
-            if (prop)
+            if (prop) {
                 sum += prop.mortagePrice;
+                properties.push(prop);
+            }
         }
 
-        if (sum < moneyToObtain)
-            return false; // enclancher la vente forcée automatique si possible
+        if (sum < rentalPrice)
+            return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
         // hypothéquer
-        for (prop of propertiesList)
-            this.curPlayer.delProperty(prop);
-
+        this.playerAutoMortage(this.curPlayer, properties);
         this.resetTurnData();
         return true;
     }
@@ -418,7 +438,7 @@ class Game {
      */
     asyncActionExpired () {
         switch (this.turnData.asyncRequestType) {
-            case Constants.GAME_ACTION_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
+            case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
                 this.playerAutoMortage(this.curPlayer);
             break;
         }
@@ -438,33 +458,59 @@ class Game {
         player.loseMoney(player.money);
         player.failure = true;
 
-        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id });
+        this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
     /**
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
+     * @param properties si null => vente automatique dans l'ordre croissant, sinon liste des propriétés obtenues via asyncActionManualForcedMortage UNIQUEMENT (la somme des hypothèques + argent joueur doit être suffisante dans ce cas !)
      */
-    playerAutoMortage (player) {
-        const moneyToObtain = this.turnData.asyncRequestArgs[0]; // argent déjà soustrait à cette valeur !
-        let sum = 0;
-        let properties = []; // id list
-        for (const prop of player.properties) {
-            sum += prop.mortagePrice;
-            properties.push(prop.id);
-            if (sum >= moneyToObtain)
-                break;
+    playerAutoMortage (player, properties = null) {
+        const rentalPrice = this.turnData.asyncRequestArgs[0];
+        let sum = player.money;
+
+        if (!properties) { // vente automatique (dans l'ordre)
+            properties = [];
+            for (const prop of properties) {
+                sum += prop.mortagePrice;
+                properties.push(prop);
+                if (sum >= rentalPrice)
+                    break;
+            }
+        } else { // liste donnée en paramètre
+            for (const prop of properties)
+                sum += prop.mortagePrice;
         }
 
-
-        if (sum < moneyToObtain) // failure
+        if (sum < rentalPrice) // failure
             this.playerFailure(player);
         else {
             // succès
-            player.money = sum - moneyToObtain;
+            player.addMoney(sum);
+
+            // toutes les propriétés hypothéquées => à la banque
+            let propertiesID = [];
+            for (const prop of properties) {
+                player.delProperty(prop);
+                propertiesID.push(prop.id);
+            }
+
+            // payer le loyer
+            const owner = this.cells[player.cellPos].property.owner;
+            owner.addMoney(rentalPrice);
+            player.loseMoney(rentalPrice);
+
+            // envoyer message à tous les joueurs
+            const mess = 'Le joueur ' + player.nickname + ' a payé ' + rentalPrice + ' de loyer à ' + owner.nickname;
             this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
-                properties  : properties,
+                properties  : propertiesID,
                 playerID    : player.id,
-                playerMoney : player.money
+                playerMoney : player.money,
+                message     : mess,
+                rentalOwner: {
+                    id    : owner.id,
+                    money : owner.moner
+                }
             });
         }
     }

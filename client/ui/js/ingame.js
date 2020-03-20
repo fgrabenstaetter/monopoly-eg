@@ -7,7 +7,6 @@ let DATA = {
     players     : [],
     cells       : [],
     properties  : [],
-    cards       : [],
     gameEndTime : null // timestamp de fin forcée du jeu
 }
 
@@ -32,7 +31,6 @@ socket.on('gameStartedRes', (data) => {
     DATA.players     = data.players;
     DATA.cells       = data.cells;
     DATA.properties  = data.properties;
-    DATA.cards       = data.cards;
     DATA.gameEndTime = data.gameEndTime;
 
     console.log('Le jeu a démarré ! joueurs: ');

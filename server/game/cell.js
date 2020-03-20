@@ -29,21 +29,6 @@ class Cell {
                 return 'Carte de communauté';
         }
     }
-
-    get typeStr () {
-        switch (this.type) {
-            case Constants.CELL_TYPE.PRISON:
-                return 'prison';
-            case Constants.CELL_TYPE.PROPERTY:
-                return 'property';
-            case Constants.CELL_TYPE.CHANCE_CARD:
-                return 'chance';
-            case Constants.CELL_TYPE.COMMUNITY_CARD:
-                return 'community';
-            case Constants.CELL_TYPE.OTHER:
-                return 'other';
-        }
-    }
 }
 
 module.exports = Cell;

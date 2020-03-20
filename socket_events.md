@@ -447,8 +447,8 @@
             cells: [
                 {
                     id: int,
-                    type: string, // begin | parc | property | parc | prison | chanceCard | communityCard
-                    propertyID: int | null // null ou ID de propriété
+                    type: string, // prison | property | chance | community | other
+                    propertyID: int | null // null ou ID de propriété si type == property
                 }, ...
             ],
             properties: [
@@ -546,7 +546,7 @@
         {
             dicesRes: [ int, int ],
             playerID: int,
-            cellID: int,
+            cellPos: int,
             actionMessage: string, // message lié à l'action de tour
             asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortage'
             asyncRequestArgs: array ou null, // selon asyncRequestType (voir plus bas)
@@ -559,7 +559,7 @@
             extra: [
                 {
                     // contient 0 ou 1 seul de ces éléments
-                    newCardJailEscape: null, // nouvelle carte prison
+                    nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
                     newCard: {
                         type: string, // chance | community
                         name: string,
@@ -577,7 +577,7 @@
         // Si asyncRequestType = canUpgrade
             [level1Price, level2Price, level3Price, level4price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
         // Si asyncRequestType = shouldMortage
-            [minimumPropertiesValueToMortage]
+            [totalMoneyToHave] // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
         ```
 
 - **Terminer son tour**
@@ -606,7 +606,8 @@
         * *Données:*
         ```javascript
         {
-            playerID: int
+            playerID: int,
+            bankMoney: int
         }
         ```
 
@@ -631,7 +632,8 @@
         {
             propertyID: int,
             playerID: int,
-            playerMoney: int // nouveau solde
+            playerMoney: int, // nouveau solde
+            bankMoney: int
         }
         ```
 
@@ -674,7 +676,12 @@
         {
             properties: [int, ...], // liste des ID des propriétés hypothéquées
             playerID: int,
-            playerMoney: int // nouveau solde
+            playerMoney: int, // nouveau solde
+            message: string, // message lié à l'hypothèque forcée
+            rentalOwner: { // joueur qui a reçu l'argent (loyer)
+                id: int,
+                money: int // son nouveau montant
+            }
         }
         ```
 

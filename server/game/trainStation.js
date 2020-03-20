@@ -1,5 +1,5 @@
 const Constants = require('../lib/constants');
-const Property = require('./property');
+const Property  = require('./property');
 
 /**
  * Représente une carte "gare"
@@ -7,8 +7,8 @@ const Property = require('./property');
  */
 class TrainStation extends Property {
 
-    constructor (owner, data) {
-        super(owner, Constants.PROPERTY_TYPE.TRAIN_STATION, data);
+    constructor (data) {
+        super(Constants.PROPERTY_TYPE.TRAIN_STATION, data);
     }
 
     /**
