@@ -72,20 +72,27 @@ camera = getCamera();
 light = getLight(scene);
 renderer = getRenderer();
 
+function resizeRendererToDisplaySize(renderer) {
+	const canvas = renderer.domElement;
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+	const needResize = canvas.width !== width || canvas.height !== height;
+	if (needResize) {
+	  renderer.setSize(width, height, false);
+	}
+	return needResize;
+}
+
 function render () {
 	//requestAnimationFrame(render);
 	if (counter!=0)
 		movement(varPawn,varMovement);
 
-		/*if (resizeRendererToDisplaySize(renderer)) {
-			const canvas = renderer.domElement;
-			camera.aspect = canvas.clientWidth / canvas.clientHeight;
-			camera.updateProjectionMatrix();
-		 }*/
-	
-	const canvas = renderer.domElement;
-	camera.aspect = canvas.clientWidth / canvas.clientHeight;
-	camera.updateProjectionMatrix();
+	if (resizeRendererToDisplaySize(renderer)) {
+		const canvas = renderer.domElement;
+		camera.aspect = canvas.clientWidth / canvas.clientHeight;
+		camera.updateProjectionMatrix();
+	}
 
 	renderer.render(scene, camera);
 }
