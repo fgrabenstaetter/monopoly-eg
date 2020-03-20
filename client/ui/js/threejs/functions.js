@@ -11,7 +11,8 @@ function getScene () {
 }
 
 function getCamera () {
-	let aspectRatio = window.innerWidth / window.innerHeight;
+	const canvas = document.querySelector('#c');
+	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
 	let d = 2;
 	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
 
@@ -41,7 +42,7 @@ function getLight (scene) {
 function getRenderer () {
 	//Creation du render
 	const canvas = document.querySelector('#c');
-	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, canvas });
+	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas });
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	//renderer.setSize(window.innerWidth, window.innerHeight);
