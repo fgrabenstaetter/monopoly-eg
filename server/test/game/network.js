@@ -99,9 +99,9 @@ describe('Network + sockets', () => {
 
     it('Kick d\'un user quittant un lobby', (done) => {
         const lobby = new Lobby(user, GLOBAL);
-        GLOBAL.lobbies.push(lobby);
         lobby.addUser(user2);
         assert.equal(2, lobby.users.length);
+        GLOBAL.lobbies.push(lobby);
         lobby.delUser(user2);
 
         clientSocket2.emit('lobbyUserLeftRes');
@@ -118,7 +118,7 @@ describe('Network + sockets', () => {
         clientSocket.emit('lobbyChangePawnReq', {pawn: 6});
 
         clientSocket.on('lobbyUserPawnChangedRes', (data) => {
-            console.log(data);
+            //console.log(data);
             assert.equal(data.userID, user.id);
             assert.equal(data.pawn, 6);
             done();
@@ -133,9 +133,36 @@ describe('Network + sockets', () => {
         clientSocket.emit('lobbyChangeTargetUsersNbReq', {nb: random});
 
         clientSocket.on('lobbyTargetUsersNbChangedRes', (data) => {
-            console.log(data);
+            //console.log(data);
             assert.equal(data.nb, lobby.targetUsersNb);
             done();
+        });
+    });
+
+    it('Envoi de message dans le chat', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        lobby.addUser(user2);
+        GLOBAL.lobbies.push(lobby);
+
+        let msg = 'Bonjour c\'est moi!';
+        clientSocket.emit('lobbyChatSendReq', {content: msg});
+
+        clientSocket.on('lobbyChatSendRes', () => {
+            clientSocket2.on('lobbyChatReceiveRes', (data) => {
+                if (data.senderUserId === user.id) {
+                    console.log(data);
+                    assert.equal(user.id, data.senderUserID);
+                    assert.equal(msg, data.content);
+
+                }
+
+                if (data.senderUserID !== user.id) {
+                    msg = user2.nickname + ' a rejoint !';
+                    assert.equal(-1, data.senderUserID);
+                    assert.equal(msg, data.content);
+                }
+                done();
+            });
         });
     });
 
