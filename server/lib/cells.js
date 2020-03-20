@@ -8,7 +8,7 @@ const TrainStation  = require('../game/trainStation');
 // Il doit toujours y avoir 40 cellules
 // Cellules EXEMPLE pour l'instant :
 module.exports = [
-    new Cell(Constants.CELL_TYPE.PARC      , null),                                            // case 0 = Départ
+    new Cell(Constants.CELL_TYPE.OTHER     , null),                                            // case 0 = Départ
     new Cell(Constants.CELL_TYPE.PROPERTY  , new Street(Properties.STREET[0])),                // case 1
     new Cell(Constants.CELL_TYPE.PROPERTY  , new TrainStation(Properties.TRAIN_STATION[0])),   // case 2
     new Cell(Constants.CELL_TYPE.COMMUNITY , null),                                            // case 3
@@ -47,6 +47,5 @@ module.exports = [
     new Cell(Constants.CELL_TYPE.PROPERTY  , new Street(Properties.STREET[0])),                // case 36
     new Cell(Constants.CELL_TYPE.PROPERTY  , new TrainStation(Properties.TRAIN_STATION[0])),   // case 37
     new Cell(Constants.CELL_TYPE.PROPERTY  , new Street(Properties.STREET[0])),                // case 38
-    new Cell(Constants.CELL_TYPE.PROPERTY  , new TrainStation(Properties.TRAIN_STATION[0])),   // case 39
-    new Cell(Constants.CELL_TYPE.PROPERTY  , new Street(Properties.STREET[0]))                 // case 40
+    new Cell(Constants.CELL_TYPE.PROPERTY  , new TrainStation(Properties.TRAIN_STATION[0]))    // case 39 = dernière case, puis retour case 0
 ];

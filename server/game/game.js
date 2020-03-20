@@ -13,7 +13,7 @@ const communityChestCardsMeta = require('./../lib/communityChestCards');
  */
 class Game {
 
-    gameIDCounter = 0;
+    static gameIDCounter = 0;
 
     /**
      * @param users La liste des utilisateurs de la partie de jeu
@@ -23,10 +23,10 @@ class Game {
     constructor (users, pawns, GLOBAL) {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
-        this.id                 = this.gameIDCounter ++;
+        this.id                 = Game.gameIDCounter ++;
         this.turnPlayerInd      = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
         this.turnTimeout        = null;
-
+        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells              = Cells;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
@@ -186,7 +186,8 @@ class Game {
      */
     rollDice (useExitJailCard = false) {
         this.resetTurnData();
-        const diceRes = [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
+        const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [ Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6) ];
+        this.forcedDiceRes = null;
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes);
@@ -269,7 +270,7 @@ class Game {
             // Le joueur est tombé sur une de ses propriétés
             if (property.type === Constants.PROPERTY_TYPE.STREET) {
                 const avUpgradeLevels = property.availableUpgradeLevels;
-                if (avUpgradeLevels !== [null, null, null, null])
+                if (avUpgradeLevels !== [null, null, null, null, null])
                     this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_UPGRADE, avUpgradeLevels,
                         'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de sa propriété ' + property.name);
                 // else => ne peux pax améliorer => rien à faire
@@ -277,7 +278,7 @@ class Game {
             // else => rien à faire
 
         } else {
-            const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.emptyPrice : property.price;
+            const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
             if (!property.owner && this.curPlayer.money >= buyingPrice) {
                 // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
@@ -365,7 +366,7 @@ class Game {
      */
     asyncActionUpgradeProperty (level) {
         const property = this.curCell.property;
-        if (!property || property.owner || property.type !== Constants.PROPERTY_TYPE.STREET)
+        if (!property || !property.owner || property.type !== Constants.PROPERTY_TYPE.STREET)
             return false;
 
         const price = property.upgradePrice(level);

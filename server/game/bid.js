@@ -3,10 +3,10 @@ const Offer = require('./offer.js');
 
 class Bid {
 
-    idCounter = 0;
+    static idCounter = 0;
 
     constructor (player, property, amountAsked) {
-        this.id = this.idCounter ++;
+        this.id = Bid.idCounter ++;
         this.player = player;
         this.property = property;
         this.amountAsked = amountAsked;

@@ -30,7 +30,7 @@ const Properties = {
             },
             rentalPrices : {
                 empty    : 12,
-                house    : [200, 300, 400],
+                house    : [200, 300, 400, 500],
                 hostel   : 800
             }
         },

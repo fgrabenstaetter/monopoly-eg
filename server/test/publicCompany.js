@@ -3,7 +3,7 @@ const Constants = require('../lib/constants');
 const Properties = require('../lib/properties');
 const assert = require('assert');
 
-describe("Test sur la classe PublicCompany", function() {
+describe("PublicCompany", function() {
     const pCompany = new PublicCompany(Properties.PUBLIC_COMPANY[1]);
 
     it("Le nom de la compagnie est UFR de math Info", function() {

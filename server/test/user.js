@@ -1,7 +1,7 @@
 const User = require('../game/user');
 const assert = require('assert');
 
-describe("Test sur la classe User", function() {
+describe("User", function() {
     const userSchema = {
         nickname: 'François',
         email: 'francois@gmail.com',

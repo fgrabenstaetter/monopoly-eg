@@ -14,7 +14,7 @@ class Player {
         this.pawn       = pawn;
         this.isReady    = false; // synchronisation de tous les joueurs avant lancement de partie
         this.failure    = false;
-        this.money      = 1500; // argent initial
+        this.money      = Constants.GAME_PARAM.PLAYER_INITIAL_MONEY;
         this.cellPos    = 0;
         this.properties = [];
 

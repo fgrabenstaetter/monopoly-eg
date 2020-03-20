@@ -575,6 +575,8 @@ class Network {
 
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime : game.forcedEndTime,
+                    playersMoney: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney   : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
                     players     : players,
                     cells       : cells,
                     properties  : properties

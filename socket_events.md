@@ -437,6 +437,8 @@
         ```javascript
         {
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
+            playersMoney: int, // argent initial de chaque joueur
+            bankMoney: int, // argent initial de la banque
             players: [
                 {
                     nickname: string,
@@ -475,7 +477,7 @@
             },
             rentalPrices: {
                 empty: int,
-                house: [ maison1 (int), maison2 (int), maison2 (int) ],
+                house: [ maison1 (int), maison2 (int), maison3 (int), maison4 (int) ],
                 hostel: int
             }
         }
@@ -540,7 +542,6 @@
     > Contient le résultat des dés et toutes les infos à mettre à jour (action de jeu)
 
     * **Réponse:** gameActionRes
-        * *actionType* peut signifier (rien, peutAcheter, doitPayerLoyer, peutConstruireMaison, peutConstruireHotel)
         * *Données:*
         ```javascript
         {
@@ -575,7 +576,7 @@
         // Si asyncRequestType = canBuy
             [price]
         // Si asyncRequestType = canUpgrade
-            [level1Price, level2Price, level3Price, level4price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+            [level1Price, level2Price, level3Price, level4price, level5price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
         // Si asyncRequestType = shouldMortage
             [totalMoneyToHave] // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
         ```
@@ -644,7 +645,7 @@
         * *Données:*
         ```javascript
         {
-            level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel
+        level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel
         }
         ```
 

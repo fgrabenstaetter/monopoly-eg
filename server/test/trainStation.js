@@ -5,7 +5,7 @@ const User = require('../game/user');
 const Player = require('../game/player');
 const assert = require('assert');
 
-describe("Test sur la classe TrainStation", function() {
+describe("TrainStation", function() {
     const userSchema = {
         nickname: 'Matthias',
         email: 'matthiass@gmail.com',

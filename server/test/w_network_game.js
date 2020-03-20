@@ -9,8 +9,9 @@ const Lobby       = require('../game/lobby');
 const Game        = require('../game/game');
 const Matchmaking = require('../game/matchmaking');
 const Network     = require('../game/network');
+const Properties  = require('../lib/properties');
 
-describe('Network + sockets', () => {
+describe('Network + Game', () => {
     const port = 3002;
     const server = http.createServer(app).listen(port);
     const ioServer = require('socket.io')(server);
@@ -71,121 +72,16 @@ describe('Network + sockets', () => {
 
     });
 
-    afterEach( (done) => {
+    afterEach( () => {
         serverSocket.disconnect();
         serverSocket2.disconnect();
         clientSocket.close();
         clientSocket2.close();
-        done();
     });
 
-    /////////////////
-    // TESTS LOBBY //
-    /////////////////
-
-    it('Réception de lobbyCreatedRes par l\'hôte', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        GLOBAL.lobbies.push(lobby);
-
-        clientSocket.on('lobbyCreatedRes', (data) => {
-            done();
-        });
-        clientSocket.emit('lobbyReadyReq');
-        done();
+    after( () => {
+        server.close();
     });
-
-    it('Kick d\'un user quittant un lobby', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        lobby.addUser(user2);
-        assert.equal(2, lobby.users.length);
-        GLOBAL.lobbies.push(lobby);
-        lobby.delUser(user2);
-
-        clientSocket2.emit('lobbyUserLeftRes');
-        clientSocket.on('lobbyUserLeftRes', (data) => {
-            assert.equal(data.userID, user2.id);
-            assert.equal(data.hostID, user.id);
-            done();
-        });
-    });
-
-    it('Changement de pion', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        GLOBAL.lobbies.push(lobby);
-        clientSocket.emit('lobbyChangePawnReq', {pawn: 6});
-
-        clientSocket.on('lobbyUserPawnChangedRes', (data) => {
-            //console.log(data);
-            assert.equal(data.userID, user.id);
-            assert.equal(data.pawn, 6);
-            done();
-        });
-    });
-
-    it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        GLOBAL.lobbies.push(lobby);
-        const random = Math.floor(Math.random()*(8-2+1)+2);
-
-        clientSocket.emit('lobbyChangeTargetUsersNbReq', {nb: random});
-
-        clientSocket.on('lobbyTargetUsersNbChangedRes', (data) => {
-            //console.log(data);
-            assert.equal(data.nb, lobby.targetUsersNb);
-            done();
-        });
-    });
-
-    it('Envoi de message dans le chat', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        lobby.addUser(user2);
-        GLOBAL.lobbies.push(lobby);
-
-        let msg = 'Bonjour c\'est moi!';
-        let nb = 0;
-
-        clientSocket2.on('lobbyChatReceiveRes', (data) => {
-            if (data.senderUserId === user.id) {
-                console.log(data);
-                assert.equal(user.id, data.senderUserID);
-                assert.equal(msg, data.content);
-
-            } else if (data.senderUserID !== user.id) {
-                msg = user2.nickname + ' a rejoint !';
-                assert.equal(-1, data.senderUserID);
-                assert.equal(msg, data.content);
-            }
-
-            if (++ nb === 2) done();
-        });
-
-        clientSocket.on('lobbyChatSendRes', (data) => {
-            assert.strictEqual(data.error, Errors.SUCCESS.code);
-            if (++ nb === 2) done();
-        });
-        clientSocket.emit('lobbyChatSendReq', {content: msg});
-    });
-
-    it('Lancement d\'une game avec 2 utilisateurs dans un lobby pour une partie à 2 joueurs', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        lobby.addUser(user2);
-        GLOBAL.lobbies.push(lobby);
-        assert.equal(true, lobby.open);
-        lobby.changeTargetUsersNb(2);
-        clientSocket.emit('lobbyPlayReq');
-        clientSocket.on('lobbyPlayRes', (data) => {
-            assert.equal(false, lobby.open);
-            //La game a été lancée
-            assert.equal(Errors.SUCCESS.code, data.error);
-            assert.equal(Errors.SUCCESS.status, data.status);
-            assert.equal(1, GLOBAL.games.length);
-            done();
-        });
-    });
-
-    ////////////////
-    // GAME TESTS //
-    ////////////////
 
     it('Réception gameStartedRes + cohérence données reçues', (done) => {
         const lobby = new Lobby(user, GLOBAL);
@@ -200,9 +96,13 @@ describe('Network + sockets', () => {
         let nb = 0;
         function check (data) {
             assert.ok(data.gameEndTime);
+            assert.strictEqual(data.playersMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY);
+            assert.strictEqual(data.bankMoney, Constants.GAME_PARAM.BANK_INITIAL_MONEY);
             assert.strictEqual(data.players.length, 2);
-            assert.ok(data.cells);
-            assert.ok(data.properties);
+            assert.deepStrictEqual(data.players, [{ id: user.id,  nickname: user.nickname, pawn: 0 },
+                                                  { id: user2.id, nickname: user2.nickname, pawn: 1 }]);
+            assert.strictEqual(data.cells.length, 40);
+            assert.strictEqual(data.properties.length >= 10, true);
 
             if (++ nb === 2)
                 done();
@@ -299,6 +199,87 @@ describe('Network + sockets', () => {
         sock.on('gameRollDiceRes', (data) => {
             assert.strictEqual(data.error, Errors.SUCCESS.code);
             if (++ nb === 2) done();
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Achat d\'une propriété par un joueur', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [1, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 4);
+            assert.strictEqual(data.asyncRequestType, 'canBuy');
+            assert.deepStrictEqual(data.asyncRequestArgs, [ Properties.STREET[0].prices.empty ]);
+
+            sock.on('gamePropertyBuyRes', (data) => {
+                assert.strictEqual(data.error, undefined);
+                assert.strictEqual(data.propertyID, game.curCell.property.id);
+                assert.strictEqual(data.playerID, player.id);
+                assert.strictEqual(data.playerMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - game.curCell.property.prices.empty);
+                assert.strictEqual(data.bankMoney, Constants.GAME_PARAM.BANK_INITIAL_MONEY + game.curCell.property.prices.empty);
+                done();
+            });
+            sock.emit('gamePropertyBuyReq');
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Amélioration d\'une propriété par un joueur', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+        const property = game.cells[4].property;
+        game.bank.delProperty(property);
+        game.curPlayer.addProperty(property);
+
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [1, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 4);
+            assert.strictEqual(data.asyncRequestType, 'canUpgrade');
+            assert.deepStrictEqual(data.asyncRequestArgs, [400, 800, 1200, null, null]);
+
+            sock.on('gamePropertyUpgradeRes', (data2) => {
+                assert.strictEqual(data2.error, undefined);
+                assert.strictEqual(data2.propertyID, game.curCell.property.id);
+                assert.strictEqual(data2.playerID, player.id);
+                assert.strictEqual(data2.playerMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 1200);
+                assert.strictEqual(data2.level, 3);
+                done();
+            });
+            sock.emit('gamePropertyUpgradeReq', { level: 3 });
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
         });
         sock.emit('gameRollDiceReq');
     });

@@ -6,14 +6,14 @@ const Constants  = require('../lib/constants');
  */
 class Property { // classe abstraite
 
-    idCounter = 0;
+    static idCounter = 0;
 
     /*
      * @param type Type de la propriété (PROPERTY_TYPE, voir constants.js)
      * @param data L'objet qui contient les données de la propriété (voir properties.js)
      */
     constructor (type, data) {
-        this.id = this.idCounter ++;
+        this.id = Property.idCounter ++;
         this.isMortgaged = false;
         this.owner = null; // à la banque, par défaut
         this.type = type;

@@ -6,7 +6,7 @@ const Constants     = require('../lib/constants');
 const Properties    = require('../lib/properties');
 const assert        = require('assert');
 
-describe("Test sur la classe Cell", function() {
+describe("Cell", function() {
     //3e arg à compléter lorsque la classe Game sera prête à l'emploi
     const proCell1 = new Street(Properties.STREET[0]);
     //3e arg à compléter lorsque la classe Game sera prête à l'emploi

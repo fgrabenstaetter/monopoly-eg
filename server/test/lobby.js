@@ -18,7 +18,7 @@ let GLOBAL = {
     games: [], // Parties de jeu actuellement en cours
 };
 
-describe('Test sur la classe Lobby', function () {
+describe('Lobby', function () {
     const userSchema1 = {
         nickname: 'François',
         email: 'francois@gmail.com',

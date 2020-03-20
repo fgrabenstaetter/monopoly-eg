@@ -5,7 +5,7 @@ const Constants = require('../lib/constants');
 const Properties = require('../lib/properties');
 const assert = require('assert');
 
-describe("Test sur la classe Street", function() {
+describe("Street", function() {
     let user = new User({
         id                  : 1942924,
         nickname            : 'francois',

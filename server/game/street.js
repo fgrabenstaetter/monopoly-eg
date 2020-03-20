@@ -67,7 +67,7 @@ class Street extends Property {
     get mortagePrice () {
         let sum = this.prices.empty;
         if (this.hostel)
-            sum += this.prices.hostelPrice + this.prices.house * 3;
+            sum += this.prices.hostelPrice + this.prices.house * 4;
         else
             sum += this.prices.house * this.housesNb;
 
@@ -75,7 +75,7 @@ class Street extends Property {
     }
 
     /**
-     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
      */
     upgrade (level) {
         if (level === 4) {
@@ -86,7 +86,7 @@ class Street extends Property {
     }
 
     /**
-     * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
+     * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
      * @return le prix cumulé pour avoir ce niveau d'amélioration
      */
     upgradePrice (level) {
@@ -94,8 +94,8 @@ class Street extends Property {
             return 0;
 
         let price = 0;
-        if (level === 4)
-            price = this.prices.hostel + this.prices.house * 3;
+        if (level === 5)
+            price = this.prices.hostel + this.prices.house * 4;
         else
             price = this.prices.house * level;
 
@@ -111,13 +111,15 @@ class Street extends Property {
         const canLevel1 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(1);
         const canLevel2 = !this.hostel && this.housesNb <= 1  && this.owner.money >= this.upgradePrice(2);
         const canLevel3 = !this.hostel && this.housesNb <= 2  && this.owner.money >= this.upgradePrice(3);
-        const canLevel4 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(4);
+        const canLevel4 = !this.hostel && this.housesNb <= 3  && this.owner.money >= this.upgradePrice(4);
+        const canLevel5 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(5);
 
-        let list = [], sum = 0;
-        list.push(canLevel1 ? sum += this.upgradePrice(1) : null);
-        list.push(canLevel2 ? sum += this.upgradePrice(2) : null);
-        list.push(canLevel3 ? sum += this.upgradePrice(3) : null);
-        list.push(canLevel4 ? sum += this.upgradePrice(4) : null);
+        let list = [];
+        list.push(canLevel1 ? this.upgradePrice(1) : null);
+        list.push(canLevel2 ? this.upgradePrice(2) : null);
+        list.push(canLevel3 ? this.upgradePrice(3) : null);
+        list.push(canLevel4 ? this.upgradePrice(4) : null);
+        list.push(canLevel5 ? this.upgradePrice(5) : null);
 
         return list;
     }
