@@ -78,7 +78,6 @@ class Network {
     lobbyNewUser(user, lobby) {
 
         if (lobby.users[0] === user) { // est l'hôte
-            // console.log('envoi de createdred')
             user.socket.emit('lobbyCreatedRes', {
                 targetUsersNb: lobby.targetUsersNb,
                 pawn: lobby.userPawn(user)
@@ -108,7 +107,6 @@ class Network {
             });
         }
 
-        // console.log('envoi de joinedRes')
         user.socket.emit('lobbyJoinedRes', {
             targetUsersNb : lobby.targetUsersNb,
             users         : users,
@@ -175,7 +173,6 @@ class Network {
 
     lobbyFriendInvitationSendReq(user, lobby) {
         user.socket.on('lobbyFriendInvitationSendReq', (data) => {
-            // console.log('"' + user.nickname + '" invite "' + data.nickname + '" en ami');
 
             if (user.nickname === data.nickname) {
                 user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.CANT_INVITE_YOURSELF.code, status: Errors.FRIENDS.CANT_INVITE_YOURSELF.status });
@@ -184,7 +181,6 @@ class Network {
 
             UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
                 if (error || !invitedUser) {
-                    // console.log('Ami à inviter "' + data.nickname + '" non trouvé :/');
                     user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;
                 }
@@ -254,7 +250,6 @@ class Network {
                 if (action) { // accept
                     UserSchema.requestFriend(user.id, invitedByUser._id, (error, friendships) => {
                         if (error) {
-                            // console.log('Erreur acceptation invitation');
                             user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
                             return;
                         }
@@ -400,10 +395,8 @@ class Network {
 
             if (!msg.content)
                 err = Errors.MISSING_FIELD;
-            else {
-                // console.log('tchat send req for ' + user.nickname)
+            else
                 this.lobbySendMessage(lobby, user, msg.content);
-            }
 
             user.socket.emit('lobbyChatSendRes', { error: err.code, status: err.status });
         });
@@ -520,7 +513,16 @@ class Network {
         player.user.socket.on('gameReadyReq', () => {
             player.isReady = true;
             if (game.allPlayersReady) {
-                // console.log('all players ready. CREATE NEW GAME');
+                // message de commencement
+                const mess = game.chat.addMessage(null, 'C\'est parti, bonne chance à tous !', Constants.CHAT_MESSAGE_TYPE.TEXT);
+                this.io.to(game.name).emit('gameChatReceiveRes', {
+                    type        : mess.type,
+                    playerID    : -1, // = provient du serveur
+                    text        : mess.content ,
+                    createdTime : mess.createdTime,
+                    offer       : null
+                });
+
                 game.start();
 
                 // envoyer les données initiales de jeu à tous les joueurs
@@ -708,7 +710,7 @@ class Network {
                 // envoyer le message (texte brut)
                 const mess = game.chat.addMessage(player.user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
                 this.io.to(game.name).emit('gameChatReceiveRes', {
-                    type        : 'text',
+                    type        : mess.type,
                     playerID    : player.id,
                     text        : mess.content,
                     createdTime : mess.createdTime,

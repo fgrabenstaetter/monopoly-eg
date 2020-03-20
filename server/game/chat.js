@@ -13,7 +13,7 @@ class Chat {
     }
 
     /**
-     * @param senderUser L'utilisateur qui envoie le message
+     * @param senderUser L'utilisateur qui envoie le message (ou null si message du serveur)
      * @param content Le texte du message
      * @param type Le type du message (CHAT_MESSAGE_TYPE, voir constants.js)
      * @param offer L'offre associée au message (facultatif)

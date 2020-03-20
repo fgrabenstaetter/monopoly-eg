@@ -2,6 +2,7 @@ const Chat                    = require('./chat');
 const Constants               = require('../lib/constants');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
+const Bank                    = require('./bank');
 const Cells                   = require('./../lib/cells');
 const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
@@ -25,22 +26,12 @@ class Game {
         this.id                 = this.gameIDCounter ++;
         this.turnPlayerInd      = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
         this.turnTimeout        = null;
-        this.chat               = new Chat();
 
+        this.cells              = Cells;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.cells              = Cells;
-
-        this.bank = {
-            money      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-            properties : []
-        }
-
-        // ajouter les toutes les propriétés des cellules à labanque
-        for (const cell of this.cells)
-            if (cell.type === Constants.CELL_TYPE.PROPERTY)
-                this.bank.properties.push(cell.property);
-
+        this.chat               = new Chat();
+        this.bank               = new Bank(this.cells);
 
         this.turnData = { // pour le client (envoi Network)
             actionMessage    : null,
@@ -360,8 +351,8 @@ class Game {
             return false;
 
         this.curPlayer.loseMoney(price);
-        this.bank.money += price;
-        this.bank.splice(this.bank.properties.indexOf(property), 1);
+        this.bank.addMoney(price);
+        this.bank.delProperty(property);
         this.curPlayer.addProperty(property);
 
         this.resetTurnData();
@@ -451,10 +442,10 @@ class Game {
         // la banque récupère tout son fric et propriétés
         for (const prop of player.properties) {
             player.delProperty(prop);
-            this.bank.properties.push(prop);
+            this.bank.addProperty(prop);
         }
 
-        this.bank.money += player.money;
+        this.bank.addMoney(player.money);
         player.loseMoney(player.money);
         player.failure = true;
 

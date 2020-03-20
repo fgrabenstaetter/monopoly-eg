@@ -19,8 +19,8 @@ const Constants = {
         PINK  : 'pink'
     },
     CHAT_MESSAGE_TYPE: {
-        TEXT  : 0,
-        OFFER : 1
+        TEXT  : 'text',
+        OFFER : 'offer'
     },
     GAME_PARAM: {
         WAITING_TIME_AFTER_READY : 2e3,
