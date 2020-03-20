@@ -42,7 +42,7 @@ function getLight (scene) {
 function getRenderer () {
 	//Creation du render
 	const canvas = document.querySelector('#c');
-	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, canvas });
+	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, canvas });
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	//renderer.setSize(window.innerWidth, window.innerHeight);
@@ -75,8 +75,9 @@ renderer = getRenderer();
 
 function resizeRendererToDisplaySize(renderer) {
 	const canvas = renderer.domElement;
-	const width = canvas.clientWidth;
-	const height = canvas.clientHeight;
+	const pixelRatio = window.devicePixelRatio;
+      const width  = canvas.clientWidth  * pixelRatio | 0;
+      const height = canvas.clientHeight * pixelRatio | 0;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if (needResize) {
 		renderer.setSize(width, height, false);
@@ -122,7 +123,7 @@ function loaderPlateau (load, test) {
 
 var plateauObjects = [
 				'collections', 'eau', 'egout', 'egout',
-				 'orangerie', 'maison', 'parlement', 'pont', 'rail',
+				'orangerie', 'maison', 'parlement', 'pont', 'rail',
 				'route', 'tram', 'campus', 'cascade'
 ]
 
@@ -166,7 +167,7 @@ function loaderPawn (pawn) {
 		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
-		root.position.set(0.335*11.5,2,0.335*11.5);
+		root.position.set(0.335*11,2,0.335*11.5);
 		root.rotateY(-1.6);
 		scene.add(root);
 	});
@@ -230,6 +231,16 @@ function movement (pawn, vdp) {
 	if (ppx == vdpx && ppz == vdpz)
 		counter = 0;
 
+
+	if(ppx == xmin && ppz == zmax)
+		window[pawn].rotateY(-1.6);
+	else if(ppx == xmin && ppz == zmin)
+		window[pawn].rotateY(-1.6);
+	else if(ppx == xmax && ppz == zmin)
+		window[pawn].rotateY(-1.6);
+	else if(ppx == xmax && ppz == zmax)
+		window[pawn].rotateY(-1.6);
+
 	// La route d'en bas - Du coin droit vers le coin gauche
 	if (ppx != vdpx && ((ppz == vdpz) || (ppz != vdpz)) && ppz == zmax && vdpz == zmax) {
 		// Pour revenir sur la même route (un tour du plateau)
@@ -239,6 +250,7 @@ function movement (pawn, vdp) {
 		} else {
 			requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			//console.log("x2 :" + window[pawn].position.x + " y: " + window[pawn].position.y + "z2 :" + window[pawn].position.z)
 		}
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
