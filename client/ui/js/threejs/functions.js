@@ -40,10 +40,13 @@ function getLight (scene) {
 
 function getRenderer () {
 	//Creation du render
-	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+	const canvas = document.querySelector('#c');
+	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, canvas });
+// 	const canvas = document.querySelector('#c');
+//   const renderer = new THREE.WebGLRenderer({canvas});
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	//renderer.setSize(window.innerWidth, window.innerHeight);
 
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
@@ -51,9 +54,20 @@ function getRenderer () {
 	render.autoClear = false;
 	//console.log(renderer.renderLists);
 	//On ajoute l'objet à la page html
-	document.getElementsByClassName('board-container')[0].appendChild(renderer.domElement);
+	//document.getElementsByClassName('board-container')[0].appendChild(renderer.domElement);
 	return renderer;
 }
+
+/*function resizeRendererToDisplaySize(renderer) {
+	const canvas = renderer.domElement;
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+	const needResize = canvas.width !== width || canvas.height !== height;
+	if (needResize) {
+	  renderer.setSize(width, height, false);
+	}
+	return needResize;
+  }*/
 
 scene = getScene();
 camera = getCamera();
@@ -64,7 +78,12 @@ function render () {
 	//requestAnimationFrame(render);
 	if (counter!=0)
 		movement(varPawn,varMovement);
-	
+
+		/*if (resizeRendererToDisplaySize(renderer)) {
+			const canvas = renderer.domElement;
+			camera.aspect = canvas.clientWidth / canvas.clientHeight;
+			camera.updateProjectionMatrix();
+		 }*/
 	renderer.render(scene, camera);
 }
 render();
