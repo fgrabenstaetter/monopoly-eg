@@ -145,25 +145,28 @@ describe('Network + sockets', () => {
         GLOBAL.lobbies.push(lobby);
 
         let msg = 'Bonjour c\'est moi!';
-        clientSocket.emit('lobbyChatSendReq', {content: msg});
+        let nb = 0;
 
-        clientSocket.on('lobbyChatSendRes', () => {
-            clientSocket2.on('lobbyChatReceiveRes', (data) => {
-                if (data.senderUserId === user.id) {
-                    console.log(data);
-                    assert.equal(user.id, data.senderUserID);
-                    assert.equal(msg, data.content);
+        clientSocket2.on('lobbyChatReceiveRes', (data) => {
+            if (data.senderUserId === user.id) {
+                console.log(data);
+                assert.equal(user.id, data.senderUserID);
+                assert.equal(msg, data.content);
 
-                }
+            } else if (data.senderUserID !== user.id) {
+                msg = user2.nickname + ' a rejoint !';
+                assert.equal(-1, data.senderUserID);
+                assert.equal(msg, data.content);
+            }
 
-                if (data.senderUserID !== user.id) {
-                    msg = user2.nickname + ' a rejoint !';
-                    assert.equal(-1, data.senderUserID);
-                    assert.equal(msg, data.content);
-                }
-                done();
-            });
+            if (++ nb === 2) done();
         });
+
+        clientSocket.on('lobbyChatSendRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+            if (++ nb === 2) done();
+        });
+        clientSocket.emit('lobbyChatSendReq', {content: msg});
     });
 
     ////////////////
