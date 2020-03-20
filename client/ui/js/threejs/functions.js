@@ -1,6 +1,8 @@
 let varMovement, vdp, varPawn, counter = 0; 
 var pawn, window;
-
+let scene, light;
+let camera;
+let renderer;
 
 function getScene () {
 	let scene = new THREE.Scene();
@@ -9,11 +11,10 @@ function getScene () {
 	return scene;
 }
 
-
 function getCamera () {
 	let aspectRatio = window.innerWidth / window.innerHeight;
 	let d = 2;
-	let camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
+	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
 
 	camera.position.set(20, 20, 20);
 	camera.lookAt(scene.position);
@@ -40,7 +41,7 @@ function getLight (scene) {
 
 function getRenderer () {
 	//Creation du render
-	let renderer = new THREE.WebGLRenderer({ antialiasing: true });
+	renderer = new THREE.WebGLRenderer({ antialias: false });
 	renderer.setClearColor(0xffffff, 1);
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -48,27 +49,27 @@ function getRenderer () {
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
 	renderer.gammaFactor = 2.2;
-
+	render.autoClear = false;
+	//console.log(renderer.renderLists);
 	//On ajoute l'objet à la page html
 	document.getElementsByClassName('board-container')[0].appendChild(renderer.domElement);
 	return renderer;
 }
 
-let scene = getScene();
-let camera = getCamera();
-let light = getLight(scene);
-let renderer = getRenderer();
-
+scene = getScene();
+camera = getCamera();
+light = getLight(scene);
+renderer = getRenderer();
 
 function render () {	
 	//requestAnimationFrame(render);
 	if (counter!=0)
 		movement(varPawn,varMovement);
-
+	
 	renderer.render(scene, camera);
-	console.log(renderer.info.render);
 }
 render();
+
 
 function deleteHouse (houseProperty) {
 	requestAnimationFrame(render);
@@ -85,8 +86,8 @@ function deleteHotel (hotelProperty) {
 function loaderPlateau (load, test) {
   load.load('models/plateau/'+test+'.gltf', (gltf) => {
 	requestAnimationFrame(render);
-    const root = gltf.scene;
-    scene.add(root);
+	const root = gltf.scene;
+	scene.add(root);
   });
 }
 
@@ -113,6 +114,7 @@ function loaderCases (cases) {
 	});
 }
 
+
 var plateauCases = [
 			'case0', 'case1', 'case2', 'case3', 'case4', 'case5',
 			'case6', 'case7', 'case8', 'case9', 'case10', 'case11',
@@ -130,7 +132,7 @@ for(var i = 0; i < 40; i++){
 
 
 function loaderPawn (pawn) {
-	var load = new THREE.GLTFLoader();
+	load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
 		requestAnimationFrame(render);
 		const root = gltf.scene;
@@ -167,8 +169,7 @@ function loaderHotelProperty (hotelPropriete) {
 function movement (pawn, vdp) {
 	varMovement = vdp;
 	varPawn = pawn;
-	
-	
+
 	var ppx = window[pawn].position.x;
 	ppx = (Math.floor(ppx * 100) / 100);
 	

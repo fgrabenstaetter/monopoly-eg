@@ -2,7 +2,7 @@ var pawn = [
         "moto", "citroen C4", 
         "boat", "montgolfiere", 
         "overboard", "tracteur", 
-        "bus", "camion"
+        "schoolbus", "camion"
 ];
 
 
