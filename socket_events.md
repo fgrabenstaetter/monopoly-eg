@@ -246,7 +246,7 @@
         {
             content: string, // texte
             createdTime: timestamp,
-            senderUserID: int
+            senderUserID: int // ou -1 => message du serveur
         }
         ```
 
@@ -447,11 +447,11 @@
             cells: [
                 {
                     id: int,
-                    type: string, // prison | property | chance | community | other
+                    type: string, // prison | property | chance | community | other (parc ou début)
                     propertyID: int | null // null ou ID de propriété si type == property
                 }, ...
             ],
-            properties: [
+            properties: [ // appartiennent toutes à la banque au début
                 {
                     id: int,
                     type: string, // street | trainStation | publicCompany
@@ -714,7 +714,7 @@
         ```javascript
         {
             type: string, // text | offer
-            playerID: int,
+            playerID: int, // ou -1 => message du serveur
             text: string,
             createdTime: timestamp,
             offer: { // ou null si type !== offer
