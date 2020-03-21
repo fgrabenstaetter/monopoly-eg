@@ -33,6 +33,7 @@ $(document).ready(() => {
 
         var button = $(this),
             progress = 0;
+        button.removeClass('disabled');
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
@@ -130,7 +131,7 @@ $(document).ready(() => {
     };
 
     $.fn.progressFinish = function(){
-        $(this).attr({'data-loading': 'LANCER LES DES'})
+        $(this).addClass('disabled');
         return this.first().progressSet(100);
     };
 
