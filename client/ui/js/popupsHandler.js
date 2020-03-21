@@ -65,8 +65,8 @@ function delProperty(roadID){
     $('.property[data-id = "' + roadID + '"]').remove();
 }
 
-function createCard(type, roadName, price){
-    html =  `<div class="card notification sale">
+function createCard(propertyID, type, roadName, price) {
+    let html =  `<div class="card notification sale" data-property-id="`+propertyID+`" style="display: none;">
                 <div class="card-header ` + type + `">
                     <div class="title">` + roadName + `</div>
                 </div>
@@ -77,33 +77,32 @@ function createCard(type, roadName, price){
                             <p>` + price + `€</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary">ACHETER</button>
-                    <button class="btn btn-secondary">NE RIEN FAIRE</button>
+                    <button class="btn btn-primary accept">ACHETER</button>
+                    <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
                 </div>
             </div>`;
-    $('.notification-container > .col-md-12').append(html);
+    
+    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
+}
 
-    //Nécessaire?
-    $('.btn-primary').unbind();
-    $('.btn-secondary').unbind();
-    $('.card-body > .btn-primary').click(function () {
-        let error = 0;
-        let status;
-        alert('gamePropertyBuyReq a implementer');
-        console.log('gamePropertyBuyReq');
-
-        if (!error) {
-            $(this).parent().parent().remove();
-        }
-        else {
-            alert('erreur :' + status);
-        }
-    });
-
-
-    $('.btn-secondary').click(function () {
-        $(this).parent().parent().remove();
-    });
+function createDisabledCard(propertyID, type, roadName, price) {
+    let html =  `<div class="card notification sale disabled" data-property-id="`+propertyID+`" style="display: none;">
+                <div class="card-header ` + type + `">
+                    <div class="title">` + roadName + `</div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 text-center value">
+                            <p class="state">À VENDRE</p>
+                            <p>` + price + `€</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary accept">ACHETER</button>
+                    <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
+                </div>
+            </div>`;
+    
+    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
 // initProperty()
@@ -125,4 +124,4 @@ function createCard(type, roadName, price){
 // createProperty('4', 'green', 'Rue de la forêt', 31);
 // createProperty('4', 'brown', 'Rue de la ville', 33);
 
-// createCard('brown', 'Rue de la ville', 33000);
+// createCard(1, 'brown', 'Rue de la ville', 33000, null);

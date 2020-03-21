@@ -19,6 +19,7 @@ function nickToId(nick) {
         if (DATA.players[i].nickname == nick)
             return DATA.players[i].id;
     }
+    return null;
 }
 
 function idToNick(id) {
@@ -26,6 +27,7 @@ function idToNick(id) {
         if (DATA.players[i].id == id)
             return DATA.players[i].nickname;
     }
+    return null;
 }
 
 function getPlayerById(id) {
@@ -33,6 +35,40 @@ function getPlayerById(id) {
         if (DATA.players[i].id == id)
             return DATA.players[i];
     }
+    return null;
+}
+
+function getCellById(id) {
+    for (const i in DATA.cells) {
+        if (DATA.cells[i].id == id)
+            return DATA.cells[i];
+    }
+    return null;
+}
+
+function getPropertyById(id) {
+    for (const i in DATA.properties) {
+        if (DATA.properties[i].id == id)
+            return DATA.properties[i];
+    }
+    return null;
+}
+
+function getPropertyByCellId(cellId) {
+    let cell = getCellById(cellId);
+    for (const i in DATA.properties) {
+        if (DATA.properties[i].id == cell.propertyID)
+            return DATA.properties[i];
+    }
+    return null;
+}
+
+function getCellByProperty(property) {
+    for (const i in DATA.cells) {
+        if (DATA.cells[i].propertyID == property.id)
+            return DATA.cells[i];
+    }
+    return null;
 }
 
 /////////////////////////////
@@ -64,14 +100,17 @@ socket.on('gameStartedRes', (data) => {
     });
 
     initProperty();
-    setCurrentPlayer(DATA.players[0].id);
 });
 
 socket.on('gameTurnRes', (data) => {
     console.log(data);
+
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
-    //alert("C\'est au tour de " + idToNick(data.playerID) + " de jouer !");
+    
+    // On vide toutes les notifications (au cas-où)
+    $('.notification-container > .col-md-12').empty();
+
     const turnTimeout = data.turnEndTime;
     // afficher décompte de temps du tour
     setCurrentPlayer(data.playerID);
@@ -100,18 +139,14 @@ socket.on('gameActionRes', (data) => {
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
+    let totalDices = data.dicesRes[0] + data.dicesRes[1];
+    console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés");
+
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
-        console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPos);
-        
+       
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
         movement(PAWNS[getPlayerById(data.playerID).pawn], tabCases['case' + data.cellPos.toString()]);
-    
-        // A gérer : asyncRequestType & asyncRequestArgs
-        if (data.asyncRequestType == 'canBuy') {
-            createCard(DATA.cells[data.cellPos].properties.color, DATA.cells[data.cellPos].properties.name, DATA.cells[data.cellPos].properties.price);
-        }
-
 
         // Mise à jour des soldes (le cas échéant)
         if (data.updateMoney) {
@@ -125,8 +160,75 @@ socket.on('gameActionRes', (data) => {
             alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
         }
 
+        // Affichage de la propriété sur laquelle le joueur est tombé (le cas échéant)
+        let property = getPropertyByCellId(data.cellPos);
+        if (property) {
+            console.log(idToNick(data.playerID) + " est tombé sur la propriété " + property.type + " / " + property.name + " / " + property.description + " / " + property.color);
+        }
+
+        // asyncRequestType à gérer ici
+        if (data.asyncRequestType && property) {
+            if (data.asyncRequestType == "canBuy") {
+                let price = data.asyncRequestArgs[0];
+                if (data.playerID == ID)
+                    createCard(property.id, property.color, property.name, price);
+                else
+                    createDisabledCard(property.id, property.color, property.name, price);
+            } else if (data.asyncRequestType == "canUpgrade") {
+                // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+                let level1Price = data.asyncRequestArgs[0];
+                let level2Price = data.asyncRequestArgs[1];
+                let level3Price = data.asyncRequestArgs[2];
+                let level4Price = data.asyncRequestArgs[3];
+                let level5price = data.asyncRequestArgs[4];
+            } else if (data.asyncRequestType == "shouldMortage") {
+                 // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
+                let totalMoneyToHave = data.asyncRequestArgs[0];
+            }
+        }
+
         console.log("=== fin gameActionRes ===");
     });
+});
+
+$('.notification-container').on('click', '.accept', function() {
+    console.log("J'ACHEEEEEEEEEEEEEEEEEETE");
+    socket.emit('gamePropertyBuyReq');
+    $(this).parent().parent().fadeOut('fast', function() {
+        $(this).remove();
+    });
+});
+
+$('.notification-container').on('click', '.reject', function() {
+    console.log("NOOOOOOOOOOOOOOPE");
+    $(this).parent().parent().fadeOut('fast', function() {
+        $(this).remove();
+    });
+});
+
+socket.on("gamePropertyBuyRes", (data) => {
+    console.log("gamePropertyBuyRes");
+    let property = getPropertyById(data.propertyID);
+    let cell = getCellByProperty(property);
+    if (property && cell) {
+        createProperty(data.playerID, property.color, property.name, property.id)
+        setPlayerMoney(data.playerID, data.playerMoney);
+        changeColorCase('case' + cell.id.toString(), property.color);
+        
+        // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
+        $('.notification-container')
+            .find('.notification[data-property-id="'+property.id+'"] .accept')
+            .animate({zoom: '130%'}, 250, function() {
+                $(this).animate({zoom: '100%'}, 250, function() {
+                    setTimeout(function() {
+                        $('.notification-container').find('.notification[data-property-id="'+property.id+'"]').fadeOut('fast', () => {
+                            $(this).remove();
+                        });
+                    }, 300);
+                });
+            });
+        
+    }
 });
 
 socket.on("gameRollDicesRes", (res) => {
@@ -233,5 +335,5 @@ function bindOfferListener() {
     });
 }
 
-addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
-addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
+// addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
+// addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
