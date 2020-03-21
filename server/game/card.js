@@ -39,7 +39,7 @@ class Card {
     }
 
     advance (game, player) {
-        // TODO integrer les cartes de type advance
+        player.moveRelative(this.effectArg1);
     }
 }
 

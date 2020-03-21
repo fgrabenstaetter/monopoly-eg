@@ -2,17 +2,17 @@ const chanceCards = [{
     'token': 'advanceGo',
     'description': 'Advance to "Go". (Collect $200)',
     'effectType': 'advance',
-    'effectArg1': 0  // move to cell number 1
+    'effectArg1': 26  // move to cell number 1
 }, {
     'token': 'advanceIllinoisAve',
     'description': 'Advance to Illinois Avenue. If you pass Go, collect $200.',
     'effectType': 'advance',
-    'effectArg1': 0 // move to Illinois Avenue
+    'effectArg1': 7 // move to Illinois Avenue
 }, {
     'token': 'advanceStCharles',
     'description': 'Advance to St. Charles Place. If you pass Go, collect $200.',
     'effectType': 'advance',
-    'effectArg1': 0 // move to St. Charles Place
+    'effectArg1': 35 // move to St. Charles Place
 }, {
     'token': 'advanceUtility',
     'description': 'Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total 10 times the amount thrown.',
@@ -22,7 +22,7 @@ const chanceCards = [{
     'token': 'advanceRailroad',
     'description': 'Advance token to the nearest Railroad and pay owner twice the rental to which he/she is otherwise entitled. If Railroad is unowned, you may buy it from the Bank.',
     'effectType': 'advance',
-    'effectArg1': 0 // move to nearest Railroad
+    'effectArg1': 16 // Aller à la cellule numéro 16 ? => A titre d'exemple
 }, {
     'token': 'gainBankDivident',
     'description': 'Bank pays you dividend of $50.',
