@@ -11,8 +11,7 @@ $(function () {
 });
 
 
-// ??
-let users = [{ nickname: '[Server]', id: -1 }]; // = liste de { nickname: string, id: int }
+let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
     for (const row of users) {
         if (row.nickname === nick)

@@ -51,7 +51,7 @@ function addMsg (senderID, text, createdTime) {
     const localeDate = new Date(createdTime).toLocaleString();
     const html = `
         <div class="` + msgClass + `" title="` + localeDate + `">
-            <div class="msg-author">` + idToNick(senderID) + `</div>`
+            <div class="msg-author">` + (senderID === -1 ? '[Server]' : idToNick(senderID)) + `</div>`
             + text +
         `</div>`;
 
