@@ -39,7 +39,7 @@ class Card {
     }
 
     advance (game, player) {
-        player.moveRelative(this.effectArg1);
+        player.moveAbsolute(this.effectArg1);
     }
 }
 

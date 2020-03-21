@@ -84,7 +84,7 @@ socket.on('gameTurnRes', (data) => {
 
 
         // C'est mon tour !
-        alert("C'est mon tour !");
+        console.log("C'est mon tour !");
         $('#timer').progressInitialize();
         $('#timer').progressTimed(60);
     }

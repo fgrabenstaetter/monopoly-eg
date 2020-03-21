@@ -1,15 +1,15 @@
-$(document).ready( () => {
-    $('#timer').click(function(e){
+$(document).ready(() => {
+    $('#timer').click(function (e) {
         e.preventDefault();
         // This function will show a progress meter for
         // the specified amount of time
-        if ($(this).attr('data-loading')=='LANCER LES DES') {
-            $(this).attr({'data-loading': 'TERMINER'});
+        if ($(this).attr('data-loading') == 'LANCER LES DES') {
+            $(this).attr({ 'data-loading': 'TERMINER' });
             // socket lancer les dés
-            alert('socket lancement des')
+            console.log('socket lancement des');
         }
         else {
-            alert('socket fin du tour')
+            console.log('socket fin du tour');
             $(this).progressFinish();
         }
     });
