@@ -68,11 +68,17 @@ socket.on('gameTurnRes', (data) => {
     setCurrentPlayer(data.playerID);
 
     if (data.playerID === ID) {
+
         /** C'est mon tour:
          *  afficher lancer les dés au lieu du bouton terminer
          *  
          */
 
+
+
+        // C'est mon tour !
+        alert("C'est mon tour !");
+        $('#timer').progressTimed(15);
 
     }
 });
@@ -86,7 +92,7 @@ socket.on('gameActionRes', (data) => {
     console.log(data);
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
-    
+
     triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
     if (data.updateMoney) {
@@ -118,7 +124,7 @@ $(function () {
 /**
  * Met à jour le solde d'un joueur sur l'UI
  * @param playerId id du joueur à mettre à jour
- * @param amount valeur du nouveau solde  
+ * @param amount valeur du nouveau solde
  */
 function setPlayerMoney(playerId, amount) {
     $('.player-list .player-entry[data-id="' + playerId + '"] .money').html(amount);
@@ -126,7 +132,7 @@ function setPlayerMoney(playerId, amount) {
 
 /**
  * Met à jour le joueur courant sur l'interface (point affiché à côté du pseudo)
- * @param playerId ID du joueur courant 
+ * @param playerId ID du joueur courant
  */
 function setCurrentPlayer(playerId) {
     $('.player-list .player-entry').removeClass('current');

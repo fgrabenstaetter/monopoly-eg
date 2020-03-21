@@ -1,13 +1,12 @@
 $(document).ready( () => {
 
     $('#timer').progressInitialize();
-
+    
     $('#timer').click(function(e){
         e.preventDefault();
         // This function will show a progress meter for
         // the specified amount of time
-
-        $(this).progressTimed(15);
+        $(this).attr({'data-loading': 'TERMINER'});
     });
 
 });
@@ -32,7 +31,7 @@ $(document).ready( () => {
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
-        button.attr({'data-loading': 'TERMINER', 'data-finished': 'EN ATTENTE'});
+        button.attr({'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE'});
 
         // Add the needed markup for the progress bar to the button
         var bar = $('<span class="tz-bar">').appendTo(button);
