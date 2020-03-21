@@ -99,10 +99,10 @@ async function rollDice(dice, number, rotations){
 		}
 		lastNum = tmp;
 		rotateDice(dice, tmp);
-		await sleep(500);
+		await sleep(400);
 	}
 	rotateDice(dice, number);
-	await sleep(500);
+	await sleep(400);
 	scaleUpDice(dice);
 	await sleep(150);
 	scaleDownDice(dice);
