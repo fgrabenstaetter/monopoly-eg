@@ -115,7 +115,7 @@ async function triggerDices(d1, d2, _callback){
 	await sleep(300);
 	rollDice(1,d1,rotations);
 	rollDice(2,d2,rotations);
-	await sleep(rotations*500+3000);
+	await sleep(rotations*300+2000);
 	hideDices();
 	await sleep(200);
 	if (typeof _callback !== "undefined")
