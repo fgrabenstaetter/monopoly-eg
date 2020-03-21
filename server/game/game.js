@@ -246,7 +246,7 @@ class Game {
             if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
                 this.curPlayer.nbJailEscapeCards--;
                 this.curPlayer.quitPrison();
-            } else if (diceRes1 === diceRes2)
+            } else if (diceRes[0] === diceRes[1])
                 this.curPlayer.quitPrison();
             else
                 this.curPlayer.remainingTurnsInJail--;
