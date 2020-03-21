@@ -62,10 +62,10 @@ socket.on('gameTurnRes', (data) => {
     console.log(data);
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
-    alert("C\'est au tour de " + idToNick(data.playerID) + " de jouer !");
+    //alert("C\'est au tour de " + idToNick(data.playerID) + " de jouer !");
     const turnTimeout = data.turnEndTime;
     // afficher décompte de temps du tour
-    // setCurrentplayer (data.playerID);
+    setCurrentPlayer(data.playerID);
 
     if (data.playerID === ID) {
         /** C'est mon tour:
