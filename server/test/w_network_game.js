@@ -309,7 +309,7 @@ describe('Network + Game', () => {
             assert.strictEqual(data.cellPos, 4);
             assert.strictEqual(data.asyncRequestType, null);
             assert.deepStrictEqual(data.asyncRequestArgs, null);
-            assert.deepStrictEqual(data.updateMoney, [{ id: player.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - property.rentalPrice }]);
+            assert.deepStrictEqual(data.updateMoney, [{ playerID: player.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - property.rentalPrice }]);
             done();
         });
 
@@ -318,7 +318,6 @@ describe('Network + Game', () => {
         });
         sock.emit('gameRollDiceReq');
     });
-
 
     it('Hypothèque forcée (pas assez pour payer loyer)', (done) => {
         const game = new Game([user, user2], [0, 1], GLOBAL);
@@ -364,6 +363,39 @@ describe('Network + Game', () => {
                 done();
             });
             sock.emit('gamePropertyForcedMortageReq', { properties: [prop.id] });
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Test sur le retrait de carte chance/communauté', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [3, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+        const money = player.money;
+        //console.log(game.curPlayer);
+        game.turnPlayerChanceCardCell();
+        let newMoney;
+
+        sock = clientSocket2;
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [3, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 6);
+            assert.strictEqual(data.asyncRequestType, null);
+
+            const extraLast = data.extra[data.extra.length - 1];
+            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+            assert.deepStrictEqual(extraLast.description, savedCard.description);
+            assert.deepStrictEqual(extraLast.name, savedCard.token);
+            done();
         });
 
         sock.on('gameRollDiceRes', (data) => {

@@ -1,6 +1,8 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
+const Card = require('./card');
+const Deck = require('./deck');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -601,14 +603,29 @@ class Network {
                 let updateMoneyList = [];
                 for (let i = 0; i < game.players.length; i++) {
                     if (moneySav.length > i && game.players[i].money !== moneySav[i])
-                        updateMoneyList.push({ id: game.players[i].id, money: game.players[i].money });
+                        updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
                 }
 
                 const extra = [];
                 if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
                     extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
                 // ajouter carte chance/communauté si une a été tirée
+                let cardToSend;
+                switch (game.curCell.type) {
+                    case Constants.CELL_TYPE.CHANCE:
+                        cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+                        extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
+                        break;
 
+                    case Constants.CELL_TYPE.COMMUNITY:
+                        cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
+                        extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
+                        break;
+
+                    default:
+                        //Ne rien faire
+                        break;
+                }
                 this.io.to(game.name).emit('gameActionRes', {
                     dicesRes         : diceRes,
                     playerID         : player.id,

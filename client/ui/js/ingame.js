@@ -10,16 +10,20 @@ let DATA = {
     gameEndTime : null // timestamp de fin forcée du jeu
 }
 
+const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
+
+
 function nickToId (nick) {
-    for (const row of DATA.players) {
-        if (row.nickname === nick)
-            return row.id;
+    for (const i in DATA.players) {
+        if (DATA.players[i].nickname == nick)
+            return DATA.players[i].id;
     }
 }
+
 function idToNick (id) {
-    for (const row of DATA.players) {
-        if (row.id === id)
-            return row.nickname;
+    for (const i in DATA.players) {
+        if (DATA.players[i].id == id)
+            return DATA.players[i].nickname;
     }
 }
 
@@ -33,12 +37,29 @@ socket.on('gameStartedRes', (data) => {
     DATA.properties  = data.properties;
     DATA.gameEndTime = data.gameEndTime;
 
-    console.log('Le jeu a démarré ! joueurs: ');
-    for (const pl of DATA.players)
-        console.log(pl.nickname);
+    console.log('Le jeu a démarré !');
+    console.log(data);
+
+    // Génération de la liste de joueurs
+    DATA.players.forEach((player) => {
+        loaderPawn(PAWNS[player.pawn]);
+
+        let html = `<div class="player-entry" data-id="`+player.id+`">
+                        <div class="name" title="`+player.nickname+`">`+player.nickname+`</div>
+                        <div class="money">0</div>
+                        <div class="popup top" style="display: none;">
+                        </div>
+                </div>`;
+        
+        $('.player-list').append(html);
+    });
+
+    initProperty();
+    setCurrentPlayer(DATA.players[0].id);
 });
 
 socket.on('gameTurnRes', (data) => {
+    console.log(data);
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
     const turnTimeout = data.turnEndTime;
@@ -46,11 +67,31 @@ socket.on('gameTurnRes', (data) => {
 
     if (data.playerID === ID) {
         // C'est mon tour !
+        alert("C'est mon tour !");
     }
 });
 
 socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
+});
+
+socket.on('gameActionRes', (data) => {
+    console.log("=== gameActionRes ===");
+    console.log(data);
+
+    alert("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
+
+    if (data.updateMoney) {
+        data.updateMoney.forEach((row) => {
+            setPlayerMoney(row.playerID, row.money);
+        });
+    }
+
+    if (data.extra && data.extra.newCard) {
+        alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
+    }
+
+    console.log("=== fin gameActionRes ===");
 });
 
 
@@ -65,6 +106,24 @@ $(function(){
         return $(this).html();
     });
 });
+
+/**
+ * Met à jour le solde d'un joueur sur l'UI
+ * @param playerId id du joueur à mettre à jour
+ * @param amount valeur du nouveau solde  
+ */
+function setPlayerMoney(playerId, amount) {
+    $('.player-list .player-entry[data-id="'+playerId+'"] .money').html(amount);
+}
+
+/**
+ * Met à jour le joueur courant sur l'interface (point affiché à côté du pseudo)
+ * @param playerId ID du joueur courant 
+ */
+function setCurrentPlayer(playerId) {
+    $('.player-list .player-entry').removeClass('current');
+    $('.player-list .player-entry[data-id="'+playerId+'"]').addClass('current');
+}
 
 function addPurchaseOffer(id, name, roadName, price) {
     $("#msgChat").append(`

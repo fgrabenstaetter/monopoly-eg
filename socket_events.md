@@ -554,7 +554,7 @@
             updateMoney:
             [
                 // peut être vide (dynamique)
-                playerID: int, // nouveau solde
+                {playerID: string, money: int}, // nouveau solde
                 ...
             ],
             extra: [
