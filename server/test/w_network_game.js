@@ -390,44 +390,48 @@ describe('Network + Game', () => {
 
         sock.on('gameActionRes', (data) => {
             //console.log(data);
-            assert.deepEqual(data.dicesRes, [3, 3]);
-            assert.strictEqual(data.playerID, player.id);
-            assert.strictEqual(data.cellPos, 6);
-            assert.strictEqual(data.asyncRequestType, null);
+            if (data.cellPos !== 6)
+                done();
+            else {
+                assert.deepEqual(data.dicesRes, [3, 3]);
+                assert.strictEqual(data.playerID, player.id);
+                assert.strictEqual(data.cellPos, 6);
+                assert.strictEqual(data.asyncRequestType, null);
 
-            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-            const receivedCard = data.extra[data.extra.length - 1];
-            assert.strictEqual('chance', receivedCard.type);
-            assert.deepStrictEqual(receivedCard.description, savedCard.description);
-            assert.deepStrictEqual(receivedCard.name, savedCard.token);
-            //assert.deepStrictEqual(receivedCard.effectType, savedCard.effectType);
-            switch (savedCard.effectType) {
-                case 'loseMoney':
-                    newMoney = money - savedCard.effectArg1;
-                    assert.strictEqual(newMoney, player.money);
-                    console.log(newMoney);
-                    break;
+                const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+                const receivedCard = data.extra[data.extra.length - 1];
+                assert.strictEqual('chance', receivedCard.type);
+                assert.deepStrictEqual(receivedCard.description, savedCard.description);
+                assert.deepStrictEqual(receivedCard.name, savedCard.token);
 
-                case 'gainMoney':
-                    newMoney = money + savedCard.effectArg1;
-                    assert.strictEqual(newMoney, player.money);
-                    console.log(newMoney);
-                    break;
+                switch (savedCard.effectType) {
+                    case 'loseMoney':
+                        newMoney = money - savedCard.effectArg1;
+                        assert.strictEqual(newMoney, player.money);
+                        console.log(newMoney);
+                        break;
 
-                case 'advance':
-                    break;
+                    case 'gainMoney':
+                        newMoney = money + savedCard.effectArg1;
+                        assert.strictEqual(newMoney, player.money);
+                        console.log(newMoney);
+                        break;
 
-                case 'jailBreak':
-                    break;
+                    case 'advance':
+                        break;
 
-                case 'jailTime':
-                    break;
+                    case 'jailBreak':
+                        break;
 
-                default:
-                    //NE RIEN FAIRE
-                    break;
+                    case 'jailTime':
+                        break;
+
+                    default:
+                        //NE RIEN FAIRE
+                        break;
+                }
+                done();
             }
-            done();
         });
 
         sock.on('gameRollDiceRes', (data) => {

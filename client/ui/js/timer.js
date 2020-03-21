@@ -1,15 +1,15 @@
-$(document).ready( () => {
-    $('#timer').click(function(e){
+$(document).ready(() => {
+    $('#timer').click(function (e) {
         e.preventDefault();
         // This function will show a progress meter for
         // the specified amount of time
-        if ($(this).attr('data-loading')=='LANCER LES DES') {
-            $(this).attr({'data-loading': 'TERMINER'});
+        if ($(this).attr('data-loading') == 'LANCER LES DES') {
+            $(this).attr({ 'data-loading': 'TERMINER' });
             // socket lancer les dés
-            alert('socket lancement des')
+            console.log('socket lancement des');
         }
         else {
-            alert('socket fin du tour')
+            console.log('socket fin du tour');
             $(this).progressFinish();
         }
     });
@@ -19,12 +19,12 @@ $(document).ready( () => {
 // The progress meter functionality is available as a series of plugins.
 // You can put this code in a separate file if you wish to keep things tidy.
 
-(function($){
+(function ($) {
 
     // Creating a number of jQuery plugins that you can use to
     // initialize and control the progress meters.
 
-    $.fn.progressInitialize = function(){
+    $.fn.progressInitialize = function () {
 
         // This function creates the necessary markup for the progress meter
         // and sets up a few event listeners.
@@ -36,15 +36,15 @@ $(document).ready( () => {
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
-        button.attr({'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE'});
+        button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
 
         // Add the needed markup for the progress bar to the button
         var bar = $('<span class="tz-bar">').appendTo(button);
 
         // The progress event tells the button to update the progress bar
-        button.on('progress', function(e, val, absolute, finish){
+        button.on('progress', function (e, val, absolute, finish) {
 
-            if(!button.hasClass('in-progress')){
+            if (!button.hasClass('in-progress')) {
 
                 // This is the first progress event for the button (or the
                 // first after it has finished in a previous run). Re-initialize
@@ -58,22 +58,22 @@ $(document).ready( () => {
             // val, absolute and finish are event data passed by the progressIncrement
             // and progressSet methods that you can see near the end of this file.
 
-            if(absolute){
+            if (absolute) {
                 progress = val;
             }
-            else{
+            else {
                 progress += val;
             }
 
-            if(progress >= 100){
+            if (progress >= 100) {
                 progress = 100;
             }
 
-            if(finish){
+            if (finish) {
 
                 button.removeClass('in-progress').addClass('finished');
 
-                bar.delay(500).fadeOut(function(){
+                bar.delay(500).fadeOut(function () {
 
                     // Trigger the custom progress-finish event
                     button.trigger('progress-finish');
@@ -85,25 +85,25 @@ $(document).ready( () => {
             setProgress(progress);
         });
 
-        function setProgress(percentage){
-            bar.filter('.tz-bar').width(percentage+'%');
+        function setProgress(percentage) {
+            bar.filter('.tz-bar').width(percentage + '%');
         }
     };
 
     // progressStart simulates activity on the progress meter. Call it first,
     // if the progress is going to take a long time to finish.
 
-    $.fn.progressStart = function(){
+    $.fn.progressStart = function () {
 
         var button = this.first(),
             last_progress = new Date().getTime();
 
-        if(button.hasClass('in-progress')){
+        if (button.hasClass('in-progress')) {
             // Don't start it a second time!
             return this;
         }
 
-        button.on('progress', function(){
+        button.on('progress', function () {
             last_progress = new Date().getTime();
             console.log(last_progress);
         });
@@ -111,9 +111,9 @@ $(document).ready( () => {
         // Every half a second check whether the progress
         // has been incremented in the last two seconds
 
-        var interval = window.setInterval(function(){
+        var interval = window.setInterval(function () {
 
-            if( new Date().getTime() > 2000+last_progress){
+            if (new Date().getTime() > 2000 + last_progress) {
 
                 // There has been no activity for two seconds. Increment the progress
                 // bar a little bit to show that something is happening
@@ -123,27 +123,27 @@ $(document).ready( () => {
 
         }, 500);
 
-        button.on('progress-finish',function(){
+        button.on('progress-finish', function () {
             window.clearInterval(interval);
         });
 
         return button.progressIncrement(10);
     };
 
-    $.fn.progressFinish = function(){
-        $(this).attr({'data-loading': 'LANCER LES DES'})
+    $.fn.progressFinish = function () {
+        $(this).attr({ 'data-loading': 'LANCER LES DES' })
         return this.first().progressSet(100);
     };
 
-    $.fn.progressSet = function(val){
+    $.fn.progressSet = function (val) {
         val = val || 10;
 
         var finish = false;
-        if(val >= 100){
+        if (val >= 100) {
             finish = true;
         }
 
-        return this.first().trigger('progress',[val, true, finish]);
+        return this.first().trigger('progress', [val, true, finish]);
     };
 
     // This function creates a progress meter that
@@ -154,7 +154,7 @@ $(document).ready( () => {
         var button = this.first(),
             bar = button.find('.tz-bar');
 
-        if(button.is('.in-progress')){
+        if (button.is('.in-progress')) {
             return this;
         }
 
@@ -164,11 +164,11 @@ $(document).ready( () => {
         bar.css('transition', $(this).attr('data-time')+'s linear');
         button.progressSet(99);
 
-        window.setTimeout(function(){
-            bar.css('transition','');
+        window.setTimeout(function () {
+            bar.css('transition', '');
             button.progressFinish();
 
-            if($.isFunction(cb)){
+            if ($.isFunction(cb)) {
                 cb();
             }
 
