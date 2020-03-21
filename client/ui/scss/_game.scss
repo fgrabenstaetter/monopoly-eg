@@ -502,9 +502,40 @@
         .card-header {
           border-radius: 15px 15px 0px 0px;
           color: white;
-          background-color: orange;
           padding-top: 10px;
           padding-bottom: 10px;
+
+          &.brown {
+            background-color: brown;
+          }
+
+          &.orange {
+            background-color: orange;
+          }
+
+          &.blue {
+            background-color: blue;
+          }
+          
+          &.red {
+            background-color: red;
+          }
+          
+          &.pink {
+            background-color: pink;
+          }
+          
+          &.green {
+            background-color: green;
+          }
+
+          &.yellow {
+            background-color: yellow;
+          }
+
+          &.cyan {
+            background-color: cyan;
+          }
 
           .title {
             font-family: 'LilitaOne', sans-serif;

@@ -1430,9 +1430,40 @@ input {
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header {
   border-radius: 15px 15px 0px 0px;
   color: white;
-  background-color: orange;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.brown {
+  background-color: brown;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.orange {
+  background-color: orange;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.blue {
+  background-color: blue;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.red {
+  background-color: red;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.pink {
+  background-color: pink;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.green {
+  background-color: green;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
+  background-color: yellow;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
+  background-color: cyan;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .title {
