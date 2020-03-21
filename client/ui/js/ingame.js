@@ -43,7 +43,7 @@ socket.on('gameStartedRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
-
+    $('#timer').initTimer(60);
     console.log('Le jeu a démarré !');
     console.log(data);
 
@@ -86,7 +86,7 @@ socket.on('gameTurnRes', (data) => {
         // C'est mon tour !
         alert("C'est mon tour !");
         $('#timer').progressInitialize();
-        $('#timer').progressTimed(60);
+        $('#timer').progressTimed();
     }
 });
 

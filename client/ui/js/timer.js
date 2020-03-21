@@ -105,6 +105,7 @@ $(document).ready( () => {
 
         button.on('progress', function(){
             last_progress = new Date().getTime();
+            console.log(last_progress);
         });
 
         // Every half a second check whether the progress
@@ -148,7 +149,7 @@ $(document).ready( () => {
     // This function creates a progress meter that
     // finishes in a specified amount of time.
 
-    $.fn.progressTimed = function(seconds, cb){
+    $.fn.progressTimed = function(cb){
 
         var button = this.first(),
             bar = button.find('.tz-bar');
@@ -160,7 +161,7 @@ $(document).ready( () => {
         // Set a transition declaration for the duration of the meter.
         // CSS will do the job of animating the progress bar for us.
 
-        bar.css('transition', seconds+'s linear');
+        bar.css('transition', $(this).attr('data-time')+'s linear');
         button.progressSet(99);
 
         window.setTimeout(function(){
@@ -171,7 +172,10 @@ $(document).ready( () => {
                 cb();
             }
 
-        }, seconds*1000);
+        }, $(this).attr('data-time')*1000);
     };
 
+    $.fn.initTimer = function(seconds){
+        $(this).attr({'data-time': seconds});
+    }
 })(jQuery);
