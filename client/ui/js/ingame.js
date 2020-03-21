@@ -106,6 +106,10 @@ socket.on('gameActionRes', (data) => {
         movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
 
         // A gérer : asyncRequestType & asyncRequestArgs
+        if (data.asyncRequestType == 'canBuy') {
+            createCard(DATA.cells[data.cellPos].properties.color, DATA.cells[data.cellPos].properties.name, DATA.cells[data.cellPos].properties.price);
+        }
+
 
         // Mise à jour des soldes (le cas échéant)
         if (data.updateMoney) {
@@ -136,7 +140,6 @@ socket.on("gameTurnEndRes", (res) => {
     else // hôte uniquement
         alert(res.status);
 });
-
 
 socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
