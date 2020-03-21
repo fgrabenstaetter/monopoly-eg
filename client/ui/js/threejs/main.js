@@ -1,11 +1,11 @@
-loaderPawn('tracteur');
-loaderPawn('boat');
-loaderPawn('moto');
-loaderPawn('camion');
-loaderPawn('montgolfiere');
-loaderPawn('citroen C4');
-loaderPawn('overboard');
-loaderPawn('schoolbus');
+// loaderPawn('tracteur');
+// loaderPawn('boat');
+// loaderPawn('moto');
+// loaderPawn('camion');
+// loaderPawn('montgolfiere');
+// loaderPawn('citroen C4');
+// loaderPawn('overboard');
+// loaderPawn('schoolbus');
 
 
 loaderHouseProperty('M1_1_1');
