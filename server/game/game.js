@@ -169,8 +169,6 @@ class Game {
 
         do {
             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++this.turnPlayerInd;
-            console.log(this.turnPlayerInd);
-            console.log(this.curPlayer);
         } while (this.curPlayer.failure)
 
         this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
