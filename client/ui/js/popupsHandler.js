@@ -43,19 +43,19 @@ function initProperty(){
 
 function createProperty(playerID, type, roadName){
     if (roadName == 'Eau') {
-        html = `<div class="property eau">
-            ` + roadName + `
-        </div>`;
+        html =  `<div class="property eau">`
+                    + roadName +
+                `</div>`;
     }
     else if (roadName == 'Électricité') {
-        html = `<div class="property electricite">
-            ` + roadName + `
-        </div>`;
+        html =  `<div class="property electricite">`
+                    + roadName +
+                `</div>`;
     }
     else {
-        html = `<div class="property">
-            ` + roadName + `
-        </div>`;
+        html =  `<div class="property">`
+                    + roadName +
+                `</div>`;
     }
     $('[data-id = "' + playerID + '"]').find('.' + type).append(html);
 }
