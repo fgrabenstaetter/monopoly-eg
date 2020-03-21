@@ -68,7 +68,8 @@ socket.on('gameTurnRes', (data) => {
     if (data.playerID === ID) {
         // C'est mon tour !
         alert("C'est mon tour !");
-        $('#timer').progressTimed(15);
+        $('#timer').progressInitialize();
+        $('#timer').progressTimed(60);
     }
 });
 
@@ -81,7 +82,7 @@ socket.on('gameActionRes', (data) => {
     console.log(data);
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
-    
+
     triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
     if (data.updateMoney) {

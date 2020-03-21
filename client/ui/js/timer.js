@@ -1,12 +1,17 @@
 $(document).ready( () => {
-
-    $('#timer').progressInitialize();
-    
     $('#timer').click(function(e){
         e.preventDefault();
         // This function will show a progress meter for
         // the specified amount of time
-        $(this).attr({'data-loading': 'TERMINER'});
+        if ($(this).attr('data-loading')=='LANCER LES DES') {
+            $(this).attr({'data-loading': 'TERMINER'});
+            // socket lancer les dés
+            alert('socket lancement des')
+        }
+        else {
+            alert('socket fin du tour')
+            $(this).progressFinish();
+        }
     });
 
 });
@@ -125,6 +130,7 @@ $(document).ready( () => {
     };
 
     $.fn.progressFinish = function(){
+        $(this).attr({'data-loading': 'LANCER LES DES'})
         return this.first().progressSet(100);
     };
 
