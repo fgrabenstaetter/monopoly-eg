@@ -102,6 +102,12 @@ function deleteHotel (hotelProperty) {
 	scene.remove(window[hotelProperty]);
 }
 
+function deletePawn(pawn)
+{
+	requestAnimationFrame(render);
+	scene.remove(window[pawn]);
+}
+
 
 function loaderPlateau (load, test) {
   load.load('models/plateau/'+test+'.gltf', (gltf) => {
