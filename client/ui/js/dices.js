@@ -113,8 +113,8 @@ async function triggerDices(d1, d2){
 	rotations = random(5,10);
 	showDices();
 	await sleep(300);
-	rollDice(1,4,rotations);
-	rollDice(2,2,rotations);
+	rollDice(1,d1,rotations);
+	rollDice(2,d2,rotations);
 	await sleep(rotations*500+3000);
 	hideDices();
 	await sleep(200);
