@@ -40,7 +40,6 @@ socket.on('gameStartedRes', (data) => {
     console.log(data);
 
     // Génération de la liste de joueurs
-    let i = 0;
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
 
@@ -51,15 +50,9 @@ socket.on('gameStartedRes', (data) => {
                         </div>
                 </div>`;
         
-        i++;
-        if (i == DATA.players.length) {
-            $('.player-list').append(html, () => {
-                initProperty();
-            });
-        } else {
-            $('.player-list').append(html);
-        }
+        $('.player-list').append(html);
     });
+    initProperty();
 });
 
 socket.on('gameTurnRes', (data) => {
