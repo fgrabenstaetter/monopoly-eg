@@ -380,9 +380,7 @@ describe('Network + Game', () => {
         game.start(true);
         const player = game.curPlayer;
         const money = player.money;
-        //console.log(game.curPlayer);
-        //game.turnPlayerChanceCardCell();
-        let newMoney = money;
+        let newMoney;
 
         let sock;
         if (player.user.socket === serverSocket)
@@ -391,7 +389,7 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
-            console.log(data);
+            //console.log(data);
             assert.deepEqual(data.dicesRes, [3, 3]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 6);
