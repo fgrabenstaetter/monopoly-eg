@@ -4,22 +4,22 @@
 
 // données statiques de jeu (format: voir /socket_events.md)
 let DATA = {
-    players     : [],
-    cells       : [],
-    properties  : [],
-    gameEndTime : null // timestamp de fin forcée du jeu
+    players: [],
+    cells: [],
+    properties: [],
+    gameEndTime: null // timestamp de fin forcée du jeu
 }
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
 
 
-function nickToId (nick) {
+function nickToId(nick) {
     DATA.players.forEach((player) => {
         if (player.nickname == nick)
             return player.id;
     });
 }
-function idToNick (id) {
+function idToNick(id) {
     DATA.players.forEach((player) => {
         if (player.id == id)
             return player.nickname;
@@ -31,9 +31,9 @@ function idToNick (id) {
 /////////////////////////////
 
 socket.on('gameStartedRes', (data) => {
-    DATA.players     = data.players;
-    DATA.cells       = data.cells;
-    DATA.properties  = data.properties;
+    DATA.players = data.players;
+    DATA.cells = data.cells;
+    DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
 
     console.log('Le jeu a démarré !');
@@ -43,13 +43,13 @@ socket.on('gameStartedRes', (data) => {
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
 
-        let html = `<div class="player-entry" data-id="`+player.id+`">
-                        <div class="name" title="`+player.nickname+`">`+player.nickname+`</div>
+        let html = `<div class="player-entry" data-id="` + player.id + `">
+                        <div class="name" title="`+ player.nickname + `">` + player.nickname + `</div>
                         <div class="money">0</div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
-        
+
         $('.player-list').append(html);
     });
     initProperty();
@@ -59,11 +59,18 @@ socket.on('gameTurnRes', (data) => {
     console.log(data);
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
+    alert("C\'est au tour de " + idToNick(data.playerID) + " de jouer !");
     const turnTimeout = data.turnEndTime;
     // afficher décompte de temps du tour
+    // setCurrentplayer (data.playerID);
 
     if (data.playerID === ID) {
-        // C'est mon tour !
+        /** C'est mon tour:
+         *  afficher lancer les dés au lieu du bouton terminer
+         *  
+         */
+
+
     }
 });
 
@@ -97,14 +104,14 @@ socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 // INTERFACE JS FUNCTIONS //
 ////////////////////////////
 
-$(function(){
-    $('.player-entry .name').attr('title', function(){
+$(function () {
+    $('.player-entry .name').attr('title', function () {
         return $(this).html();
     });
 });
 
 function setPlayerMoney(id, amount) {
-    $('.player-list .player-entry[data-id="'+id+'"] .money').html(amount);
+    $('.player-list .player-entry[data-id="' + id + '"] .money').html(amount);
 }
 
 function addPurchaseOffer(id, name, roadName, price) {
@@ -133,7 +140,7 @@ function addSaleOffer(id, name, roadName, price) {
     bindOfferListener();
 }
 
-function bindOfferListener(){
+function bindOfferListener() {
     $('.accept-button').unbind();
     $('.deny-button').unbind();
 
@@ -142,8 +149,8 @@ function bindOfferListener(){
         let status;
         const id = $(this).parent().parent().attr('data-id');
         //if ($(this).parent().parent().hasClass('purchase-offer')) {
-            alert('gameOfferAcceptReq a implementer');
-            console.log('gameOfferAcceptReq');
+        alert('gameOfferAcceptReq a implementer');
+        console.log('gameOfferAcceptReq');
         //}
         /*else {
             alert('gameOfferAcceptReq a implementer');
