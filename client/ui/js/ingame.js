@@ -87,10 +87,19 @@ socket.on('gameTurnRes', (data) => {
         console.log("C'est mon tour !");
         $('#timer').progressInitialize();
         $('#timer').progressTimed(DATA.turnTimeSeconds);
+
     } else {
         $('#timer').progressFinish();
     }
 });
+
+socket.on("gameRollDicesRes", (res) => {
+    if (res.error === 0)
+        console.log("gameRollDicesRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
 
 socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
