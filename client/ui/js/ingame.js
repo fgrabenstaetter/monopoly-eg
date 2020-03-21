@@ -39,9 +39,8 @@ socket.on('gameStartedRes', (data) => {
     console.log('Le jeu a démarré !');
     console.log(data);
 
-    $('.player-list').empty();
-
     // Génération de la liste de joueurs
+    let i = 0;
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
 
@@ -49,38 +48,18 @@ socket.on('gameStartedRes', (data) => {
                         <div class="name" title="`+player.nickname+`">`+player.nickname+`</div>
                         <div class="money">0</div>
                         <div class="popup top" style="display: none;">
-                            <!--
-                                <div class="properties-container yellow">
-                                </div>
-                                <div class="properties-container red">
-                                </div>
-                                <div class="properties-container blue">
-                                <div class="property" data-id="8">Rue de la ville</div></div>
-                                <div class="properties-container orange">
-                                </div>
-                                <div class="properties-container pink">
-                                </div>
-                                <div class="properties-container brown">
-                                </div>
-                                <div class="properties-container cyan">
-                                </div>
-                                <div class="properties-container green">
-                                </div>
-                                <div class="properties-container station">
-                                </div>
-                                <div class="properties-container company">
-                                </div>
-                            -->
                         </div>
                 </div>`;
         
-        $('.player-list').append(html);
+        i++;
+        if (i == DATA.players.length) {
+            $('.player-list').append(html, () => {
+                initProperty();
+            });
+        } else {
+            $('.player-list').append(html);
+        }
     });
-
-    for (const r in DATA.players) {
-        console.log(r);
-        alert(r.nickname + " / " + r.id);
-    }
 });
 
 socket.on('gameTurnRes', (data) => {
@@ -99,6 +78,25 @@ socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
 });
 
+socket.on('gameActionRes', (data) => {
+    console.log("=== gameActionRes ===");
+    console.log(data);
+
+    alert("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
+
+    if (data.updateMoney) {
+        data.updateMoney.forEach((row) => {
+            setPlayerMoney(row.playerID, row.money);
+        });
+    }
+
+    if (data.extra && data.extra.newCard) {
+        alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
+    }
+
+    console.log("=== fin gameActionRes ===");
+});
+
 
 socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
@@ -111,6 +109,10 @@ $(function(){
         return $(this).html();
     });
 });
+
+function setPlayerMoney(id, amount) {
+    $('.player-list .player-entry[data-id="'+id+'"] .money').html(amount);
+}
 
 function addPurchaseOffer(id, name, roadName, price) {
     $("#msgChat").append(`
