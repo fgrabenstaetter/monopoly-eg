@@ -436,6 +436,7 @@
         * *Données:*
         ```javascript
         {
+            turnTimeSeconds: int, // durée d'un tour (en secondes)
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             playersMoney: int, // argent initial de chaque joueur
             bankMoney: int, // argent initial de la banque

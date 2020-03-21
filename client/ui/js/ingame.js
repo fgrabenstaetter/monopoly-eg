@@ -8,7 +8,7 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    turnTimeSeconds: 60
+    turnTimeSeconds: null
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -44,6 +44,7 @@ socket.on('gameStartedRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
+    DATA.turnTimeSeconds = data.turnTimeSeconds - 2; // Marge de 2 secondes
 
     console.log('Le jeu a démarré !');
     console.log(data);
@@ -54,7 +55,7 @@ socket.on('gameStartedRes', (data) => {
 
         let html = `<div class="player-entry" data-id="` + player.id + `">
                         <div class="name" title="`+ player.nickname + `">` + player.nickname + `</div>
-                        <div class="money">0</div>
+                        <div class="money">`+data.playersMoney+`</div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
@@ -86,10 +87,19 @@ socket.on('gameTurnRes', (data) => {
         console.log("C'est mon tour !");
         $('#timer').progressInitialize();
         $('#timer').progressTimed(DATA.turnTimeSeconds);
+
     } else {
         $('#timer').progressFinish();
     }
 });
+
+socket.on("gameRollDicesRes", (res) => {
+    if (res.error === 0)
+        console.log("gameRollDicesRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
 
 socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
@@ -102,27 +112,26 @@ socket.on('gameActionRes', (data) => {
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
     // Lancement de l'animation des dés
-    triggerDices(data.dicesRes[0], data.dicesRes[1]);
-
-    // Déplacement du pion du joueur
-    console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
-    movement(PAWN[getPlayerById(data.playerID).pawn], data.cellPos);
-
-    // A gérer : asyncRequestType & asyncRequestArgs
-
-    // Mise à jour des soldes (le cas échéant)
-    if (data.updateMoney) {
-        data.updateMoney.forEach((row) => {
-            setPlayerMoney(row.playerID, row.money);
-        });
-    }
-
-    // Affichage de la carte (le cas échéant)
-    if (data.extra && data.extra.newCard) {
-        alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
-    }
-
-    console.log("=== fin gameActionRes ===");
+    triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
+        console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
+        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
+    
+        // A gérer : asyncRequestType & asyncRequestArgs
+    
+        // Mise à jour des soldes (le cas échéant)
+        if (data.updateMoney) {
+            data.updateMoney.forEach((row) => {
+                setPlayerMoney(row.playerID, row.money);
+            });
+        }
+    
+        // Affichage de la carte (le cas échéant)
+        if (data.extra && data.extra.newCard) {
+            alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
+        }
+    
+        console.log("=== fin gameActionRes ===");
+    });
 });
 
 
