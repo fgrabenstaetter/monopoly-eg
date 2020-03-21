@@ -1,11 +1,12 @@
-// loaderPawn('tracteur');
-// loaderPawn('boat');
-// loaderPawn('moto');
-// loaderPawn('camion');
-// loaderPawn('montgolfiere');
-// loaderPawn('citroen C4');
-// loaderPawn('overboard');
-// loaderPawn('schoolbus');
+loaderPawn('tracteur');
+loaderPawn('boat');
+loaderPawn('moto');
+loaderPawn('camion');
+loaderPawn('montgolfiere');
+loaderPawn('citroen C4');
+loaderPawn('overboard');
+loaderPawn('schoolbus');
+
 
 
 loaderHouseProperty('M1_1_1');
@@ -31,7 +32,6 @@ loaderHouseProperty('M3_3_4');
 loaderHotelProperty('H4_1');
 loaderHotelProperty('H4_2');
 loaderHotelProperty('H4_3');
-loaderHotelProperty('H4_4');
 
 loaderHouseProperty('M5_3_1');
 loaderHouseProperty('M5_3_2');

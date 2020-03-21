@@ -1,12 +1,14 @@
 let varMovement, vdp, varPawn, counter = 0; 
 let scene, light, camera, renderer;
-var pawn, window;
+var pawn, window, cases;
+
 
 function getScene () {
 	let scene = new THREE.Scene();
 
 	return scene;
 }
+
 
 function getCamera () {
 	const canvas = document.querySelector('#c');
@@ -102,10 +104,23 @@ function deleteHotel (hotelProperty) {
 	scene.remove(window[hotelProperty]);
 }
 
+
 function deletePawn(pawn)
 {
 	requestAnimationFrame(render);
 	scene.remove(window[pawn]);
+}
+
+
+function deleteCase (cases) {
+	requestAnimationFrame(render);
+	scene.remove(window[cases]);
+}
+
+
+function changeColorCase (cases, colore) {
+	deleteCase(cases);
+	loaderCases(cases, colore);
 }
 
 
@@ -123,21 +138,26 @@ var plateauObjects = [
 				'route', 'tram', 'campus', 'cascade'
 ]
 
-for(var i = 0; i < 12; i++){
+for (var i = 0; i < 12; i++) {
   var objVar = plateauObjects[i];
   var loader = new THREE.GLTFLoader();
   loaderPlateau(loader, objVar);
 }
 
 
-function loaderCases (cases) {
-	var load = new THREE.GLTFLoader();
-	load.load('models/plateau/'+cases+'.gltf', (gltf) => {
-		requestAnimationFrame(render);
-		const root = gltf.scene;
-		window[cases] = gltf.scene;
+function loaderCases (cases, colorCase) {
+    var load = new THREE.GLTFLoader();
+    load.load('models/plateau/'+cases+'.gltf', (gltf) => {
+        requestAnimationFrame(render);
+        const root = gltf.scene;
+        window[cases] = gltf.scene;
 		scene.add(root);
-	});
+	
+        window[cases].traverse((o) => {
+            if (o.isMesh)
+                o.material.color = new THREE.Color( colorCase );
+        });
+    });
 }
 
 
@@ -153,7 +173,7 @@ var plateauCases = [
 
 for(var i = 0; i < 40; i++){
   var objVar = plateauCases[i];
-  loaderCases(objVar);
+  loaderCases(objVar, 0xFFFFFF);
 };
 
 
@@ -228,9 +248,10 @@ function movement (pawn, vdp) {
 		counter = 0;
 
 	// Rotation pour les pions
-	if (ppx == xmin && ppz == zmax)
+	if (ppx == xmin && ppz == zmax){
 		window[pawn].rotateY(-1.6);
-	else if (ppx == xmin && ppz == zmin)
+		//console.log(window.cases);
+	} else if (ppx == xmin && ppz == zmin)
 		window[pawn].rotateY(-1.6);
 	else if (ppx == xmax && ppz == zmin)
 		window[pawn].rotateY(-1.6);
