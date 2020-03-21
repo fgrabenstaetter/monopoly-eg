@@ -65,6 +65,47 @@ function delProperty(roadID){
     $('.property[data-id = "' + roadID + '"]').remove();
 }
 
+function createCard(type, roadName, price){
+    html =  `<div class="card notification sale">
+                <div class="card-header ` + type + `">
+                    <div class="title">` + roadName + `</div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 text-center value">
+                            <p class="state">À VENDRE</p>
+                            <p>` + price + `€</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">ACHETER</button>
+                    <button class="btn btn-secondary">NE RIEN FAIRE</button>
+                </div>
+            </div>`;
+    $('.notification-container > .col-md-12').append(html);
+
+    //Nécessaire?
+    $('.btn-primary').unbind();
+    $('.btn-secondary').unbind();
+
+    $('.btn-primary').click(function () {
+        let error = 0;
+        let status;
+        alert('gamePropertyBuyReq a implementer');
+        console.log('gamePropertyBuyReq');
+
+        if (!error) {
+            $(this).parent().parent().remove();
+        }
+        else {
+            console.log('erreur :' + status);
+        }
+    });
+
+
+    $('.btn-secondary').click(function () {
+        $(this).parent().parent().remove();
+    });
+}
 
 initProperty()
 createProperty('1', 'yellow', 'Avenue des Vosges', 2);
@@ -84,3 +125,5 @@ createProperty('1', 'cyan', 'Avenue des Vosges', 23);
 createProperty('4', 'green', 'Avenue originale', 22);
 createProperty('4', 'green', 'Rue de la forêt', 31);
 createProperty('4', 'brown', 'Rue de la ville', 33);
+
+createCard('brown', 'Rue de la ville', 33000);
