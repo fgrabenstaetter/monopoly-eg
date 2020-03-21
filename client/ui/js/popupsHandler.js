@@ -97,7 +97,7 @@ function createCard(type, roadName, price){
             $(this).parent().parent().remove();
         }
         else {
-            console.log('erreur :' + status);
+            alert('erreur :' + status);
         }
     });
 

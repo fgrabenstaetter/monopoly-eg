@@ -112,7 +112,7 @@ function bindOfferListener(){
             $(this).parent().parent().remove();
         }
         else {
-            console.log('erreur :' + status);
+            alert('erreur :' + status);
         }
     });
 
