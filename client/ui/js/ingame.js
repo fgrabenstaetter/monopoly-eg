@@ -78,15 +78,15 @@ socket.on('gameTurnRes', (data) => {
 
         /** C'est mon tour:
          *  afficher lancer les dés au lieu du bouton terminer
-         *  
+         *
          */
 
 
 
         // C'est mon tour !
         alert("C'est mon tour !");
-        $('#timer').progressTimed(15);
-
+        $('#timer').progressInitialize();
+        $('#timer').progressTimed(60);
     }
 });
 
@@ -99,7 +99,7 @@ socket.on('gameActionRes', (data) => {
     console.log(data);
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
-    
+
     // Lancement de l'animation des dés
     await triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
