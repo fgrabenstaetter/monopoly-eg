@@ -2,7 +2,7 @@ $(document).ready(function () {
     $('.popup').hide();
 })
 
-$('.player-entry').click(function () {
+$('.player-list').on('click', '.player-entry', function () {
     const popup = $(this).find('.popup');
     if (popup.is(':visible')) {
         popup.toggle();
