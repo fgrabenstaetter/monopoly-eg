@@ -84,7 +84,7 @@ socket.on('gameTurnRes', (data) => {
 
 
         // C'est mon tour !
-        alert("C'est mon tour !");
+        console.log("C'est mon tour !");
         $('#timer').progressInitialize();
         $('#timer').progressTimed(60);
     }
@@ -101,7 +101,7 @@ socket.on('gameActionRes', (data) => {
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
     // Lancement de l'animation des dés
-    await triggerDices(data.dicesRes[0], data.dicesRes[1]);
+    triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
     // Déplacement du pion du joueur
     console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
