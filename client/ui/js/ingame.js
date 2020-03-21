@@ -140,13 +140,13 @@ socket.on('gameActionRes', (data) => {
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
-    console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés");
+    console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
        
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
-        movement(PAWNS[getPlayerById(data.playerID).pawn], tabCases['case' + data.cellPos.toString()]);
+        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString());
 
         // Mise à jour des soldes (le cas échéant)
         if (data.updateMoney) {
