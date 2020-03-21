@@ -319,7 +319,6 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
-
     it('Hypothèque forcée (pas assez pour payer loyer)', (done) => {
         const game = new Game([user, user2], [0, 1], GLOBAL);
         // démarrage manuel
@@ -364,6 +363,66 @@ describe('Network + Game', () => {
                 done();
             });
             sock.emit('gamePropertyForcedMortageReq', { properties: [prop.id] });
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Test sur le retrait de carte chance/communauté', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [3, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+        const money = player.money;
+        //console.log(game.curPlayer);
+        game.turnPlayerChanceCardCell();
+        let newMoney;
+
+        sock = clientSocket2;
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [3, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 6);
+            assert.strictEqual(data.asyncRequestType, null);
+
+            const receivedCard = data.extra[data.extra.length - 1];
+            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+            assert.deepStrictEqual(receivedCard.description, savedCard.description);
+            assert.deepStrictEqual(receivedCard.token, savedCard.token);
+            assert.deepStrictEqual(receivedCard.effectType, savedCard.effectType);
+            switch (receivedCard.effectType) {
+                case 'loseMoney':
+                    newMoney = money - receivedCard.effectArg1;
+                    assert.strictEqual(newMoney, player.money);
+                    console.log(newMoney);
+                    break;
+
+                case 'gainMoney':
+                    newMoney = money + receivedCard.effectArg1;
+                    assert.strictEqual(newMoney, player.money);
+                    console.log(newMoney);
+                    break;
+
+                case 'advance':
+                    break;
+
+                case 'jailBreak':
+                    break;
+
+                case 'jailTime':
+                    break;
+
+                default:
+                    //NE RIEN FAIRE
+                    break;
+            }
+            done();
         });
 
         sock.on('gameRollDiceRes', (data) => {

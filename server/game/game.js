@@ -320,12 +320,10 @@ class Game {
 
     turnPlayerChanceCardCell () {
         this.chanceDeck.drawCard(this, this.curPlayer);
-        // TODO
     }
 
     turnPlayerCommunityCardCell () {
         this.communityChestDeck.drawCard(this, this.curPlayer);
-        // TODO
     }
 
     turnPlayerPrisonCell () {

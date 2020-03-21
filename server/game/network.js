@@ -1,6 +1,8 @@
 const Constants = require('../lib/constants');
 const Errors    = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
+const Card = require('./card');
+const Deck = require('./deck');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -608,7 +610,19 @@ class Network {
                 if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
                     extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
                 // ajouter carte chance/communauté si une a été tirée
+                switch (game.curCell.type) {
+                    case Constants.CELL_TYPE.CHANCE:
+                        extra.push(game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1]);
+                        break;
 
+                    case Constants.CELL_TYPE.COMMUNITY:
+                        extra.push(game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1]);
+                        break;
+
+                    default:
+                        //Ne rien faire
+                        break;
+                }
                 this.io.to(game.name).emit('gameActionRes', {
                     dicesRes         : diceRes,
                     playerID         : player.id,
