@@ -7,11 +7,12 @@ $(document).ready(() => {
             $(this).attr({ 'data-loading': 'TERMINER' });
             // socket lancer les dés
 
-            console.log('socket lancement des');
+            console.log('gameRollDiceReq');
             socket.emit('gameRollDiceReq');
         }
         else {
-            console.log('socket fin du tour');
+            console.log('gameTurnEndReq');
+            socket.emit('gameTurnEndReq');
             $(this).progressFinish();
         }
     });
