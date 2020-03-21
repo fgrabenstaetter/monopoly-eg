@@ -603,7 +603,7 @@ class Network {
                 let updateMoneyList = [];
                 for (let i = 0; i < game.players.length; i++) {
                     if (moneySav.length > i && game.players[i].money !== moneySav[i])
-                        updateMoneyList.push({ id: game.players[i].id, money: game.players[i].money });
+                        updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
                 }
 
                 const extra = [];
