@@ -5,11 +5,11 @@
     Exemple: loaderPawn('moto');
 
 
-* movement(pawn[X], tabCases['caseY']);
+* movement(pawn[X], 'Y');
     Une API pour le déplacement. Le X -> mettre un chiffre entre 0 et 7 (0 et 7 inclus) Exemple: pawn[3]=montgolfiere.
 	var pawn = ["moto","citroenC4","boat","montgolfiere","overboard","tracteur","schoolbus,"camion"];
-    Le Y c'est pour la destination du pion. Un chiffre entre 0 et 39 (0 et 39 inclus) Exemple: 'case12'
-    Exemple: movement(pawn[3], tabCases['case12']) -> deplacement de la montgolfiere vers la case 12.
+    Le Y c'est pour la destination du pion. Un chiffre entre 0 et 39 (0 et 39 inclus) Exemple: '12'
+    Exemple: movement(pawn[3], '12') -> deplacement de la montgolfiere vers la case 12.
 
 
 
