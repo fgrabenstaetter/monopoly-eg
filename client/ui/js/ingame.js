@@ -4,23 +4,23 @@
 
 // données statiques de jeu (format: voir /socket_events.md)
 let DATA = {
-    players     : [],
-    cells       : [],
-    properties  : [],
-    gameEndTime : null // timestamp de fin forcée du jeu
+    players: [],
+    cells: [],
+    properties: [],
+    gameEndTime: null // timestamp de fin forcée du jeu
 }
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
 
 
-function nickToId (nick) {
+function nickToId(nick) {
     for (const i in DATA.players) {
         if (DATA.players[i].nickname == nick)
             return DATA.players[i].id;
     }
 }
 
-function idToNick (id) {
+function idToNick(id) {
     for (const i in DATA.players) {
         if (DATA.players[i].id == id)
             return DATA.players[i].nickname;
@@ -39,9 +39,9 @@ function getPlayerById(id) {
 /////////////////////////////
 
 socket.on('gameStartedRes', (data) => {
-    DATA.players     = data.players;
-    DATA.cells       = data.cells;
-    DATA.properties  = data.properties;
+    DATA.players = data.players;
+    DATA.cells = data.cells;
+    DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
 
     console.log('Le jeu a démarré !');
@@ -51,13 +51,13 @@ socket.on('gameStartedRes', (data) => {
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
 
-        let html = `<div class="player-entry" data-id="`+player.id+`">
-                        <div class="name" title="`+player.nickname+`">`+player.nickname+`</div>
+        let html = `<div class="player-entry" data-id="` + player.id + `">
+                        <div class="name" title="`+ player.nickname + `">` + player.nickname + `</div>
                         <div class="money">0</div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
-        
+
         $('.player-list').append(html);
     });
 
@@ -69,12 +69,24 @@ socket.on('gameTurnRes', (data) => {
     console.log(data);
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
+    //alert("C\'est au tour de " + idToNick(data.playerID) + " de jouer !");
     const turnTimeout = data.turnEndTime;
     // afficher décompte de temps du tour
+    setCurrentPlayer(data.playerID);
 
     if (data.playerID === ID) {
+
+        /** C'est mon tour:
+         *  afficher lancer les dés au lieu du bouton terminer
+         *  
+         */
+
+
+
         // C'est mon tour !
         alert("C'est mon tour !");
+        $('#timer').progressTimed(15);
+
     }
 });
 
@@ -119,8 +131,8 @@ socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 // INTERFACE JS FUNCTIONS //
 ////////////////////////////
 
-$(function(){
-    $('.player-entry .name').attr('title', function(){
+$(function () {
+    $('.player-entry .name').attr('title', function () {
         return $(this).html();
     });
 });
@@ -128,19 +140,19 @@ $(function(){
 /**
  * Met à jour le solde d'un joueur sur l'UI
  * @param playerId id du joueur à mettre à jour
- * @param amount valeur du nouveau solde  
+ * @param amount valeur du nouveau solde
  */
 function setPlayerMoney(playerId, amount) {
-    $('.player-list .player-entry[data-id="'+playerId+'"] .money').html(amount);
+    $('.player-list .player-entry[data-id="' + playerId + '"] .money').html(amount);
 }
 
 /**
  * Met à jour le joueur courant sur l'interface (point affiché à côté du pseudo)
- * @param playerId ID du joueur courant 
+ * @param playerId ID du joueur courant
  */
 function setCurrentPlayer(playerId) {
     $('.player-list .player-entry').removeClass('current');
-    $('.player-list .player-entry[data-id="'+playerId+'"]').addClass('current');
+    $('.player-list .player-entry[data-id="' + playerId + '"]').addClass('current');
 }
 
 function addPurchaseOffer(id, name, roadName, price) {
@@ -169,7 +181,7 @@ function addSaleOffer(id, name, roadName, price) {
     bindOfferListener();
 }
 
-function bindOfferListener(){
+function bindOfferListener() {
     $('.accept-button').unbind();
     $('.deny-button').unbind();
 
@@ -178,8 +190,8 @@ function bindOfferListener(){
         let status;
         const id = $(this).parent().parent().attr('data-id');
         //if ($(this).parent().parent().hasClass('purchase-offer')) {
-            alert('gameOfferAcceptReq a implementer');
-            console.log('gameOfferAcceptReq');
+        alert('gameOfferAcceptReq a implementer');
+        console.log('gameOfferAcceptReq');
         //}
         /*else {
             alert('gameOfferAcceptReq a implementer');
