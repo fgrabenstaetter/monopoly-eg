@@ -610,13 +610,16 @@ class Network {
                 if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
                     extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
                 // ajouter carte chance/communauté si une a été tirée
+                let cardToSend;
                 switch (game.curCell.type) {
                     case Constants.CELL_TYPE.CHANCE:
-                        extra.push(game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1]);
+                        cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+                        extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
                         break;
 
                     case Constants.CELL_TYPE.COMMUNITY:
-                        extra.push(game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1]);
+                        cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
+                        extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
                         break;
 
                     default:

@@ -391,37 +391,10 @@ describe('Network + Game', () => {
             assert.strictEqual(data.cellPos, 6);
             assert.strictEqual(data.asyncRequestType, null);
 
-            const receivedCard = data.extra[data.extra.length - 1];
+            const extraLast = data.extra[data.extra.length - 1];
             const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-            assert.deepStrictEqual(receivedCard.description, savedCard.description);
-            assert.deepStrictEqual(receivedCard.token, savedCard.token);
-            assert.deepStrictEqual(receivedCard.effectType, savedCard.effectType);
-            switch (receivedCard.effectType) {
-                case 'loseMoney':
-                    newMoney = money - receivedCard.effectArg1;
-                    assert.strictEqual(newMoney, player.money);
-                    console.log(newMoney);
-                    break;
-
-                case 'gainMoney':
-                    newMoney = money + receivedCard.effectArg1;
-                    assert.strictEqual(newMoney, player.money);
-                    console.log(newMoney);
-                    break;
-
-                case 'advance':
-                    break;
-
-                case 'jailBreak':
-                    break;
-
-                case 'jailTime':
-                    break;
-
-                default:
-                    //NE RIEN FAIRE
-                    break;
-            }
+            assert.deepStrictEqual(extraLast.description, savedCard.description);
+            assert.deepStrictEqual(extraLast.name, savedCard.token);
             done();
         });
 
