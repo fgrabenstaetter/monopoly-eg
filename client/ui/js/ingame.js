@@ -85,7 +85,9 @@ socket.on('gameActionRes', (data) => {
     console.log("=== gameActionRes ===");
     console.log(data);
 
-    alert("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
+    console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
+    
+    triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
     if (data.updateMoney) {
         data.updateMoney.forEach((row) => {
@@ -186,3 +188,6 @@ function bindOfferListener() {
         $(this).parent().parent().remove();
     });
 }
+
+addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
+addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
