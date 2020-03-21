@@ -14,16 +14,17 @@ const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4
 
 
 function nickToId (nick) {
-    DATA.players.forEach((player) => {
-        if (player.nickname == nick)
-            return player.id;
-    });
+    for (const i in DATA.players) {
+        if (DATA.players[i].nickname == nick)
+            return DATA.players[i].id;
+    }
 }
+
 function idToNick (id) {
-    DATA.players.forEach((player) => {
-        if (player.id == id)
-            return player.nickname;
-    });
+    for (const i in DATA.players) {
+        if (DATA.players[i].id == id)
+            return DATA.players[i].nickname;
+    }
 }
 
 /////////////////////////////
@@ -64,6 +65,7 @@ socket.on('gameTurnRes', (data) => {
 
     if (data.playerID === ID) {
         // C'est mon tour !
+        alert("C'est mon tour !");
     }
 });
 
