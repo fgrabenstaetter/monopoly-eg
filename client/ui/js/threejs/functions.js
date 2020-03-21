@@ -1,4 +1,4 @@
-let varMovement, vdp, varPawn, counter = 0; 
+let varMovement, varCase, vdp, vartest, varPawn, counter = 0; 
 let scene, light, camera, renderer;
 var pawn, window, cases;
 
@@ -79,9 +79,9 @@ function resizeRendererToDisplaySize(renderer) {
 
 function render () {
 	//requestAnimationFrame(render);
-	if (counter!=0)
-		movement(varPawn,varMovement);
-
+	if (counter!=0){
+		movement(varPawn, varMovement);
+	}
 	if (resizeRendererToDisplaySize(renderer)) {
 		const canvas = renderer.domElement;
 		camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -213,19 +213,20 @@ function loaderHotelProperty (hotelPropriete) {
 
 
 function movement (pawn, vdp) {
-	varMovement = vdp;
-	varPawn = pawn;
 
+	varMovement = vdp;
+	varCase = tabCases[varMovement];
+	varPawn = pawn;
 	var ppx = window[pawn].position.x;
 	ppx = (Math.floor(ppx * 100) / 100);
 	
 	var ppz = window[pawn].position.z;
 	ppz = (Math.floor(ppz * 100) / 100);
 
-	var vdpx = vdp.x;
+	var vdpx = varCase.x;
 	vdpx = (Math.floor(vdpx * 100) / 100);
 	
-	var vdpz = vdp.z;
+	var vdpz = varCase.z;
 	vdpz = (Math.floor(vdpz * 100) / 100);
 	
 	var xmin = 0.335;
