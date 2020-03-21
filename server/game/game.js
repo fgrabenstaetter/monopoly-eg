@@ -155,7 +155,7 @@ class Game {
      */
     endTurn() {
         clearTimeout(this.turnTimeout);
-        nextTurn();
+        this.nextTurn();
     }
 
     /**
