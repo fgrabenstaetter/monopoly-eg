@@ -53,7 +53,9 @@ socket.on('gameStartedRes', (data) => {
         
         $('.player-list').append(html);
     });
+
     initProperty();
+    setCurrentPlayer(DATA.players[0].id);
 });
 
 socket.on('gameTurnRes', (data) => {
@@ -105,8 +107,22 @@ $(function(){
     });
 });
 
-function setPlayerMoney(id, amount) {
-    $('.player-list .player-entry[data-id="'+id+'"] .money').html(amount);
+/**
+ * Met à jour le solde d'un joueur sur l'UI
+ * @param playerId id du joueur à mettre à jour
+ * @param amount valeur du nouveau solde  
+ */
+function setPlayerMoney(playerId, amount) {
+    $('.player-list .player-entry[data-id="'+playerId+'"] .money').html(amount);
+}
+
+/**
+ * Met à jour le joueur courant sur l'interface (point affiché à côté du pseudo)
+ * @param playerId ID du joueur courant 
+ */
+function setCurrentPlayer(playerId) {
+    $('.player-list .player-entry').removeClass('current');
+    $('.player-list .player-entry[data-id="'+playerId+'"]').addClass('current');
 }
 
 function addPurchaseOffer(id, name, roadName, price) {
