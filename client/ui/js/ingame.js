@@ -118,10 +118,6 @@ function bindOfferListener(){
 
 
     $('.deny-button').click(function () {
-        if (!error) {
-            $(this).parent().parent().remove();
-        }
+        $(this).parent().parent().remove();
     });
 }
-
-addPurchaseOffer(1, 'okze', 'rue A', 1000)
