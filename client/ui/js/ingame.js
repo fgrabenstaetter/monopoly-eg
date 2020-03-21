@@ -102,9 +102,17 @@ socket.on('gameActionRes', (data) => {
 
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
+<<<<<<< HEAD
+        console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPos);
+        
+        // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
+        movement(PAWNS[getPlayerById(data.playerID).pawn], tabCases['case' + toString(data.cellPos)]);
+    
+=======
         console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
         movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
 
+>>>>>>> 3060ddf657d18890d3a4bfb0c08eccb61c114bf9
         // A gérer : asyncRequestType & asyncRequestArgs
 
         // Mise à jour des soldes (le cas échéant)
