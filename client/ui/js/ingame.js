@@ -93,24 +93,6 @@ socket.on('gameTurnRes', (data) => {
     }
 });
 
-socket.on("gameRollDicesRes", (res) => {
-    if (res.error === 0)
-        console.log("gameRollDicesRes")
-    else // hôte uniquement
-        alert(res.status);
-});
-
-socket.on("gameTurnEndRes", (res) => {
-    if (res.error === 0)
-        console.log("gameTurnEndRes")
-    else // hôte uniquement
-        alert(res.status);
-});
-
-
-socket.on('gameChatReceiveRes', (data) => {
-    addMsg(data.playerID, data.text, data.createdTime);
-});
 
 socket.on('gameActionRes', (data) => {
     console.log("=== gameActionRes ===");
@@ -141,6 +123,24 @@ socket.on('gameActionRes', (data) => {
     });
 });
 
+socket.on("gameRollDicesRes", (res) => {
+    if (res.error === 0)
+        console.log("gameRollDicesRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
+socket.on("gameTurnEndRes", (res) => {
+    if (res.error === 0)
+        console.log("gameTurnEndRes")
+    else // hôte uniquement
+        alert(res.status);
+});
+
+
+socket.on('gameChatReceiveRes', (data) => {
+    addMsg(data.playerID, data.text, data.createdTime);
+});
 
 socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 
