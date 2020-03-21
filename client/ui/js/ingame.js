@@ -27,6 +27,13 @@ function idToNick (id) {
     }
 }
 
+function getPlayerById(id) {
+    for (const i in DATA.players) {
+        if (DATA.players[i].id == id)
+            return DATA.players[i];
+    }
+}
+
 /////////////////////////////
 // SOCKET EVENTS LISTENERS //
 /////////////////////////////
@@ -81,14 +88,23 @@ socket.on('gameActionRes', (data) => {
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
     
-    triggerDices(data.dicesRes[0], data.dicesRes[1]);
+    // Lancement de l'animation des dés
+    await triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
+    // Déplacement du pion du joueur
+    console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
+    movement(PAWN[getPlayerById(data.playerID).pawn], data.cellPos);
+
+    // A gérer : asyncRequestType & asyncRequestArgs
+
+    // Mise à jour des soldes (le cas échéant)
     if (data.updateMoney) {
         data.updateMoney.forEach((row) => {
             setPlayerMoney(row.playerID, row.money);
         });
     }
 
+    // Affichage de la carte (le cas échéant)
     if (data.extra && data.extra.newCard) {
         alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
     }

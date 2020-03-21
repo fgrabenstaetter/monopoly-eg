@@ -1,9 +1,9 @@
-var pawn = [
-        "moto", "citroen C4", 
-        "boat", "montgolfiere", 
-        "overboard", "tracteur", 
-        "schoolbus", "camion"
-];
+// var pawn = [
+//         "moto", "citroen C4", 
+//         "boat", "montgolfiere", 
+//         "overboard", "tracteur", 
+//         "schoolbus", "camion"
+// ];
 
 
 let tabCases = {
