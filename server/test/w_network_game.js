@@ -380,21 +380,53 @@ describe('Network + Game', () => {
         game.start(true);
         const player = game.curPlayer;
         const money = player.money;
-        //console.log(game.curPlayer);
-        game.turnPlayerChanceCardCell();
         let newMoney;
 
-        sock = clientSocket2;
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
         sock.on('gameActionRes', (data) => {
+            //console.log(data);
             assert.deepEqual(data.dicesRes, [3, 3]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 6);
             assert.strictEqual(data.asyncRequestType, null);
 
-            const extraLast = data.extra[data.extra.length - 1];
             const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-            assert.deepStrictEqual(extraLast.description, savedCard.description);
-            assert.deepStrictEqual(extraLast.name, savedCard.token);
+            const receivedCard = data.extra[data.extra.length - 1];
+            assert.strictEqual('chance', receivedCard.type);
+            assert.deepStrictEqual(receivedCard.description, savedCard.description);
+            assert.deepStrictEqual(receivedCard.name, savedCard.token);
+            //assert.deepStrictEqual(receivedCard.effectType, savedCard.effectType);
+            switch (savedCard.effectType) {
+                case 'loseMoney':
+                    newMoney = money - savedCard.effectArg1;
+                    assert.strictEqual(newMoney, player.money);
+                    console.log(newMoney);
+                    break;
+
+                case 'gainMoney':
+                    newMoney = money + savedCard.effectArg1;
+                    assert.strictEqual(newMoney, player.money);
+                    console.log(newMoney);
+                    break;
+
+                case 'advance':
+                    break;
+
+                case 'jailBreak':
+                    break;
+
+                case 'jailTime':
+                    break;
+
+                default:
+                    //NE RIEN FAIRE
+                    break;
+            }
             done();
         });
 
