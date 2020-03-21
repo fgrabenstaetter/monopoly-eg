@@ -34,6 +34,21 @@ const Properties = {
                 hostel   : 800
             }
         },
+        {
+            name         : 'Rue de test',
+            description  : 'ok',
+            color        : Constants.STREET_COLOR.RED,
+            prices       : {
+                empty    : 160,
+                house    : 400,
+                hostel   : 2000
+            },
+            rentalPrices : {
+                empty    : 12,
+                house    : [200, 300, 400, 500],
+                hostel   : 800
+            }
+        }
     ],
 
     PUBLIC_COMPANY: [

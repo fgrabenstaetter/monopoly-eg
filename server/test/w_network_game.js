@@ -283,4 +283,92 @@ describe('Network + Game', () => {
         });
         sock.emit('gameRollDiceReq');
     });
+
+    it('Payer un loyer (avec assez d\'argent)', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0];
+        const property = game.cells[4].property;
+        game.bank.delProperty(property);
+        player2.addProperty(property);
+
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [1, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 4);
+            assert.strictEqual(data.asyncRequestType, null);
+            assert.deepStrictEqual(data.asyncRequestArgs, null);
+            assert.deepStrictEqual(data.updateMoney, [{ id: player.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - property.rentalPrice }]);
+            done();
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+
+    it('Hypothèque forcée (pas assez pour payer loyer)', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 3]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer; // doit payer loyer
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // recoit le loyer
+        // propriété dont player doit payer le loyer
+        const property = game.cells[4].property;
+        game.bank.delProperty(property);
+        player2.addProperty(property);
+        property.housesNb = 2; // rental price = 300
+        // propriété de player2 qu'il va hypothéquer pour pouvoir payer
+        const prop = game.cells[7].property;
+        game.bank.delProperty(prop);
+        player.addProperty(prop);
+        prop.housesNb = 1; // mortage price = 280
+        player.money = 22; // avec l'hypothèque il aura 302 => il devra lui rester 2$ après hypothèque forcée
+
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [1, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 4);
+            assert.strictEqual(data.asyncRequestType, 'shouldMortage');
+            assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
+
+            sock.on('gamePropertyForcedMortageRes', (data) => {
+                assert.strictEqual(data.error, undefined);
+                assert.deepStrictEqual(data.properties, [ prop.id ]);
+                assert.strictEqual(data.playerID, player.id);
+                assert.strictEqual(data.playerMoney, 2);
+                assert.ok(data.message);
+                assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
+                done();
+            });
+            sock.emit('gamePropertyForcedMortageReq', { properties: [prop.id] });
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
 });

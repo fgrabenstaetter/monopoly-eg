@@ -287,7 +287,7 @@ class Game {
 
             } else if (property.owner) {
                 // Le terrain appartient à un autre joueur
-                const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice();
+                const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice;
 
                 if (this.curPlayer.money < rentalPrice) {
                     // Le joueur n'a pas assez pour payer
@@ -478,12 +478,13 @@ class Game {
             this.playerFailure(player);
         else {
             // succès
-            player.addMoney(sum);
+            player.addMoney(sum - player.money);
 
             // toutes les propriétés hypothéquées => à la banque
             let propertiesID = [];
             for (const prop of properties) {
                 player.delProperty(prop);
+                this.bank.addProperty(prop);
                 propertiesID.push(prop.id);
             }
 
@@ -494,14 +495,14 @@ class Game {
 
             // envoyer message à tous les joueurs
             const mess = 'Le joueur ' + player.nickname + ' a payé ' + rentalPrice + ' de loyer à ' + owner.nickname;
-            this.GLOBAL.network.io.to(this.name).emit('gameTurnPropertyForcedMortageRes', {
+            this.GLOBAL.network.io.to(this.name).emit('gamePropertyForcedMortageRes', {
                 properties  : propertiesID,
                 playerID    : player.id,
                 playerMoney : player.money,
                 message     : mess,
                 rentalOwner: {
                     id    : owner.id,
-                    money : owner.moner
+                    money : owner.money
                 }
             });
         }
