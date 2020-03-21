@@ -1378,7 +1378,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(7) .name {
-  color: black;
+  color: cyan;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(8) .name {
