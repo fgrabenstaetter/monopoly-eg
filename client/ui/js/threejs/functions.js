@@ -1,8 +1,6 @@
 let varMovement, vdp, varPawn, counter = 0; 
+let scene, light, camera, renderer;
 var pawn, window;
-let scene, light;
-let camera;
-let renderer;
 
 function getScene () {
 	let scene = new THREE.Scene();
@@ -57,33 +55,25 @@ function getRenderer () {
 	return renderer;
 }
 
-/*function resizeRendererToDisplaySize(renderer) {
-	const canvas = renderer.domElement;
-	const width = canvas.clientWidth;
-	const height = canvas.clientHeight;
-	const needResize = canvas.width !== width || canvas.height !== height;
-	if (needResize) {
-	  renderer.setSize(width, height, false);
-	}
-	return needResize;
-  }*/
 
 scene = getScene();
 camera = getCamera();
 light = getLight(scene);
 renderer = getRenderer();
 
+
 function resizeRendererToDisplaySize(renderer) {
 	const canvas = renderer.domElement;
 	const pixelRatio = window.devicePixelRatio;
-      const width  = canvas.clientWidth  * pixelRatio | 0;
-      const height = canvas.clientHeight * pixelRatio | 0;
+    const width  = canvas.clientWidth  * pixelRatio | 0;
+    const height = canvas.clientHeight * pixelRatio | 0;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if (needResize) {
 		renderer.setSize(width, height, false);
 	}
 	return needResize;
 }
+
 
 function render () {
 	//requestAnimationFrame(render);
@@ -231,14 +221,14 @@ function movement (pawn, vdp) {
 	if (ppx == vdpx && ppz == vdpz)
 		counter = 0;
 
-
-	if(ppx == xmin && ppz == zmax)
+	// Rotation pour les pions
+	if (ppx == xmin && ppz == zmax)
 		window[pawn].rotateY(-1.6);
-	else if(ppx == xmin && ppz == zmin)
+	else if (ppx == xmin && ppz == zmin)
 		window[pawn].rotateY(-1.6);
-	else if(ppx == xmax && ppz == zmin)
+	else if (ppx == xmax && ppz == zmin)
 		window[pawn].rotateY(-1.6);
-	else if(ppx == xmax && ppz == zmax)
+	else if (ppx == xmax && ppz == zmax)
 		window[pawn].rotateY(-1.6);
 
 	// La route d'en bas - Du coin droit vers le coin gauche
@@ -341,5 +331,5 @@ function movement (pawn, vdp) {
 	} else if(ppx != vdpx && ppz != vdpz && ppz == vdpx) {
 		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-}
+	}
 }

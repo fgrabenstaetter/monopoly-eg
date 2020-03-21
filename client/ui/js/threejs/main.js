@@ -28,10 +28,10 @@ loaderHouseProperty('M3_3_2');
 loaderHouseProperty('M3_3_3');
 loaderHouseProperty('M3_3_4');
 
-loaderHouseProperty('M4_2_1');
-loaderHouseProperty('M4_2_2');
-loaderHouseProperty('M4_2_3');
-loaderHouseProperty('M4_2_4');
+loaderHotelProperty('H4_1');
+loaderHotelProperty('H4_2');
+loaderHotelProperty('H4_3');
+loaderHotelProperty('H4_4');
 
 loaderHouseProperty('M5_3_1');
 loaderHouseProperty('M5_3_2');
@@ -43,20 +43,6 @@ loaderHouseProperty('M7_3_2');
 loaderHouseProperty('M7_3_3');
 loaderHouseProperty('M7_3_4');
 
-loaderHouseProperty('M8_1_1');
-loaderHouseProperty('M8_1_2');
-loaderHouseProperty('M8_1_3');
-loaderHouseProperty('M8_1_4');
-
-loaderHouseProperty('M6_2_1');
-loaderHouseProperty('M6_2_2');
-loaderHouseProperty('M6_2_3');
-loaderHouseProperty('M6_2_4');
-
-loaderHouseProperty('M8_2_1');
-loaderHouseProperty('M8_2_2');
-loaderHouseProperty('M8_2_3');
-loaderHouseProperty('M8_2_4');
 // let scene = getScene();
 // let camera = getCamera();
 // let light = getLight(scene);
