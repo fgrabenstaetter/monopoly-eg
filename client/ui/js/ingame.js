@@ -7,8 +7,9 @@ let DATA = {
     players: [],
     cells: [],
     properties: [],
-    gameEndTime: null // timestamp de fin forcée du jeu
-}
+    gameEndTime: null, // timestamp de fin forcée du jeu
+    turnTimeSeconds: 60
+};
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
 
@@ -75,18 +76,18 @@ socket.on('gameTurnRes', (data) => {
     setCurrentPlayer(data.playerID);
 
     if (data.playerID === ID) {
-
         /** C'est mon tour:
          *  afficher lancer les dés au lieu du bouton terminer
          *
          */
 
 
-
         // C'est mon tour !
         console.log("C'est mon tour !");
         $('#timer').progressInitialize();
-        $('#timer').progressTimed(60);
+        $('#timer').progressTimed(DATA.turnTimeSeconds);
+    } else {
+        $('#timer').progressFinish();
     }
 });
 
@@ -101,7 +102,7 @@ socket.on('gameActionRes', (data) => {
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
     // Lancement de l'animation des dés
-    await triggerDices(data.dicesRes[0], data.dicesRes[1]);
+    triggerDices(data.dicesRes[0], data.dicesRes[1]);
 
     // Déplacement du pion du joueur
     console.log(idToNick(data.playerID) + " se déplace à la case " + data.cellPost);
