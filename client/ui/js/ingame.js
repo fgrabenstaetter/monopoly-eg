@@ -84,6 +84,7 @@ socket.on('gameStartedRes', (data) => {
 });
 
 socket.on('gameTurnRes', (data) => {
+    console.log(data);
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
     const turnTimeout = data.turnEndTime;
