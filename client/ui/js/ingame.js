@@ -8,7 +8,7 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    turnTimeSeconds: 60
+    turnTimeSeconds: null
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -44,6 +44,7 @@ socket.on('gameStartedRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
+    DATA.turnTimeSeconds = data.turnTimeSeconds - 2; // Marge de 2 secondes
 
     console.log('Le jeu a démarré !');
     console.log(data);
@@ -54,7 +55,7 @@ socket.on('gameStartedRes', (data) => {
 
         let html = `<div class="player-entry" data-id="` + player.id + `">
                         <div class="name" title="`+ player.nickname + `">` + player.nickname + `</div>
-                        <div class="money">0</div>
+                        <div class="money">`+data.playersMoney+`</div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;

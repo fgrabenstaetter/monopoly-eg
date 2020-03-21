@@ -579,6 +579,7 @@ class Network {
                     gameEndTime : game.forcedEndTime,
                     playersMoney: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
                     bankMoney   : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    turnTimeSeconds: Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
                     players     : players,
                     cells       : cells,
                     properties  : properties
@@ -626,6 +627,7 @@ class Network {
                         //Ne rien faire
                         break;
                 }
+
                 this.io.to(game.name).emit('gameActionRes', {
                     dicesRes         : diceRes,
                     playerID         : player.id,
