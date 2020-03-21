@@ -86,8 +86,7 @@ function createCard(type, roadName, price){
     //Nécessaire?
     $('.btn-primary').unbind();
     $('.btn-secondary').unbind();
-
-    $('.btn-primary').click(function () {
+    $('.card-body > .btn-primary').click(function () {
         let error = 0;
         let status;
         alert('gamePropertyBuyReq a implementer');
