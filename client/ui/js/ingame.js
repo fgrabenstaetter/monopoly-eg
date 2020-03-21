@@ -121,3 +121,6 @@ function bindOfferListener(){
         $(this).parent().parent().remove();
     });
 }
+
+addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
+addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
