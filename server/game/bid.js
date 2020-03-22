@@ -11,7 +11,7 @@ class Bid {
         this.property = property;
         this.amountAsked = amountAsked;
         this.game = game;
-        setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
+        // setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER); // Si décommenté -> génère une erreur fatale...
     }
 
 
