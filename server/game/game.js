@@ -1,5 +1,5 @@
 const Chat                    = require('./chat');
-const Constants               = require('../lib/constants');
+const Constants               = require('./../lib/constants');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
 const Bank                    = require('./bank');

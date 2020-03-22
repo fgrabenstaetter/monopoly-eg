@@ -770,22 +770,39 @@
         }
         ```
 
-- **Faire une proposition d'offre**
+- **Faire une proposition d'offre (vente à un joueur)**
 
     * **Requête:** gameOfferSendReq
         * *Données:*
         ```javascript
         {
-            receiver: string,
-            property: int, // ID de la propriété qu'on souhaite acheter
-            amount: int
+            receiverID: int,
+            propertyID: int, // ID de la propriété qu'on veux vendre
+            price: int, // montant qu'on lui propose pour la vente
         }
         ```
 
     * **Réponse:** gameOfferSendRes
         * *Données:*
         ```javascript
-        null
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Réception d'une proposition d'offre**
+
+    * **Réponse:** gameOfferReceiveRes
+        * *Données:*
+        ```javascript
+        {
+            offerID: int, // ID de l'offre
+            makerID: int, // ID joueur qui a créer l'offre
+            receiverID: int,
+            propertyID: int, // ID de la propriété qu'on veux vendre
+            price: int, // montant qu'on lui propose pour la vente
+        }
         ```
 
 - **Accepter une proposition d'offre**
@@ -804,6 +821,21 @@
         {
             error: int,
             status: string
+        }
+        ```
+
+- **Une offre est terminée**
+    > Soit a expirée, soit a été remplie
+
+    * **Réponse:** gameOfferFinishedRes
+        * *Données:*
+        ```javascript
+        {
+            receiverID: int | null, // id player qui a accepté d'acheter ou null si expirée sans acheteur
+            offerID: int,
+            price: int,
+            propertyID: int,
+            makerID: int // ID player du créateur de l'offre
         }
         ```
 

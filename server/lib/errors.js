@@ -134,6 +134,10 @@ module.exports = Object.freeze({
         NOT_ENOUGH_FOR_MORTAGE: {
             code: 3,
             status: 'Le montant total n\'est pas suffisant pour payer le loyer'
+        },
+        NOT_ENOUGH_FOR_OFFER: {
+            code: 4,
+            status: 'Vous n\'avez pas assez d\'argent pour accepter cette offre'
         }
     },
 });

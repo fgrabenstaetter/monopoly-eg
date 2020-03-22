@@ -1,8 +1,7 @@
 const Constants                   = require('../lib/constants');
 const Errors                      = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
-const Card                        = require('./card');
-const Deck                        = require('./deck');
+const Offer                       = require('./offer');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -754,15 +753,48 @@ class Network {
 
     gameOfferSendReq(player, game) {
         player.socket.on('gameOfferSendReq', (data) => {
-            let err = Errors.SUCCESS;
-            // TODO
+            let err = Errors.SUCCESS, recvr, prop;
+            if (!data.receiverID || !data.propertyID || !data.price)
+                err = Errors.MISSING_FIELD;
+            else if (!(prop = player.propertyByID(data.propertyID)) || !(recvr = game.playerByID(data.receiverID)))
+                err = Errors.UNKNOW;
+            else {
+                const offer = new Offer(game, player, recvr, prop, data.price);
+
+                this.io.to(game.name).emit('gameOfferReceiveRes', {
+                    receiverID : offer.receiver.id,
+                    offerID    : offer.id,
+                    price      : offer.amount,
+                    propertyID : offer.property.id,
+                    makerID    : offer.maker.id
+                });
+            }
+
+            player.socket.emit('gameOfferSendRes', { error: err.code, status: err.status });
         });
     }
 
     gameOfferAcceptReq(player, game) {
         player.socket.on('gameOfferAcceptReq', (data) => {
-            let err = Errors.SUCCESS;
-            // TODO
+            let err = Errors.SUCCESS, offer;
+            if (!data.offerID)
+                err = Errors.MISSING_FIELD;
+            else if (!(offer = Offer.offerByID(data.offerID)) || offer.maker !== player || !offer.maker.propertyByID(offer.id))
+                err = Errors.UNKNOW;
+            else if (player.money < offer.amount)
+                err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
+            else {
+                offer.accept;
+                this.io.to(game.name).emit('gameOfferFinishedRes', {
+                    receiverID : offer.receiver.id,
+                    offerID    : offer.id,
+                    price      : offer.amount,
+                    propertyID : offer.property.id,
+                    makerID    : offer.maker.id
+                });
+            }
+
+            player.socket.emit('gameOfferAcceptRes', { error: err.code, status: err.status });
         });
     }
 
