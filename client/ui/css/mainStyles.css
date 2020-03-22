@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css?family=Work+Sans:900&display=swap");
 @font-face {
   font-family: 'LilitaOne';
@@ -866,7 +867,8 @@ input {
   transition: opacity 0.2s;
 }
 
-.ingame-ui-container .dice-container #view1, .ingame-ui-container .dice-container #view2 {
+.ingame-ui-container .dice-container #view1,
+.ingame-ui-container .dice-container #view2 {
   width: 200px;
   height: 200px;
   -webkit-perspective: 600px;
@@ -880,7 +882,8 @@ input {
   display: inline-block;
 }
 
-.ingame-ui-container .dice-container #dice1, .ingame-ui-container .dice-container #dice2 {
+.ingame-ui-container .dice-container #dice1,
+.ingame-ui-container .dice-container #dice2 {
   width: 200px;
   height: 200px;
   position: relative;
@@ -943,84 +946,102 @@ input {
   border-radius: 40px;
 }
 
-.ingame-ui-container .dice-container #dice1 .cover, .ingame-ui-container .dice-container #dice1 .inner, .ingame-ui-container .dice-container #dice2 .cover, .ingame-ui-container .dice-container #dice2 .inner {
+.ingame-ui-container .dice-container #dice1 .cover,
+.ingame-ui-container .dice-container #dice1 .inner,
+.ingame-ui-container .dice-container #dice2 .cover,
+.ingame-ui-container .dice-container #dice2 .inner {
   background: #e0e0e0;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
 
-.ingame-ui-container .dice-container #dice1 .cover, .ingame-ui-container .dice-container #dice2 .cover {
+.ingame-ui-container .dice-container #dice1 .cover,
+.ingame-ui-container .dice-container #dice2 .cover {
   border-radius: 0;
   -webkit-transform: translateZ(0px);
           transform: translateZ(0px);
 }
 
-.ingame-ui-container .dice-container #dice1 .cover.x, .ingame-ui-container .dice-container #dice2 .cover.x {
+.ingame-ui-container .dice-container #dice1 .cover.x,
+.ingame-ui-container .dice-container #dice2 .cover.x {
   -webkit-transform: rotateY(90deg);
           transform: rotateY(90deg);
 }
 
-.ingame-ui-container .dice-container #dice1 .cover.z, .ingame-ui-container .dice-container #dice2 .cover.z {
+.ingame-ui-container .dice-container #dice1 .cover.z,
+.ingame-ui-container .dice-container #dice2 .cover.z {
   -webkit-transform: rotateX(90deg);
           transform: rotateX(90deg);
 }
 
-.ingame-ui-container .dice-container #dice1 .front, .ingame-ui-container .dice-container #dice2 .front {
+.ingame-ui-container .dice-container #dice1 .front,
+.ingame-ui-container .dice-container #dice2 .front {
   -webkit-transform: translateZ(100px);
           transform: translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .front.inner, .ingame-ui-container .dice-container #dice2 .front.inner {
+.ingame-ui-container .dice-container #dice1 .front.inner,
+.ingame-ui-container .dice-container #dice2 .front.inner {
   -webkit-transform: translateZ(98px);
           transform: translateZ(98px);
 }
 
-.ingame-ui-container .dice-container #dice1 .back, .ingame-ui-container .dice-container #dice2 .back {
+.ingame-ui-container .dice-container #dice1 .back,
+.ingame-ui-container .dice-container #dice2 .back {
   -webkit-transform: rotateX(-180deg) translateZ(100px);
           transform: rotateX(-180deg) translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .back.inner, .ingame-ui-container .dice-container #dice2 .back.inner {
+.ingame-ui-container .dice-container #dice1 .back.inner,
+.ingame-ui-container .dice-container #dice2 .back.inner {
   -webkit-transform: rotateX(-180deg) translateZ(98px);
           transform: rotateX(-180deg) translateZ(98px);
 }
 
-.ingame-ui-container .dice-container #dice1 .right, .ingame-ui-container .dice-container #dice2 .right {
+.ingame-ui-container .dice-container #dice1 .right,
+.ingame-ui-container .dice-container #dice2 .right {
   -webkit-transform: rotateY(90deg) translateZ(100px);
           transform: rotateY(90deg) translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .right.inner, .ingame-ui-container .dice-container #dice2 .right.inner {
+.ingame-ui-container .dice-container #dice1 .right.inner,
+.ingame-ui-container .dice-container #dice2 .right.inner {
   -webkit-transform: rotateY(90deg) translateZ(98px);
           transform: rotateY(90deg) translateZ(98px);
 }
 
-.ingame-ui-container .dice-container #dice1 .left, .ingame-ui-container .dice-container #dice2 .left {
+.ingame-ui-container .dice-container #dice1 .left,
+.ingame-ui-container .dice-container #dice2 .left {
   -webkit-transform: rotateY(-90deg) translateZ(100px);
           transform: rotateY(-90deg) translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .left.inner, .ingame-ui-container .dice-container #dice2 .left.inner {
+.ingame-ui-container .dice-container #dice1 .left.inner,
+.ingame-ui-container .dice-container #dice2 .left.inner {
   -webkit-transform: rotateY(-90deg) translateZ(98px);
           transform: rotateY(-90deg) translateZ(98px);
 }
 
-.ingame-ui-container .dice-container #dice1 .top, .ingame-ui-container .dice-container #dice2 .top {
+.ingame-ui-container .dice-container #dice1 .top,
+.ingame-ui-container .dice-container #dice2 .top {
   -webkit-transform: rotateX(90deg) translateZ(100px);
           transform: rotateX(90deg) translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .top.inner, .ingame-ui-container .dice-container #dice2 .top.inner {
+.ingame-ui-container .dice-container #dice1 .top.inner,
+.ingame-ui-container .dice-container #dice2 .top.inner {
   -webkit-transform: rotateX(90deg) translateZ(98px);
           transform: rotateX(90deg) translateZ(98px);
 }
 
-.ingame-ui-container .dice-container #dice1 .bottom, .ingame-ui-container .dice-container #dice2 .bottom {
+.ingame-ui-container .dice-container #dice1 .bottom,
+.ingame-ui-container .dice-container #dice2 .bottom {
   -webkit-transform: rotateX(-90deg) translateZ(100px);
           transform: rotateX(-90deg) translateZ(100px);
 }
 
-.ingame-ui-container .dice-container #dice1 .bottom.inner, .ingame-ui-container .dice-container #dice2 .bottom.inner {
+.ingame-ui-container .dice-container #dice1 .bottom.inner,
+.ingame-ui-container .dice-container #dice2 .bottom.inner {
   -webkit-transform: rotateX(-90deg) translateZ(98px);
           transform: rotateX(-90deg) translateZ(98px);
 }
@@ -1061,6 +1082,98 @@ input {
           transform: rotateX(-90deg) translateZ(100px);
 }
 
+.ingame-ui-container .overview-card {
+  position: absolute;
+  right: 50vw;
+  top: 50vh;
+  -webkit-transform: translate(300px, -50%);
+          transform: translate(300px, -50%);
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 1199.98px) {
+  .ingame-ui-container .overview-card {
+    -webkit-transform: translate(400px, -50%);
+            transform: translate(400px, -50%);
+  }
+}
+
+.ingame-ui-container .overview-card .header,
+.ingame-ui-container .overview-card .content {
+  width: 180px;
+}
+
+.ingame-ui-container .overview-card .header {
+  background: red;
+  color: white;
+  font-family: "LilitaOne", sans-serif;
+  font-size: 15px;
+  padding: 8px;
+  border-radius: 10px 10px 0 0;
+}
+
+.ingame-ui-container .overview-card .content {
+  background-color: rgba(255, 255, 255, 0.98);
+  height: 220px;
+  border-radius: 0 0 10px 10px;
+  padding: 10px 20px;
+  overflow: hidden;
+}
+
+.ingame-ui-container .overview-card .content div {
+  width: 100%;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  margin: 0;
+}
+
+.ingame-ui-container .overview-card .content div.rent {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.ingame-ui-container .overview-card .content div.rent:before {
+  content: "LOYER ";
+}
+
+.ingame-ui-container .overview-card .content div.rent:after {
+  content: "€";
+}
+
+.ingame-ui-container .overview-card .content div.with-house, .ingame-ui-container .overview-card .content div.with-hotel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.ingame-ui-container .overview-card .content div.with-house div:first-child, .ingame-ui-container .overview-card .content div.with-hotel div:first-child {
+  text-align: left;
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+}
+
+.ingame-ui-container .overview-card .content div.with-house div:nth-child(2), .ingame-ui-container .overview-card .content div.with-hotel div:nth-child(2) {
+  text-align: right;
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+  -ms-flex-negative: 2;
+      flex-shrink: 2;
+}
+
+.ingame-ui-container .overview-card .content div.with-house div:nth-child(2):after, .ingame-ui-container .overview-card .content div.with-hotel div:nth-child(2):after {
+  content: "€";
+}
+
+.ingame-ui-container .overview-card .content div.house-price {
+  margin-top: 8px;
+}
+
 .ingame-ui-container .container:first-child {
   position: absolute;
   top: 100px;
@@ -1091,7 +1204,7 @@ input {
 .ingame-ui-container .container:first-child .player-list .player-entry .name {
   font-size: 17px;
   font-weight: bold;
-  font-family: 'Work Sans', sans-serif;
+  font-family: "Work Sans", sans-serif;
   position: relative;
   background: transparent;
   z-index: 0;
@@ -1129,7 +1242,6 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::after {
-  font-family: "Font Awesome\ 5 Pro";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -1138,7 +1250,7 @@ input {
   text-rendering: auto;
   line-height: 1;
   font-weight: 900;
-  content: "$";
+  content: "€";
   margin-left: 2px;
   font-size: 13px;
   color: white;
@@ -1147,7 +1259,7 @@ input {
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 30px;
   width: 450px;
   border-radius: 20px;
@@ -1315,13 +1427,13 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   width: 0;
   height: 0;
   border: 10px solid transparent;
-  border-right-color: rgba(255, 255, 255, 0.7);
+  border-right-color: rgba(255, 255, 255, 0.9);
   border-left: 0;
   margin-top: 10px;
   margin-left: -10px;
@@ -1479,7 +1591,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .title {
-  font-family: 'LilitaOne', sans-serif;
+  font-family: "LilitaOne", sans-serif;
   font-size: 17px;
 }
 
