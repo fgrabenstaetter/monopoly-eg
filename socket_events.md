@@ -539,7 +539,7 @@
                     money: int,
                     properties: array, // liste d'ID de ses propriétés
                     nbJailEscapeCards: int,
-                    cellPos: int
+                    cellPos: int // de 0 à 39
                 }, ...
             ],
             cells: [], // (voir gameStartedRes)
