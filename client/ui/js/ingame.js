@@ -347,14 +347,6 @@ function generatePlayerEntry(id, nickname, money) {
                         <div class="name" title="`+ nickname + `">` + nickname + `</div>
                         <div class="money">`+ money + `</div>
                         <div class="popup top" style="display: none;">
-                            <div class="overview-card">
-                                <div class="header">
-                                    ???
-                                </div>
-                                <div class="content">
-                                    ?
-                                </div>
-                            </div>
                         </div>
                 </div>`;
 
