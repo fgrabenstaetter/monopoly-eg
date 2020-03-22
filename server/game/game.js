@@ -1,4 +1,5 @@
 const Chat                    = require('./chat');
+const Bid                     = require('./bid');
 const Constants               = require('../lib/constants');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
@@ -31,6 +32,7 @@ class Game {
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat = new Chat();
+        this.bids = [];
         this.bank = new Bank(this.cells);
 
         this.turnData = { // pour le client (envoi Network)
@@ -58,6 +60,14 @@ class Game {
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
+    }
+
+    bidByID (bidID) {
+        for (const bid of this.bids) {
+            if (bidID === bid.id)
+                return bid;
+        }
+        return null;
     }
 
     /**
@@ -164,6 +174,11 @@ class Game {
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
     nextTurn() {
+        // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
+        if (this.turnData.canRollDiceAgain) {
+            this.turnPlayerAFK();
+            return;
+        }
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
@@ -174,21 +189,37 @@ class Game {
         do {
             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++this.turnPlayerInd;
             cpt ++;
-            if (cpt > 8) {
-                // tous en faillite ou déconnectés => fin de la partie
+            if (cpt > this.players.length) {
+                // tous en faillite
                 // TODO
                 this.delete();
             }
-        } while (this.curPlayer.failure || !this.curPlayer.connected)
+        } while (this.curPlayer.failure)
 
-        this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
         this.turnData.endTime = Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION;
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
             turnEndTime: this.turnData.endTime
         });
+
+        if (!this.curPlayer.connected)
+            this.turnPlayerAFK();
+        else
+            this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
     }
 
+
+    /**
+     * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
+     */
+    turnPlayerAFK () {
+        const waitAfterEach = 4e3;
+        if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
+            this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
+            setTimeout(this.turnPlayerAFK.bind(this), waitAfterEach);
+        } else
+            this.turnTimeout = setTimeout(this.nextTurn.bind(this), waitAfterEach); // fin tour
+    }
 
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
@@ -447,6 +478,22 @@ class Game {
         switch (this.turnData.asyncRequestType) {
             case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
                 this.playerAutoMortage(this.curPlayer);
+                break;
+            case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
+                const curProp = this.curCell.property;
+                let price;
+                switch (curProp.type) {
+                    case Constants.PROPERTY_TYPE.STREET:
+                        price = curProp.prices.empty;
+                        break;
+
+                    default:
+                        price = curProp.price;
+                        break;
+                }
+                let bid = new Bid(this.curPlayer, curProp, price, this);
+                this.bids.push(bid);
+                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
                 break;
         }
     }

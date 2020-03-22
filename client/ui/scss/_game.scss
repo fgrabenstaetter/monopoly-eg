@@ -497,7 +497,7 @@
         margin-top: 20px;
         margin-left: auto;
         width: 225px;
-  
+
         // Il faudra rendre le background-color dynamique
         .card-header {
           border-radius: 15px 15px 0px 0px;
@@ -516,15 +516,15 @@
           &.blue {
             background-color: blue;
           }
-          
+
           &.red {
             background-color: red;
           }
-          
+
           &.pink {
             background-color: pink;
           }
-          
+
           &.green {
             background-color: green;
           }
@@ -535,6 +535,10 @@
 
           &.cyan {
             background-color: cyan;
+          }
+
+          &.event {
+            background-color: silver;
           }
 
           .title {
@@ -549,6 +553,10 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          
+          &.no-header{
+            border-radius: 15px 15px 15px 15px;
+          }
 
           .btn {
             height: 32px;
@@ -581,6 +589,15 @@
             font-weight: bold;
           }
         }
+
+        &.event {
+          p{
+            color: white;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+        }
       }
     }
 
@@ -607,17 +624,17 @@
           position:relative;
           text-align: center;
           box-shadow:0 1px 1px #ccc;
-         
+
         }
 
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
-      
+
         .action-button.in-progress,
         .action-button.finished{
           color:transparent !important;
         }
-        
+
         .action-button.in-progress:after,
         .action-button.finished:after{
           position: absolute;
@@ -629,22 +646,22 @@
           color: #fff !important;
           left: 0;
         }
-        
+
         /* If the .in-progress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
-        
+
         .action-button.in-progress:after{
           content:attr(data-loading);
         }
-        
+
         /* The same goes for the .finished class */
-        
+
         .action-button.finished:after{
           content:attr(data-finished);
         }
-        
+
         /* The colorful bar that grows depending on the progress */
-        
+
         .action-button .tz-bar{
             background-color:rgba(255, 98, 0, 1);
             height:3px;
@@ -653,9 +670,9 @@
             width:0;
             position:absolute;
             z-index:1;
-        
+
             border-radius:0 0 2px 2px;
-        
+
             -webkit-transition: width 0.5s, height 0.5s;
             -moz-transition: width 0.5s, height 0.5s;
             transition: width 0.5s, height 0.5s;
@@ -663,9 +680,9 @@
             height:100%;
             border-radius:2px;
         }
-        
+
         /* The bar can be either horizontal, or vertical */
-        
+
         .action-button .tz-bar.background-vertical{
             height:0;
             top:0;

@@ -81,7 +81,7 @@ function createCard(propertyID, type, roadName, price) {
                     <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
                 </div>
             </div>`;
-    
+
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
@@ -101,7 +101,36 @@ function createDisabledCard(propertyID, type, roadName, price) {
                     <button class="btn btn-secondary">NE RIEN FAIRE</button>
                 </div>
             </div>`;
-    
+
+    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
+}
+
+function createTextCard(text, disabled=false, type, title) {
+    let html;
+    if (title == undefined) {
+        html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
+                    <div class="card-body no-header">
+                        <div class="col-md-12 text-center value">
+                            <p>` + text + `</p>
+                        </div>
+                        <button class="btn btn-primary reject">OK</button>
+                    </div>
+                </div>`;
+    }
+    else {
+        html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
+                    <div class="card-header ` + type + `">
+                        <div class="title">` + title + `</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 text-center value">
+                            <p>` + text + `</p>
+                        </div>
+                        <button class="btn btn-primary reject">OK</button>
+                    </div>
+                </div>`;
+    }
+    console.log(html);
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
@@ -124,4 +153,7 @@ function createDisabledCard(propertyID, type, roadName, price) {
 // createProperty('4', 'green', 'Rue de la forêt', 31);
 // createProperty('4', 'brown', 'Rue de la ville', 33);
 
-// createCard(1, 'brown', 'Rue de la ville', 33000, null);
+//createCard(1, 'brown', 'Rue de la ville', 33000, null);
+//createTextCard('Vous êtes arrivés sur l\'Avenue des Vosges\nVous devez versé un loyer de 30 000€ à X', false, 'red', 'LOYER');
+//createTextCard('Vous devez allez en prison.', true, 'event', 'CHANCE');
+//createTextCard('qqch');

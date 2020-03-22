@@ -593,59 +593,63 @@ class Network {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else {
-                const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
-                for (const playr of game.players)
-                    moneySav.push(playr.money);
-                const nbJailEscapeCardsSave = player.nbJailEscapeCards;
-
-                const diceRes = game.rollDice();
-
-                if (!diceRes) {
-                    player.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });
-                    return;
-                }
-
-                let updateMoneyList = [];
-                for (let i = 0; i < game.players.length; i++) {
-                    if (moneySav.length > i && game.players[i].money !== moneySav[i])
-                        updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
-                }
-
-                const extra = [];
-                if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
-                    extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
-                // ajouter carte chance/communauté si une a été tirée
-                let cardToSend;
-                switch (game.curCell.type) {
-                    case Constants.CELL_TYPE.CHANCE:
-                        cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                        extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
-                        break;
-
-                    case Constants.CELL_TYPE.COMMUNITY:
-                        cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
-                        extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
-                        break;
-
-                    default:
-                        //Ne rien faire
-                        break;
-                }
-
-                this.io.to(game.name).emit('gameActionRes', {
-                    dicesRes         : diceRes,
-                    playerID         : player.id,
-                    cellPos          : player.cellPos,
-                    actionMessage    : game.turnData.actionMessage,
-                    asyncRequestType : game.turnData.asyncRequestType,
-                    asyncRequestArgs : game.turnData.asyncRequestArgs,
-                    updateMoney      : updateMoneyList,
-                    extra            : extra
-                });
-            }
+            else
+                this.gameTurnAction(player, game);
 
             player.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
+        });
+    }
+
+    // n'est pas un event
+    gameTurnAction (player, game) {
+        const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
+        for (const playr of game.players)
+            moneySav.push(playr.money);
+        const nbJailEscapeCardsSave = player.nbJailEscapeCards;
+
+        const diceRes = game.rollDice();
+
+        if (!diceRes) {
+            player.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });
+            return;
+        }
+
+        let updateMoneyList = [];
+        for (let i = 0; i < game.players.length; i++) {
+            if (moneySav.length > i && game.players[i].money !== moneySav[i])
+                updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
+        }
+
+        const extra = [];
+        if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
+            extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
+        // ajouter carte chance/communauté si une a été tirée
+        let cardToSend;
+        switch (game.curCell.type) {
+            case Constants.CELL_TYPE.CHANCE:
+                cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+                extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
+                break;
+
+            case Constants.CELL_TYPE.COMMUNITY:
+                cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
+                extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
+                break;
+
+            default:
+                //Ne rien faire
+                break;
+        }
+
+        this.io.to(game.name).emit('gameActionRes', {
+            dicesRes         : diceRes,
+            playerID         : player.id,
+            cellPos          : player.cellPos,
+            actionMessage    : game.turnData.actionMessage,
+            asyncRequestType : game.turnData.asyncRequestType,
+            asyncRequestArgs : game.turnData.asyncRequestArgs,
+            updateMoney      : updateMoneyList,
+            extra            : extra
         });
     }
 
@@ -766,6 +770,22 @@ class Network {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
+            if (!data.text || !data.bidID)
+                err = Errors.MISSING_FIELD;
+            else if (!(player === game.curPlayer))
+                err = err = Errors.GAME.NOT_MY_TURN;
+            else {
+                const bid = game.bidByID(data.bidID);
+                if (bid === null)
+                    err = Errors.BID_ENDED;
+                if (data.price > bid.amountAsked) {
+                    bid.updateBid(player, data.price);
+                    const msg = player.nickname + ' a surrenchéri pour ' + bid.property.name + ' avec une valeur de ' + data.price; 
+                    game.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: player.id, text: msg, price: data.price});
+                }
+
+            }
+            player.socket.emit('gameOverbidRes', {error: err.code, status: err.status});
         });
     }
 
