@@ -1,4 +1,4 @@
-let varMovement, varCase, vdp, vartest, varPawn, counter = 0; 
+let varMovement, varCase, vdp, vartest, varFunction, varPawn, counter = 0; 
 let scene, light, camera, renderer;
 var pawn, window, cases;
 
@@ -80,7 +80,7 @@ function resizeRendererToDisplaySize(renderer) {
 function render () {
 	//requestAnimationFrame(render);
 	if (counter!=0){
-		movement(varPawn, varMovement);
+		movement(varPawn, varMovement, varFunction);
 	}
 	if (resizeRendererToDisplaySize(renderer)) {
 		const canvas = renderer.domElement;
@@ -212,8 +212,9 @@ function loaderHotelProperty (hotelPropriete) {
 }
 
 
-function movement (pawn, vdp) {
+function movement (pawn, vdp, callback) {
 
+	varFunction = callback;
 	varMovement = vdp;
 	varCase = tabCases[varMovement];
 	varPawn = pawn;
@@ -245,11 +246,13 @@ function movement (pawn, vdp) {
 	counter = 1;
 	
 
-	if (ppx == vdpx && ppz == vdpz)
+	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
+		if (callback)
+			callback();
 
 	// Rotation pour les pions
-	if (ppx == xmin && ppz == zmax){
+	} if (ppx == xmin && ppz == zmax){
 		window[pawn].rotateY(-1.6);
 		//console.log(window.cases);
 	} else if (ppx == xmin && ppz == zmin)
