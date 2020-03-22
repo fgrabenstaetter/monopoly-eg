@@ -22,6 +22,8 @@ class Bid {
 
     expired () {
         const curBid = this.game.bidByID(this.id);
+        if (curBid === null)
+            return false;
         const index = this.game.bids.indexOf(curBid);
         if (index === -1)
             return;
