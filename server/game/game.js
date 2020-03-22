@@ -1,4 +1,5 @@
 const Chat                    = require('./chat');
+const Bid                     = require('./bid');
 const Constants               = require('../lib/constants');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
@@ -31,6 +32,7 @@ class Game {
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat = new Chat();
+        this.bids = [];
         this.bank = new Bank(this.cells);
 
         this.turnData = { // pour le client (envoi Network)
@@ -447,6 +449,11 @@ class Game {
         switch (this.turnData.asyncRequestType) {
             case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
                 this.playerAutoMortage(this.curPlayer);
+                break;
+            case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
+                const curProp = this.curCell.property;
+                let bid = new Bid(this.curPlayer, curProp, curProp.prices.empty);
+                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
                 break;
         }
     }

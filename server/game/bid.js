@@ -1,4 +1,5 @@
 const Offer = require('./offer.js');
+const Constants = require('../lib/constants');
 
 
 class Bid {
@@ -31,6 +32,20 @@ class Bid {
         for (let offer of this.offers)
             if (offeringPlayer == offer.player)
                 return offer;
+    }
+
+    updateBid(player, amount) {
+        let max = 0;
+        for (let tmp of this.bids) {
+            if (tmp.amountAsked > max) {
+                max = tmp.amountAsked;
+            }
+        }
+        if (amount > max) {
+            this.updateAmountAsked(amout);
+            this.player = player;
+            this.timeCreated = Date.now();
+        }
     }
 
     updateAmountAsked (amountAsked) {

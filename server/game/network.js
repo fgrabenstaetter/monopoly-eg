@@ -766,6 +766,8 @@ class Network {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
+            
+            player.socket.emit('gameOverbidRes', {error: err.code, status: err.status});
         });
     }
 
