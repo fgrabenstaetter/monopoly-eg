@@ -105,11 +105,10 @@ function createDisabledCard(propertyID, type, roadName, price) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function createTextCard(text, type, title) {
+function createTextCard(text, disabled=false, type, title) {
     let html;
-    console.log(type);
     if (title == undefined) {
-        html =  `<div class="card notification event" style="display: none;">
+        html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
                     <div class="card-body no-header">
                         <div class="col-md-12 text-center value">
                             <p>` + text + `</p>
@@ -119,7 +118,7 @@ function createTextCard(text, type, title) {
                 </div>`;
     }
     else {
-        html =  `<div class="card notification event" style="display: none;">
+        html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
                     <div class="card-header ` + type + `">
                         <div class="title">` + title + `</div>
                     </div>
@@ -131,7 +130,7 @@ function createTextCard(text, type, title) {
                     </div>
                 </div>`;
     }
-
+    console.log(html);
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
@@ -155,6 +154,6 @@ function createTextCard(text, type, title) {
 // createProperty('4', 'brown', 'Rue de la ville', 33);
 
 //createCard(1, 'brown', 'Rue de la ville', 33000, null);
-//createTextCard('Vous êtes arrivés sur l\'Avenue des Vosges\nVous devez versé un loyer de 30 000€ à X', 'red', 'LOYER');
-//createTextCard('Vous devez allez en prison.', 'event', 'CHANCE');
+//createTextCard('Vous êtes arrivés sur l\'Avenue des Vosges\nVous devez versé un loyer de 30 000€ à X', false, 'red', 'LOYER');
+//createTextCard('Vous devez allez en prison.', true, 'event', 'CHANCE');
 //createTextCard('qqch');
