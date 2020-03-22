@@ -154,11 +154,12 @@ socket.on('gameActionRes', (data) => {
             alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
         }
 
-        // Affichage de la propriété sur laquelle le joueur est tombé (le cas échéant)
+        // Affichage du message d'action donné par le serveur
+        if (data.actionMessage)
+            createTextCard(data.actionMessage, (data.playerID != ID), null, null); 
+
+        // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
         let property = getPropertyByCellId(data.cellPos);
-        if (property) {
-            console.log(idToNick(data.playerID) + " est tombé sur la propriété " + property.type + " / " + property.name + " / " + property.description + " / " + property.color);
-        }
 
         // asyncRequestType à gérer ici
         if (data.asyncRequestType && property) {

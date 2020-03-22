@@ -105,7 +105,7 @@ function createDisabledCard(propertyID, type, roadName, price) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function createTextCard(text, disabled=false, type, title) {
+function createTextCard(text, disabled, type, title) {
     let html;
     if (title == undefined) {
         html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
