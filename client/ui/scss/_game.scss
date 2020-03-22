@@ -4,7 +4,7 @@
   width: 100%;
   z-index: 1;
 
-  // Dés
+  // Dices
   .dice-container {
     position: fixed;
     top: 50%;
@@ -14,7 +14,8 @@
     opacity: 0;
     transition: opacity 0.2s;
 
-    #view1, #view2 {
+    #view1,
+    #view2 {
       width: 200px;
       height: 200px;
       perspective: 600px;
@@ -23,7 +24,8 @@
       display: inline-block;
     }
 
-    #dice1, #dice2 {
+    #dice1,
+    #dice2 {
       width: 200px;
       height: 200px;
       position: relative;
@@ -36,29 +38,29 @@
       width: 46px;
       height: 46px;
       border-radius: 23px;
-      background :#444;
+      background: #444;
       box-shadow: inset 5px 0 10px #000;
     }
     .dot.center {
-        margin: 77px 0 0 77px;
+      margin: 77px 0 0 77px;
     }
     .dot.dtop {
-        margin-top: 20px;
+      margin-top: 20px;
     }
     .dot.dleft {
-        margin-left: 134px;
+      margin-left: 134px;
     }
     .dot.dright {
-        margin-left: 20px;
+      margin-left: 20px;
     }
     .dot.dbottom {
-        margin-top: 134px;
+      margin-top: 134px;
     }
     .dot.center.dleft {
-        margin: 77px 0 0 20px;
+      margin: 77px 0 0 20px;
     }
     .dot.center.dright {
-        margin: 77px 0 0 134px;
+      margin: 77px 0 0 134px;
     }
 
     .diceFace {
@@ -73,55 +75,73 @@
       border-radius: 40px;
     }
 
-    #dice1 .cover, #dice1 .inner, #dice2 .cover, #dice2 .inner {
+    #dice1 .cover,
+    #dice1 .inner,
+    #dice2 .cover,
+    #dice2 .inner {
       background: #e0e0e0;
       box-shadow: none;
     }
 
-    #dice1 .cover, #dice2 .cover {
+    #dice1 .cover,
+    #dice2 .cover {
       border-radius: 0;
       transform: translateZ(0px);
     }
-    #dice1 .cover.x, #dice2 .cover.x {
+    #dice1 .cover.x,
+    #dice2 .cover.x {
       transform: rotateY(90deg);
     }
-    #dice1 .cover.z, #dice2 .cover.z {
+    #dice1 .cover.z,
+    #dice2 .cover.z {
       transform: rotateX(90deg);
     }
-    #dice1 .front, #dice2 .front  {
+    #dice1 .front,
+    #dice2 .front {
       transform: translateZ(100px);
     }
-    #dice1 .front.inner, #dice2 .front.inner  {
+    #dice1 .front.inner,
+    #dice2 .front.inner {
       transform: translateZ(98px);
     }
-    #dice1 .back, #dice2 .back {
+    #dice1 .back,
+    #dice2 .back {
       transform: rotateX(-180deg) translateZ(100px);
     }
-    #dice1 .back.inner, #dice2 .back.inner {
+    #dice1 .back.inner,
+    #dice2 .back.inner {
       transform: rotateX(-180deg) translateZ(98px);
     }
-    #dice1 .right, #dice2 .right {
+    #dice1 .right,
+    #dice2 .right {
       transform: rotateY(90deg) translateZ(100px);
     }
-    #dice1 .right.inner, #dice2 .right.inner {
+    #dice1 .right.inner,
+    #dice2 .right.inner {
       transform: rotateY(90deg) translateZ(98px);
     }
-    #dice1 .left, #dice2 .left {
+    #dice1 .left,
+    #dice2 .left {
       transform: rotateY(-90deg) translateZ(100px);
     }
-    #dice1 .left.inner, #dice2 .left.inner {
+    #dice1 .left.inner,
+    #dice2 .left.inner {
       transform: rotateY(-90deg) translateZ(98px);
     }
-    #dice1 .top, #dice2 .top {
+    #dice1 .top,
+    #dice2 .top {
       transform: rotateX(90deg) translateZ(100px);
     }
-    #dice1 .top.inner, #dice2 .top.inner {
+    #dice1 .top.inner,
+    #dice2 .top.inner {
       transform: rotateX(90deg) translateZ(98px);
     }
-    #dice1 .bottom, #dice2 .bottom {
+    #dice1 .bottom,
+    #dice2 .bottom {
       transform: rotateX(-90deg) translateZ(100px);
     }
-    #dice1 .bottom.inner, #dice2 .bottom.inner {
+    #dice1 .bottom.inner,
+    #dice2 .bottom.inner {
       transform: rotateX(-90deg) translateZ(98px);
     }
 
@@ -156,6 +176,85 @@
     }
   }
 
+  // Overview card
+  .overview-card {
+    position: absolute;
+    right: 50vw;
+    top: 50vh;
+    transform: translate(300px, -50%);
+    margin: 0;
+    text-align: center;
+
+    @media (max-width: 1199.98px) {
+      transform: translate(400px, -50%);
+    }
+
+    .header,
+    .content {
+      width: 180px;
+    }
+
+    .header {
+      background: red;
+      color: white;
+      font-family: "LilitaOne", sans-serif;
+      font-size: 15px;
+      padding: 8px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .content {
+      background-color: rgba($color: white, $alpha: 0.98);
+      height: 220px;
+      border-radius: 0 0 10px 10px;
+      padding: 10px 20px;
+      overflow: hidden;
+
+      div {
+        width: 100%;
+        font-family: "Roboto", sans-serif;
+        font-size: 12px;
+        margin: 0;
+
+        &.rent {
+          margin-bottom: 8px;
+          font-weight: bold;
+          &:before {
+            content: "LOYER ";
+          }
+          &:after {
+            content: "€";
+          }
+        }
+
+        &.with-house, &.with-hotel {
+          display: flex;
+          justify-content: space-between;
+
+          div {
+            &:first-child {
+              text-align: left;
+              flex-grow: 2;
+            }
+
+            &:nth-child(2) {
+              text-align: right;
+              flex-grow: 0;
+              flex-shrink: 2;
+              &:after {
+                content: "€";
+              }
+            }
+          }
+        }
+
+        &.house-price {
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+
   // Ligne supérieure du HUD: liste des joueurs
   .container:first-child {
     position: absolute;
@@ -176,7 +275,7 @@
         .name {
           font-size: 17px;
           font-weight: bold;
-          font-family: 'Work Sans', sans-serif;
+          font-family: "Work Sans", sans-serif;
           position: relative;
           background: transparent;
           z-index: 0;
@@ -214,7 +313,6 @@
         }
 
         .money::after {
-          font-family: "Font Awesome\ 5 Pro";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -223,7 +321,7 @@
           text-rendering: auto;
           line-height: 1;
           font-weight: 900;
-          content: "$";
+          content: "€";
           margin-left: 2px;
           font-size: 13px;
           color: white;
@@ -269,14 +367,21 @@
               white-space: nowrap;
             }
 
-            &.blue, &.red, &.orange, &.pink, &.brown, &.green {
+            &.blue,
+            &.red,
+            &.orange,
+            &.pink,
+            &.brown,
+            &.green {
               .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
             }
 
-            &.yellow, &.pink, &.cyan {
+            &.yellow,
+            &.pink,
+            &.cyan {
               .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
@@ -412,7 +517,7 @@
         }
 
         .popup:after {
-          content: '';
+          content: "";
           position: absolute;
           left: 0;
           width: 0;
@@ -460,7 +565,7 @@
       }
 
       // couleurs assignées automatiquement aux membres de la liste
-      @import '_players-colors.scss';
+      @import "_players-colors.scss";
     }
 
     @media (max-height: 820px) {
@@ -468,7 +573,6 @@
         margin-top: -40px;
       }
     }
-
   }
 
   // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
@@ -497,7 +601,7 @@
         margin-top: 20px;
         margin-left: auto;
         width: 225px;
-  
+
         // Il faudra rendre le background-color dynamique
         .card-header {
           border-radius: 15px 15px 0px 0px;
@@ -516,15 +620,15 @@
           &.blue {
             background-color: blue;
           }
-          
+
           &.red {
             background-color: red;
           }
-          
+
           &.pink {
             background-color: pink;
           }
-          
+
           &.green {
             background-color: green;
           }
@@ -537,8 +641,12 @@
             background-color: cyan;
           }
 
+          &.event {
+            background-color: silver;
+          }
+
           .title {
-            font-family: 'LilitaOne', sans-serif;
+            font-family: "LilitaOne", sans-serif;
             font-size: 17px;
           }
         }
@@ -549,6 +657,10 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          
+          &.no-header{
+            border-radius: 15px 15px 15px 15px;
+          }
 
           .btn {
             height: 32px;
@@ -581,6 +693,15 @@
             font-weight: bold;
           }
         }
+
+        &.event {
+          p{
+            color: white;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+        }
       }
     }
 
@@ -594,32 +715,31 @@
       .col-md-12 {
         padding: 0;
 
-        .action-button{
+        .action-button {
           width: 175px;
           height: 50px;
           border-radius: 25px;
           font-size: 20px;
-          color:#fff !important;
+          color: #fff !important;
           text-decoration: none !important;
           padding: 11px;
-          line-height:1;
+          line-height: 1;
           overflow: hidden;
-          position:relative;
+          position: relative;
           text-align: center;
-          box-shadow:0 1px 1px #ccc;
-         
+          box-shadow: 0 1px 1px #ccc;
         }
 
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
-      
+
         .action-button.in-progress,
-        .action-button.finished{
-          color:transparent !important;
+        .action-button.finished {
+          color: transparent !important;
         }
-        
+
         .action-button.in-progress:after,
-        .action-button.finished:after{
+        .action-button.finished:after {
           position: absolute;
           z-index: 2;
           width: 100%;
@@ -629,48 +749,48 @@
           color: #fff !important;
           left: 0;
         }
-        
+
         /* If the .in-progress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
-        
-        .action-button.in-progress:after{
-          content:attr(data-loading);
-        }
-        
-        /* The same goes for the .finished class */
-        
-        .action-button.finished:after{
-          content:attr(data-finished);
-        }
-        
-        /* The colorful bar that grows depending on the progress */
-        
-        .action-button .tz-bar{
-            background-color:rgba(255, 98, 0, 1);
-            height:3px;
-            bottom:0;
-            left:0;
-            width:0;
-            position:absolute;
-            z-index:1;
-        
-            border-radius:0 0 2px 2px;
-        
-            -webkit-transition: width 0.5s, height 0.5s;
-            -moz-transition: width 0.5s, height 0.5s;
-            transition: width 0.5s, height 0.5s;
 
-            height:100%;
-            border-radius:2px;
+        .action-button.in-progress:after {
+          content: attr(data-loading);
         }
-        
+
+        /* The same goes for the .finished class */
+
+        .action-button.finished:after {
+          content: attr(data-finished);
+        }
+
+        /* The colorful bar that grows depending on the progress */
+
+        .action-button .tz-bar {
+          background-color: rgba(255, 98, 0, 1);
+          height: 3px;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          position: absolute;
+          z-index: 1;
+
+          border-radius: 0 0 2px 2px;
+
+          -webkit-transition: width 0.5s, height 0.5s;
+          -moz-transition: width 0.5s, height 0.5s;
+          transition: width 0.5s, height 0.5s;
+
+          height: 100%;
+          border-radius: 2px;
+        }
+
         /* The bar can be either horizontal, or vertical */
-        
-        .action-button .tz-bar.background-vertical{
-            height:0;
-            top:0;
-            width:100%;
-            border-radius:2px;
+
+        .action-button .tz-bar.background-vertical {
+          height: 0;
+          top: 0;
+          width: 100%;
+          border-radius: 2px;
         }
       }
     }

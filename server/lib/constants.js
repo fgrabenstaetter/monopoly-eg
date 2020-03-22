@@ -10,13 +10,16 @@ const Constants = {
         TRAIN_STATION  : 'trainStation',
         STREET         : 'street',
         PUBLIC_COMPANY : 'publicCompany'
-
     },
     STREET_COLOR: {
-        RED   : 'red',
-        GREEN : 'green',
-        BLUE  : 'blue',
-        PINK  : 'pink'
+        BROWN     : 'brown',
+        LIGHTBLUE : 'cyan',
+        PURPLE    : 'purple',
+        ORANGE    : 'orange',
+        RED       : 'red',
+        YELLOW    : 'yellow',
+        GRENN     : 'green',
+        BLUE      : 'blue'
     },
     CHAT_MESSAGE_TYPE: {
         TEXT  : 'text',
@@ -29,7 +32,8 @@ const Constants = {
         GET_MONEY_FROM_START     : 200,
         BANK_INITIAL_MONEY       : 4000,
         PLAYER_INITIAL_MONEY     : 1500,
-        OFFER_EXPIRE_AFTER       : 2e4
+        OFFER_EXPIRE_AFTER       : 2e4,
+        BID_EXPIRE_AFTER         : 25e3
     },
     GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',

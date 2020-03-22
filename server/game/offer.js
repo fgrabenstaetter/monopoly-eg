@@ -32,7 +32,9 @@ class Offer {
     }
 
     expired () {
-        Offer.delOffer(this);
+        if (!Offer.offerByID(this.id))
+            return false;
+
         this.game.GLOBAL.network.io.to(game.name).emit('gameOfferFinishedRes', {
             receiverID : null,
             offerID    : this.id,
@@ -40,6 +42,8 @@ class Offer {
             propertyID : offer.property.id,
             makerID    : offer.maker.id
         });
+
+        Offer.delOffer(this);
     }
 
     get accept () {

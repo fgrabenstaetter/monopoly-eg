@@ -802,6 +802,26 @@ class Network {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
+            if (!data.text || !data.bidID)
+                err = Errors.MISSING_FIELD;
+            else if (!(player === game.curPlayer))
+                err = err = Errors.GAME.NOT_MY_TURN;
+            else {
+                const bid = game.bidByID(data.bidID);
+                if (bid === null)
+                    err = Errors.BID_ERRORS.BID_ENDED;
+                const boundary = bid.amountAsked - data.price;
+                //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
+                if (boundary >= 20) {
+                    bid.updateBid(player, data.price);
+                    const msg = player.nickname + ' a surrenchéri pour ' + bid.property.name + ' avec une valeur de ' + data.price;
+                    game.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: player.id, text: msg, price: data.price});
+                }
+                else
+                    err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
+
+            }
+            player.socket.emit('gameOverbidRes', {error: err.code, status: err.status});
         });
     }
 

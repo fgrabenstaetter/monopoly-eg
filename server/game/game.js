@@ -1,5 +1,6 @@
 const Chat                    = require('./chat');
 const Constants               = require('./../lib/constants');
+const Bid                     = require('./bid');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
 const Bank                    = require('./bank');
@@ -31,6 +32,7 @@ class Game {
         this.chanceDeck = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat = new Chat();
+        this.bids = [];
         this.bank = new Bank(this.cells);
 
         this.turnData = { // pour le client (envoi Network)
@@ -58,6 +60,14 @@ class Game {
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
+    }
+
+    bidByID (bidID) {
+        for (const bid of this.bids) {
+            if (bidID === bid.id)
+                return bid;
+        }
+        return null;
     }
 
     /**
@@ -468,6 +478,22 @@ class Game {
         switch (this.turnData.asyncRequestType) {
             case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
                 this.playerAutoMortage(this.curPlayer);
+                break;
+            case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
+                const curProp = this.curCell.property;
+                let price;
+                switch (curProp.type) {
+                    case Constants.PROPERTY_TYPE.STREET:
+                        price = curProp.prices.empty;
+                        break;
+
+                    default:
+                        price = curProp.price;
+                        break;
+                }
+                let bid = new Bid(this.curPlayer, curProp, price, this);
+                this.bids.push(bid);
+                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
                 break;
         }
     }

@@ -43,7 +43,7 @@ socket.on('lobbyCreatedRes', (res) => {
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
     imHost();
     users.push({ nickname: NICKNAME, id: ID });
-    addGroupUser(ID, res.pawn);
+    addPlayerInGroup(ID, res.pawn);
 
     $('.profile-row > .username').text(NICKNAME);
 });
@@ -64,7 +64,7 @@ socket.on('lobbyJoinedRes', (res) => {
 
     for (const usr of res.users) {
         users.push(usr);
-        addGroupUser(usr.id, usr.pawn);
+        addPlayerInGroup(usr.id, usr.pawn);
     }
 
     for (const mess of res.messages)
@@ -130,7 +130,7 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     users.push({ nickname: res.nickname, id: res.id });
-    addGroupUser(res.id, res.pawn);
+    addPlayerInGroup(res.id, res.pawn);
 
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
     const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
@@ -157,7 +157,7 @@ socket.on('lobbyUserLeftRes', (res) => {
     console.log('newhost = ' + idToNick(res.hostID))
 
     // supprimer de la liste dans grouplist
-    delGroupUser(res.userID);
+    delPlayerFromGroup(res.userID);
 
     if (hostID === ID)
         imHost();
@@ -211,10 +211,15 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
 });
 
 socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
-
     console.log("lobbyFriendInvitationAcceptedRes");
     addFriend(res.id, res.nickname, "img/ui/avatar1.jpg");
+});
 
+socket.on("lobbyKickRes", (res) => {
+    if (res.error === 0)
+        console.log("lobbyKickRes")
+    else // hôte uniquement
+        alert(res.status);
 });
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
@@ -313,13 +318,13 @@ function imHost() {
 }
 
 /**
- * Cree et affiche une invitation recu à rejoindre une partie
- * @param invitationID Identifiant de l'invitation pour rejoindre une partie
- * @param senderFriendNickname Nom de la personne qui a inviter le joueur
+ * Cree et affiche une invitation à rejoindre un lobby
+ * @param invitationID Identifiant de l'invitation
+ * @param senderFriendNickname Pseudo de la personne ayant envoyé l'invitation
  */
 function lobbyInvitation(invitationID, senderFriendNickname) {
     const html = `
-        <div class="card notification" id="` + invitationID + `">
+        <div class="card notification lobby-invitation" id="` + invitationID + `">
             <div class="card-header">
                 INVITATION
             </div>
@@ -331,57 +336,14 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
         </div>`;
 
     $('#inviteGameContainer').append(html);
-
-    $('.notification-container .btn-primary').unbind();
-    $('.notification-container .btn-secondary').unbind();
-
-
-    //lobbyInvitationAcceptReq
-    $('.notification-container .btn-primary').click(function () {
-        const invitationID = $(this).parent().parent().attr('id');
-        let error = 0;
-        let status = 100;
-
-
-        socket.emit("lobbyInvitationAcceptReq", { invitationID: invitationID });
-        console.log("lobbyInvitationAcceptReq");
-
-
-
-        if (!error) {
-            $(this).parent().parent().remove();
-        }
-        else {
-            alert("erreur : " + status)
-        }
-    });
-
-    //lobbyInvitationDeny
-    $('.notification-container .btn-secondary').click(function () {
-        $(this).parent().parent().remove();
-    });
 }
-
 
 /**
- * Cree et affiche une demande d'ami
- * @param id Identifiant de l'invitation
- * @param name Nom de la personne qui a inviter le joueur
+ * Ajoute un joueur dans son groupe (lobby)
+ * @param id Identifiant du joueur 
+ * @param pawn Pion du joueur
  */
-function friendRequest(id, name) {
-    $(".friends-entries-container").prepend(`
-        <div class="friend-request">
-            <div class="friend-request-text">
-                <span data-id="` + id + `">` + name + `</span> souhaite vous ajouter à sa liste d'amis
-            </div>
-            <div class="accept-button">accepter</div>
-            <div class="deny-button">refuser</div>
-        </div>`);
-}
-
-
-
-function addGroupUser(id, pawn) {
+function addPlayerInGroup(id, pawn) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
     const html = `
@@ -392,17 +354,13 @@ function addGroupUser(id, pawn) {
         </div>`;
 
     $('.grouplist .group-entries-container > div').append(html);
-
-    $('.grouplist .friend-action').unbind();
-
-    // actualisation de l'event click (car html modifié)
-    $('.grouplist .friend-action').click(function () {
-        // = bouton EXCLURE (uniquement si hôte)
-        socket.emit('lobbyKickReq', { userToKickID: id });
-    });
 }
 
-function delGroupUser(id) {
+/**
+ * Retire un joueur de son groupe (lobby)
+ * @param id Identifiant du joueur 
+ */
+function delPlayerFromGroup(id) {
     const nick = idToNick(id);
     const els = document.querySelectorAll('.grouplist .friends-name');
     for (const el of els) {
@@ -413,7 +371,11 @@ function delGroupUser(id) {
     }
 }
 
-// Fonction d'ajout d'un message d'invitation d'ami
+/**
+ * Ajoute un message d'invitation en ami
+ * @param id Identifiant de l'ami
+ * @param name Nom de l'ami
+ */
 function friendRequest(id, name) {
     $(".friends-entries-container").prepend(`
         <div class="friend-request">
@@ -460,41 +422,10 @@ function addFriend(id, name, avatar) {
                 </div>
             </div>
         </div>`);
-
-    $('.friend-entry .friend-action').unbind();
-    $('.delete-friend-button').unbind();
-
-    //lobbyInvitationReq
-    $('.friend-entry .friend-action').click(function () {
-        let friendID = $(this).parent().find('.friends-name').attr('data-id');
-        socket.emit("lobbyInvitationReq", { friendID: id });
-        console.log("lobbyInvitationReq");
-
-    });
-
-    $('.delete-friend-button').click(function () {
-        const friendID = $(this).attr('data-id');
-        let error = 0;
-        let status = 100;
-        alert("lobbyFriendDeleteReq a implementer")
-        console.log("lobbyFriendDeleteReq");
-
-        if (!error) {
-            $(this).parent().parent().remove();
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-            $('.friend-entry').find('[data-id="' + friendID + '"]').parent().remove();
-        }
-        else {
-            alert("erreur : " + status)
-        }
-    });
 }
 
 
-
-//lobbyInvitationAcceptReq
-//lobbyFriendInvitationRes Acceptation
+// Accepter une invitation d'ami
 $('.friends-entries-container').on('click', '.friend-request .accept-button', function () {
     const senderNickname = $(this).parent().find(".friend-request-text span").text();
     const action = 'accept';
@@ -507,15 +438,14 @@ $('.friends-entries-container').on('click', '.friend-request .accept-button', fu
     if (!error) {
         $(this).parent().remove();
         socket.emit('lobbyFriendListReq');
-    }
-    else {
-        alert("erreur : " + status)
+    } else {
+        alert("erreur : " + status);
     }
 
 });
 
-// lobbyFriendInvitationRes Deny
-$('.friends-entries-container').click('click', '.friend-request .deny-button', function () {
+// Refuser une invitation d'ami
+$('.friends-entries-container').on('click', '.friend-request .deny-button', function () {
     const senderNickname = $(this).parent().find(".friend-request-text span").text()
     const action = 'reject';
     let error = 0;
@@ -524,10 +454,60 @@ $('.friends-entries-container').click('click', '.friend-request .deny-button', f
     socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
     console.log("lobbyFriendInvitationActionReq");
 
-    if (!error) {
+    if (!error)
         $(this).parent().remove();
-    }
-    else {
+    else
+        alert("erreur : " + status)
+});
+
+
+// Inviter un ami dans un lobby
+$('#friendList').on('click', '.friend-entry .friend-action', function () {
+    let friendID = $(this).parent().find('.friends-name').attr('data-id');
+    socket.emit("lobbyInvitationReq", { friendID: friendID });
+    console.log("lobbyInvitationReq");
+});
+
+// Kicker un joueur du lobby
+$('#friendList').on('click', '.delete-friend-button', function () {
+    const friendID = $(this).attr('data-id');
+    let error = 0;
+    let status = 100;
+    alert("lobbyFriendDeleteReq a implementer")
+    console.log("lobbyFriendDeleteReq");
+
+    if (!error) {
+        $(this).parent().parent().remove();
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        $('.friend-entry').find('[data-id="' + friendID + '"]').parent().remove();
+    } else {
         alert("erreur : " + status)
     }
+});
+
+// Accepter une invitation dans un lobby
+$('.notification-container').on('click', '.lobby-invitation .btn-primary', function () {
+    const invitationID = $(this).parent().parent().attr('id');
+    let error = 0;
+    let status = 100;
+
+    socket.emit("lobbyInvitationAcceptReq", { invitationID: invitationID });
+    console.log("lobbyInvitationAcceptReq");
+
+    if (!error)
+        $(this).parent().parent().remove();
+    else
+        alert("erreur : " + status)
+});
+
+// Refuser une invitation dans un lobby
+$('.notification-container').on('click', '.lobby-invitation .btn-secondary', function () {
+    $(this).parent().parent().remove();
+});
+
+// Kicker un joueur du lobby (seul l'hôte voit les boutons EXCLURE à côté des joueurs)
+$('.grouplist').on('click', '.friend-action', function () {
+    let userToKickID = $(this).prev('.friends-name').attr('data-id');
+    socket.emit('lobbyKickReq', { userToKickID: userToKickID });
 });
