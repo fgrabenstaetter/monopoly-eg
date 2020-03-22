@@ -97,8 +97,8 @@ function createDisabledCard(propertyID, type, roadName, price) {
                             <p>` + price + `€</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary accept">ACHETER</button>
-                    <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
+                    <button class="btn btn-primary">ACHETER</button>
+                    <button class="btn btn-secondary">NE RIEN FAIRE</button>
                 </div>
             </div>`;
     
