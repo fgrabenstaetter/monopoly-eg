@@ -146,6 +146,7 @@ socket.on('gameActionRes', (data) => {
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
+        console.log("movement("+PAWNS[getPlayerById(data.playerID).pawn]+", "+data.cellPos.toString()+");");
         movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString());
 
         // Mise à jour des soldes (le cas échéant)
