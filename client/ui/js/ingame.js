@@ -154,13 +154,11 @@ socket.on('gameActionRes', (data) => {
             alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
         }
 
-        // Affichage du message d'action donné par le serveur
-        if (data.actionMessage)
-            createTextCard(data.actionMessage, (data.playerID != ID), null, null); 
 
         // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
         let property = getPropertyByCellId(data.cellPos);
 
+        let afficherMessageAction = false;
         // asyncRequestType à gérer ici
         if (data.asyncRequestType && property) {
             if (data.asyncRequestType == "canBuy") {
@@ -179,8 +177,16 @@ socket.on('gameActionRes', (data) => {
             } else if (data.asyncRequestType == "shouldMortage") {
                  // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
                 let totalMoneyToHave = data.asyncRequestArgs[0];
+            } else {
+                afficherMessageAction = true;
             }
+        } else {
+            afficherMessageAction = true;
         }
+
+        // Affichage du message d'action donné par le serveur
+        if (afficherMessageAction && data.actionMessage)
+            createTextCard(data.actionMessage, (data.playerID != ID), null, null); 
 
         console.log("=== fin gameActionRes ===");
     });
@@ -202,7 +208,6 @@ $('.notification-container').on('click', '.reject', function() {
 });
 
 socket.on("gamePropertyBuyRes", (data) => {
-    console.log("gamePropertyBuyRes");
     let property = getPropertyById(data.propertyID);
     let cell = getCellByProperty(property);
     if (property && cell) {
@@ -212,7 +217,7 @@ socket.on("gamePropertyBuyRes", (data) => {
 
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
         $('.notification-container')
-            .find('.notification[data-property-id="'+property.id+'"] .accept')
+            .find('.notification[data-property-id="'+property.id+'"] .btn-primary')
             .animate({zoom: '130%'}, 250, function() {
                 $(this).animate({zoom: '100%'}, 250, function() {
                     setTimeout(function() {

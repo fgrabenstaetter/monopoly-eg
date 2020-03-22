@@ -301,8 +301,6 @@ class Game {
 
         } else {
             // pour linstant sortir = gratuit
-            const total = diceRes[0] + diceRes[1];
-            this.curPlayer.moveRelative(total);
             this.curPlayer.quitPrison();
         }
     }
