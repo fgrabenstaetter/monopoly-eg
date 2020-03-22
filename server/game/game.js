@@ -8,6 +8,7 @@ const Cells                   = require('./../lib/cells');
 const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
+const Errors                  = require('./../lib/errors');
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -389,11 +390,15 @@ class Game {
      */
     asyncActionBuyProperty() {
         const property = this.curCell.property;
-        if (!property || property.owner)
-            return false;
+        if (!property)
+            return Errors.BUY_PROPERTY.NOT_EXISTS;
+        
+        if (property.owner)
+            return Errors.BUY_PROPERTY.ALREADY_SOLD;
+        
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
         if (this.curPlayer.money < price)
-            return false;
+            return Errors.BUY_PROPERTY.NOT_ENOUGH_MONEY;
 
         this.curPlayer.loseMoney(price);
         this.bank.addMoney(price);
@@ -401,7 +406,8 @@ class Game {
         this.curPlayer.addProperty(property);
 
         this.resetTurnData();
-        return true;
+
+        return Errors.SUCCESS;
     }
 
     /**

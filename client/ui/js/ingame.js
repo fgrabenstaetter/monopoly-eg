@@ -98,9 +98,6 @@ socket.on('gameStartedRes', (data) => {
 socket.on('gameTurnRes', (data) => {
     console.log(data);
 
-    // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
-    console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
-
     // On vide toutes les notifications (au cas-où)
     $('.notification-container > .col-md-12').empty();
 
@@ -109,18 +106,15 @@ socket.on('gameTurnRes', (data) => {
     setCurrentPlayer(data.playerID);
 
     if (data.playerID === ID) {
-        /** C'est mon tour:
-         *  afficher lancer les dés au lieu du bouton terminer
-         *
-         */
+        console.log('C\'est à mon tour de jouer !');
 
-
-        // C'est mon tour !
-        console.log("C'est mon tour !");
+        console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressInitialize();
+        console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressTimed(DATA.turnTimeSeconds);
-
     } else {
+        console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
+        console.log("[BOUTON D'ACTION] Passage en attente");
         $('#timer').progressFinish();
     }
 });
@@ -152,7 +146,6 @@ socket.on('gameActionRes', (data) => {
             if (data.extra && data.extra.newCard) {
                 alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
             }
-
 
             // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
             let property = getPropertyByCellId(data.cellPos);
@@ -208,6 +201,13 @@ $('.notification-container').on('click', '.reject', function () {
 });
 
 socket.on("gamePropertyBuyRes", (data) => {
+    console.log("gamePropertyBuyRes");
+    console.log(data);
+    if (typeof data.error !== "undefined") {
+        createTextCard(data.status, true, 'brown', 'Impossible d\'acheter');
+        return;
+    }
+
     let property = getPropertyById(data.propertyID);
     let cell = getCellByProperty(property);
     if (property && cell) {

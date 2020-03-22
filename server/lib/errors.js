@@ -137,7 +137,7 @@ module.exports = Object.freeze({
     GAME: {
         NOT_MY_TURN: {
             code: 1,
-            status: 'Ce n\'est pas votre tour de jeu'
+            status: 'Ce n\'est plus à votre tour de jouer'
         },
         NOT_STARTED: {
             code: 2,
@@ -152,4 +152,19 @@ module.exports = Object.freeze({
             status: 'Vous n\'avez pas assez d\'argent pour accepter cette offre'
         }
     },
+
+    BUY_PROPERTY: {
+        NOT_EXISTS: {
+            code: 1,
+            status: 'Cette propriété n\'existe pas'
+        },
+        ALREADY_SOLD: {
+            code: 2,
+            status: 'Cette propriété a déjà été vendue'
+        },
+        NOT_ENOUGH_MONEY: {
+            code: 3,
+            status: 'Vous n\'avez pas assez d\'argent pour acheter cette propriété'
+        }
+    }
 });

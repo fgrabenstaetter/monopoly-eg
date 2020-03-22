@@ -671,8 +671,8 @@ class Network {
 
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if (!game.asyncActionBuyProperty()) // achat ici
-                err = Errors.UNKNOW;
+            else
+                err = game.asyncActionBuyProperty();
 
             if (err === Errors.SUCCESS) {
                 this.io.to(game.name).emit('gamePropertyBuyRes', {
@@ -681,8 +681,9 @@ class Network {
                     playerMoney : player.money,
                     bankMoney   : game.bank.money
                 });
-            } else
+            } else {
                 player.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
+            }
         });
     }
 
