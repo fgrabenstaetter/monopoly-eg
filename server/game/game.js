@@ -392,10 +392,10 @@ class Game {
         const property = this.curCell.property;
         if (!property)
             return Errors.BUY_PROPERTY.NOT_EXISTS;
-        
+
         if (property.owner)
             return Errors.BUY_PROPERTY.ALREADY_SOLD;
-        
+
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
         if (this.curPlayer.money < price)
             return Errors.BUY_PROPERTY.NOT_ENOUGH_MONEY;
@@ -495,7 +495,7 @@ class Game {
                         price = curProp.price;
                         break;
                 }
-                const bid = new Bid(this.curPlayer, curProp, price, this);
+                const bid = new Bid(curProp, price, this);
                 this.bids.push(bid);
                 const msg = 'Une enchère a demarré pour' + curProp.name;
                 this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {

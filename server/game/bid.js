@@ -5,7 +5,7 @@ class Bid {
 
     static idCounter = 0;
 
-    constructor (player, property, amountAsked, game) {
+    constructor (property, amountAsked, game) {
         this.id = Bid.idCounter ++;
         this.player = null;
         this.property = property;
@@ -14,6 +14,7 @@ class Bid {
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
     }
 
+    //Test réalisé dans network
     updateBid (player, amount) {
         this.amountAsked = amount;
         this.player = player;
