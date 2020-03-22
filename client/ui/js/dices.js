@@ -110,7 +110,7 @@ async function rollDice(dice, number, rotations){
 }
 
 async function triggerDices(d1, d2, _callback){
-	rotations = random(5,10);
+	rotations = 6;
 	showDices();
 	await sleep(300);
 	rollDice(1,d1,rotations);
