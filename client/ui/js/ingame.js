@@ -139,70 +139,70 @@ socket.on('gameActionRes', (data) => {
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
-        console.log("movement("+PAWNS[getPlayerById(data.playerID).pawn]+", "+data.cellPos.toString()+");");
-        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString());
+        console.log("movement(" + PAWNS[getPlayerById(data.playerID).pawn] + ", " + data.cellPos.toString() + ");");
+        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString(), function () {
+            // Mise à jour des soldes (le cas échéant)
+            if (data.updateMoney) {
+                data.updateMoney.forEach((row) => {
+                    setPlayerMoney(row.playerID, row.money);
+                });
+            }
 
-        // Mise à jour des soldes (le cas échéant)
-        if (data.updateMoney) {
-            data.updateMoney.forEach((row) => {
-                setPlayerMoney(row.playerID, row.money);
-            });
-        }
-
-        // Affichage de la carte (le cas échéant)
-        if (data.extra && data.extra.newCard) {
-            alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
-        }
+            // Affichage de la carte (le cas échéant)
+            if (data.extra && data.extra.newCard) {
+                alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
+            }
 
 
-        // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
-        let property = getPropertyByCellId(data.cellPos);
+            // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
+            let property = getPropertyByCellId(data.cellPos);
 
-        let afficherMessageAction = false;
-        // asyncRequestType à gérer ici
-        if (data.asyncRequestType && property) {
-            if (data.asyncRequestType == "canBuy") {
-                let price = data.asyncRequestArgs[0];
-                if (data.playerID == ID)
-                    createCard(property.id, property.color, property.name, price);
-                else
-                    createDisabledCard(property.id, property.color, property.name, price);
-            } else if (data.asyncRequestType == "canUpgrade") {
-                // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
-                let level1Price = data.asyncRequestArgs[0];
-                let level2Price = data.asyncRequestArgs[1];
-                let level3Price = data.asyncRequestArgs[2];
-                let level4Price = data.asyncRequestArgs[3];
-                let level5price = data.asyncRequestArgs[4];
-            } else if (data.asyncRequestType == "shouldMortage") {
-                 // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
-                let totalMoneyToHave = data.asyncRequestArgs[0];
+            let afficherMessageAction = false;
+            // asyncRequestType à gérer ici
+            if (data.asyncRequestType && property) {
+                if (data.asyncRequestType == "canBuy") {
+                    let price = data.asyncRequestArgs[0];
+                    if (data.playerID == ID)
+                        createCard(property.id, property.color, property.name, price);
+                    else
+                        createDisabledCard(property.id, property.color, property.name, price);
+                } else if (data.asyncRequestType == "canUpgrade") {
+                    // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+                    let level1Price = data.asyncRequestArgs[0];
+                    let level2Price = data.asyncRequestArgs[1];
+                    let level3Price = data.asyncRequestArgs[2];
+                    let level4Price = data.asyncRequestArgs[3];
+                    let level5price = data.asyncRequestArgs[4];
+                } else if (data.asyncRequestType == "shouldMortage") {
+                    // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
+                    let totalMoneyToHave = data.asyncRequestArgs[0];
+                } else {
+                    afficherMessageAction = true;
+                }
             } else {
                 afficherMessageAction = true;
             }
-        } else {
-            afficherMessageAction = true;
-        }
 
-        // Affichage du message d'action donné par le serveur
-        if (afficherMessageAction && data.actionMessage)
-            createTextCard(data.actionMessage, (data.playerID != ID), null, null); 
+            // Affichage du message d'action donné par le serveur
+            if (afficherMessageAction && data.actionMessage)
+                createTextCard(data.actionMessage, (data.playerID != ID), null, null);
 
-        console.log("=== fin gameActionRes ===");
+            console.log("=== fin gameActionRes ===");
+        });
     });
 });
 
-$('.notification-container').on('click', '.accept', function() {
+$('.notification-container').on('click', '.accept', function () {
     console.log("socket.emit(gamePropertyBuyReq)");
     socket.emit('gamePropertyBuyReq');
-    $(this).parent().parent().fadeOut('fast', function() {
+    $(this).parent().parent().fadeOut('fast', function () {
         $(this).remove();
     });
 });
 
-$('.notification-container').on('click', '.reject', function() {
+$('.notification-container').on('click', '.reject', function () {
     console.log("refus d'achat");
-    $(this).parent().parent().fadeOut('fast', function() {
+    $(this).parent().parent().fadeOut('fast', function () {
         $(this).remove();
     });
 });
@@ -217,11 +217,11 @@ socket.on("gamePropertyBuyRes", (data) => {
 
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
         $('.notification-container')
-            .find('.notification[data-property-id="'+property.id+'"] .btn-primary')
-            .animate({zoom: '130%'}, 250, function() {
-                $(this).animate({zoom: '100%'}, 250, function() {
-                    setTimeout(function() {
-                        $('.notification-container').find('.notification[data-property-id="'+property.id+'"]').fadeOut('fast', () => {
+            .find('.notification[data-property-id="' + property.id + '"] .btn-primary')
+            .animate({ zoom: '130%' }, 250, function () {
+                $(this).animate({ zoom: '100%' }, 250, function () {
+                    setTimeout(function () {
+                        $('.notification-container').find('.notification[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
                             $(this).remove();
                         });
                     }, 300);
