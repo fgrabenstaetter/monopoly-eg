@@ -33,7 +33,7 @@ const Constants = {
         BANK_INITIAL_MONEY       : 4000,
         PLAYER_INITIAL_MONEY     : 1500,
         OFFER_EXPIRE_AFTER       : 2e4,
-        BID_EXPIRE_AFTER         : 25e3
+        BID_EXPIRE_AFTER         : 15e3
     },
     GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',
