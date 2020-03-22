@@ -1,11 +1,11 @@
-const Chat = require('./chat');
-const Constants = require('../lib/constants');
-const Deck = require('./deck');
-const Player = require('./player');
-const Bank = require('./bank');
-const Cells = require('./../lib/cells');
-const Properties = require('./../lib/properties');
-const chanceCardsMeta = require('./../lib/chanceCards');
+const Chat                    = require('./chat');
+const Constants               = require('../lib/constants');
+const Deck                    = require('./deck');
+const Player                  = require('./player');
+const Bank                    = require('./bank');
+const Cells                   = require('./../lib/cells');
+const Properties              = require('./../lib/properties');
+const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 
 /**

@@ -1,8 +1,8 @@
-const Constants = require('../lib/constants');
-const Errors    = require('../lib/errors');
+const Constants                   = require('../lib/constants');
+const Errors                      = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
-const Card = require('./card');
-const Deck = require('./deck');
+const Card                        = require('./card');
+const Deck                        = require('./deck');
 
 /**
  * Simplifie et centralise toutes les communications socket
