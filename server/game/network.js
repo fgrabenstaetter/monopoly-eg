@@ -51,7 +51,7 @@ class Network {
     }
 
     gamePlayerListen(player, game) {
-        player.user.socket.join(game.name);
+        player.socket.join(game.name);
 
         // Début/Fin + tour
         this.gameReadyReq                 (player, game);
@@ -512,7 +512,7 @@ class Network {
     /////////////////
 
     gameReadyReq(player, game) {
-        player.user.socket.on('gameReadyReq', () => {
+        player.socket.on('gameReadyReq', () => {
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -589,7 +589,7 @@ class Network {
     }
 
     gameRollDiceReq(player, game) {
-        player.user.socket.on('gameRollDiceReq', () => {
+        player.socket.on('gameRollDiceReq', () => {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
@@ -602,7 +602,7 @@ class Network {
                 const diceRes = game.rollDice();
 
                 if (!diceRes) {
-                    player.user.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });
+                    player.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });
                     return;
                 }
 
@@ -645,24 +645,24 @@ class Network {
                 });
             }
 
-            player.user.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
+            player.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
         });
     }
 
     gameTurnEndReq(player, game) {
-        player.user.socket.on('gameTurnEndReq', (data) => {
+        player.socket.on('gameTurnEndReq', (data) => {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
             else
                 game.endTurn();
 
-            player.user.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
+            player.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
         });
     }
 
     gamePropertyBuyReq(player, game) {
-        player.user.socket.on('gamePropertyBuyReq', (data) => {
+        player.socket.on('gamePropertyBuyReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -679,12 +679,12 @@ class Network {
                     bankMoney   : game.bank.money
                 });
             } else
-                player.user.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
+                player.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
         });
     }
 
     gamePropertyUpgradeReq(player, game) {
-        player.user.socket.on('gamePropertyUpgradeReq', (data) => {
+        player.socket.on('gamePropertyUpgradeReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -703,12 +703,12 @@ class Network {
                     playerMoney : player.money
                 });
             } else
-                player.user.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
+                player.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
         });
     }
 
     gamePropertyForcedMortageReq(player, game) {
-        player.user.socket.on('gamePropertyForcedMortageReq', (data) => {
+        player.socket.on('gamePropertyForcedMortageReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -720,13 +720,13 @@ class Network {
                 err = Errors.GAME.NOT_ENOUGH_FOR_MORTAGE;
 
             if (err !== Errors.SUCCESS)
-                player.user.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
+                player.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
             // else => envoyé par game.playerAutoMortage()
         });
     }
 
     gameChatSendReq(player, game) {
-        player.user.socket.on('gameChatSendReq', (data) => {
+        player.socket.on('gameChatSendReq', (data) => {
             let err = Errors.SUCCESS;
             if (!data.text)
                 err = Errors.MISSING_FIELD;
@@ -744,33 +744,33 @@ class Network {
                 });
             }
 
-            player.user.socket.emit('gameChatSendRes', { error: err.code, status: err.status });
+            player.socket.emit('gameChatSendRes', { error: err.code, status: err.status });
         });
     }
 
     gameOfferSendReq(player, game) {
-        player.user.socket.on('gameOfferSendReq', (data) => {
+        player.socket.on('gameOfferSendReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
         });
     }
 
     gameOfferAcceptReq(player, game) {
-        player.user.socket.on('gameOfferAcceptReq', (data) => {
+        player.socket.on('gameOfferAcceptReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
         });
     }
 
     gameOverbidReq(player, game) {
-        player.user.socket.on('gameOverbidReq', (data) => {
+        player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
         });
     }
 
     gameMortageReq(player, game) {
-        player.user.socket.on('gameMortageReq', (data) => {
+        player.socket.on('gameMortageReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
         });
@@ -789,9 +789,9 @@ class Network {
         console.log(player.nickname + ' s\'est reconnecté au jeu !');
         player.connected = true;
         this.gamePlayerListen(player, game);
-        player.user.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+        player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
 
-        player.user.socket.on('gameReadyReq', () => {
+        player.socket.on('gameReadyReq', () => {
 
             let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
 
@@ -860,7 +860,7 @@ class Network {
                 });
             }
             // infos de reconnexion au joueur
-            player.user.socket.emit('gameReconnectionRes', {
+            player.socket.emit('gameReconnectionRes', {
                 turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
                 gameEndTime     : game.forcedEndTime,
                 bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
@@ -873,7 +873,7 @@ class Network {
             });
 
             if (game.curPlayer === player && game.turnData.canRollDiceAgain)
-                player.user.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
+                player.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
         });
     }
 }

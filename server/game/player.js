@@ -62,6 +62,10 @@ class Player {
         return this.user.nickname;
     }
 
+    get socket () {
+        return this.user.socket;
+    }
+
     addMoney (amount) {
         this.money = this.money + amount;
     }
