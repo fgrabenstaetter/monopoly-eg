@@ -129,12 +129,23 @@ function loaderPlateau (load, test) {
 	requestAnimationFrame(render);
 	const root = gltf.scene;
 	scene.add(root);
-  });
+  }, function ( xhr ) {
+
+	console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+},
+// called when loading has errors
+function ( error ) {
+
+	console.log( 'An error happened' );
+
+}
+);
 }
 
 var plateauObjects = [
 				'collections', 'eau', 'egout', 'egout',
-				'orangerie', 'maison', 'parlement', 'pont', 'rail',
+				'orangerie', 'parlement', 'pont', 'rail',
 				'route', 'tram', 'campus', 'cascade'
 ]
 
@@ -250,17 +261,22 @@ function movement (pawn, vdp, callback) {
 		counter = 0;
 		if (callback)
 			callback();
+	}
 
 	// Rotation pour les pions
-	} if (ppx == xmin && ppz == zmax){
+	if (ppx == xmin && ppz == zmax){
 		window[pawn].rotateY(-1.6);
-		//console.log(window.cases);
-	} else if (ppx == xmin && ppz == zmin)
+		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+	} else if (ppx == xmin && ppz == zmin){
 		window[pawn].rotateY(-1.6);
-	else if (ppx == xmax && ppz == zmin)
+		window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+	}else if (ppx == xmax && ppz == zmin){
 		window[pawn].rotateY(-1.6);
-	else if (ppx == xmax && ppz == zmax)
+		window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+	}else if (ppx == xmax && ppz == zmax){
 		window[pawn].rotateY(-1.6);
+		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+	}
 
 	// La route d'en bas - Du coin droit vers le coin gauche
 	if (ppx != vdpx && ((ppz == vdpz) || (ppz != vdpz)) && ppz == zmax && vdpz == zmax) {
@@ -271,7 +287,6 @@ function movement (pawn, vdp, callback) {
 		} else {
 			requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-			//console.log("x2 :" + window[pawn].position.x + " y: " + window[pawn].position.y + "z2 :" + window[pawn].position.z)
 		}
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
