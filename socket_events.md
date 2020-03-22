@@ -869,4 +869,17 @@
         {
             questID: int
         }
+
+        ```
+
+- **Fin d'une enchère**
+    * **Réponse:** gameBidEnded
+        * *Données:*
+        ```javascript
+        {
+            bidID: int,
+            playerID: int
+            price: int,
+            bankMoney: int
+        }
         ```

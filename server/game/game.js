@@ -481,7 +481,17 @@ class Game {
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
-                let bid = new Bid(this.curPlayer, curProp, curProp.prices.empty);
+                let price;
+                switch (curProp.type) {
+                    case Constants.PROPERTY_TYPE.STREET:
+                        price = curProp.prices.empty;
+                        break;
+
+                    default:
+                        price = curProp.price;
+                        break;
+                }
+                let bid = new Bid(this.curPlayer, curProp, price, this);
                 this.bids.push(bid);
                 this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
                 break;

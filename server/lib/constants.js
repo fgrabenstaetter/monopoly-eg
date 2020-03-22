@@ -28,7 +28,8 @@ const Constants = {
         EXIT_JAIL_PRICE          : 50,
         GET_MONEY_FROM_START     : 200,
         BANK_INITIAL_MONEY       : 4000,
-        PLAYER_INITIAL_MONEY     : 1500
+        PLAYER_INITIAL_MONEY     : 1500,
+        BID_EXPIRE_AFTER         : 25e3
     },
     GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',
