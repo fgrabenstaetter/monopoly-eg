@@ -1474,6 +1474,10 @@ input {
   background-color: cyan;
 }
 
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.event {
+  background-color: silver;
+}
+
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .title {
   font-family: 'LilitaOne', sans-serif;
   font-size: 17px;
@@ -1492,6 +1496,10 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body.no-header {
+  border-radius: 15px 15px 15px 15px;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
@@ -1519,6 +1527,13 @@ input {
 .ingame-ui-container .container:nth-child(2) .notification-container .notification.sale p:nth-of-type(2) {
   color: white;
   font-size: 25px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification.event p {
+  color: white;
+  font-size: 15px;
   margin-bottom: 20px;
   font-weight: bold;
 }
