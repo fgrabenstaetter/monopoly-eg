@@ -377,48 +377,6 @@ function friendRequest(id, name) {
             <div class="accept-button">accepter</div>
             <div class="deny-button">refuser</div>
         </div>`);
-
-    $('.friend-request .accept-button').unbind();
-    $('.friend-request .deny-button').unbind();
-
-    //lobbyInvitationAcceptReq
-    //lobbyFriendInvitationRes Acceptation
-    $('.friend-request .accept-button').click(function () {
-        const senderNickname = $(this).parent().find(".friend-request-text span").text();
-        const action = 'accept';
-        let error = 0;
-        let status = 100;
-
-        socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
-        console.log("lobbyFriendInvitationActionReq");
-
-        if (!error) {
-            $(this).parent().remove();
-            socket.emit('lobbyFriendListReq');
-        }
-        else {
-            alert("erreur : " + status)
-        }
-
-    });
-
-    // lobbyFriendInvitationRes Deny
-    $('.friend-request .deny-button').click(function () {
-        const senderNickname = $(this).parent().find(".friend-request-text span").text()
-        const action = 'reject';
-        let error = 0;
-        let status = 100;
-
-        socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
-        console.log("lobbyFriendInvitationActionReq");
-
-        if (!error) {
-            $(this).parent().remove();
-        }
-        else {
-            alert("erreur : " + status)
-        }
-    });
 }
 
 
@@ -532,3 +490,44 @@ function addFriend(id, name, avatar) {
         }
     });
 }
+
+
+
+//lobbyInvitationAcceptReq
+//lobbyFriendInvitationRes Acceptation
+$('.friends-entries-container').on('click', '.friend-request .accept-button', function () {
+    const senderNickname = $(this).parent().find(".friend-request-text span").text();
+    const action = 'accept';
+    let error = 0;
+    let status = 100;
+
+    socket.emit("lobbyFriendInvitationActionReq", { action: 1, nickname: senderNickname });
+    console.log("lobbyFriendInvitationActionReq");
+
+    if (!error) {
+        $(this).parent().remove();
+        socket.emit('lobbyFriendListReq');
+    }
+    else {
+        alert("erreur : " + status)
+    }
+
+});
+
+// lobbyFriendInvitationRes Deny
+$('.friends-entries-container').click('click', '.friend-request .deny-button', function () {
+    const senderNickname = $(this).parent().find(".friend-request-text span").text()
+    const action = 'reject';
+    let error = 0;
+    let status = 100;
+
+    socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: senderNickname });
+    console.log("lobbyFriendInvitationActionReq");
+
+    if (!error) {
+        $(this).parent().remove();
+    }
+    else {
+        alert("erreur : " + status)
+    }
+});

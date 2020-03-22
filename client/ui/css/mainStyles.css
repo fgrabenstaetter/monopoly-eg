@@ -29,6 +29,14 @@
   display: none;
 }
 
+.disabled, *:disabled {
+  opacity: .65 !important;
+}
+
+.disabled, *:disabled, .disabled *, *:disabled * {
+  cursor: not-allowed !important;
+}
+
 input {
   cursor: text;
   user-select: initial;

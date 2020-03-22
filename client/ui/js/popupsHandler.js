@@ -37,7 +37,7 @@ function initProperty(){
         </div>
     `;
     $('.popup').each(function(){
-        $(this).append(html);
+        $(this).prepend(html);
     });
 }
 
@@ -57,12 +57,12 @@ function createProperty(playerID, type, roadName, roadID){
                     + roadName +
                 `</div>`;
     }
-    $('.player-entry[data-id = "' + playerID + '"]').find('.' + type).append(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).append(html);
 }
 
 
 function delProperty(roadID){
-    $('.property[data-id = "' + roadID + '"]').remove();
+    $('.property[data-id="' + roadID + '"]').remove();
 }
 
 function createCard(propertyID, type, roadName, price) {
@@ -97,8 +97,8 @@ function createDisabledCard(propertyID, type, roadName, price) {
                             <p>` + price + `€</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary accept">ACHETER</button>
-                    <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
+                    <button class="btn btn-primary">ACHETER</button>
+                    <button class="btn btn-secondary">NE RIEN FAIRE</button>
                 </div>
             </div>`;
     
