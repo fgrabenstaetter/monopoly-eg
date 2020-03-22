@@ -18,7 +18,7 @@ const Constants = {
         PURPLE: 'purple',
         ORANGE: 'orange',
         RED: 'red',
-        YELLOW: 'jaune',
+        YELLOW: 'yellow',
         GRENN: 'green',
         BLUE: 'blue'
     },
