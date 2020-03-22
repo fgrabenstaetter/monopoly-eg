@@ -16,26 +16,20 @@ class Bid {
 
 
     updateBid (player, amount) {
-        let max = 0;
-        for (let tmp of this.bids) {
-            if (tmp.amountAsked > max) {
-                max = tmp.amountAsked;
-            }
-        }
-        if (amount > max) {
-            this.updateAmountAsked(amout);
-            this.player = player;
-            this.timeCreated = Date.now();
-        }
-    }
-
-    updateAmountAsked (amountAsked) {
-        this.amountAsked = amountAsked;
+        this.amountAsked = amount;
+        this.player = player;
     }
 
     expired () {
         const curBid = this.game.bidByID(this.id);
-        //this.game
+        const index = this.game.bids.indexOf(curBid);
+        if (index === -1)
+            return;
+        this.player.loseMoney(this.amountAsked);
+        this.game.bank.addMoney(this.amountAsked);
+        this.game.bank.delProperty(this.property);
+        this.game.bids.splice(index, 1);
+        this.game.GLOBAL.network.io.to(this.name).emit('gameBidEnded', {bidID: this.id, playerID: this.player, price: this.amountAsked, bankMoney: this.game.bank.money});
     }
 }
 
