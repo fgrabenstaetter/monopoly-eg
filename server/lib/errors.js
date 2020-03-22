@@ -17,6 +17,12 @@ module.exports = Object.freeze({
         status: 'Inconnu'
     },
 
+    //BID ERRORS
+    BID_ENDED: {
+        code: 1,
+        status: 'Enchère terminée'
+    },
+
     // LOGIN ERRORS
     LOGIN: {
         INVALID_CREDENTIALS: {
