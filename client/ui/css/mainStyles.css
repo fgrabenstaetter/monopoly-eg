@@ -1083,6 +1083,7 @@ input {
 }
 
 .ingame-ui-container .overview-card {
+  display: none;
   position: absolute;
   right: 50vw;
   top: 50vh;
