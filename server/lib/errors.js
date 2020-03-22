@@ -18,9 +18,15 @@ module.exports = Object.freeze({
     },
 
     //BID ERRORS
-    BID_ENDED: {
-        code: 1,
-        status: 'Enchère terminée'
+    BID_ERRORS: {
+        BID_ENDED: {
+            code: 1,
+            status: 'Enchère terminée'
+        },
+        BID_DIFF_LOWER_THAN_TWENTY: {
+            code: 2,
+            status: 'Votre enchère n\'est pas assez élevée'
+        }
     },
 
     // LOGIN ERRORS
