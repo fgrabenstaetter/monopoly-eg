@@ -37,7 +37,7 @@ function initProperty(){
         </div>
     `;
     $('.popup').each(function(){
-        $(this).append(html);
+        $(this).prepend(html);
     });
 }
 
@@ -57,12 +57,12 @@ function createProperty(playerID, type, roadName, roadID){
                     + roadName +
                 `</div>`;
     }
-    $('.player-entry[data-id = "' + playerID + '"]').find('.' + type).append(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).append(html);
 }
 
 
 function delProperty(roadID){
-    $('.property[data-id = "' + roadID + '"]').remove();
+    $('.property[data-id="' + roadID + '"]').remove();
 }
 
 function createCard(propertyID, type, roadName, price) {
