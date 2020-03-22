@@ -37,7 +37,9 @@ class Game {
             actionMessage: null,
             asyncRequestType: null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
             asyncRequestArgs: null, // liste
-            nbDoubleDices: 0 // ++ à chaque double et si >= 3 => prison
+            nbDoubleDices: 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain: false, // true quand le joueur peux encore lancer les dés, false sinon
+            endTime: null // timestamp de fin de tour
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -68,7 +70,7 @@ class Game {
             return;
 
         this.players.splice(ind, 1);
-        this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.nickname });
+        // this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.nickname });
     }
 
     /**
@@ -166,15 +168,24 @@ class Game {
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
         this.turnData.nbDoubleDices = 0;
+        this.turnData.canRollDiceAgain = true;
 
+        let cpt = 0;
         do {
             this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++this.turnPlayerInd;
-        } while (this.curPlayer.failure)
+            cpt ++;
+            if (cpt > 8) {
+                // tous en faillite ou déconnectés => fin de la partie
+                // TODO
+                this.delete();
+            }
+        } while (this.curPlayer.failure || !this.curPlayer.connected)
 
         this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
+        this.turnData.endTime = Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION;
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
-            turnEndTime: Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION
+            turnEndTime: this.turnData.endTime
         });
     }
 
@@ -182,9 +193,13 @@ class Game {
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
-     * @return [int, int] le résultat des dés
+     * @return [int, int] le résultat des dés ou false si problème quelconque
      */
     rollDice(useExitJailCard = false) {
+        if (!this.turnData.canRollDiceAgain)
+            return false;
+        this.turnData.canRollDiceAgain = false;
+
         this.resetTurnData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
         this.forcedDiceRes = null;
@@ -192,9 +207,11 @@ class Game {
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes);
         else if (diceRes[0] === diceRes[1]) {
-            this.turnData.nbDoubleDices++;
-            if (this.turnData.nbDoubleDices === 3)
+            this.turnData.nbDoubleDices ++;
+            if (this.turnData.nbDoubleDices >= 3)
                 this.curPlayer.goPrison();
+            else
+                this.turnData.canRollDiceAgain = true;
         }
 
         // peux être sorti de prison !

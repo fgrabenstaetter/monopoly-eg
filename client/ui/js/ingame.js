@@ -107,7 +107,7 @@ socket.on('gameTurnRes', (data) => {
 
     // PAS FORCÉMENT MON TOUR !  tester si data.playerID === ID
     console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
-    
+
     // On vide toutes les notifications (au cas-où)
     $('.notification-container > .col-md-12').empty();
 
@@ -144,7 +144,7 @@ socket.on('gameActionRes', (data) => {
 
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
-       
+
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
         movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString());
 
@@ -214,7 +214,7 @@ socket.on("gamePropertyBuyRes", (data) => {
         createProperty(data.playerID, property.color, property.name, property.id)
         setPlayerMoney(data.playerID, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
-        
+
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
         $('.notification-container')
             .find('.notification[data-property-id="'+property.id+'"] .accept')
@@ -227,7 +227,7 @@ socket.on("gamePropertyBuyRes", (data) => {
                     }, 300);
                 });
             });
-        
+
     }
 });
 
@@ -247,6 +247,19 @@ socket.on("gameTurnEndRes", (res) => {
 
 socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
+});
+
+socket.on('gameReconnectionRes', (data) => {
+    console.log(' --- RECONNEXION DATA');
+    console.log(data);
+});
+
+socket.on('gamePlayerDisconnectedRes', (data) => {
+    console.log(' --- PLAYER DISCONNECTED: ' + data.playerID);
+});
+
+socket.on('gamePlayerReconnectedRes', (data) => {
+    console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
 });
 
 socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI

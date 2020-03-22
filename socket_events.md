@@ -417,7 +417,7 @@
 
 ## Game
 
-### --- Début et fin
+### --- Début, fin, déconnexion et reconnexion
 
 - **Le client est prêt à recevoir des messages socket du jeu**
     > À envoyer lorsque toutes les écoutes de message sockets pour la partie ont été préparées du côté client (socket.on).
@@ -460,13 +460,13 @@
                     type: string, // street | trainStation | publicCompany
                     name: string,
                     description: string,
-                    customData: selon le type (voir ci-dessous)
+                    // + autres champs selon type (voir ci-dessous)
                 }, ...
             ]
         }
 
         ```
-        **customData** dans *properties* peut être:
+        Les champs supplémentaires dans *properties* sont:
         ```javascript
         // Si type = street
         {
@@ -496,16 +496,58 @@
         }
         ```
 
-- **Un joueur a quitté la partie**
-    > Automatiquement émit lorsqu'un joueur quitte la partie
+- **Un joueur s'est déconnecté**
+    > Automatiquement émit lorsqu'un joueur est déconnecté => tous ses tours seront passés
 
-    * **Réponse:** gameQuitRes
+    * **Réponse:** gamePlayerDisconnectedRes
         * *Données:*
         ```javascript
         {
             playerID: int
         }
         ```
+
+- **Un joueur s'est reconnecté**
+    > Automatiquement émit à tous les joueurs SAUF celui qui s'est reconnecté
+
+    * **Réponse:** gamePlayerReconnectedRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
+        }
+        ```
+
+- **Données de reconnexion**
+    > Envoyé au joueur qui s'est reconnecté uniquement
+
+    * **Réponse:** gameReconnectionRes
+        * *Données:*
+        ```javascript
+        {
+            turnTimeSeconds: int, // durée d'un tour (en secondes)
+            gameEndTime: timestamp, // timestamp de fin de partie (limite)
+            bankMoney: int, // argent initial de la banque
+            chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
+            offers: array, // TODO
+            bids: array, // TODO
+            players: [
+                {
+                    nickname: string,
+                    id: int,
+                    pawn: int,
+                    money: int,
+                    properties: array, // liste d'ID de ses propriétés
+                    nbJailEscapeCards: int,
+                    cellPos: int
+                }, ...
+            ],
+            cells: [], // (voir gameStartedRes)
+            properties: [] // (voir gameStartedRes et ligne ci-dessous)
+            // ATTENTION: si propriété == Street => l'objet contient aussi housesNb (int) et hasHostel (bool)
+        }
+        ```
+
 
 ### --- Tour de jeu
 

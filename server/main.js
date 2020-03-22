@@ -176,17 +176,17 @@ io.on('connection', (socket) => {
 
         // si il est dans un lobby, l'y supprimer
         for (const lobby of GLOBAL.lobbies) {
-            if (lobby.userByNickname(user.nickname)) {
+            if (lobby.userByID(user.id)) {
                 lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
                 return;
             }
         }
 
-        // si il est dans une partie de jeu, l'y supprimer
+        // si il est dans une partie de jeu, l'y déconnecter (PAS SUPPRIMER POUR RECONNEXION)
         for (const game of GLOBAL.games) {
-            const player = game.playerByNickname(user.nickname);
+            const player = game.playerByID(user.id);
             if (player) {
-                game.delPlayer(player);
+                GLOBAL.network.gamePlayerDisconnected(player, game);
                 return;
             }
         }
@@ -195,25 +195,17 @@ io.on('connection', (socket) => {
     user.socket = socket;
 
     // regarder si le joueur est dans une partie
-    // nécessaire car pour passer du lobby au jeu, le client change de page .. et donc doit se reconnecter à un nouveau socket
     for (const game of GLOBAL.games) {
         const player = game.playerByID(user.id);
         if (player) {
             // le joueur est dans une partie !
-            GLOBAL.network.gamePlayerListen(player, game);
-            return; // ne pas créer de lobby car dans une partie
+            if (!player.connected) // RECONNEXION
+                GLOBAL.network.gamePlayerReconnected(player, game);
+            else // ARRIVÉE DANS LE JEU DEPUIS LOBBY
+                GLOBAL.network.gamePlayerListen(player, game);
+            return;
         }
     }
-
-    // DECOMMENTER POUR UN SEUL LOBBY PUBLIC
-    // if (GLOBAL.lobbies.length === 0)
-    //     GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
-    // else {
-    //     if (GLOBAL.lobbies[0].users.length >= GLOBAL.lobbies[0].maxUsersNb)
-    //         return;
-    //     else
-    //         GLOBAL.lobbies[0].addUser(user);
-    // }
 
     // regarder si le joueur est déjà dans un lobby  === a été invité
     for (const lobby of GLOBAL.lobbies) {
@@ -227,6 +219,6 @@ io.on('connection', (socket) => {
         }
     }
 
-    // LOBBY SÉPARÉ
+    // Mettre le user dans un nouveau Lobby
     GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
 });

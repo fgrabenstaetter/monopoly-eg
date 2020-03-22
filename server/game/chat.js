@@ -21,7 +21,7 @@ class Chat {
      */
     addMessage (senderUser, content, type, offer = null) {
         this.messages.push({
-            senderUser  : senderUser, // obj User
+            senderUser  : senderUser, // obj User ou Player
             content     : content, // text
             type        : type, // CHAT_MESSAGE_TYPE
             offer       : offer, // obj Offer ou null

@@ -514,7 +514,7 @@ class Network {
     gameReadyReq(player, game) {
         player.user.socket.on('gameReadyReq', () => {
             player.isReady = true;
-            if (game.allPlayersReady) {
+            if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
                 const mess = game.chat.addMessage(null, 'C\'est parti, bonne chance à tous !', Constants.CHAT_MESSAGE_TYPE.TEXT);
                 this.io.to(game.name).emit('gameChatReceiveRes', {
@@ -576,13 +576,13 @@ class Network {
                 }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime : game.forcedEndTime,
-                    playersMoney: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney   : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    turnTimeSeconds: Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                    players     : players,
-                    cells       : cells,
-                    properties  : properties
+                    gameEndTime     : game.forcedEndTime,
+                    playersMoney    : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
+                    players         : players,
+                    cells           : cells,
+                    properties      : properties
                 });
             }
         });
@@ -600,6 +600,11 @@ class Network {
                 const nbJailEscapeCardsSave = player.nbJailEscapeCards;
 
                 const diceRes = game.rollDice();
+
+                if (!diceRes) {
+                    player.user.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });
+                    return;
+                }
 
                 let updateMoneyList = [];
                 for (let i = 0; i < game.players.length; i++) {
@@ -768,6 +773,107 @@ class Network {
         player.user.socket.on('gameMortageReq', (data) => {
             let err = Errors.SUCCESS;
             // TODO
+        });
+    }
+
+
+    // UTILIES METHODS
+
+    gamePlayerDisconnected (player, game) {
+        console.log(player.nickname + ' s\'est déconnecté du jeu !');
+        player.connected = false;
+        this.io.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+    }
+
+    gamePlayerReconnected (player, game) {
+        console.log(player.nickname + ' s\'est reconnecté au jeu !');
+        player.connected = true;
+        this.gamePlayerListen(player, game);
+        player.user.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        player.user.socket.on('gameReadyReq', () => {
+
+            let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
+
+            for (const prop of player.properties)
+                playerProperties.push(prop.id);
+
+            for (const player of game.players) {
+                players.push({
+                    nickname          : player.nickname,
+                    id                : player.id,
+                    pawn              : player.pawn,
+                    money             : player.money,
+                    properties        : playerProperties,
+                    nbJailEscapeCards : player.nbJailEscapeCards,
+                    cellPos           : player.cellPos
+                });
+            }
+
+            for (const cell of game.cells) {
+                cells.push({
+                    id         : cellsCounter ++,
+                    type       : cell.type,
+                    propertyID : cell.property ? cell.property.id : null
+                });
+
+                // propriétés
+                if (cell.type === Constants.CELL_TYPE.PROPERTY) {
+                    let propertyData = {
+                        id          : cell.property.id,
+                        type        : cell.property.type,
+                        name        : cell.property.name,
+                        description : cell.property.description
+                    };
+
+                    switch (cell.property.type) {
+                        case Constants.PROPERTY_TYPE.STREET:
+                            propertyData.color        = cell.property.color;
+                            propertyData.prices       = cell.property.prices;
+                            propertyData.rentalPrices = cell.property.rentalPrices;
+                            propertyData.housesNb     = cell.property.housesNb;
+                            propertyData.hasHostel    = cell.property.hasHostel;
+                            break;
+
+                        case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
+                            propertyData.price       = cell.property.price;
+                            propertyData.rentalPrice = cell.property.rentalPrice;
+                            break;
+
+                        case Constants.PROPERTY_TYPE.TRAIN_STATION:
+                            propertyData.price        = cell.property.price;
+                            propertyData.rentalPrices = cell.property.rentalPrices;
+                    }
+
+                    properties.push(propertyData);
+                }
+            }
+
+            // messages de chat
+            for (const mess of game.chat.messages) {
+                chatMessages.push({
+                    type: mess.type,
+                    playerID: mess.senderUser ? mess.senderUser : -1,
+                    text: mess.content,
+                    createdTime: mess.createdTime,
+                    offer: mess.offer ? mess.offer.id : null
+                });
+            }
+            // infos de reconnexion au joueur
+            player.user.socket.emit('gameReconnectionRes', {
+                turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
+                gameEndTime     : game.forcedEndTime,
+                bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                chatMessages    : chatMessages,
+                offers          : [],
+                bids            : [],
+                players         : players,
+                cells           : cells,
+                properties      : properties
+            });
+
+            if (game.curPlayer === player && game.turnData.canRollDiceAgain)
+                player.user.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
         });
     }
 }
