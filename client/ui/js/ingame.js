@@ -89,14 +89,7 @@ socket.on('gameStartedRes', (data) => {
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
 
-        let html = `<div class="player-entry" data-id="` + player.id + `">
-                        <div class="name" title="`+ player.nickname + `">` + player.nickname + `</div>
-                        <div class="money">`+ data.playersMoney + `</div>
-                        <div class="popup top" style="display: none;">
-                        </div>
-                </div>`;
-
-        $('.player-list').append(html);
+        generatePlayerEntry(player.id, player.nickname, data.playersMoney);
     });
 
     initProperty();
@@ -347,6 +340,17 @@ function bindOfferListener() {
     $('.deny-button').click(function () {
         $(this).parent().parent().remove();
     });
+}
+
+function generatePlayerEntry(id, nickname, money) {
+    let html = `<div class="player-entry" data-id="` + id + `">
+                        <div class="name" title="`+ nickname + `">` + nickname + `</div>
+                        <div class="money">`+ money + `</div>
+                        <div class="popup top" style="display: none;">
+                        </div>
+                </div>`;
+
+    $('.player-list').append(html);
 }
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
