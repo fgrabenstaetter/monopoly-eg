@@ -873,7 +873,7 @@
         ```
 
 - **Fin d'une enchère**
-    * **Réponse:** gameBidEnded
+    * **Réponse:** gameBidEndedRes
         * *Données:*
         ```javascript
         {
