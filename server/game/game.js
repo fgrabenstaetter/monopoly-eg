@@ -491,7 +491,13 @@ class Game {
                 }
                 const bid = new Bid(this.curPlayer, curProp, price, this);
                 this.bids.push(bid);
-                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
+                const msg = 'Une enchère a demarré pour' + curProp.name;
+                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {
+                    bidID: bid.id,
+                    playerID: null,
+                    text: msg,
+                    price: bid.amountAsked
+                });
                 break;
         }
     }
