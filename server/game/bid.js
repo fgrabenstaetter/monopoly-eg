@@ -7,13 +7,12 @@ class Bid {
 
     constructor (player, property, amountAsked, game) {
         this.id = Bid.idCounter ++;
-        this.player = player;
+        this.player = null;
         this.property = property;
         this.amountAsked = amountAsked;
         this.game = game;
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
     }
-
 
     updateBid (player, amount) {
         this.amountAsked = amount;
@@ -25,8 +24,9 @@ class Bid {
         if (curBid === null)
             return;
         const index = this.game.bids.indexOf(curBid);
-        if (index === -1)
+        if (this.player === null)
             return;
+        this.player.addProperty(this.property);
         this.player.loseMoney(this.amountAsked);
         this.game.bank.addMoney(this.amountAsked);
         this.game.bank.delProperty(this.property);
