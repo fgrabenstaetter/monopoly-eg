@@ -31,7 +31,7 @@ class Bid {
         this.game.bank.addMoney(this.amountAsked);
         this.game.bank.delProperty(this.property);
         this.game.bids.splice(index, 1);
-        this.game.GLOBAL.network.io.to(this.name).emit('gameBidEndedRes', {bidID: this.id, playerID: this.player, price: this.amountAsked, bankMoney: this.game.bank.money});
+        this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {bidID: this.id, playerID: this.player, price: this.amountAsked, bankMoney: this.game.bank.money});
     }
 }
 

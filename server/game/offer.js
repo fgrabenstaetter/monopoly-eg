@@ -35,7 +35,7 @@ class Offer {
         if (!Offer.offerByID(this.id))
             return false;
 
-        this.game.GLOBAL.network.io.to(game.name).emit('gameOfferFinishedRes', {
+        this.game.GLOBAL.network.io.to(this.game.name).emit('gameOfferFinishedRes', {
             receiverID : null,
             offerID    : this.id,
             price      : offer.amount,

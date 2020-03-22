@@ -491,7 +491,7 @@ class Game {
                         price = curProp.price;
                         break;
                 }
-                let bid = new Bid(this.curPlayer, curProp, price, this);
+                const bid = new Bid(this.curPlayer, curProp, price, this);
                 this.bids.push(bid);
                 this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {bidID: bid.id, playerID: null, text: 'Une enchère a demarré pour' + curProp.name, price: bid.amountAsked});
                 break;
