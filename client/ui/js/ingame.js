@@ -187,7 +187,7 @@ socket.on('gameActionRes', (data) => {
 });
 
 $('.notification-container').on('click', '.accept', function() {
-    console.log("J'ACHEEEEEEEEEEEEEEEEEETE");
+    console.log("socket.emit(gamePropertyBuyReq)");
     socket.emit('gamePropertyBuyReq');
     $(this).parent().parent().fadeOut('fast', function() {
         $(this).remove();
@@ -195,7 +195,7 @@ $('.notification-container').on('click', '.accept', function() {
 });
 
 $('.notification-container').on('click', '.reject', function() {
-    console.log("NOOOOOOOOOOOOOOPE");
+    console.log("refus d'achat");
     $(this).parent().parent().fadeOut('fast', function() {
         $(this).remove();
     });

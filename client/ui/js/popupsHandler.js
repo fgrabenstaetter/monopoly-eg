@@ -113,11 +113,10 @@ function createTextCard(text, disabled, type, title) {
                         <div class="col-md-12 text-center value">
                             <p>` + text + `</p>
                         </div>
-                        <button class="btn btn-primary reject">OK</button>
+                        ` + (disabled ? '' : '<button class="btn btn-primary reject">OK</button>') + `
                     </div>
                 </div>`;
-    }
-    else {
+    } else {
         html = `<div class="card notification event ` + (disabled ? ' disabled' : '') + `" style="display: none;">
                     <div class="card-header ` + type + `">
                         <div class="title">` + title + `</div>
@@ -126,11 +125,11 @@ function createTextCard(text, disabled, type, title) {
                         <div class="col-md-12 text-center value">
                             <p>` + text + `</p>
                         </div>
-                        <button class="btn btn-primary reject">OK</button>
+                        ` + (disabled ? '' : '<button class="btn btn-primary reject">OK</button>') + `
                     </div>
                 </div>`;
     }
-    console.log(html);
+    
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
