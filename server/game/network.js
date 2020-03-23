@@ -846,6 +846,15 @@ class Network {
         console.log(player.nickname + ' s\'est déconnecté du jeu !');
         player.connected = false;
         this.io.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        this.io.to(game.name).emit('gameChatReceiveRes', {
+            type        : mess.type,
+            playerID    : -1,
+            text        : mess.content,
+            createdTime : mess.createdTime,
+            offer       : null
+        });
     }
 
     gamePlayerReconnected (player, game) {
@@ -853,6 +862,15 @@ class Network {
         player.connected = true;
         this.gamePlayerListen(player, game);
         player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est reconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        this.io.to(game.name).emit('gameChatReceiveRes', {
+            type        : mess.type,
+            playerID    : -1,
+            text        : mess.content,
+            createdTime : mess.createdTime,
+            offer       : null
+        });
 
         player.socket.on('gameReadyReq', () => {
 
