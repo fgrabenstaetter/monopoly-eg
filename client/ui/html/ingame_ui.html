@@ -87,7 +87,7 @@
 </div>
 
 <!-- Overview card -->
-<div class="overview-card">
+<div class="overview-card" data-id="1">
 	<div class="header">
 		Avenue de Londres
 	</div>
@@ -117,6 +117,39 @@
 		<div class="hotel-price">Prix d'un Hôtel 2000€ plus 4 maisons</div>
 	</div>
 </div>
+
+
+<div class="overview-card" data-id="2">
+	<div class="header">
+		Avenue de Londres2
+	</div>
+	<div class="content">
+		<div class="rent">160</div>
+		<div class="with-house">
+			<div>Avec 1 Maison</div>
+			<div>200</div>
+		</div>
+		<div class="with-house">
+			<div>Avec 2 Maisons</div>
+			<div>300</div>
+		</div>
+		<div class="with-house">
+			<div>Avec 3 Maisons</div>
+			<div>400</div>
+		</div>
+		<div class="with-house">
+			<div>Avec 4 Maisons</div>
+			<div>500</div>
+		</div>
+		<div class="with-hotel">
+			<div>Avec 1 Hotel</div>
+			<div>800</div>
+		</div>
+		<div class="house-price">Prix des Maisons 400€ chacune</div>
+		<div class="hotel-price">Prix d'un Hôtel 2000€ plus 4 maisons</div>
+	</div>
+</div>
+
 
 <!-- Dices -->
 <div class="dice-container">
@@ -234,10 +267,16 @@
 <script src="js/dices.js"></script>
 <script src="js/timer.js"></script>
 
-<!--
-<script>
+
+<!--<script>
 	generatePlayerEntry(1, "FullMerinos", 1000000);
 	initProperty();
 	createProperty("1", "red", "Avenue", "1");
-</script>
--->
+	createProperty("1", "red", "Avenue2", "2");
+	$('.property').mouseover(function() {
+		$('.overview-card[data-id="' + $(this).attr('data-id') + '"]').fadeToggle('slow');
+	});
+	$('.property').mouseout(function() {
+		$('.overview-card[data-id="' + $(this).attr('data-id') + '"]').fadeToggle('slow');
+	});
+</script>-->
