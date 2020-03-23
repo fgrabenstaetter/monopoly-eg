@@ -517,36 +517,60 @@ function hideLoaderOverlay() {
 // rent doit être une liste de 6 éléments
 function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPrice) {
     $('.overview-card .header').html(roadName);
-    $(".overview-card .header").css("background-color", color);
+    $('.overview-card .header').css("background-color", color);
+    $('.overview-card .header').css("color", "white");
     let htmlContent = `<div class="rent">`+ rent[0] +`</div>
                         <div class="with-house">
                             <div>Avec 1 Maison</div>
-                            <div>`+ rent[1] +`€</div>
+                            <div>`+ rent[1] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 2 Maisons</div>
-                            <div>`+ rent[2] +`€</div>
+                            <div>`+ rent[2] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 3 Maisons</div>
-                            <div>`+ rent[3] +`€</div>
+                            <div>`+ rent[3] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 4 Maisons</div>
-                            <div>`+ rent[4] +`€</div>
+                            <div>`+ rent[4] +`</div>
                         </div>
                         <div class="with-hotel">
                             <div>Avec 1 Hotel</div>
-                            <div>`+ rent[5] +`€</div>
+                            <div>`+ rent[5] +`</div>
                         </div>
                         <div class="house-price">Prix des Maisons `+ housePrice +`€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ hotelPrice +`€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
 }
 
+// rent doit être une liste de 4 éléments
+function populateStationOverviewCard(roadName, rent) {
+    $('.overview-card .header').html(roadName);
+    $('.overview-card .header').addClass('station')
+    $('.overview-card .header').css("background-color", "white");
+    $('.overview-card .header').css("color", "black");
+    let htmlContent = `<div class="rent">`+ rent[0] +`</div>
+                        <div class="with-house">
+                            <div>Si vous avez 2 Gares</div>
+                            <div>`+ rent[1] +`</div>
+                        </div>
+                        <div class="with-house">
+                            <div>Si vous avez 3 Gares</div>
+                            <div>`+ rent[2] +`</div>
+                        </div>
+                        <div class="with-house">
+                            <div>Si vous avez 4 Gares</div>
+                            <div>`+ rent[3] +`</div>
+                        </div>`
+    $('.overview-card .content').html(htmlContent);
+}
+
 function emptyOverviewCard() {
     $('.overview-card .header').html('');
     $(".overview-card .header").css("background-color", "white");
+    $(".overview-card .header").css("color", "white");
     $('.overview-card .content').html('');
 }
 

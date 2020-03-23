@@ -203,6 +203,26 @@
       font-size: 15px;
       padding: 8px;
       border-radius: 10px 10px 0 0;
+
+      &.station {
+        &:before {
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f239";
+          margin-right: 10px;
+          font-size: 15px;
+          color: black;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(2px);
+        }
+      }
     }
 
     .content {
@@ -211,6 +231,8 @@
       border-radius: 0 0 10px 10px;
       padding: 10px 20px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
 
       div {
         width: 100%;
@@ -236,13 +258,15 @@
           div {
             &:first-child {
               text-align: left;
-              flex-grow: 2;
+              flex-grow: 10;
             }
 
             &:nth-child(2) {
-              text-align: right;
               flex-grow: 0;
-              flex-shrink: 2;
+              flex-shrink: 10;
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
               &:after {
                 content: "€";
               }
