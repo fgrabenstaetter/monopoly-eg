@@ -70,12 +70,10 @@ function createSaleCard(propertyID, type, roadName, price, disabled) {
     if (type == 'company') {
         if (roadName == 'Eau') {
             newType = 'company eau';
-        }
-        else if (roadName == 'Électricité') {
+        } else if (roadName == 'Électricité') {
             newType = 'company electricite';
         }
-    }
-    else {
+    } else {
         newType = type;
     }
 
@@ -98,7 +96,7 @@ function createSaleCard(propertyID, type, roadName, price, disabled) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function createUpgrade(propertyID, type, roadName, price, disabled) {
+function createUpgradeCard(propertyID, type, roadName, price, disabled) {
     let newType;
     if (type == 'company') {
         if (roadName == 'Eau') {
