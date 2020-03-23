@@ -95,6 +95,7 @@ socket.on('gameStartedRes', (data) => {
     });
 
     initProperty();
+    hideLoaderOverlay();
 });
 
 socket.on('gameTurnRes', (data) => {
@@ -201,7 +202,7 @@ socket.on('gameActionRes', (data) => {
 /**
  * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
  */
-function checkDoubleDiceAndEndGameActionRes() {
+function checkDoubleDiceAndEndGameActionRes(data) {
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
         if (data.playerID === ID) {            
@@ -297,7 +298,10 @@ socket.on('gamePlayerReconnectedRes', (data) => {
     console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
 });
 
-socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
+// AUCUN EVENT SOCKET (ON) APRES CECI
+setTimeout(function() {
+    socket.emit('gameReadyReq'); 
+}, 2000); // Délai le temps que le plateau se charge (arbitraire pour l'instant)
 
 ////////////////////////////
 // INTERFACE JS FUNCTIONS //
