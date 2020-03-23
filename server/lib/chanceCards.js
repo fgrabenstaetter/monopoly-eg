@@ -8,8 +8,6 @@
  *  - repair -> /!\ utilise effectArg2
  */
 
-
-
 const chanceCards = [{
     'token': 'advanceRueDesOrfevres',
     'description': 'Rendez-vous à la Rue des Orfèvres',
