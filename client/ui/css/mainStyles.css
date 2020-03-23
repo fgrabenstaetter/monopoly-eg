@@ -401,7 +401,9 @@ input {
   z-index: 3;
   background-color: #0052ba;
   top: 0;
-  display: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;

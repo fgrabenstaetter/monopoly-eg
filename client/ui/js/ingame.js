@@ -423,11 +423,11 @@ function generatePlayerEntry(id, nickname, money) {
 }
 
 function displayLoaderOverlay() {
-    $(".loader-overlay-container").css("display", "flex");
+    $(".loader-overlay-container").fadeIn(0);
 }
 
 function hideLoaderOverlay() {
-    $(".loader-overlay-container").css("display", "none");
+    $(".loader-overlay-container").fadeOut('fast');
 }
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
