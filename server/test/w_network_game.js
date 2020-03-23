@@ -405,13 +405,11 @@ describe('Network + Game', () => {
                     case 'loseMoney':
                         newMoney = money - savedCard.effectArg1;
                         assert.strictEqual(newMoney, player.money);
-                        //console.log(newMoney);
                         break;
 
                     case 'gainMoney':
                         newMoney = money + savedCard.effectArg1;
                         assert.strictEqual(newMoney, player.money);
-                        //console.log(newMoney);
                         break;
 
                     case 'jailBreak':
@@ -509,5 +507,82 @@ describe('Network + Game', () => {
             assert.strictEqual(data.error, Errors.SUCCESS.code);
         });
         sock.emit('gameRollDiceReq');
+    });
+
+    it('Créer, recevoir et accepter une offre', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 2]; // => Properties.STREET[1] (inutile ici)
+        game.start(true);
+        const player = game.curPlayer; // va créer et envoyer l'offre à player2
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et recevoir la propriété
+
+        // propriété dont player doit payer le loyer
+        const property = game.cells[5].property; // train station
+        game.bank.delProperty(property);
+        player.addProperty(property);
+
+        let sock, sock2;
+        if (player.user.socket === serverSocket) {
+            sock = clientSocket;
+            sock2 = clientSocket2;
+        } else {
+            sock = clientSocket2;
+            sock2 = clientSocket;
+        }
+
+        let nb = 0;
+
+        sock2.on('gameOfferReceiveRes', (data) => {
+            assert.strictEqual(data.offerID, 0);
+            assert.strictEqual(data.makerID, player.id);
+            assert.strictEqual(data.receiverID, player2.id);
+            assert.strictEqual(data.propertyID, property.id);
+            assert.strictEqual(data.price, 456);
+
+            sock2.on('gameOfferFinishedRes', (data) => {
+                assert.strictEqual(data.receiverID, player2.id);
+                assert.strictEqual(data.offerID, 0);
+                assert.strictEqual(data.price, 456);
+                assert.strictEqual(data.propertyID, property.id);
+                assert.strictEqual(data.makerID, player.id);
+                if (++ nb === 4) done();
+            });
+
+            sock.on('gameOfferFinishedRes', (data) => {
+                assert.strictEqual(data.receiverID, player2.id);
+                assert.strictEqual(data.offerID, 0);
+                assert.strictEqual(data.price, 456);
+                assert.strictEqual(data.propertyID, property.id);
+                assert.strictEqual(data.makerID, player.id);
+
+                // tests sur game
+                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
+                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
+                assert.strictEqual(property.owner, player2);
+                if (++ nb === 4) done();
+            });
+
+            sock2.on('gameOfferAcceptRes', (data) => {
+                assert.strictEqual(data.error, 0);
+                if (++ nb === 4) done();
+            });
+
+            sock2.emit('gameOfferAcceptReq', {
+                offerID: 0
+            });
+        });
+
+        sock.on('gameOfferSendRes', (data) => {
+            assert.strictEqual(data.error, 0);
+            if (++ nb === 4) done();
+        });
+        sock.emit('gameOfferSendReq', {
+            receiverID: player2.id,
+            propertyID: property.id,
+            price: 456
+        });
     });
 });

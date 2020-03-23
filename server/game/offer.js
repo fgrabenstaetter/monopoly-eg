@@ -38,22 +38,24 @@ class Offer {
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameOfferFinishedRes', {
             receiverID : null,
             offerID    : this.id,
-            price      : offer.amount,
-            propertyID : offer.property.id,
-            makerID    : offer.maker.id
+            price      : this.amount,
+            propertyID : this.property.id,
+            makerID    : this.maker.id
         });
 
         Offer.delOffer(this);
     }
 
-    get accept () {
+    accept () {
         if (!Offer.delOffer(this))
             return false;
 
-        this.maker.delProperty(offer.property);
+        this.maker.delProperty(this.property);
         this.maker.addMoney(this.amount);
-        this.receiver.addProperty(offer.property);
+        this.receiver.addProperty(this.property);
         this.receiver.loseMoney(this.amount);
+
+        return true;
     }
 }
 

@@ -490,8 +490,7 @@
 
         // Si type = publicCompany
         {
-            price: int,
-            rentalPrice: int
+            price: int
         }
         ```
 
@@ -755,16 +754,9 @@
         * *Données:*
         ```javascript
         {
-            type: string, // text | offer
             playerID: int, // ou -1 => message du serveur
             text: string,
-            createdTime: timestamp,
-            offer: { // ou null si type !== offer
-                id, // ID de l'offre (utile pour l'accepter)
-                receiver: string,
-                property: int, // ID de la propriété
-                amount: int
-            }
+            createdTime: timestamp
         }
         ```
 

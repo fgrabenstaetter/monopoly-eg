@@ -65,7 +65,7 @@ function delProperty(roadID) {
     $('.property[data-id="' + roadID + '"]').remove();
 }
 
-function createCard(propertyID, type, roadName, price) {
+function createSaleCard(propertyID, type, roadName, price, disabled) {
     let newType;
     if (type == 'company') {
         if (roadName == 'Eau') {
@@ -79,7 +79,7 @@ function createCard(propertyID, type, roadName, price) {
         newType = type;
     }
 
-    let html = `<div class="card notification sale" data-property-id="` + propertyID + `" style="display: none;">
+    let html = `<div class="card notification sale` + (disabled ? ' disabled' : '') + `" data-property-id="` + propertyID + `" style="display: none;">
                     <div class="card-header ` + newType + `">
                         <div class="title">` + roadName + `</div>
                     </div>
@@ -90,30 +90,44 @@ function createCard(propertyID, type, roadName, price) {
                                 <p>` + price + `€</p>
                             </div>
                         </div>
-                        <button class="btn btn-primary accept">ACHETER</button>
-                        <button class="btn btn-secondary reject">NE RIEN FAIRE</button>
+                        <button class="btn btn-primary` + (disabled ? '' : ' accept') + `">ACHETER</button>
+                        <button class="btn btn-secondary` + (disabled ? '' : ' reject') + `"">NE RIEN FAIRE</button>
                     </div>
                 </div>`;
 
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function createDisabledCard(propertyID, type, roadName, price) {
-    let html = `<div class="card notification sale disabled" data-property-id="` + propertyID + `" style="display: none;">
-                <div class="card-header ` + type + `">
-                    <div class="title">` + roadName + `</div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12 text-center value">
-                            <p class="state">À VENDRE</p>
-                            <p>` + price + `€</p>
-                        </div>
+function createUpgrade(propertyID, type, roadName, price, disabled) {
+    let newType;
+    if (type == 'company') {
+        if (roadName == 'Eau') {
+            newType = 'company eau';
+        }
+        else if (roadName == 'Électricité') {
+            newType = 'company electricite';
+        }
+    }
+    else {
+        newType = type;
+    }
+
+    let html = `<div class="card notification upgrade` + (disabled ? ' disabled' : '') + `" data-property-id="` + propertyID + `" style="display: none;">
+                    <div class="card-header ` + newType + `">
+                        <div class="title">` + roadName + `</div>
                     </div>
-                    <button class="btn btn-primary">ACHETER</button>
-                    <button class="btn btn-secondary">NE RIEN FAIRE</button>
-                </div>
-            </div>`;
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 text-center value">
+                                <p class="state">AMÉLIORER</p>
+                                <p>Vous pouvez améliorer votre propriété :</p>
+                                <input class="property-upgrade-level" value="` + propertyLevel + `" type="number">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary` + (disabled ? '' : ' accept') + `">AMELIORER</button>
+                        <button class="btn btn-secondary` + (disabled ? '' : ' reject') + `"">NE RIEN FAIRE</button>
+                    </div>
+                </div>`;
 
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }

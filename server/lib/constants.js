@@ -21,10 +21,6 @@ const Constants = {
         GRENN     : 'green',
         BLUE      : 'blue'
     },
-    CHAT_MESSAGE_TYPE: {
-        TEXT  : 'text',
-        OFFER : 'offer'
-    },
     GAME_PARAM: {
         WAITING_TIME_AFTER_READY              : 2e3,
         EXIT_JAIL_PRICE                       : 50,

@@ -10,89 +10,78 @@
 
 
 const communityChestCards = [{
-    'token': 'advanceGo',
-    'description': 'Advance to "Go". (Collect $200)',
-    'effectType': 'advance',
-    'effectArg1': 15
+    'token': 'advanceStart',
+    'description': "Avancez jusqu'au départ (recevez 200€)",
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 0 //ok
 }, {
     'token': 'gainBankError',
-    'description': 'Bank error in your favor. Collect $200.',
+    'description': 'Erreur de la banque en votre faveur. Recevez 200€.',
     'effectType': 'gainMoney',
-    'effectArg1': 200
+    'effectArg1': 200 //ok
 }, {
-    'token': 'payDoctorFee',
-    'description': 'Doctor\'s fees. Pay $50.',
+    'token': 'payAssuranceFee',
+    'description': "Payez votre police d'assurance s'élevant à 50€",
     'effectType': 'loseMoney',
-    'effectArg1': 50
+    'effectArg1': 50 //ok
 }, {
     'token': 'gainStock',
-    'description': 'From sale of stock you get $50.',
+    'description': 'La vente de votre stock vous rapporte 50€.',
     'effectType': 'gainMoney',
-    'effectArg1': 50
+    'effectArg1': 50 //ok
 }, {
     'token': 'jailBreak',
-    'description': 'Get Out of Jail Free. This card may be kept until needed or sold/traded.',
-    'effectType': 'jailBreak'
+    'description': "Vous êtes libéré de prison. Cette carte peut être conservée jusqu'à ce qu'elle soit utilisée ou vendue.",
+    'effectType': 'jailBreak' //ok
 }, {
     'token': 'advanceJail',
-    'description': 'Go to Jail. Go directly to jail. Do not pass Go, Do not collect $200.',
-    'effectType': 'jailTime'
-}, {
-    'token': 'gainOpera',
-    'description': 'Grand Opera Night. Collect $50 from every player for opening night seats.',
-    'effectType': 'gainMoney',
-    'effectArg1': 50
+    'description': "Allez en prison. Ne passez pas par la case Départ. Ne recevez pas 200€",
+    'effectType': 'jailTime' //ok
 }, {
     'token': 'gainHolidayFund',
-    'description': 'Holiday Fund matures. Receive $100.',
+    'description': 'Recevez votre revenue annuel. 100€.',
     'effectType': 'gainMoney',
-    'effectArg1': 100
+    'effectArg1': 100 //ok
 }, {
     'token': 'gainTaxRefund',
-    'description': 'Income tax refund. Collect $20.',
+    'description': 'Les contributions vous remboursent la somme de 20€',
     'effectType': 'gainMoney',
-    'effectArg1': 20
+    'effectArg1': 20 //ok
 }, {
     'token': 'gainBirthday',
-    'description': 'It is your birthday. Collect $10 from every player.',
+    'description': "C'est votre anniversaire! Chaque joueur doit vous donner 10€.",
     'effectType': 'gainMoney',
-    'effectArg1': 10
-}, {
-    'token': 'gainLifeInsurance',
-    'description': 'Life insurance matures – Collect $100',
-    'effectType': 'gainMoney',
-    'effectArg1': 100
+    'effectArg1': 10 //ok
 }, {
     'token': 'payHospital',
-    'description': 'Hospital Fees. Pay $50.',
+    'description': "Payez à l'Hopital 100€",
     'effectType': 'loseMoney',
-    'effectArg1': 50
+    'effectArg1': 100 //ok
 }, {
     'token': 'paySchool',
-    'description': 'School fees. Pay $50.',
+    'description': "Payez les frais de l'Université. 50€",
     'effectType': 'loseMoney',
-    'effectArg1': 50
+    'effectArg1': 50 //ok
 }, {
     'token': 'gainConsultancy',
-    'description': 'Receive $25 consultancy fee.',
+    'description': "Recevez vos intérêts sur l'emprunt à 7%. 25€",
     'effectType': 'gainMoney',
-    'effectArg1': 25
-}, {
-    'token': 'payRepair',
-    'description': 'You are assessed for street repairs: Pay $40 per house and $115 per hotel you own.',
-    'effectType': 'loseMoney',
-    'effectArg1': 40,
-    'effectArg2': 115
+    'effectArg1': 25 //ok
 }, {
     'token': 'gainBeauty',
-    'description': 'You have won second prize in a beauty contest. Collect $10.',
+    'description': 'Vous avez gagné le premier prix de mocheté. Recevez 10€',
     'effectType': 'gainMoney',
-    'effectArg1': 10
+    'effectArg1': 10 //ok
 }, {
     'token': 'gainInheritance',
-    'description': 'You inherit $100.',
+    'description': 'Vous heritez de 100€',
     'effectType': 'gainMoney',
-    'effectArg1': 100
+    'effectArg1': 100 //ok
+}, {
+    'token': 'AdvanceToFishMarket',
+    'description': "Retournez à la rue du vieux marché aux poissons ",
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 1 //ok
 }];
 
 module.exports = communityChestCards;
