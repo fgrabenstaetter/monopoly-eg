@@ -518,6 +518,9 @@ function hideLoaderOverlay() {
 function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPrice) {
     $('.overview-card .header').html(roadName);
     $('.overview-card .header').removeClass('station');
+    $('.overview-card .header').removeClass('company');
+    $('.overview-card .header').removeClass('eau');
+    $('.overview-card .header').removeClass('electricite');
     $('.overview-card .header').css("background-color", color);
     $('.overview-card .header').css("color", "white");
     let htmlContent = `<div class="rent">`+ rent[0] +`</div>
@@ -549,7 +552,11 @@ function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPric
 // rent doit être une liste de 4 éléments
 function populateStationOverviewCard(roadName, rent) {
     $('.overview-card .header').html(roadName);
-    $('.overview-card .header').addClass('station')
+    $('.overview-card .header').removeClass('station');
+    $('.overview-card .header').removeClass('company');
+    $('.overview-card .header').removeClass('eau');
+    $('.overview-card .header').removeClass('electricite');
+    $('.overview-card .header').addClass('station');
     $('.overview-card .header').css("background-color", "white");
     $('.overview-card .header').css("color", "black");
     let htmlContent = `<div class="rent">`+ rent[0] +`</div>
@@ -568,9 +575,35 @@ function populateStationOverviewCard(roadName, rent) {
     $('.overview-card .content').html(htmlContent);
 }
 
+// rent doit être un entier
+function populateCompanyOverviewCard(roadName, rent) {
+    $('.overview-card .header').html(roadName);
+    $('.overview-card .header').removeClass('station');
+    $('.overview-card .header').removeClass('company');
+    $('.overview-card .header').removeClass('eau');
+    $('.overview-card .header').removeClass('electricite');
+    $('.overview-card .header').addClass('company');
+    if (roadName == 'Eau') {
+        $('.overview-card .header').addClass('eau')
+    }
+    else if (roadName == 'Électricité') {
+        $('.overview-card .header').addClass('electricite')
+    }
+    $('.overview-card .header').css("background-color", "rgb(58, 58, 58)");
+    $('.overview-card .header').css("color", "white");
+    let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public, 
+                            le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public, 
+                            le loyer est 10 fois le montant indiqué par les dés.</div>
+                        <div class="rent">`+ rent +`</div>`
+    $('.overview-card .content').html(htmlContent);
+}
+
 function emptyOverviewCard() {
     $('.overview-card .header').html('');
     $('.overview-card .header').removeClass('station');
+    $('.overview-card .header').removeClass('company');
+    $('.overview-card .header').removeClass('eau');
+    $('.overview-card .header').removeClass('electricite');
     $('.overview-card .header').css("background-color", "white");
     $('.overview-card .header').css("color", "white");
     $('.overview-card .content').html('');

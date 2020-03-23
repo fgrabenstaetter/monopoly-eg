@@ -1347,12 +1347,50 @@ input {
   line-height: 1;
   font-weight: 900;
   content: "\f239";
-  margin-right: 10px;
+  margin: 0;
   font-size: 15px;
   color: black;
   vertical-align: text-top;
   -webkit-transform: translateX(-13px) translateY(2px);
           transform: translateX(-13px) translateY(2px);
+}
+
+.ingame-ui-container .overview-card .header.company.eau:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f043";
+  margin: 0;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
+  -webkit-transform: translateX(-13px) translateY(2px);
+          transform: translateX(-13px) translateY(2px);
+}
+
+.ingame-ui-container .overview-card .header.company.electricite:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f0eb";
+  margin: 0;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
+  -webkit-transform: translateX(-13px) translateY(1px);
+          transform: translateX(-13px) translateY(1px);
 }
 
 .ingame-ui-container .overview-card .content {
@@ -1375,6 +1413,11 @@ input {
   font-family: "Roboto", sans-serif;
   font-size: 12px;
   margin: 0;
+}
+
+.ingame-ui-container .overview-card .content div.company-description {
+  font-size: 10px;
+  margin-bottom: 20px;
 }
 
 .ingame-ui-container .overview-card .content div.rent {
