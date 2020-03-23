@@ -1,81 +1,93 @@
+/** Liste des effectType:
+ *  - advanceAbsolute
+ *  - advanceRelative -> /!\ effectArg peut être négatif
+ *  - loseMoney
+ *  - gainMoney
+ *  - jailBreak
+ *  - jailTime
+ *  - repair -> /!\ utilise effectArg2
+ */
+
 const chanceCards = [{
-    'token': 'advanceGo',
-    'description': 'Advance to "Go". (Collect $200)',
-    'effectType': 'advance',
-    'effectArg1': 26  // move to cell number 1
+    'token': 'advanceRueDesOrfevres',
+    'description': 'Rendez-vous à la Rue des Orfèvres',
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 39 //OK
 }, {
-    'token': 'advanceIllinoisAve',
-    'description': 'Advance to Illinois Avenue. If you pass Go, collect $200.',
-    'effectType': 'advance',
-    'effectArg1': 7 // move to Illinois Avenue
+    'token': 'PayDrunkennessFine',
+    'description': 'Amende pour ivresse. Payez 20€.',
+    'effectType': 'loseMoney',
+    'effectArg1': 20 //OK
 }, {
-    'token': 'advanceStCharles',
-    'description': 'Advance to St. Charles Place. If you pass Go, collect $200.',
-    'effectType': 'advance',
-    'effectArg1': 35 // move to St. Charles Place
+    'token': 'advanceAvForetNoire',
+    'description': "Avancez jusqu'à l'Avenue de la Forêt Noire. Si vous passez par la case départ recevez 200€.",
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 24 //OK
 }, {
-    'token': 'advanceUtility',
-    'description': 'Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total 10 times the amount thrown.',
-    'effectType': 'advance',
-    'effectArg1': 0 // move to nearest Utility
+    'token': 'PayScolarity',
+    'description': 'Payez pour frais de scolarité 150€.',
+    'effectType': 'loseMoney',
+    'effectArg1': 150 //OK
 }, {
-    'token': 'advanceRailroad',
-    'description': 'Advance token to the nearest Railroad and pay owner twice the rental to which he/she is otherwise entitled. If Railroad is unowned, you may buy it from the Bank.',
-    'effectType': 'advance',
-    'effectArg1': 16 // Aller à la cellule numéro 16 ? => A titre d'exemple
+    'token': 'advanceGO',
+    'description': "Avancez jusqu'à la case départ",
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 0 //OK
 }, {
     'token': 'gainBankDivident',
-    'description': 'Bank pays you dividend of $50.',
+    'description': 'La Banque vous verse un dividende de 50€',
     'effectType': 'gainMoney',
-    'effectArg1': 50 // gain $50
+    'effectArg1': 50 //OK
 }, {
     'token': 'jailBreak',
-    'description': 'Get out of Jail Free. This card may be kept until needed, or traded/sold.',
-    'effectType': 'jailBreak'
+    'description': "Vous êtes libérés de prison. Cette carte peut être conservée jusqu'à être utilisée ou vendue",
+    'effectType': 'jailBreak' //OK
 }, {
     'token': 'advanceBack',
-    'description': 'Go Back Three (3) Spaces.',
-    'effectType': 'jailBreak',
-    'effectArg1': 1 // gain 1 jailbreak card
+    'description': 'Reculez de 3 cases',
+    'effectType': 'advanceRelative',
+    'effectArg1': -3 //OK
 }, {
     'token': 'advanceJail',
-    'description': 'Go to Jail. Go directly to Jail. Do not pass GO, do not collect $200.',
-    'effectType': 'jailTime'
+    'description': 'Allez en prison. Avancez tout droit en prison, ne passez pas par la case départ. Ne recevez pas 200€',
+    'effectType': 'jailTime' //OK
 }, {
     'token': 'payRepairs',
-    'description': 'Make general repairs on all your property: For each house pay $25, For each hotel pay $100.',
+    'description': 'Faites des réparations pour toutes vos maisons. Versez pour chaque maison 25€. Versez pour chaque hôtel 100€',
+    'effectType': 'repair',
+    'effectArg1': 25, // prix a payer par maison
+    'effectArg2': 100 // prix a payer par hotel OK
+}, {
+    'token': 'paySpeedLimitFine',
+    'description': 'Amende pour excès de vitesse. Payez 15€.',
     'effectType': 'loseMoney',
-    'effectArg1': 1 // TODO
+    'effectArg1': 15 //OK
 }, {
-    'token': 'payPoorTax',
-    'description': 'Pay poor tax of $15.',
-    'effectType': 'loseMoney',
-    'effectArg1': 15
+    'token': 'advanceTramDroitsHomme',
+    'description': "Allez à l'arrêt de tram Droits de l'Homme. Si vous passez par la case départ recevez 200€.",
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 15 //OK
 }, {
-    'token': 'advanceReadingRail',
-    'description': 'Take a trip to Reading Railroad. If you pass Go, collect $200.',
-    'effectType': 'advance',
-    'effectArg1': 1 // Take a trip to Reading Railroad
+    'token': 'advanceCheminDuWacken',
+    'description': 'Avancez au chemin du Wacken. Si vous passez par la case départ recevez 200€.',
+    'effectType': 'advanceAbsolute',
+    'effectArg1': 11 // OK
 }, {
-    'token': 'advanceBoardwalk',
-    'description': 'Take a walk on the Boardwalk. Advance token to Boardwalk.',
-    'effectType': 'advance',
-    'effectArg1': 1 // Take a trip to Reading Railroad
-}, {
-    'token': 'payChairman',
-    'description': 'You have been elected Chairman of the Board. Pay each player $50.',
-    'effectType': 'loseMoney',
-    'effectArg1': 50 // TODO
+    'token': 'payHugeRepair',
+    'description': 'Vous êtes imposés pour les réparations de voirire à raison de 40€ par maison et 115€ par hôtel.',
+    'effectType': 'repair',
+    'effectArg1': 40, // prix a payer par maison
+    'effectArg2': 115 // prix a payer par hotel OK
 }, {
     'token': 'gainLoan',
-    'description': 'Your building loan matures. Receive $150.',
+    'description': 'Votre immeuble et votre prêt rapportent. Recevez 150€',
     'effectType': 'gainMoney',
-    'effectArg1': 150
+    'effectArg1': 150 //OK
 }, {
     'token': 'gainCrossword',
-    'description': 'You have won a crossword competition. Collect $100.',
+    'description': 'Vous avez gagné le prix de mots croisés : recevez 100€',
     'effectType': 'gainMoney',
-    'effectArg1': 100
-}]
+    'effectArg1': 100 //OK
+}];
 
 module.exports = chanceCards;
