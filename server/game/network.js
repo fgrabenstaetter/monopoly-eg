@@ -816,7 +816,12 @@ class Network {
                 if (boundary >= 20) {
                     bid.updateBid(player, data.price);
                     const msg = player.nickname + ' a surrenchéri pour ' + bid.property.name + ' avec une valeur de ' + data.price;
-                    this.io.to(game.name).emit('gameBidRes', {bidID: bid.id, playerID: player.id, text: msg, price: data.price});
+                    this.io.to(game.name).emit('gameBidRes', {
+                        bidID: bid.id,
+                        playerID: player.id,
+                        text: msg,
+                        price: data.price
+                    });
                 }
                 else
                     err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;

@@ -1,4 +1,4 @@
-var assert = require('chai').assert;
+/*var assert = require('chai').assert;
 
 const Bid = require('../game/bid');
 
@@ -69,4 +69,4 @@ describe('Bid', function () {
             assert.equal(bid.amountAsked, 500);
         });
     });
-});
+});*/

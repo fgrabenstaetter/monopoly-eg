@@ -368,14 +368,12 @@ const Properties = {
         {
             name: 'Eléctricité de Strasbourg',
             description: 'En libre service, venez donc',
-            price: 150,
-            rentalPrice: 1
+            price: 150
         },
         {
             name: "Syndicat Des Eaux et de l'Assainissement",
             description: 'Math info top niveau',
-            price: 150,
-            rentalPrice: 1
+            price: 150
         }
     ]
 }
