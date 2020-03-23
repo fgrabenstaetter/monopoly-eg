@@ -91,9 +91,12 @@ socket.on('gameStartedRes', (data) => {
 
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
-        loaderPawn(PAWNS[player.pawn], '0');
+        // Champs par défaut du joueur
+        player.properties = [];
+        player.money = data.playersMoney;
 
-        generatePlayerEntry(player.id, player.nickname, data.playersMoney);
+        loaderPawn(PAWNS[player.pawn], '0');
+        generatePlayerEntry(player.id, player.nickname, player.money);
     });
 
     initProperty();
@@ -305,8 +308,11 @@ socket.on("gamePropertyBuyRes", (data) => {
     let property = getPropertyById(data.propertyID);
     let cell = getCellByProperty(property);
     if (property && cell) {
-        createProperty(data.playerID, property.color, property.name, property.id)
-        setPlayerMoney(data.playerID, data.playerMoney);
+        let player = getPlayerById(data.playerID);
+        player.properties.push(property);
+
+        createProperty(player.id, property.color, property.name, property.id);
+        setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
 
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
@@ -390,18 +396,50 @@ socket.on('gameChatReceiveRes', (data) => {
     addMsg(data.playerID, data.text, data.createdTime);
 });
 
+// Un joueur s'est déconnecté
+socket.on('gamePlayerDisconnectedRes', (data) => {
+    disconnectPlayerEntry(data.playerID);
+});
+
+// Un joueur s'est reconnecté
+socket.on('gamePlayerReconnectedRes', (data) => {
+    console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
+    console.log(data);
+    reconnectPlayerEntry(data.playerID);
+});
+
+// Données de reconnexion
 socket.on('gameReconnectionRes', (data) => {
     console.log(' --- RECONNEXION DATA');
     console.log(data);
-    // hideLoaderOverlay();
-});
 
-socket.on('gamePlayerDisconnectedRes', (data) => {
-    console.log(' --- PLAYER DISCONNECTED: ' + data.playerID);
-});
+    DATA.players = data.players;
+    DATA.cells = data.cells;
+    DATA.properties = data.properties;
+    DATA.gameEndTime = data.gameEndTime;
 
-socket.on('gamePlayerReconnectedRes', (data) => {
-    console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
+    // Génération de la liste de joueurs
+    DATA.players.forEach((player) => {
+        loaderPawn(PAWNS[player.pawn], player.cellPos);
+        generatePlayerEntry(player.id, player.nickname, player.money);
+
+        player.properties.forEach((playerProperty) => {
+            createProperty(player.id, playerProperty.color, playerProperty.name, playerProperty.id);
+        });
+    });
+
+    data.chatMessages.forEach((msg) => {
+        addMsg(msg.playerID, msg.text, msg.createdTime);
+    });
+
+    /**
+     * Reste à gérer à la reconnexion :
+     * - bids
+     * - offers
+     */
+
+    initProperty();
+    hideLoaderOverlay();
 });
 
 // AUCUN EVENT SOCKET (ON) APRES CECI
@@ -493,6 +531,12 @@ function bindOfferListener() {
     });
 }
 
+/**
+ * Crée une entrée dans la listedes joueurs
+ * @param id Identifiant du joueur 
+ * @param nickname Pseudo du joueur
+ * @param money Solde du joueur
+ */
 function generatePlayerEntry(id, nickname, money) {
     let html = `<div class="player-entry" data-id="` + id + `">
                         <div class="name" title="`+ nickname + `">` + nickname + `</div>
@@ -504,11 +548,36 @@ function generatePlayerEntry(id, nickname, money) {
     $('.player-list').append(html);
 }
 
-// Loader overlay
+/**
+ * Passe une entrée de joueur en mode "déconnecté"
+ * @param id Identifiant du joueur
+ */
+function disconnectPlayerEntry(id) {
+    let playerEntry = $('.player-list').find('.player-entry[data-id="' + id + '"]');
+    playerEntry.find('.name').append('<div class="disconnected">(Déconnecté)</div>');
+    playerEntry.css('opacity', '0.3');
+}
+
+/**
+ * Repasse une entrée de joueur en mode "connecté" (i.e. mode normal)
+ * @param id Identifiant du joueur
+ */
+function reconnectPlayerEntry(id) {
+    let playerEntry = $('.player-list').find('.player-entry[data-id="' + id + '"]');
+    playerEntry.find('.disconnected').remove();
+    playerEntry.css('opacity', '1');
+}
+
+/**
+ * Affiche l'overlay de chargement
+ */
 function displayLoaderOverlay() {
     $(".loader-overlay-container").fadeIn(0);
 }
 
+/**
+ * Masque l'overlay de chargement
+ */
 function hideLoaderOverlay() {
     $(".loader-overlay-container").fadeOut('fast');
 }

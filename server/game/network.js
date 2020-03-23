@@ -874,7 +874,7 @@ class Network {
     gamePlayerDisconnected (player, game) {
         console.log(player.nickname + ' s\'est déconnecté du jeu !');
         player.connected = false;
-        this.io.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+        this.io.to(game.name).emit('gamePlayerDisconnectedRes', { playerID: player.id });
 
         const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté');
         this.io.to(game.name).emit('gameChatReceiveRes', {
