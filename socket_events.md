@@ -436,8 +436,6 @@
         * *Données:*
         ```javascript
         {
-            turnTimeSeconds: int, // durée d'un tour (en secondes)
-            turnDoubleDiceAddedTime: int, // temps (en secondes) ajouté après chaque double aux dés
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             playersMoney: int, // argent initial de chaque joueur
             bankMoney: int, // argent initial de la banque
@@ -526,8 +524,6 @@
         * *Données:*
         ```javascript
         {
-            turnTimeSeconds: int, // durée d'un tour (en secondes)
-            turnDoubleDiceAddedTime: int, // temps (en secondes) ajouté après chaque double aux dés
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             bankMoney: int, // argent initial de la banque
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
@@ -561,7 +557,7 @@
         * *Données:*
         ```javascript
         {
-            turnEndTime: timestamp, // timestamp de fin forcé du tour
+            turnEndTime: timestamp, // timestamp de fin forcée du tour (ms)
             playerID: int
         }
         ```
@@ -594,6 +590,7 @@
             playerID: int,
             cellPosTmp: int | null, // position intermédiare si tombé sur une carte qui induit un déplacement (cellPosTmp = position après lancé des dés, cellPos = position finale comprenant le déplacement induit par la carte) OU null si pas de déplacement induit par une carte
             cellPos: int,
+            turnEndTime: timestamp, // timestamp de fin de tour (ms)
             actionMessage: string, // message lié à l'action de tour
             asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortage'
             asyncRequestArgs: array ou null, // selon asyncRequestType (voir plus bas)

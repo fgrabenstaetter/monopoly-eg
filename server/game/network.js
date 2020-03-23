@@ -575,14 +575,12 @@ class Network {
                 }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime     : game.forcedEndTime,
-                    playersMoney            : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney               : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    turnTimeSeconds         : Constants.GAME_PARAM.TURN_MAX_DURATION / 1e3,
-                    turnDoubleDiceAddedTime : Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME / 1e3,
-                    players                 : players,
-                    cells                   : cells,
-                    properties              : properties
+                    gameEndTime  : game.forcedEndTime,
+                    playersMoney : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    players      : players,
+                    cells        : cells,
+                    properties   : properties
                 });
             }
         });
@@ -634,8 +632,9 @@ class Network {
         }
 
         const extra = [];
-        if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
+        if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
             extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
+
         // ajouter carte chance/communauté si une a été tirée
         let cardToSend;
         switch (game.curCell.type) {
@@ -648,10 +647,6 @@ class Network {
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
                 extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
                 break;
-
-            default:
-                //Ne rien faire
-                break;
         }
 
         const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
@@ -661,6 +656,7 @@ class Network {
             playerID         : player.id,
             cellPosTmp       : cellPosTmp,
             cellPos          : player.cellPos,
+            turnEndTime      : game.turnData.endTime,
             actionMessage    : game.turnData.actionMessage,
             asyncRequestType : game.turnData.asyncRequestType,
             asyncRequestArgs : game.turnData.asyncRequestArgs,
@@ -928,16 +924,14 @@ class Network {
             }
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
-                turnTimeSeconds         : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                turnDoubleDiceAddedTime : Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME / 1e3,
-                gameEndTime             : game.forcedEndTime,
-                bankMoney               : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                chatMessages            : chatMessages,
-                offers                  : [],
-                bids                    : [],
-                players                 : players,
-                cells                   : cells,
-                properties              : properties
+                gameEndTime  : game.forcedEndTime,
+                bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                chatMessages : chatMessages,
+                offers       : [],
+                bids         : [],
+                players      : players,
+                cells        : cells,
+                properties   : properties
             });
 
             if (game.curPlayer === player && game.turnData.canRollDiceAgain)

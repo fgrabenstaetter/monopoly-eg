@@ -136,7 +136,7 @@ describe('Network + Game', () => {
         function process (data) {
             assert.strictEqual(data.error, Errors.SUCCESS.CODE);
             assert.strictEqual(data.playerID, game.curPlayer.id);
-            assert.ok(data.turnEndTime);
+            assert.strictEqual(data.turnEndTime, game.turnData.endTime);
             if (++ nb === 2)
                 done();
         }

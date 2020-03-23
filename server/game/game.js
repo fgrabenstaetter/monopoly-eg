@@ -183,7 +183,7 @@ class Game {
     nextTurn() {
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
-            this.turnPlayerAFK();
+            this.turnPlayerTimeoutAction();
             return;
         }
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
@@ -204,14 +204,14 @@ class Game {
         } while (this.curPlayer.failure)
 
         this.turnData.startedTime = Date.now();
-        this.turnData.endTime = this.turnData.startedTime + Constants.GAME_PARAM.TURN_MAX_DURATION;
+        this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
             turnEndTime: this.turnData.endTime
         });
 
         if (!this.curPlayer.connected)
-            this.turnPlayerAFK();
+            this.turnPlayerTimeoutAction();
         else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
     }
@@ -220,13 +220,12 @@ class Game {
     /**
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
      */
-    turnPlayerAFK () {
-        const waitAfterEach = 4e3;
+    turnPlayerTimeoutAction () {
         if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            setTimeout(this.turnPlayerAFK.bind(this), waitAfterEach);
+            setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
-            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), waitAfterEach); // fin tour
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
     }
 
     /**
@@ -252,11 +251,13 @@ class Game {
             else
                 this.turnData.canRollDiceAgain = true;
 
-            // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
-            const timeLeft = this.turnData.endTime - Date.now();
-            const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
-            clearTimeout(this.turnData.timeout);
-            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+            if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
+                // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
+                const timeLeft = this.turnData.endTime - Date.now();
+                const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
+                clearTimeout(this.turnData.timeout);
+                this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+            }
         }
 
         // peux être sorti de prison !
