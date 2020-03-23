@@ -36,7 +36,10 @@ $(document).ready(() => {
 
         var button = $(this),
             progress = 0;
-        button.removeClass('disabled');
+
+        if (button.hasClass('disabled')) {
+            button.removeClass('disabled');
+        }
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
@@ -174,15 +177,6 @@ $(document).ready(() => {
         bar.css('transition', seconds + 's linear');
         button.progressSet(99);
 
-        window.setTimeout(function () {
-            bar.css('transition', '');
-            button.progressFinish();
-
-            if ($.isFunction(cb)) {
-                cb();
-            }
-
-        }, seconds * 1000);
     };
 
 })(jQuery);

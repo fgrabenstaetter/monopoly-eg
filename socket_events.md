@@ -588,7 +588,7 @@
         {
             dicesRes: [ int, int ],
             playerID: int,
-            cellPosTmp: int | null, // position intermédiare si tombé sur une carte qui induit un déplacement (cellPosTmp = position après lancé des dés, cellPos = position finale comprenant le déplacement induit par la carte) OU null si pas de déplacement induit par une carte
+            cellPosTmp: int | null, // position intermédiaire si tombé sur une carte qui induit un déplacement (cellPosTmp = position après lancé des dés, cellPos = position finale comprenant le déplacement induit par la carte) OU null si pas de déplacement induit par une carte
             cellPos: int,
             turnEndTime: timestamp, // timestamp de fin de tour (ms)
             actionMessage: string, // message lié à l'action de tour
@@ -600,17 +600,15 @@
                 {playerID: string, money: int}, // nouveau solde
                 ...
             ],
-            extra: [
-                {
-                    // contient 0 ou 1 seul de ces éléments
-                    nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
-                    newCard: {
-                        type: string, // chance | community
-                        name: string,
-                        description: string
-                    }
-                }, ...
-            ]
+            extra: {
+                // contient 0, 1 ou plusieurs de ces champs (tester existence !)
+                nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
+                newCard: {
+                    type: string, // chance | community
+                    name: string,
+                    description: string
+                }
+            }
         }
         ```
 

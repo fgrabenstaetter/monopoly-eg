@@ -66,8 +66,21 @@ function delProperty(roadID) {
 }
 
 function createCard(propertyID, type, roadName, price) {
+    let newType;
+    if (type == 'company') {
+        if (roadName == 'Eau') {
+            newType = 'company eau';
+        }
+        else if (roadName == 'Électricité') {
+            newType = 'company electricite';
+        }
+    }
+    else {
+        newType = type;
+    }
+
     let html = `<div class="card notification sale" data-property-id="` + propertyID + `" style="display: none;">
-                    <div class="card-header ` + type + `">
+                    <div class="card-header ` + newType + `">
                         <div class="title">` + roadName + `</div>
                     </div>
                     <div class="card-body">

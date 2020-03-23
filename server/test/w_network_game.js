@@ -399,7 +399,7 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.asyncRequestType, null);
 
                 const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra[data.extra.length - 1];
+                const receivedCard = data.extra.newCard;
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
@@ -432,6 +432,49 @@ describe('Network + Game', () => {
                 }
                 done();
             }
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
+
+    it('Enchère créée sans surrenchérissement', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [2, 4]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer;
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+        let nb = 0;
+        sock.on('gameActionRes', (data) => {
+            assert.deepEqual(data.dicesRes, [2, 4]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 6);
+            assert.strictEqual(data.asyncRequestType, 'canBuy');
+            //On teste si les 2 joueurs ont bien reçu tous les deux l'évent gameBidRes
+            clientSocket.on('gameBidRes', (data) => {
+                assert.strictEqual(null, data.playerID);
+                assert.strictEqual(data.price, game.cells[player.cellPos].property.prices.empty);
+                assert.strictEqual(0, data.bidID);
+                if (++ nb === 2) done();
+            });
+
+            clientSocket2.on('gameBidRes', (data) => {
+                assert.strictEqual(null, data.playerID);
+                assert.strictEqual(data.price, game.cells[player.cellPos].property.prices.empty);
+                assert.strictEqual(0, data.bidID);
+                if (++ nb === 2) done();
+            });
+            //Utile car sinon le timer du test expire avant celui du vrai timeout "IN-GAME"
+            sock.emit('gameTurnEndReq');
         });
 
         sock.on('gameRollDiceRes', (data) => {

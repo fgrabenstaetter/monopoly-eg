@@ -56,6 +56,7 @@ class Game {
             startedTime      : null, // timestamp de début du tour
             endTime          : null, // timestamp de fin de tour
             timeout          : null,
+            midTimeout       : null, // timestamp de moitié de tour => lancer les dés auto
             playerInd        : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
         };
 
@@ -165,8 +166,9 @@ class Game {
         this.startedTime = Date.now();
         if (immediate)
             this.nextTurn();
-        else
+        else {
             setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
+        }
     }
 
     /**
@@ -174,12 +176,19 @@ class Game {
      */
     endTurn() {
         clearTimeout(this.turnData.timeout);
+        clearTimeout(this.turnData.midTimeout);
         this.nextTurn();
     }
 
     /**
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
+
+    turnMidTimeCheck () {
+        if (this.turnData.canRollDiceAgain)
+            this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
+    }
+
     nextTurn() {
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
@@ -212,10 +221,11 @@ class Game {
 
         if (!this.curPlayer.connected)
             this.turnPlayerTimeoutAction();
-        else
+        else {
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
+            this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION / 2);
+        }
     }
-
 
     /**
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
@@ -224,8 +234,9 @@ class Game {
         if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
             setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
-        } else
+        } else {
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
+        }
     }
 
     /**
@@ -256,6 +267,7 @@ class Game {
                 const timeLeft = this.turnData.endTime - Date.now();
                 const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
                 clearTimeout(this.turnData.timeout);
+
                 this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
             }
         }
@@ -282,9 +294,6 @@ class Game {
                 case Constants.CELL_TYPE.COMMUNITY:
                     this.turnPlayerCommunityCardCell();
                     break;
-
-                default: // OTHER (parc, carte départ)
-                // this.setTurnActionData(null, null, null); // pas besoin car déjà vide
             }
 
             if (oldPos > this.curPlayer.cellPos) // recevoir argent de la banque
@@ -302,7 +311,7 @@ class Game {
 
     /**
      * @param diceRes [int, int] le résultat des dés
-     * @param useExitJailCard true si le joueur souhaite utiliser sa carte sortie de prison, false sinon
+     * @param useExitJailCard true si le joueur souhaite utiliser sa carte sortie de prison (et qu'il est en prison), false sinon
      */
     turnPlayerAlreadyInPrison(diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
@@ -373,7 +382,7 @@ class Game {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(property.rentalPrice);
                     this.setTurnActionData(null, null,
-                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + property.rentalPrice + ' de loyer à ' + property.owner.nickname);
+                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + property.rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
             } // else => rien à faire
         }
