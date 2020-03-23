@@ -616,6 +616,7 @@ class Network {
         for (const playr of game.players)
             moneySav.push(playr.money);
         const nbJailEscapeCardsSave = player.nbJailEscapeCards;
+
         const cellPosSave = player.cellPos;
 
         const diceRes = game.rollDice();
@@ -636,29 +637,51 @@ class Network {
             extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
         // ajouter carte chance/communauté si une a été tirée
-        let cardToSend;
-        switch (game.curCell.type) {
-            case Constants.CELL_TYPE.CHANCE:
+        let cardToSend = null;
+        const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
+        const cellPosTmp = (((cardToSend === null) && player.cellPos) !== tmpc) ? tmpc : null;
+
+        console.log("curcell");
+        console.log(cellPosTmp);
+        console.log('cellPos');
+        console.log(player.cellPos);
+        if (cellPosTmp === null) {
+            if (game.curCell.type === Constants.CELL_TYPE.CHANCE) {
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'chance',
                     name: cardToSend.token,
                     description: cardToSend.description
                 }
-                break;
-
-            case Constants.CELL_TYPE.COMMUNITY:
+            }
+            else if (game.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'community',
                     name: cardToSend.token,
                     description: cardToSend.description
                 }
-                break;
+            }
+        }
+        else {
+            if (game.cells[cellPosTmp].type === Constants.CELL_TYPE.CHANCE) {
+                cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+                extra.newCard = {
+                    type: 'chance',
+                    name: cardToSend.token,
+                    description: cardToSend.description
+                }
+            }
+            else if (game.cells[cellPosTmp].type === Constants.CELL_TYPE.COMMUNITY) {
+                cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
+                extra.newCard = {
+                    type: 'community',
+                    name: cardToSend.token,
+                    description: cardToSend.description
+                }
+            }
         }
 
-        const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
-        const cellPosTmp = (cardToSend && player.cellPos !== tmpc) ? tmpc : null;
         this.io.to(game.name).emit('gameActionRes', {
             dicesRes         : diceRes,
             playerID         : player.id,
