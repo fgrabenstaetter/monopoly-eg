@@ -8,7 +8,8 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    turnTimeSeconds: null
+    turnTimeSeconds: null,
+    turnDoubleDiceAddedTime: null // temps ajouté au tour en cas de double avec les dés
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -81,6 +82,7 @@ socket.on('gameStartedRes', (data) => {
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
     DATA.turnTimeSeconds = data.turnTimeSeconds - 2; // Marge de 2 secondes
+    DATA.turnDoubleDiceAddedTime = data.turnDoubleDiceAddedTime;
 
     console.log('Le jeu a démarré !');
     console.log(data);
@@ -129,12 +131,15 @@ socket.on('gameActionRes', (data) => {
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
+    let cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
+    let cellPos2 = data.cellPosTmp ? data.cellPos : null;
+
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
         console.log("movement(" + PAWNS[getPlayerById(data.playerID).pawn] + ", " + data.cellPos.toString() + ");");
-        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString(), function () {
+        movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
             // Mise à jour des soldes (le cas échéant)
             if (data.updateMoney) {
                 data.updateMoney.forEach((row) => {
@@ -179,11 +184,41 @@ socket.on('gameActionRes', (data) => {
             // Affichage du message d'action donné par le serveur
             if (afficherMessageAction && data.actionMessage)
                 createTextCard(data.actionMessage, (data.playerID != ID), null, null);
+            
+            
 
-            console.log("=== fin gameActionRes ===");
+            if (cellPos2) {
+                movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
+                    checkDoubleDiceAndEndGameActionRes(data);
+                });
+            } else {
+                checkDoubleDiceAndEndGameActionRes(data);
+            }
         });
     });
 });
+
+/**
+ * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
+ */
+function checkDoubleDiceAndEndGameActionRes() {
+    // Si double avec les dés, on peut les relancer
+    if (data.dicesRes[0] == data.dicesRes[1]) {
+        if (data.playerID === ID) {            
+            console.log("[BOUTON D'ACTION] Initialisation");
+            $('#timer').progressInitialize();
+            console.log("[BOUTON D'ACTION] Passage en timer");
+            $('#timer').progressTimed(DATA.turnTimeSeconds);
+        } else {
+            console.log("[BOUTON D'ACTION] Passage en attente");
+            $('#timer').progressFinish();
+        }
+    }
+
+    console.log("=== fin gameActionRes ===");
+}
+
+
 
 $('.notification-container').on('click', '.accept', function () {
     console.log("socket.emit(gamePropertyBuyReq)");
