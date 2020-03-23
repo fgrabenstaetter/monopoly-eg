@@ -1,3 +1,14 @@
+/** Liste des effectType:
+ *  - advanceAbsolute
+ *  - advanceRelative -> /!\ effectArg peut être négatif
+ *  - loseMoney
+ *  - gainMoney
+ *  - jailBreak
+ *  - jailTime
+ *  - repair -> /!\ utilise effectArg2
+ */
+
+
 const communityChestCards = [{
     'token': 'advanceGo',
     'description': 'Advance to "Go". (Collect $200)',
