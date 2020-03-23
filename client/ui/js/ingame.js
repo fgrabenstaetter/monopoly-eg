@@ -8,8 +8,6 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    // turnTimeSeconds: null,
-    // turnDoubleDiceAddedTime: null // temps ajouté au tour en cas de double avec les dés
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -140,17 +138,6 @@ socket.on('gameActionRes', (data) => {
     let currentTimestamp = Date.now();
     let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
 
-    // console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-    // $('#timer').progressInitialize();
-    // console.log("[BOUTON D'ACTION] Resynchronisation du timer");
-    // console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
-    // $('#timer').progressTimed(turnTimeSeconds);
-
-    // if (data.playerID != ID) {
-    //     console.log("[BOUTON D'ACTION] Passage en attente");
-    //     $('#timer').progressFinish(turnTimeSeconds);
-    // }
-
     let currPlayer = getPlayerById(data.playerID);
     if (!currPlayer) {
         console.log('JOUEUR INTROUVABLE');
@@ -255,12 +242,9 @@ function checkDoubleDiceAndEndGameActionRes(data) {
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
         if (data.playerID === ID) {
-            // LABEL -> "RE-LANCER LES DÉS"     
+            // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
             $('#timer').progressInitialize();
-            // $('#timer').progressInitialize();
-            // console.log("[BOUTON D'ACTION] Passage en timer");
-            // $('#timer').progressTimed(DATA.turnTimeSeconds);
         }
     }
 
@@ -436,6 +420,7 @@ socket.on('gameReconnectionRes', (data) => {
      * Reste à gérer à la reconnexion :
      * - bids
      * - offers
+     * - couleur des cases pour celles déjà achetées
      */
 
     initProperty();
