@@ -603,7 +603,6 @@
         margin-left: auto;
         width: 225px;
 
-        // Il faudra rendre le background-color dynamique
         .card-header {
           border-radius: 15px 15px 0px 0px;
           color: white;
@@ -640,6 +639,81 @@
 
           &.cyan {
             background-color: cyan;
+          }
+
+          &.company {
+            background-color: rgb(58, 58, 58);
+
+            .title {
+              display: inline;
+              position: relative;
+              left: -13px;
+            }
+
+            &.eau:before {
+              font-family: "Font Awesome\ 5 Pro";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f043";
+              margin-right: 10px;
+              font-size: 15px;
+              color: white;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(2px);
+            }
+
+            &.electricite:before {
+              font-family: "Font Awesome\ 5 Pro";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f0eb";
+              margin-right: 10px;
+              font-size: 15px;
+              color: white;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(1px);
+            }
+          }
+
+          &.station {
+            background-color: white;
+            color: black;
+
+            .title {
+              display: inline;
+              position: relative;
+              left: -13px;
+            }
+
+            &:before {
+              font-family: "Font Awesome\ 5 Pro";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f239";
+              margin-right: 10px;
+              font-size: 15px;
+              color: black;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(2px);
+            }
           }
 
           &.event {
