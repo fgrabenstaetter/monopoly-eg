@@ -631,34 +631,29 @@ class Network {
                 updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
         }
 
-        const extra = [];
+        const extra = {};
         if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
-            extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
+            extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
         // ajouter carte chance/communauté si une a été tirée
         let cardToSend;
         switch (game.curCell.type) {
             case Constants.CELL_TYPE.CHANCE:
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                extra.push({
-                    nbJailEscapeCards: player.nbJailEscapeCards,
-                    newCard: {
-                                type: 'chance',
-                                name: cardToSend.token,
-                                description: cardToSend.description}
-                             });
+                extra.newCard = {
+                    type: 'chance',
+                    name: cardToSend.token,
+                    description: cardToSend.description
+                }
                 break;
 
             case Constants.CELL_TYPE.COMMUNITY:
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
-                extra.push({
-                    nbJailEscapeCards: player.nbJailEscapeCards,
-                    newCard: {
-                                type: 'community',
-                                name: cardToSend.token,
-                                description: cardToSend.description
-                             }
-                          });
+                extra.newCard = {
+                    type: 'community',
+                    name: cardToSend.token,
+                    description: cardToSend.description
+                }
                 break;
         }
 
