@@ -759,7 +759,7 @@ class Network {
     gameOfferSendReq(player, game) {
         player.socket.on('gameOfferSendReq', (data) => {
             let err = Errors.SUCCESS, recvr, prop;
-            if (!data.receiverID || !data.propertyID || !data.price)
+            if (data.receiverID == null || data.propertyID == null || !data.price)
                 err = Errors.MISSING_FIELD;
             else if (!(prop = player.propertyByID(data.propertyID)) || !(recvr = game.playerByID(data.receiverID)))
                 err = Errors.UNKNOW;
@@ -782,21 +782,24 @@ class Network {
     gameOfferAcceptReq(player, game) {
         player.socket.on('gameOfferAcceptReq', (data) => {
             let err = Errors.SUCCESS, offer;
-            if (!data.offerID)
+            if (data.offerID == null)
                 err = Errors.MISSING_FIELD;
-            else if (!(offer = Offer.offerByID(data.offerID)) || offer.maker !== player || !offer.maker.propertyByID(offer.id))
+            else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player || offer.property.owner !== offer.maker)
                 err = Errors.UNKNOW;
             else if (player.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else {
-                offer.accept;
-                this.io.to(game.name).emit('gameOfferFinishedRes', {
-                    receiverID : offer.receiver.id,
-                    offerID    : offer.id,
-                    price      : offer.amount,
-                    propertyID : offer.property.id,
-                    makerID    : offer.maker.id
-                });
+                if (!offer.accept())
+                    err = Errors.UNKNOW;
+                else {
+                    this.io.to(game.name).emit('gameOfferFinishedRes', {
+                        receiverID : offer.receiver.id,
+                        offerID    : offer.id,
+                        price      : offer.amount,
+                        propertyID : offer.property.id,
+                        makerID    : offer.maker.id
+                    });
+                }
             }
 
             player.socket.emit('gameOfferAcceptRes', { error: err.code, status: err.status });
