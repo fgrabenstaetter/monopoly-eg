@@ -590,6 +590,7 @@
         {
             dicesRes: [ int, int ],
             playerID: int,
+            cellPosTmp: int | null, // position intermédiare si tombé sur une carte qui induit un déplacement (cellPosTmp = position après lancé des dés, cellPos = position finale comprenant le déplacement induit par la carte) OU null si pas de déplacement induit par une carte
             cellPos: int,
             actionMessage: string, // message lié à l'action de tour
             asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortage'

@@ -599,12 +599,25 @@ class Network {
         });
     }
 
-    // n'est pas un event
+    gameTurnEndReq(player, game) {
+        player.socket.on('gameTurnEndReq', (data) => {
+            let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else
+                game.endTurn();
+
+            player.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
+        });
+    }
+
+    // n'est pas une écoute d'event !
     gameTurnAction (player, game) {
         const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
         for (const playr of game.players)
             moneySav.push(playr.money);
         const nbJailEscapeCardsSave = player.nbJailEscapeCards;
+        const cellPosSave = player.cellPos;
 
         const diceRes = game.rollDice();
 
@@ -640,27 +653,18 @@ class Network {
                 break;
         }
 
+        const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
+        const cellPosTmp = (cardToSend && player.cellPos !== tmpc) ? tmpc : null;
         this.io.to(game.name).emit('gameActionRes', {
             dicesRes         : diceRes,
             playerID         : player.id,
+            cellPosTmp       : cellPosTmp,
             cellPos          : player.cellPos,
             actionMessage    : game.turnData.actionMessage,
             asyncRequestType : game.turnData.asyncRequestType,
             asyncRequestArgs : game.turnData.asyncRequestArgs,
             updateMoney      : updateMoneyList,
             extra            : extra
-        });
-    }
-
-    gameTurnEndReq(player, game) {
-        player.socket.on('gameTurnEndReq', (data) => {
-            let err = Errors.SUCCESS;
-            if (player !== game.curPlayer)
-                err = Errors.GAME.NOT_MY_TURN;
-            else
-                game.endTurn();
-
-            player.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
         });
     }
 
