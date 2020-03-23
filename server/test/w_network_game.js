@@ -389,7 +389,6 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
-            //console.log(data);
             if (data.cellPos !== 7)
                 done();
             else {
@@ -408,13 +407,11 @@ describe('Network + Game', () => {
                     case 'loseMoney':
                         newMoney = money - savedCard.effectArg1;
                         assert.strictEqual(newMoney, player.money);
-                        //console.log(newMoney);
                         break;
 
                     case 'gainMoney':
                         newMoney = money + savedCard.effectArg1;
                         assert.strictEqual(newMoney, player.money);
-                        //console.log(newMoney);
                         break;
 
                     case 'advance':

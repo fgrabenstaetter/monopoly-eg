@@ -93,8 +93,8 @@ class Network {
         let messages = [];
         for (const mess of lobby.chat.messages) {
             messages.push({
-                senderUserID : mess.senderUser ? mess.senderUser.id : -1, // -1 => Server
-                content      : mess.content,
+                senderUserID : mess.sender ? mess.sender.id : -1, // -1 => Server
+                content      : mess.text,
                 createdTime  : mess.createdTime
             });
         }
@@ -391,25 +391,25 @@ class Network {
     }
 
     lobbyChatSendReq(user, lobby) {
-        user.socket.on('lobbyChatSendReq', (msg) => {
+        user.socket.on('lobbyChatSendReq', (data) => {
             let err = Errors.SUCCESS;
 
-            if (!msg.content)
+            if (!data.content)
                 err = Errors.MISSING_FIELD;
             else
-                this.lobbySendMessage(lobby, user, msg.content);
+                this.lobbySendMessage(lobby, user, data.content);
 
             user.socket.emit('lobbyChatSendRes', { error: err.code, status: err.status });
         });
     }
 
     // cette méthode n'est pas associée à un event socket !
-    lobbySendMessage (lobby, user, content) {
-        const mess = lobby.chat.addMessage(user, content, Constants.CHAT_MESSAGE_TYPE.TEXT);
+    lobbySendMessage (lobby, user, text) {
+        const mess = lobby.chat.addMessage(user, text);
         // broadcast lobby (also sender)
         this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
-            senderUserID : user ? mess.senderUser.id : -1, // -1 => Server
-            content      : mess.content,
+            senderUserID : mess.sender ? mess.sender.id : -1, // -1 => Server
+            content      : mess.text,
             createdTime  : mess.createdTime
         });
     }
@@ -515,13 +515,11 @@ class Network {
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
-                const mess = game.chat.addMessage(null, 'C\'est parti, bonne chance à tous !', Constants.CHAT_MESSAGE_TYPE.TEXT);
+                const mess = game.chat.addMessage(null, 'C\'est parti, bonne chance à tous !');
                 this.io.to(game.name).emit('gameChatReceiveRes', {
-                    type        : mess.type,
                     playerID    : -1, // = provient du serveur
-                    text        : mess.content ,
-                    createdTime : mess.createdTime,
-                    offer       : null
+                    text        : mess.text ,
+                    createdTime : mess.createdTime
                 });
 
                 game.start();
@@ -562,7 +560,6 @@ class Network {
 
                             case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
                                 propertyData.price       = cell.property.price;
-                                propertyData.rentalPrice = cell.property.rentalPrice;
                                 break;
 
                             case Constants.PROPERTY_TYPE.TRAIN_STATION:
@@ -747,13 +744,11 @@ class Network {
                 err = Errors.GAME.NOT_STARTED;
             else {
                 // envoyer le message (texte brut)
-                const mess = game.chat.addMessage(player.user, data.text, Constants.CHAT_MESSAGE_TYPE.TEXT);
+                const mess = game.chat.addMessage(player.user, data.text);
                 this.io.to(game.name).emit('gameChatReceiveRes', {
-                    type        : mess.type,
                     playerID    : player.id,
-                    text        : mess.content,
-                    createdTime : mess.createdTime,
-                    offer       : null
+                    text        : mess.text,
+                    createdTime : mess.createdTime
                 });
             }
 
@@ -855,13 +850,11 @@ class Network {
         player.connected = false;
         this.io.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
 
-        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté');
         this.io.to(game.name).emit('gameChatReceiveRes', {
-            type        : mess.type,
             playerID    : -1,
-            text        : mess.content,
-            createdTime : mess.createdTime,
-            offer       : null
+            text        : mess.text,
+            createdTime : mess.createdTime
         });
     }
 
@@ -871,13 +864,11 @@ class Network {
         this.gamePlayerListen(player, game);
         player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
 
-        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est reconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est reconnecté');
         this.io.to(game.name).emit('gameChatReceiveRes', {
-            type        : mess.type,
             playerID    : -1,
-            text        : mess.content,
-            createdTime : mess.createdTime,
-            offer       : null
+            text        : mess.text,
+            createdTime : mess.createdTime
         });
 
         player.socket.on('gameReadyReq', () => {
@@ -941,11 +932,9 @@ class Network {
             // messages de chat
             for (const mess of game.chat.messages) {
                 chatMessages.push({
-                    type: mess.type,
-                    playerID: mess.senderUser ? mess.senderUser : -1,
-                    text: mess.content,
-                    createdTime: mess.createdTime,
-                    offer: mess.offer ? mess.offer.id : null
+                    playerID: mess.sender ? mess.sender : -1,
+                    text: mess.text,
+                    createdTime: mess.createdTime
                 });
             }
             // infos de reconnexion au joueur

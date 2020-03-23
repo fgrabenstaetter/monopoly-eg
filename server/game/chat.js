@@ -13,18 +13,14 @@ class Chat {
     }
 
     /**
-     * @param senderUser L'utilisateur qui envoie le message (ou null si message du serveur)
-     * @param content Le texte du message
-     * @param type Le type du message (CHAT_MESSAGE_TYPE, voir constants.js)
-     * @param offer L'offre associée au message (facultatif)
+     * @param sender L'utilisateur qui envoie le message (ou null si message du serveur)
+     * @param text Le texte du message
      * @return Le message ajouté
      */
-    addMessage (senderUser, content, type, offer = null) {
+    addMessage (sender, text) {
         this.messages.push({
-            senderUser  : senderUser, // obj User ou Player
-            content     : content, // text
-            type        : type, // CHAT_MESSAGE_TYPE
-            offer       : offer, // obj Offer ou null
+            sender      : sender, // obj User ou Player
+            text        : text, // text
             createdTime : Date.now()
         });
 
