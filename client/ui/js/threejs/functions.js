@@ -92,8 +92,12 @@ function render () {
 }
 render();
 
-
-function deleteHouse (houseProperty) {
+function deleteHouse(ncase, nhouse)
+{
+	var concatS = "";
+	deleteHouseD(concatS.concat(tabHouse[ncase],"_",nhouse));
+}
+function deleteHouseD (houseProperty) {
 	requestAnimationFrame(render);
 	scene.remove(window[houseProperty]);
 }
@@ -129,18 +133,7 @@ function loaderPlateau (load, test) {
 	requestAnimationFrame(render);
 	const root = gltf.scene;
 	scene.add(root);
-  }, function ( xhr ) {
-
-	console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-},
-// called when loading has errors
-function ( error ) {
-
-	console.log( 'An error happened' );
-
-}
-);
+  });
 }
 
 var plateauObjects = [
@@ -188,20 +181,44 @@ for(var i = 0; i < 40; i++){
 };
 
 
-function loaderPawn (pawn) {
+function loaderPawn (pawn, vdp) {
 	load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
 		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
-		root.position.set(0.335*11,2,0.335*11.5);
-		root.rotateY(-1.6);
+		varMovement = vdp;
+		varCase = tabCases[varMovement];
+
+		var vdpx = varCase.x;
+		vdpx = (Math.floor(vdpx * 100) / 100);
+
+		var vdpz = varCase.z;
+		vdpz = (Math.floor(vdpz * 100) / 100);
+		root.position.set(vdpx, 2, vdpz);
+
+		if (vdp >= 1 && vdp <= 10) {
+			root.rotateY(Math.PI / -2);
+		} else if (vdp >= 11 && vdp <= 20) {
+			root.rotateY(Math.PI);
+		} else if (vdp >= 21 && vdp <= 30) {
+			root.rotateY(Math.PI / 2);
+		} else {
+			root.rotateY(Math.PI * 2);
+		}
+		
 		scene.add(root);
 	});
 }
 
 
-function loaderHouseProperty (houseProperty) {
+function loaderhouseProperty(ncase, nhouse)
+{
+	var concatS = "";
+	housePropertyL(concatS.concat(tabHouse[ncase],"_",nhouse));
+}
+
+function housePropertyL (houseProperty) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+houseProperty+'.gltf', (gltf) => {
 		requestAnimationFrame(render);

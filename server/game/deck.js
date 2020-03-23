@@ -30,13 +30,14 @@ class Deck {
     drawCard (game, player) {
         if (this.activeCards.length == 0) {
             this.activeCards = this.drawnCards;
-            this.drawnCards = [];
+            //this.drawnCards = [];
             this.shuffle();
         }
-
-        let card = this.activeCards.pop();
-        card.execute(game, player);
-        this.drawnCards.push(card);
+        else {
+            const card = this.activeCards.pop();
+            card.execute(game, player);
+            this.drawnCards.push(card);
+        }
     }
 }
 
