@@ -517,6 +517,7 @@ function hideLoaderOverlay() {
 // rent doit être une liste de 6 éléments
 function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPrice) {
     $('.overview-card .header').html(roadName);
+    $('.overview-card .header').removeClass('station');
     $('.overview-card .header').css("background-color", color);
     $('.overview-card .header').css("color", "white");
     let htmlContent = `<div class="rent">`+ rent[0] +`</div>
@@ -569,8 +570,9 @@ function populateStationOverviewCard(roadName, rent) {
 
 function emptyOverviewCard() {
     $('.overview-card .header').html('');
-    $(".overview-card .header").css("background-color", "white");
-    $(".overview-card .header").css("color", "white");
+    $('.overview-card .header').removeClass('station');
+    $('.overview-card .header').css("background-color", "white");
+    $('.overview-card .header').css("color", "white");
     $('.overview-card .content').html('');
 }
 
