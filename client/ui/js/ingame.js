@@ -8,8 +8,8 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    turnTimeSeconds: null,
-    turnDoubleDiceAddedTime: null // temps ajouté au tour en cas de double avec les dés
+    // turnTimeSeconds: null,
+    // turnDoubleDiceAddedTime: null // temps ajouté au tour en cas de double avec les dés
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -81,8 +81,6 @@ socket.on('gameStartedRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
-    DATA.turnTimeSeconds = data.turnTimeSeconds - 2; // Marge de 2 secondes
-    DATA.turnDoubleDiceAddedTime = data.turnDoubleDiceAddedTime;
 
     console.log('Le jeu a démarré !');
     console.log(data);
@@ -100,21 +98,23 @@ socket.on('gameStartedRes', (data) => {
 
 socket.on('gameTurnRes', (data) => {
     console.log(data);
+    let currentTimestamp = Date.now();
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
+    console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
 
     // On vide toutes les notifications (au cas-où)
     $('.notification-container > .col-md-12').empty();
 
-    const turnTimeout = data.turnEndTime;
-    // afficher décompte de temps du tour
     setCurrentPlayer(data.playerID);
 
+    // afficher décompte de temps du tour
     if (data.playerID === ID) {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Passage en timer");
-        $('#timer').progressTimed(DATA.turnTimeSeconds);
+        $('#timer').progressTimed(turnTimeSeconds);
     } else {
         console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
         console.log("[BOUTON D'ACTION] Passage en attente");
@@ -128,6 +128,14 @@ socket.on('gameActionRes', (data) => {
     console.log(data);
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
+
+
+    let currentTimestamp = Date.now();
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
+    console.log("[BOUTON D'ACTION] Resynchronisation du timer");
+    console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
+    $('#timer').progressTimed(turnTimeSeconds);
+
 
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
@@ -208,8 +216,8 @@ function checkDoubleDiceAndEndGameActionRes(data) {
         if (data.playerID === ID) {            
             console.log("[BOUTON D'ACTION] Initialisation");
             $('#timer').progressInitialize();
-            console.log("[BOUTON D'ACTION] Passage en timer");
-            $('#timer').progressTimed(DATA.turnTimeSeconds);
+            // console.log("[BOUTON D'ACTION] Passage en timer");
+            // $('#timer').progressTimed(DATA.turnTimeSeconds);
         } else {
             console.log("[BOUTON D'ACTION] Passage en attente");
             $('#timer').progressFinish();
