@@ -91,7 +91,7 @@ socket.on('gameStartedRes', (data) => {
 
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
-        loaderPawn(PAWNS[player.pawn]);
+        loaderPawn(PAWNS[player.pawn], '0');
 
         generatePlayerEntry(player.id, player.nickname, data.playersMoney);
     });
