@@ -10,7 +10,7 @@ const assert     = require('assert');
 describe("Bank", function() {
     let bank;
     let nbProperties = 0;
-    for (const cell of Cells)
+    for (const cell of Cells.new)
         if (cell.type === Constants.CELL_TYPE.PROPERTY)
             nbProperties ++;
 
@@ -24,7 +24,7 @@ describe("Bank", function() {
     const player = new Player(user, 0);
 
     beforeEach( () => {
-         bank = new Bank(Cells);
+         bank = new Bank(Cells.new);
     });
 
     it('Doit posséder le montant d\'argent initial', () => {

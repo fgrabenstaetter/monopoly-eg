@@ -27,7 +27,7 @@ class Game {
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
         this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells              = Cells;
+        this.cells              = Cells.new;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat               = new Chat();
