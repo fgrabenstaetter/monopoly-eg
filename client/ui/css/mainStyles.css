@@ -401,9 +401,7 @@ input {
   z-index: 3;
   background-color: #0052ba;
   top: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -1806,6 +1804,84 @@ input {
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
   background-color: cyan;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company {
+  background-color: #3a3a3a;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company .title {
+  display: inline;
+  position: relative;
+  left: -13px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company.eau:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f043";
+  margin-right: 10px;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
+  -webkit-transform: translateX(-13px) translateY(2px);
+          transform: translateX(-13px) translateY(2px);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company.electricite:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f0eb";
+  margin-right: 10px;
+  font-size: 15px;
+  color: white;
+  vertical-align: text-top;
+  -webkit-transform: translateX(-13px) translateY(1px);
+          transform: translateX(-13px) translateY(1px);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station {
+  background-color: white;
+  color: black;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station .title {
+  display: inline;
+  position: relative;
+  left: -13px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station:before {
+  font-family: "Font Awesome\ 5 Pro";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f239";
+  margin-right: 10px;
+  font-size: 15px;
+  color: black;
+  vertical-align: text-top;
+  -webkit-transform: translateX(-13px) translateY(2px);
+          transform: translateX(-13px) translateY(2px);
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.event {
