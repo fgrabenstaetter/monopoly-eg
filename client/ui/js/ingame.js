@@ -85,6 +85,10 @@ socket.on('gameStartedRes', (data) => {
     console.log('Le jeu a démarré !');
     console.log(data);
 
+    // Level par défaut des propriétés = 0 (car non upgrade)
+    for (const i in DATA.properties)
+        DATA.properties[i].level = 0;
+
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn]);
@@ -186,10 +190,8 @@ socket.on('gameActionRes', (data) => {
             if (data.asyncRequestType && property) {
                 if (data.asyncRequestType == "canBuy") {
                     let price = data.asyncRequestArgs[0];
-                    if (currPlayer.id == ID)
-                        createCard(property.id, property.color, property.name, price);
-                    else
-                        createDisabledCard(property.id, property.color, property.name, price);
+                    createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+
                 } else if (data.asyncRequestType == "canUpgrade") {
                     // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
                     let level1Price = data.asyncRequestArgs[0];
@@ -197,6 +199,9 @@ socket.on('gameActionRes', (data) => {
                     let level3Price = data.asyncRequestArgs[2];
                     let level4Price = data.asyncRequestArgs[3];
                     let level5price = data.asyncRequestArgs[4];
+
+                    createUpgradeCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+                    
                 } else if (data.asyncRequestType == "shouldMortage") {
                     // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
                     let totalMoneyToHave = data.asyncRequestArgs[0];
@@ -218,7 +223,7 @@ socket.on('gameActionRes', (data) => {
                     if (data.extra.newCard.type == "chance") {
                         createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
                     } else { // community
-                        createTextCard(data.extra.newCard.descritpion, (currPlayer.id != ID), "blue", "Carte communauté");
+                        createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
                     }
                 }
                 
@@ -260,8 +265,19 @@ function checkDoubleDiceAndEndGameActionRes(data) {
 }
 
 
+// Accepter d'améliorer sa propriété
+$('.notification-container').on('click', '.upgrade .accept', function () {
+    let level = $(this).find('.property-upgrade-level').val()
+    console.log("socket.emit(gamePropertyUpgradeReq) - level " + level);
+    socket.emit('gamePropertyUpgradeReq', { level: parseInt(level) });
+    $(this).parent().parent().fadeOut('fast', function () {
+        $(this).remove();
+    });
+});
 
-$('.notification-container').on('click', '.accept', function () {
+
+// Accepter l'achat d'un terrain vierge
+$('.notification-container').on('click', '.sale .accept', function () {
     console.log("socket.emit(gamePropertyBuyReq)");
     socket.emit('gamePropertyBuyReq');
     $(this).parent().parent().fadeOut('fast', function () {
@@ -269,13 +285,15 @@ $('.notification-container').on('click', '.accept', function () {
     });
 });
 
+// Refuser l'achat d'un terrain vierge ou l'amélioration d'une propriété
 $('.notification-container').on('click', '.reject', function () {
-    console.log("refus d'achat");
+    console.log("refus d'achat / amélioration");
     $(this).parent().parent().fadeOut('fast', function () {
         $(this).remove();
     });
 });
 
+// Terrain vierge acheté
 socket.on("gamePropertyBuyRes", (data) => {
     console.log("gamePropertyBuyRes");
     console.log(data);
@@ -293,11 +311,58 @@ socket.on("gamePropertyBuyRes", (data) => {
 
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
         $('.notification-container')
-            .find('.notification[data-property-id="' + property.id + '"] .btn-primary')
+            .find('.notification.sale[data-property-id="' + property.id + '"] .btn-primary')
             .animate({ zoom: '130%' }, 250, function () {
                 $(this).animate({ zoom: '100%' }, 250, function () {
                     setTimeout(function () {
-                        $('.notification-container').find('.notification[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
+                        $('.notification-container').find('.notification.sale[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
+                            $(this).remove();
+                        });
+                    }, 300);
+                });
+            });
+
+    }
+});
+
+
+// Terrain vierge acheté
+socket.on("gamePropertyUpgradeRes", (data) => {
+    console.log("gamePropertyUpgradeRes");
+    console.log(data);
+    if (typeof data.error !== "undefined") {
+        createTextCard(data.status, true, 'brown', 'Impossible d\'améliorer');
+        return;
+    }
+
+    let property = getPropertyById(data.propertyID);
+    let cell = getCellByProperty(property);
+    if (property && cell) {
+        setPlayerMoney(data.playerID, data.playerMoney);
+
+        // Construire les maisons / hotels
+        property.level = data.level
+        if (property.level == 1) {
+            console.log("Construire 1 maisons case " + cell.id);
+        } else if (property.level == 2) {
+            console.log("Construire 2 maisons case " + cell.id);
+        } else if (property.level == 3) {
+            console.log("Construire 3 maisons case " + cell.id);
+        } else if (property.level == 4) {
+            console.log("Construire 4 maisons case " + cell.id);
+        } else if (property.level == 5) {
+            console.log("Construire un hôtel case " + cell.id);
+        } else {
+            console.log("Niveau non pris en compte");
+        }
+
+        // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
+        $('.notification-container')
+            .find('.notification.upgrade[data-property-id="' + property.id + '"] .btn-primary')
+            .animate({ zoom: '130%' }, 250, function () {
+                $(this).animate({ zoom: '100%' }, 250, function () {
+                    setTimeout(function () {
+                        $('.notification-container').find('.notification.upgrade[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
                             $(this).remove();
                         });
                     }, 300);
@@ -328,6 +393,7 @@ socket.on('gameChatReceiveRes', (data) => {
 socket.on('gameReconnectionRes', (data) => {
     console.log(' --- RECONNEXION DATA');
     console.log(data);
+    // hideLoaderOverlay();
 });
 
 socket.on('gamePlayerDisconnectedRes', (data) => {
