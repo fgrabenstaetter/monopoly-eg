@@ -394,5 +394,13 @@ function generatePlayerEntry(id, nickname, money) {
     $('.player-list').append(html);
 }
 
+function displayLoaderOverlay() {
+    $(".loader-overlay-container").css("display", "flex");
+}
+
+function hideLoaderOverlay() {
+    $(".loader-overlay-container").css("display", "none");
+}
+
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
