@@ -576,12 +576,13 @@ class Network {
 
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime     : game.forcedEndTime,
-                    playersMoney    : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                    players         : players,
-                    cells           : cells,
-                    properties      : properties
+                    playersMoney            : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney               : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    turnTimeSeconds         : Constants.GAME_PARAM.TURN_MAX_DURATION / 1e3,
+                    turnDoubleDiceAddedTime : Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME / 1e3,
+                    players                 : players,
+                    cells                   : cells,
+                    properties              : properties
                 });
             }
         });
@@ -927,15 +928,16 @@ class Network {
             }
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
-                turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                gameEndTime     : game.forcedEndTime,
-                bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                chatMessages    : chatMessages,
-                offers          : [],
-                bids            : [],
-                players         : players,
-                cells           : cells,
-                properties      : properties
+                turnTimeSeconds         : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
+                turnDoubleDiceAddedTime : Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME / 1e3,
+                gameEndTime             : game.forcedEndTime,
+                bankMoney               : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                chatMessages            : chatMessages,
+                offers                  : [],
+                bids                    : [],
+                players                 : players,
+                cells                   : cells,
+                properties              : properties
             });
 
             if (game.curPlayer === player && game.turnData.canRollDiceAgain)

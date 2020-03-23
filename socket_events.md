@@ -437,6 +437,7 @@
         ```javascript
         {
             turnTimeSeconds: int, // durée d'un tour (en secondes)
+            turnDoubleDiceAddedTime: int, // temps (en secondes) ajouté après chaque double aux dés
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             playersMoney: int, // argent initial de chaque joueur
             bankMoney: int, // argent initial de la banque
@@ -526,6 +527,7 @@
         ```javascript
         {
             turnTimeSeconds: int, // durée d'un tour (en secondes)
+            turnDoubleDiceAddedTime: int, // temps (en secondes) ajouté après chaque double aux dés
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             bankMoney: int, // argent initial de la banque
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes

@@ -23,30 +23,16 @@ class Game {
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor(users, pawns, GLOBAL) {
-        this.GLOBAL = GLOBAL;
-        this.players = [];
-        this.id = Game.gameIDCounter++;
-        this.turnPlayerInd = Math.floor(Math.random() * this.players.length); // le premier sera l'indice cette valeur + 1 % nb joueurs
-        this.turnTimeout = null;
-        this.forcedDiceRes = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells = Cells;
-        this.chanceDeck = new Deck(chanceCardsMeta);
+        this.GLOBAL             = GLOBAL;
+        this.players            = [];
+        this.id                 = Game.gameIDCounter++;
+        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.cells              = Cells;
+        this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.chat = new Chat();
-        this.bids = [];
-        this.bank = new Bank(this.cells);
-
-        this.turnData = { // pour le client (envoi Network)
-            actionMessage: null,
-            asyncRequestType: null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs: null, // liste
-            nbDoubleDices: 0, // ++ à chaque double et si >= 3 => prison
-            canRollDiceAgain: false, // true quand le joueur peux encore lancer les dés, false sinon
-            endTime: null // timestamp de fin de tour
-        };
-
-        this.startedTime = null; // timestamp de démarrage en ms
-        this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
+        this.chat               = new Chat();
+        this.bids               = [];
+        this.bank               = new Bank(this.cells);
 
         for (let i = 0, l = users.length; i < l; i++) {
             const player = new Player(users[i], pawns[i]);
@@ -55,6 +41,26 @@ class Game {
             if (this.GLOBAL.network)
                 this.GLOBAL.network.gamePlayerListen(player, this);
         }
+
+        this.turnData = { // pour le client (envoi Network)
+            // action data
+            actionMessage    : null,
+            asyncRequestType : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs : null, // liste
+
+            // dices system
+            nbDoubleDices    : 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain : false, // true quand le joueur peux encore lancer les dés, false sinon
+
+            // turn system
+            startedTime      : null, // timestamp de début du tour
+            endTime          : null, // timestamp de fin de tour
+            timeout          : null,
+            playerInd        : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
+        };
+
+        this.startedTime = null; // timestamp de démarrage en ms
+        this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
     }
 
     delete() {
@@ -139,7 +145,7 @@ class Game {
      * @return le joueur du tour actuel
      */
     get curPlayer() {
-        return this.players[this.turnPlayerInd];
+        return this.players[this.turnData.playerInd];
     }
 
     /**
@@ -167,7 +173,7 @@ class Game {
      * Met fin au tour actuel (= fin de tour) et commence directement le tour suivant (pour ne pas devoir attendre le timeout)
      */
     endTurn() {
-        clearTimeout(this.turnTimeout);
+        clearTimeout(this.turnData.timeout);
         this.nextTurn();
     }
 
@@ -188,7 +194,7 @@ class Game {
 
         let cpt = 0;
         do {
-            this.turnPlayerInd = (this.turnPlayerInd >= this.players.length - 1) ? 0 : ++this.turnPlayerInd;
+            this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
             cpt ++;
             if (cpt > this.players.length) {
                 // tous en faillite
@@ -197,7 +203,8 @@ class Game {
             }
         } while (this.curPlayer.failure)
 
-        this.turnData.endTime = Date.now() + Constants.GAME_PARAM.TURN_MAX_DURATION;
+        this.turnData.startedTime = Date.now();
+        this.turnData.endTime = this.turnData.startedTime + Constants.GAME_PARAM.TURN_MAX_DURATION;
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
             turnEndTime: this.turnData.endTime
@@ -206,7 +213,7 @@ class Game {
         if (!this.curPlayer.connected)
             this.turnPlayerAFK();
         else
-            this.turnTimeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
     }
 
 
@@ -219,7 +226,7 @@ class Game {
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
             setTimeout(this.turnPlayerAFK.bind(this), waitAfterEach);
         } else
-            this.turnTimeout = setTimeout(this.nextTurn.bind(this), waitAfterEach); // fin tour
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), waitAfterEach); // fin tour
     }
 
     /**
@@ -232,9 +239,9 @@ class Game {
             return false;
         this.turnData.canRollDiceAgain = false;
 
-        this.resetTurnData();
+        this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-        this.forcedDiceRes = null;
+        this.forcedDiceRes = null; // forcedDiceRes => ne pas toucher (uniquement pour TU)
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes);
@@ -244,6 +251,12 @@ class Game {
                 this.curPlayer.goPrison();
             else
                 this.turnData.canRollDiceAgain = true;
+
+            // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
+            const timeLeft = this.turnData.endTime - Date.now();
+            const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
+            clearTimeout(this.turnData.timeout);
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
         }
 
         // peux être sorti de prison !
@@ -270,7 +283,7 @@ class Game {
                     break;
 
                 default: // OTHER (parc, carte départ)
-                // this.setTurnData(null, null, null); // pas besoin car déjà vide
+                // this.setTurnActionData(null, null, null); // pas besoin car déjà vide
             }
 
             if (oldPos > this.curPlayer.cellPos) // recevoir argent de la banque
@@ -318,7 +331,7 @@ class Game {
             if (property.type === Constants.PROPERTY_TYPE.STREET) {
                 const avUpgradeLevels = property.availableUpgradeLevels;
                 if (avUpgradeLevels !== [null, null, null, null, null])
-                    this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_UPGRADE, avUpgradeLevels,
+                    this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_UPGRADE, avUpgradeLevels,
                         'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de sa propriété ' + property.name);
                 // else => ne peux pax améliorer => rien à faire
             }
@@ -329,7 +342,7 @@ class Game {
 
             if (!property.owner && this.curPlayer.money >= buyingPrice) {
                 // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
-                this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
+                this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
                     'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
 
             } else if (property.owner) {
@@ -346,19 +359,19 @@ class Game {
                     if (sum < rentalPrice) {
                         // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
                         this.playerFailure(this.curPlayer);
-                        this.setTurnData(null, null,
+                        this.setTurnActionData(null, null,
                             'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')');
                     } else {
                         // lui demander quelles propriétés il veux hypothéquer
                         // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-                        this.setTurnData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [rentalPrice],
+                        this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [rentalPrice],
                             'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
                     }
 
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(property.rentalPrice);
-                    this.setTurnData(null, null,
+                    this.setTurnActionData(null, null,
                         'Le joueur ' + this.curPlayer.nickname + ' a payé ' + property.rentalPrice + ' de loyer à ' + property.owner.nickname);
                 }
             } // else => rien à faire
@@ -375,7 +388,7 @@ class Game {
 
     turnPlayerPrisonCell() {
         this.curPlayer.goPrison();
-        this.setTurnData(null, null,
+        this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en taule !');
     }
 
@@ -405,7 +418,7 @@ class Game {
         this.bank.delProperty(property);
         this.curPlayer.addProperty(property);
 
-        this.resetTurnData();
+        this.resetTurnActionData();
 
         return Errors.SUCCESS;
     }
@@ -426,7 +439,7 @@ class Game {
         this.curPlayer.loseMoney(price);
         this.curCell.property.upgrade(level);
 
-        this.resetTurnData();
+        this.resetTurnActionData();
         return true;
     }
 
@@ -452,7 +465,7 @@ class Game {
 
         // hypothéquer
         this.playerAutoMortage(this.curPlayer, properties);
-        this.resetTurnData();
+        this.resetTurnActionData();
         return true;
     }
 
@@ -465,14 +478,14 @@ class Game {
      * @param asyncRequestType Le type de requête asynchrone que le client pourra faire ensuite (ou null)
      * @param asyncRequestArgs Liste d'arguments pour la requête asynchrone possible à envoyer au joueur (ou null)
      */
-    setTurnData(asyncRequestType, asyncRequestArgs, actionMessage) {
+    setTurnActionData(asyncRequestType, asyncRequestArgs, actionMessage) {
         this.turnData.asyncRequestType = asyncRequestType;
         this.turnData.asyncRequestArgs = asyncRequestArgs;
         this.turnData.actionMessage = actionMessage;
     }
 
-    resetTurnData() {
-        this.setTurnData(null, null, null);
+    resetTurnActionData() {
+        this.setTurnActionData(null, null, null);
     }
 
     /**
@@ -499,10 +512,10 @@ class Game {
                 this.bids.push(bid);
                 const msg = 'Une enchère a demarré pour' + curProp.name;
                 this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {
-                    bidID: bid.id,
-                    playerID: null,
-                    text: msg,
-                    price: bid.amountAsked
+                    bidID    : bid.id,
+                    playerID : null,
+                    text     : msg,
+                    price    : bid.amountAsked
                 });
                 break;
         }
@@ -568,13 +581,13 @@ class Game {
             // envoyer message à tous les joueurs
             const mess = 'Le joueur ' + player.nickname + ' a payé ' + rentalPrice + ' de loyer à ' + owner.nickname;
             this.GLOBAL.network.io.to(this.name).emit('gamePropertyForcedMortageRes', {
-                properties: propertiesID,
-                playerID: player.id,
-                playerMoney: player.money,
-                message: mess,
-                rentalOwner: {
-                    id: owner.id,
-                    money: owner.money
+                properties  : propertiesID,
+                playerID    : player.id,
+                playerMoney : player.money,
+                message     : mess,
+                rentalOwner : {
+                    id      : owner.id,
+                    money   : owner.money
                 }
             });
         }
