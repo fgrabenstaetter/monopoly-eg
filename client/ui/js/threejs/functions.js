@@ -265,16 +265,16 @@ function movement (pawn, vdp, callback) {
 
 	// Rotation pour les pions
 	if (ppx == xmin && ppz == zmax){
-		window[pawn].rotateY(-1.6);
+		window[pawn].rotateY(Math.PI / -2);
 		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 	} else if (ppx == xmin && ppz == zmin){
-		window[pawn].rotateY(-1.6);
+		window[pawn].rotateY(Math.PI / -2);
 		window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 	}else if (ppx == xmax && ppz == zmin){
-		window[pawn].rotateY(-1.6);
+		window[pawn].rotateY(Math.PI / -2);
 		window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 	}else if (ppx == xmax && ppz == zmax){
-		window[pawn].rotateY(-1.6);
+		window[pawn].rotateY(Math.PI / -2);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 	}
 
