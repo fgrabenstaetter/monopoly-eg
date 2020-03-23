@@ -212,18 +212,19 @@ socket.on('gameActionRes', (data) => {
                 createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
             
             // Traitement des extras
-            if (typeof data.extra !== "undefined" && data.extra.length > 0) {
-                for (const i in data.extra) {
-                    // Si on est tombé sur une carte (chance / communauté)
-                    if (typeof data.extra[i].newCard !== "undefined") {
-                        if (data.extra[i].newCard.type == "chance") {
-                            createTextCard(data.extra[i].newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
-                        } else { // community
-                            createTextCard(data.extra[i].newCard.descritpion, (currPlayer.id != ID), "blue", "Carte communauté");
-                        }
-                    } else if (typeof data.extra[i].nbJailEscapeCards !== "undefined") { // Nb de cartes sortie de prison si il a changé
-                        currPlayer.nbJailEscapeCards = data.extra[i].nbJailEscapeCards;
+            if (typeof data.extra !== "undefined") {
+                // Si on est tombé sur une carte (chance / communauté)
+                if (typeof data.extra.newCard !== "undefined") {
+                    if (data.extra.newCard.type == "chance") {
+                        createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
+                    } else { // community
+                        createTextCard(data.extra.newCard.descritpion, (currPlayer.id != ID), "blue", "Carte communauté");
                     }
+                }
+                
+                // Nb de cartes sortie de prison si il a changé
+                if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+                    currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
                 }
             }
             
