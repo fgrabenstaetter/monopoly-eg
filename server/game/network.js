@@ -575,13 +575,12 @@ class Network {
                 }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime     : game.forcedEndTime,
-                    playersMoney    : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                    players         : players,
-                    cells           : cells,
-                    properties      : properties
+                    gameEndTime  : game.forcedEndTime,
+                    playersMoney : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    players      : players,
+                    cells        : cells,
+                    properties   : properties
                 });
             }
         });
@@ -599,12 +598,25 @@ class Network {
         });
     }
 
-    // n'est pas un event
+    gameTurnEndReq(player, game) {
+        player.socket.on('gameTurnEndReq', (data) => {
+            let err = Errors.SUCCESS;
+            if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else
+                game.endTurn();
+
+            player.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
+        });
+    }
+
+    // n'est pas une écoute d'event !
     gameTurnAction (player, game) {
         const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
         for (const playr of game.players)
             moneySav.push(playr.money);
         const nbJailEscapeCardsSave = player.nbJailEscapeCards;
+        const cellPosSave = player.cellPos;
 
         const diceRes = game.rollDice();
 
@@ -620,8 +632,9 @@ class Network {
         }
 
         const extra = [];
-        if (nbJailEscapeCardsSave !== player.nbJailEscapeCardsSave)
+        if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
             extra.push({ nbJailEscapeCards: player.nbJailEscapeCards });
+
         // ajouter carte chance/communauté si une a été tirée
         let cardToSend;
         switch (game.curCell.type) {
@@ -634,33 +647,21 @@ class Network {
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
                 extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
                 break;
-
-            default:
-                //Ne rien faire
-                break;
         }
 
+        const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
+        const cellPosTmp = (cardToSend && player.cellPos !== tmpc) ? tmpc : null;
         this.io.to(game.name).emit('gameActionRes', {
             dicesRes         : diceRes,
             playerID         : player.id,
+            cellPosTmp       : cellPosTmp,
             cellPos          : player.cellPos,
+            turnEndTime      : game.turnData.endTime,
             actionMessage    : game.turnData.actionMessage,
             asyncRequestType : game.turnData.asyncRequestType,
             asyncRequestArgs : game.turnData.asyncRequestArgs,
             updateMoney      : updateMoneyList,
             extra            : extra
-        });
-    }
-
-    gameTurnEndReq(player, game) {
-        player.socket.on('gameTurnEndReq', (data) => {
-            let err = Errors.SUCCESS;
-            if (player !== game.curPlayer)
-                err = Errors.GAME.NOT_MY_TURN;
-            else
-                game.endTurn();
-
-            player.socket.emit('gameTurnEndRes', { error: err.code, status: err.status });
         });
     }
 
@@ -816,7 +817,12 @@ class Network {
                 if (boundary >= 20) {
                     bid.updateBid(player, data.price);
                     const msg = player.nickname + ' a surrenchéri pour ' + bid.property.name + ' avec une valeur de ' + data.price;
-                    this.io.to(game.name).emit('gameBidRes', {bidID: bid.id, playerID: player.id, text: msg, price: data.price});
+                    this.io.to(game.name).emit('gameBidRes', {
+                        bidID: bid.id,
+                        playerID: player.id,
+                        text: msg,
+                        price: data.price
+                    });
                 }
                 else
                     err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
@@ -918,15 +924,14 @@ class Network {
             }
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
-                turnTimeSeconds : Constants.GAME_PARAM.TURN_MAX_DURATION / 1000,
-                gameEndTime     : game.forcedEndTime,
-                bankMoney       : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                chatMessages    : chatMessages,
-                offers          : [],
-                bids            : [],
-                players         : players,
-                cells           : cells,
-                properties      : properties
+                gameEndTime  : game.forcedEndTime,
+                bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                chatMessages : chatMessages,
+                offers       : [],
+                bids         : [],
+                players      : players,
+                cells        : cells,
+                properties   : properties
             });
 
             if (game.curPlayer === player && game.turnData.canRollDiceAgain)

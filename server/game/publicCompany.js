@@ -17,7 +17,6 @@ class PublicCompany extends Property {
         this.name        = data.name;
         this.description = data.description;
         this.price       = data.price;
-        this.rentalPrice = data.rentalPrice;
     }
 
     /**

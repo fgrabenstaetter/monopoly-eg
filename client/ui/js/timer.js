@@ -139,6 +139,12 @@ $(document).ready(() => {
         return this.first().progressSet(100);
     };
 
+
+    $.fn.progressSetStateTerminer = function(){
+        $(this).attr({'data-loading': 'TERMINER'});
+        return this;
+    };
+
     $.fn.progressSet = function (val) {
         val = val || 10;
 

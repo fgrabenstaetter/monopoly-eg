@@ -8,7 +8,8 @@ let DATA = {
     cells: [],
     properties: [],
     gameEndTime: null, // timestamp de fin forcée du jeu
-    turnTimeSeconds: null
+    // turnTimeSeconds: null,
+    // turnDoubleDiceAddedTime: null // temps ajouté au tour en cas de double avec les dés
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
@@ -80,7 +81,6 @@ socket.on('gameStartedRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
-    DATA.turnTimeSeconds = data.turnTimeSeconds - 2; // Marge de 2 secondes
 
     console.log('Le jeu a démarré !');
     console.log(data);
@@ -93,25 +93,28 @@ socket.on('gameStartedRes', (data) => {
     });
 
     initProperty();
+    hideLoaderOverlay();
 });
 
 socket.on('gameTurnRes', (data) => {
     console.log(data);
+    let currentTimestamp = Date.now();
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
+    console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
 
     // On vide toutes les notifications (au cas-où)
     $('.notification-container > .col-md-12').empty();
 
-    const turnTimeout = data.turnEndTime;
-    // afficher décompte de temps du tour
     setCurrentPlayer(data.playerID);
 
+    // afficher décompte de temps du tour
     if (data.playerID === ID) {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Passage en timer");
-        $('#timer').progressTimed(DATA.turnTimeSeconds);
+        $('#timer').progressTimed(turnTimeSeconds);
     } else {
         console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
         console.log("[BOUTON D'ACTION] Passage en attente");
@@ -126,15 +129,43 @@ socket.on('gameActionRes', (data) => {
 
     console.log("Action déclenchée par " + idToNick(data.playerID) + " => " + data.actionMessage);
 
+
+    let currentTimestamp = Date.now();
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
+
+    // console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
+    // $('#timer').progressInitialize();
+    // console.log("[BOUTON D'ACTION] Resynchronisation du timer");
+    // console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
+    // $('#timer').progressTimed(turnTimeSeconds);
+
+    // if (data.playerID != ID) {
+    //     console.log("[BOUTON D'ACTION] Passage en attente");
+    //     $('#timer').progressFinish(turnTimeSeconds);
+    // }
+
+    if (data.playerID == ID) {
+        console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
+        $('#timer').progressInitialize();
+        console.log("[BOUTON D'ACTION] Resynchronisation du timer");
+        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
+        $('#timer').progressTimed(turnTimeSeconds);
+        $('#timer').progressSetStateTerminer();
+    }
+
+
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
+
+    let cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
+    let cellPos2 = data.cellPosTmp ? data.cellPos : null;
 
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
         // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
         console.log("movement(" + PAWNS[getPlayerById(data.playerID).pawn] + ", " + data.cellPos.toString() + ");");
-        movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos.toString(), function () {
+        movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
             // Mise à jour des soldes (le cas échéant)
             if (data.updateMoney) {
                 data.updateMoney.forEach((row) => {
@@ -179,11 +210,40 @@ socket.on('gameActionRes', (data) => {
             // Affichage du message d'action donné par le serveur
             if (afficherMessageAction && data.actionMessage)
                 createTextCard(data.actionMessage, (data.playerID != ID), null, null);
+            
+            
 
-            console.log("=== fin gameActionRes ===");
+            if (cellPos2) {
+                movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
+                    checkDoubleDiceAndEndGameActionRes(data);
+                });
+            } else {
+                checkDoubleDiceAndEndGameActionRes(data);
+            }
         });
     });
 });
+
+/**
+ * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
+ */
+function checkDoubleDiceAndEndGameActionRes(data) {
+    // Si double avec les dés, on peut les relancer
+    if (data.dicesRes[0] == data.dicesRes[1]) {
+        if (data.playerID === ID) {       
+            // LABEL -> "RE-LANCER LES DÉS"     
+            console.log("[BOUTON D'ACTION] Initialisation");
+            $('#timer').progressInitialize();
+            // $('#timer').progressInitialize();
+            // console.log("[BOUTON D'ACTION] Passage en timer");
+            // $('#timer').progressTimed(DATA.turnTimeSeconds);
+        }
+    }
+
+    console.log("=== fin gameActionRes ===");
+}
+
+
 
 $('.notification-container').on('click', '.accept', function () {
     console.log("socket.emit(gamePropertyBuyReq)");
@@ -262,7 +322,10 @@ socket.on('gamePlayerReconnectedRes', (data) => {
     console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
 });
 
-socket.emit('gameReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
+// AUCUN EVENT SOCKET (ON) APRES CECI
+setTimeout(function() {
+    socket.emit('gameReadyReq'); 
+}, 2000); // Délai le temps que le plateau se charge (arbitraire pour l'instant)
 
 ////////////////////////////
 // INTERFACE JS FUNCTIONS //
@@ -357,6 +420,14 @@ function generatePlayerEntry(id, nickname, money) {
                 </div>`;
 
     $('.player-list').append(html);
+}
+
+function displayLoaderOverlay() {
+    $(".loader-overlay-container").css("display", "flex");
+}
+
+function hideLoaderOverlay() {
+    $(".loader-overlay-container").css("display", "none");
 }
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
