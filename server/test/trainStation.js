@@ -15,35 +15,38 @@ describe("TrainStation", function() {
         exp: 0
     };
     const user = new User(userSchema);
-    const player = new Player(user, 0);
-    const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
-    tStation.owner = player;
-    tStation.owner
-    const tS2 = new TrainStation(Properties.TRAIN_STATION[1]);
-    tS2.owner = player;
 
     it("Le nom de la gare est Gare de Strasbourg", function() {
-        assert.equal("Gare de Strasbourg", tStation.name);
+        const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
+        assert.equal("Arret de tram : Homme de Fer", tStation.name);
     });
 
     it("Le prix du terrain est de 200", function() {
+        const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
         assert.equal(200, tStation.price);
     });
 
     it("Le joueur qui possède cette gare n'en possède aucune autre donc le prix de loyer est de 25", function() {
-        player.properties.push(tStation);
+        const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
+        const player = new Player(user, 0);
+        player.addProperty(tStation);
         assert.equal(25, tStation.rentalPrice);
     });
 
     it("Maintenant il possède une 2e gare donc le prix du loyer passer à 50 pour les 2 gares", function() {
-
-        player.properties.push(tS2);
+        const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
+        const tStation2 = new TrainStation(Properties.TRAIN_STATION[1]);
+        const player = new Player(user, 0);
+        player.addProperty(tStation);
+        player.addProperty(tStation2);
         assert.equal(50, tStation.rentalPrice);
-        assert.equal(50, tS2.rentalPrice);
+        assert.equal(50, tStation2.rentalPrice);
     });
 
     it("Le prix d'hypothèque pour une gare est de 100", function() {
+        const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
+        const tStation2 = new TrainStation(Properties.TRAIN_STATION[1]);
         assert.equal(100, tStation.mortagePrice);
-        assert.equal(100, tS2.mortagePrice);
+        assert.equal(100, tStation2.mortagePrice);
     });
 });
