@@ -640,12 +640,25 @@ class Network {
         switch (game.curCell.type) {
             case Constants.CELL_TYPE.CHANCE:
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
+                extra.push({
+                    nbJailEscapeCards: player.nbJailEscapeCards,
+                    newCard: {
+                                type: 'chance',
+                                name: cardToSend.token,
+                                description: cardToSend.description}
+                             });
                 break;
 
             case Constants.CELL_TYPE.COMMUNITY:
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
-                extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
+                extra.push({
+                    nbJailEscapeCards: player.nbJailEscapeCards,
+                    newCard: {
+                                type: 'community',
+                                name: cardToSend.token,
+                                description: cardToSend.description
+                             }
+                          });
                 break;
         }
 
@@ -846,6 +859,15 @@ class Network {
         console.log(player.nickname + ' s\'est déconnecté du jeu !');
         player.connected = false;
         this.io.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        this.io.to(game.name).emit('gameChatReceiveRes', {
+            type        : mess.type,
+            playerID    : -1,
+            text        : mess.content,
+            createdTime : mess.createdTime,
+            offer       : null
+        });
     }
 
     gamePlayerReconnected (player, game) {
@@ -853,6 +875,15 @@ class Network {
         player.connected = true;
         this.gamePlayerListen(player, game);
         player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est reconnecté', Constants.CHAT_MESSAGE_TYPE.TEXT);
+        this.io.to(game.name).emit('gameChatReceiveRes', {
+            type        : mess.type,
+            playerID    : -1,
+            text        : mess.content,
+            createdTime : mess.createdTime,
+            offer       : null
+        });
 
         player.socket.on('gameReadyReq', () => {
 
