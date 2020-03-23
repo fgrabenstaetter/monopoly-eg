@@ -1,3 +1,4 @@
+const Constants  = require('../lib/constants');
 class Card {
     constructor (token, description, effectType, effectArg1=null, effectArg2=null) {
         this.token = token;
@@ -9,13 +10,12 @@ class Card {
         this.effectCallback = {
             gainMoney: this.gainMoney,
             loseMoney: this.loseMoney,
-            advance: this.advance,
+            advanceAbsolute: this.advanceAbsolute,
+            advanceRelative: this.advanceRelative,
+            repair: this.repair,
             jailBreak: this.jailBreak,
             jailTime: this.jailTime,
         }[this.effectType];
-
-        if (!this.effectCallback)
-            throw 'Effet de carte inconnu - ' + effectType;
     }
 
     execute (game, player) {
@@ -38,8 +38,32 @@ class Card {
         player.goPrison();
     }
 
-    advance (game, player) {
+    advanceAbsolute (game, player) {
         player.moveAbsolute(this.effectArg1);
+    }
+
+    advanceRelative (game, player) {
+        player.moveRelative(this.effectArg1);
+    }
+
+    repair (game, player) {
+        let nbHouses = 0, nbHostels = 0;
+        for (const prop of player.properties) {
+            if (prop.type === Constants.PROPERTY_TYPE.STREET) {
+                if (prop.housesNb !== 0) {
+                    nbHouses += prop.housesNb;
+                }
+                if (prop.hostel) {
+                    nbHostels++;
+                }
+            }
+        }
+        for (let i = 0; i < nbHouses; i++) {
+            player.loseMoney(this.effectArg1);
+        }
+        for (let i = 0; i < nbHostels; i++) {
+            player.loseMoney(this.effectArg2);
+        }
     }
 }
 

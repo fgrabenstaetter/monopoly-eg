@@ -90,6 +90,6 @@ const chanceCards = [{
     'description': 'Vous avez gagné le prix de mots croisés : recevez 100€',
     'effectType': 'gainMoney',
     'effectArg1': 100 //OK
-}]
+}];
 
 module.exports = chanceCards;

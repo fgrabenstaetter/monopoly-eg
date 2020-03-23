@@ -18,13 +18,6 @@ describe('Card', function () {
             assert.equal(card.effectArg1, 1);
             assert.equal(card.effectArg2, 3);
         });
-
-        it('doit retourner une erreur si le type d\'effet n\'est pas declare', function () {
-            function unknownEffectCard () {
-                new Card('test', 'Test', 'unknown', 1, 3);
-            };
-            assert.throws(unknownEffectCard, 'Effet de carte inconnu - unknown');
-        });
     });
 
     describe('goPrison', function () {
@@ -32,10 +25,9 @@ describe('Card', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
             let card = new Card('test', 'Test', 'jailTime');
-
             card.execute(game, firstPlayer);
-
             assert.isTrue(firstPlayer.isInPrison);
+
         });
     });
 
