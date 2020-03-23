@@ -399,7 +399,7 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.asyncRequestType, null);
 
                 const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra[data.extra.length - 1];
+                const receivedCard = data.extra.newCard;
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
