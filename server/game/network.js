@@ -640,12 +640,25 @@ class Network {
         switch (game.curCell.type) {
             case Constants.CELL_TYPE.CHANCE:
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                extra.push({type: 'chance', name: cardToSend.token, description: cardToSend.description});
+                extra.push({
+                    nbJailEscapeCards: player.nbJailEscapeCards,
+                    newCard: {
+                                type: 'chance',
+                                name: cardToSend.token,
+                                description: cardToSend.description}
+                             });
                 break;
 
             case Constants.CELL_TYPE.COMMUNITY:
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
-                extra.push({type: 'community', name: cardToSend.token, description: cardToSend.description});
+                extra.push({
+                    nbJailEscapeCards: player.nbJailEscapeCards,
+                    newCard: {
+                                type: 'community',
+                                name: cardToSend.token,
+                                description: cardToSend.description
+                             }
+                          });
                 break;
         }
 
