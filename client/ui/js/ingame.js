@@ -144,7 +144,13 @@ socket.on('gameActionRes', (data) => {
     //     $('#timer').progressFinish(turnTimeSeconds);
     // }
 
-    if (data.playerID == ID) {
+    let currPlayer = getPlayerById(data.playerID);
+    if (!currPlayer) {
+        console.log('JOUEUR INTROUVABLE');
+        return;
+    }
+
+    if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
         $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
@@ -153,9 +159,8 @@ socket.on('gameActionRes', (data) => {
         $('#timer').progressSetStateTerminer();
     }
 
-
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
-    console.log(idToNick(data.playerID) + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
+    console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
     let cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
     let cellPos2 = data.cellPosTmp ? data.cellPos : null;
@@ -163,19 +168,14 @@ socket.on('gameActionRes', (data) => {
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
-        // movement(PAWNS[getPlayerById(data.playerID).pawn], data.cellPos);
-        console.log("movement(" + PAWNS[getPlayerById(data.playerID).pawn] + ", " + data.cellPos.toString() + ");");
-        movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
+        // movement(PAWNS[currPlayer.pawn], data.cellPos);
+        console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + data.cellPos.toString() + ");");
+        movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
             // Mise à jour des soldes (le cas échéant)
             if (data.updateMoney) {
                 data.updateMoney.forEach((row) => {
                     setPlayerMoney(row.playerID, row.money);
                 });
-            }
-
-            // Affichage de la carte (le cas échéant)
-            if (data.extra && data.extra.newCard) {
-                alert("NOUVELLE CARTE => " + data.extra.newCard.type + " / " + data.extra.newCard.name + " / " + data.extra.newCard.name);
             }
 
             // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
@@ -186,7 +186,7 @@ socket.on('gameActionRes', (data) => {
             if (data.asyncRequestType && property) {
                 if (data.asyncRequestType == "canBuy") {
                     let price = data.asyncRequestArgs[0];
-                    if (data.playerID == ID)
+                    if (currPlayer.id == ID)
                         createCard(property.id, property.color, property.name, price);
                     else
                         createDisabledCard(property.id, property.color, property.name, price);
@@ -209,12 +209,28 @@ socket.on('gameActionRes', (data) => {
 
             // Affichage du message d'action donné par le serveur
             if (afficherMessageAction && data.actionMessage)
-                createTextCard(data.actionMessage, (data.playerID != ID), null, null);
+                createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
             
+            // Traitement des extras
+            if (typeof data.extra !== "undefined") {
+                // Si on est tombé sur une carte (chance / communauté)
+                if (typeof data.extra.newCard !== "undefined") {
+                    if (data.extra.newCard.type == "chance") {
+                        createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
+                    } else { // community
+                        createTextCard(data.extra.newCard.descritpion, (currPlayer.id != ID), "blue", "Carte communauté");
+                    }
+                }
+                
+                // Nb de cartes sortie de prison si il a changé
+                if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+                    currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+                }
+            }
             
 
             if (cellPos2) {
-                movement(PAWNS[getPlayerById(data.playerID).pawn], cellPos1.toString(), function () {
+                movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
                     checkDoubleDiceAndEndGameActionRes(data);
                 });
             } else {
