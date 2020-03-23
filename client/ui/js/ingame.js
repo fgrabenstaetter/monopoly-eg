@@ -423,7 +423,7 @@ function generatePlayerEntry(id, nickname, money) {
 }
 
 function displayLoaderOverlay() {
-    $(".loader-overlay-container").fadeIn('fast');
+    $(".loader-overlay-container").fadeIn(0);
 }
 
 function hideLoaderOverlay() {
