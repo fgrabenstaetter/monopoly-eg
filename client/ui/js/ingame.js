@@ -103,8 +103,8 @@ socket.on('gameStartedRes', (data) => {
 socket.on('gameTurnRes', (data) => {
     console.log(data);
     let currentTimestamp = Date.now();
-    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
-    console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
+    console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
 
     // On vide toutes les notifications (au cas-où)
     $('.notification-container > .col-md-12').empty();
@@ -135,7 +135,7 @@ socket.on('gameActionRes', (data) => {
 
 
     let currentTimestamp = Date.now();
-    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp)/1000);
+    let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
 
     // console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
     // $('#timer').progressInitialize();
@@ -158,7 +158,7 @@ socket.on('gameActionRes', (data) => {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
         $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
-        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes ('+currentTimestamp+' - '+data.turnEndTime+')');
+        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
         $('#timer').progressSetStateTerminer();
     }
@@ -251,7 +251,7 @@ socket.on('gameActionRes', (data) => {
 function checkDoubleDiceAndEndGameActionRes(data) {
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
-        if (data.playerID === ID) {       
+        if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"     
             console.log("[BOUTON D'ACTION] Initialisation");
             $('#timer').progressInitialize();
@@ -405,8 +405,8 @@ socket.on('gamePlayerReconnectedRes', (data) => {
 });
 
 // AUCUN EVENT SOCKET (ON) APRES CECI
-setTimeout(function() {
-    socket.emit('gameReadyReq'); 
+setTimeout(function () {
+    socket.emit('gameReadyReq');
 }, 2000); // Délai le temps que le plateau se charge (arbitraire pour l'instant)
 
 ////////////////////////////
@@ -504,12 +504,50 @@ function generatePlayerEntry(id, nickname, money) {
     $('.player-list').append(html);
 }
 
+// Loader overlay
 function displayLoaderOverlay() {
     $(".loader-overlay-container").fadeIn(0);
 }
 
 function hideLoaderOverlay() {
     $(".loader-overlay-container").fadeOut('fast');
+}
+
+// Overview card
+// rent doit être une liste de 6 éléments
+function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPrice) {
+    $('.overview-card .header').html(roadName);
+    $(".overview-card .header").css("background-color", color);
+    let htmlContent = `<div class="rent">`+ rent[0] +`</div>
+                        <div class="with-house">
+                            <div>Avec 1 Maison</div>
+                            <div>`+ rent[1] +`€</div>
+                        </div>
+                        <div class="with-house">
+                            <div>Avec 2 Maisons</div>
+                            <div>`+ rent[2] +`€</div>
+                        </div>
+                        <div class="with-house">
+                            <div>Avec 3 Maisons</div>
+                            <div>`+ rent[3] +`€</div>
+                        </div>
+                        <div class="with-house">
+                            <div>Avec 4 Maisons</div>
+                            <div>`+ rent[4] +`€</div>
+                        </div>
+                        <div class="with-hotel">
+                            <div>Avec 1 Hotel</div>
+                            <div>`+ rent[5] +`€</div>
+                        </div>
+                        <div class="house-price">Prix des Maisons `+ housePrice +`€ chacune</div>
+                        <div class="hotel-price">Prix d'un Hôtel `+ hotelPrice +`€ plus 4 maisons</div>`
+    $('.overview-card .content').html(htmlContent);
+}
+
+function emptyOverviewCard() {
+    $('.overview-card .header').html('');
+    $(".overview-card .header").css("background-color", "white");
+    $('.overview-card .content').html('');
 }
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
