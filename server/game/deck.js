@@ -1,6 +1,5 @@
 const Card = require('./card');
 
-
 class Deck {
     constructor (cardsInfo) {
         let cards = [];

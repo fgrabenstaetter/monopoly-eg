@@ -32,15 +32,14 @@ describe('Card', function () {
     });
 
     describe('jailBreak', function () {
-        it('le joueur doit echapper du prison', function () {
+        it('le joueur doit avoir une carte prison de plus', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
             let card = new Card('test', 'Test', 'jailBreak');
 
-            firstPlayer.goPrison();
             card.execute(game, firstPlayer);
 
-            assert.isFalse(firstPlayer.isInPrison);
+            assert.strictEqual(firstPlayer.nbJailEscapeCards, 1);
         });
     });
 
