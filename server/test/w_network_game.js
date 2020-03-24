@@ -433,7 +433,6 @@ describe('Network + Game', () => {
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
-                console.log(data);
                 switch (savedCard.effectType) {
                     case 'advanceAbsolute':
                         assert.strictEqual(player.cellPos, data.cellPos);
