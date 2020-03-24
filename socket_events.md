@@ -526,8 +526,8 @@
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             bankMoney: int, // argent initial de la banque
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
-            offers: array, // TODO
-            bids: array, // TODO
+            offers: array, // chaque élément: idem gameOfferReceiveRes
+            bids: array, // chaque élément: idem gameBidRes
             players: [
                 {
                     nickname: string,
@@ -832,18 +832,17 @@
 
 ### --- Enchères, hypothèques et divers
 
-- **Une enchère a démarrée/changée/terminée**
+- **Une enchère a démarrée/changée**
     > Peut être reçue plusieurs fois (si sur-enchérissement) pour mettre à jour le prix (alors même bidID)
-        Également reçue lorsque l'enchère est terminée (nom du gagnant compris dans text et price = null)
 
     * **Réponse:** gameBidRes
         * *Données:*
         ```javascript
         {
             bidID: int,
-            playerID: int,
+            playerID: int, // null la première fois
             text: string,
-            price: int | null // null si l'enchère a terminée
+            price: int
         }
         ```
 
@@ -864,6 +863,18 @@
         {
             error: int,
             status: string
+        }
+        ```
+
+- **Fin d'une enchère**
+    * **Réponse:** gameBidEndedRes
+        * *Données:*
+        ```javascript
+        {
+            bidID: int,
+            playerID: int
+            price: int,
+            bankMoney: int
         }
         ```
 
@@ -893,16 +904,4 @@
             questID: int
         }
 
-        ```
-
-- **Fin d'une enchère**
-    * **Réponse:** gameBidEndedRes
-        * *Données:*
-        ```javascript
-        {
-            bidID: int,
-            playerID: int
-            price: int,
-            bankMoney: int
-        }
         ```

@@ -841,11 +841,10 @@ class Network {
                 //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
                 if (boundary >= 20) {
                     bid.updateBid(player, data.price);
-                    const msg = player.nickname + ' a surrenchéri pour ' + bid.property.name + ' avec une valeur de ' + data.price;
                     this.io.to(game.name).emit('gameBidRes', {
                         bidID: bid.id,
                         playerID: player.id,
-                        text: msg,
+                        text: bid.text,
                         price: data.price
                     });
                 }
@@ -892,9 +891,11 @@ class Network {
             text        : mess.text,
             createdTime : mess.createdTime
         });
+            console.log('LOG 0');
 
         player.socket.on('gameReadyReq', () => {
 
+            console.log('LOG 1');
             let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
 
             for (const prop of player.properties)
@@ -939,7 +940,6 @@ class Network {
 
                         case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
                             propertyData.price       = cell.property.price;
-                            propertyData.rentalPrice = cell.property.rentalPrice;
                             break;
 
                         case Constants.PROPERTY_TYPE.TRAIN_STATION:
@@ -954,18 +954,40 @@ class Network {
             // messages de chat
             for (const mess of game.chat.messages) {
                 chatMessages.push({
-                    playerID: mess.sender ? mess.sender : -1,
-                    text: mess.text,
-                    createdTime: mess.createdTime
+                    playerID    : mess.sender ? mess.sender : -1,
+                    text        : mess.text,
+                    createdTime : mess.createdTime
                 });
             }
+
+            let bids = [], offers = [];
+
+            for (const bid of game.bids) {
+                bids.push({
+                    bidID    : bid.id,
+                    playerID : bid.player ? bid.player.id : null,
+                    text     : bid.text,
+                    price    : bid.amountAsked
+                });
+            }
+
+            for (const offer of Offer.offers) {
+                offers.push({
+                    offerID    : offer.id,
+                    makerID    : offer.maker.id,
+                    receiverID : offer.receiver.id,
+                    propertyID : offer.property.id,
+                    price      : offer.amount
+                });
+            }
+
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
                 gameEndTime  : game.forcedEndTime,
-                bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                bankMoney    : game.bank.money,
                 chatMessages : chatMessages,
-                offers       : [],
-                bids         : [],
+                offers       : offers,
+                bids         : bids,
                 players      : players,
                 cells        : cells,
                 properties   : properties
