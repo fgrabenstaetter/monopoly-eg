@@ -874,6 +874,7 @@ class Network {
     gamePlayerReconnected (player, game) {
         console.log(player.nickname + ' s\'est reconnecté au jeu !');
         player.connected = true;
+
         this.gamePlayerListen(player, game);
         player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
 
@@ -885,7 +886,6 @@ class Network {
         });
 
         player.socket.on('gameReadyReq', () => {
-
             let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
 
             for (const prop of player.properties)

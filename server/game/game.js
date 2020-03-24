@@ -44,20 +44,21 @@ class Game {
 
         this.turnData = { // pour le client (envoi Network)
             // action data
-            actionMessage    : null,
-            asyncRequestType : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs : null, // liste
+            actionMessage        : null,
+            asyncRequestType     : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs     : null, // liste
 
             // dices system
-            nbDoubleDices    : 0, // ++ à chaque double et si >= 3 => prison
-            canRollDiceAgain : false, // true quand le joueur peux encore lancer les dés, false sinon
+            nbDoubleDices        : 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain     : false, // true quand le joueur peux encore lancer les dés, false sinon
 
             // turn system
-            startedTime      : null, // timestamp de début du tour
-            endTime          : null, // timestamp de fin de tour
-            timeout          : null,
-            midTimeout       : null, // timestamp de moitié de tour => lancer les dés auto
-            playerInd        : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
+            startedTime          : null, // timestamp de début du tour
+            endTime              : null, // timestamp de fin de tour
+            timeout              : null,
+            midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
+            timeoutActionTimeout : null,
+            playerInd            : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
         };
 
         this.startedTime = null; // timestamp de démarrage en ms
@@ -184,8 +185,9 @@ class Game {
      */
 
     turnMidTimeCheck () {
-        if (this.turnData.canRollDiceAgain)
+        if (this.turnData.canRollDiceAgain) {
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
+        }
     }
 
     nextTurn() {
@@ -218,6 +220,8 @@ class Game {
         if (!this.curPlayer.connected)
             this.turnPlayerTimeoutAction();
         else {
+            clearTimeout(this.turnData.timeout);
+            clearTimeout(this.turnData.midTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION);
             this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), Constants.GAME_PARAM.TURN_MAX_DURATION / 2);
         }
@@ -227,9 +231,12 @@ class Game {
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
      */
     turnPlayerTimeoutAction () {
+        clearTimeout(this.turnData.timeout);
+        clearTimeout(this.turnData.timeoutActionTimeout);
+
         if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
+            this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
     }
@@ -261,8 +268,8 @@ class Game {
                 // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
                 const timeLeft = this.turnData.endTime - Date.now();
                 const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
-                clearTimeout(this.turnData.timeout);
 
+                clearTimeout(this.turnData.timeout);
                 this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
             }
         }
