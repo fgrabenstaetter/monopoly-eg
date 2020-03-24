@@ -700,10 +700,10 @@
         }
         ```
 
-* **Hypothéquer une/des propriété(s) (si forcé)**
-    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple, lorsque le solde actuel n'est plus suffisant (= vente forcée). Ignorer cet événement pour faire une vente automatique.
+* **Hypothéquer une/des propriété(s)**
+    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple (si forcé) ou par simple volonté, Dans le cas ou l'hypothèque est forcée (recevoir 'shouldMortage' en asyncRequestType de 'gameActionRes'), ignorer cet événement enclenche une vente automatique.
 
-    * **Requête:** gamePropertyForcedMortageReq
+    * **Requête:** gamePropertyMortageReq
         * *Données:*
         ```javascript
         {
@@ -711,17 +711,18 @@
         }
         ```
 
-    * **Réponse:** gamePropertyForcedMortageRes
+    * **Réponse:** gamePropertyMortageRes
         * *Données:*
         ```javascript
         {
             properties: [int, ...], // liste des ID des propriétés hypothéquées
             playerID: int,
             playerMoney: int, // nouveau solde
-            message: string, // message lié à l'hypothèque forcée
-            rentalOwner: { // joueur qui a reçu l'argent (loyer)
+            bankMoney: int,
+            message: string, // message lié à l'hypothèque
+            rentalOwner: { // seulement si hypothèque forcée, sinon null
                 id: int,
-                money: int // son nouveau montant
+                money: int // son nouveau solde
             }
         }
         ```

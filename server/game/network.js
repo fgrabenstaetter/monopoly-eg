@@ -60,7 +60,7 @@ class Network {
         // Actions de tour asynchrones
         this.gamePropertyBuyReq           (player, game);
         this.gamePropertyUpgradeReq       (player, game);
-        this.gamePropertyForcedMortageReq (player, game);
+        this.gamePropertyMortageReq (player, game);
 
         // Chat + offres
         this.gameChatSendReq              (player, game);
@@ -736,8 +736,8 @@ class Network {
         });
     }
 
-    gamePropertyForcedMortageReq(player, game) {
-        player.socket.on('gamePropertyForcedMortageReq', (data) => {
+    gamePropertyMortageReq(player, game) {
+        player.socket.on('gamePropertyMortageReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -745,11 +745,11 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if (!game.asyncActionManualForcedMortage(data.properties)) // hypothécation ici
+            else if (!game.asyncActionManualMortage(data.properties)) // hypothécation ici
                 err = Errors.GAME.NOT_ENOUGH_FOR_MORTAGE;
 
             if (err !== Errors.SUCCESS)
-                player.socket.emit('gamePropertyForcedMortageRes', { error: err.code, status: err.status });
+                player.socket.emit('gamePropertyMortageRes', { error: err.code, status: err.status });
             // else => envoyé par game.playerAutoMortage()
         });
     }

@@ -353,7 +353,7 @@ describe('Network + Game', () => {
             assert.strictEqual(data.asyncRequestType, 'shouldMortage');
             assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
 
-            sock.on('gamePropertyForcedMortageRes', (data) => {
+            sock.on('gamePropertyMortageRes', (data) => {
                 assert.strictEqual(data.error, undefined);
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
@@ -362,7 +362,7 @@ describe('Network + Game', () => {
                 assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
                 done();
             });
-            sock.emit('gamePropertyForcedMortageReq', { properties: [prop.id] });
+            sock.emit('gamePropertyMortageReq', { properties: [prop.id] });
         });
 
         sock.on('gameRollDiceRes', (data) => {
