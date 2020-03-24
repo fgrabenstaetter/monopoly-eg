@@ -24,7 +24,7 @@
         "memorystore": "^1.6.1",
         "mocha": "^7.1.1",
         "mocket-io": "^0.2.3",
-        "mongoose": "^5.9.5",
+        "mongoose": "^5.9.6",
         "mongoose-friends": "^0.2.5",
         "mysql": "^2.18.1",
         "socket-io-mock": "^1.0.1",
