@@ -674,7 +674,7 @@ class Network {
                 }
             }
             if (!player.isInPrison) {
-                game.makeTurnAfterMove(diceRes);
+                game.makeTurnAfterMove(diceRes, player);
             }
         }
 
