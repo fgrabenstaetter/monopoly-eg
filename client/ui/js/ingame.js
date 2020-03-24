@@ -92,8 +92,9 @@ socket.on('gameStartedRes', (data) => {
         // Champs par défaut du joueur
         player.properties = [];
         player.money = data.playersMoney;
+        player.cellPos = 0;
 
-        loaderPawn(PAWNS[player.pawn], '0');
+        loaderPawn(PAWNS[player.pawn], player.cellPos.toString());
         generatePlayerEntry(player.id, player.nickname, player.money);
     });
 
@@ -127,6 +128,11 @@ socket.on('gameTurnRes', (data) => {
     }
 });
 
+
+
+/*************************/
+/** DEBUT GAMEACTIONRES **/
+/*************************/
 
 socket.on('gameActionRes', (data) => {
     console.log("=== gameActionRes ===");
@@ -162,83 +168,99 @@ socket.on('gameActionRes', (data) => {
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
-        // movement(PAWNS[currPlayer.pawn], data.cellPos);
-        console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + data.cellPos.toString() + ");");
-        movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
-            // Mise à jour des soldes (le cas échéant)
-            if (data.updateMoney) {
-                data.updateMoney.forEach((row) => {
-                    setPlayerMoney(row.playerID, row.money);
-                });
-            }
-
-            // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
-            let property = getPropertyByCellId(data.cellPos);
-
-            let afficherMessageAction = false;
-            // asyncRequestType à gérer ici
-            if (data.asyncRequestType && property) {
-                if (data.asyncRequestType == "canBuy") {
-                    let price = data.asyncRequestArgs[0];
-                    createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
-
-                } else if (data.asyncRequestType == "canUpgrade") {
-                    // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
-                    let level1Price = data.asyncRequestArgs[0];
-                    let level2Price = data.asyncRequestArgs[1];
-                    let level3Price = data.asyncRequestArgs[2];
-                    let level4Price = data.asyncRequestArgs[3];
-                    let level5price = data.asyncRequestArgs[4];
-
-                    createUpgradeCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
-                    
-                } else if (data.asyncRequestType == "shouldMortage") {
-                    // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
-                    let totalMoneyToHave = data.asyncRequestArgs[0];
-                } else {
-                    afficherMessageAction = true;
-                }
-            } else {
-                afficherMessageAction = true;
-            }
-
-            // Affichage du message d'action donné par le serveur
-            if (afficherMessageAction && data.actionMessage)
-                createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
-            
-            // Traitement des extras
-            if (typeof data.extra !== "undefined") {
-                // Si on est tombé sur une carte (chance / communauté)
-                if (typeof data.extra.newCard !== "undefined") {
-                    if (data.extra.newCard.type == "chance") {
-                        createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
-                    } else { // community
-                        createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
-                    }
-                }
-                
-                // Nb de cartes sortie de prison si il a changé
-                if (typeof data.extra.nbJailEscapeCards !== "undefined") {
-                    currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
-                }
-            }
-            
-
-            if (cellPos2) {
-                movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
-                    checkDoubleDiceAndEndGameActionRes(data);
-                });
-            } else {
-                checkDoubleDiceAndEndGameActionRes(data);
-            }
-        });
+        // On ne déplace le joueur que s'il doit aller sur une nouvelle case
+        if (cellPos1 != currPlayer.cellPos) {
+            console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
+            currPlayer.cellPos = cellPos1;
+            movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
+                gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
+            });
+        } else {
+            gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
+        }
     });
 });
 
 /**
- * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
+ * Continue le tour de jeu (gameActionRes) après le premier déplacement
+ * @param data Données de gameActionRes
+ * @param currPlayer Joueur courant 
+ * @param cellPos2 Position #2 (le cas échéant)
  */
-function checkDoubleDiceAndEndGameActionRes(data) {
+function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
+    // Mise à jour des soldes (le cas échéant)
+    if (data.updateMoney) {
+        data.updateMoney.forEach((row) => {
+            setPlayerMoney(row.playerID, row.money);
+        });
+    }
+
+    // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
+    let property = getPropertyByCellId(data.cellPos);
+
+    let afficherMessageAction = false;
+    // asyncRequestType à gérer ici
+    if (data.asyncRequestType && property) {
+        if (data.asyncRequestType == "canBuy") {
+            let price = data.asyncRequestArgs[0];
+            createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+
+        } else if (data.asyncRequestType == "canUpgrade") {
+            // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+            let level1Price = data.asyncRequestArgs[0];
+            let level2Price = data.asyncRequestArgs[1];
+            let level3Price = data.asyncRequestArgs[2];
+            let level4Price = data.asyncRequestArgs[3];
+            let level5price = data.asyncRequestArgs[4];
+
+            createUpgradeCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+            
+        } else if (data.asyncRequestType == "shouldMortage") {
+            // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
+            let totalMoneyToHave = data.asyncRequestArgs[0];
+        } else {
+            afficherMessageAction = true;
+        }
+    } else {
+        afficherMessageAction = true;
+    }
+
+    // Affichage du message d'action donné par le serveur
+    if (afficherMessageAction && data.actionMessage)
+        createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
+    
+    // Traitement des extras
+    if (typeof data.extra !== "undefined") {
+        // Si on est tombé sur une carte (chance / communauté)
+        if (typeof data.extra.newCard !== "undefined") {
+            if (data.extra.newCard.type == "chance") {
+                createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
+            } else { // community
+                createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
+            }
+        }
+        
+        // Nb de cartes sortie de prison si il a changé
+        if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+            currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+        }
+    }
+
+    if (cellPos2 && cellPos2 != currPlayer.cellPos) {
+        movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
+            currPlayer.cellPos = cellPos2;
+            gameActionResAfterSecondMovement(data);
+        });
+    } else {
+        gameActionResAfterSecondMovement(data);
+    }
+}
+
+/**
+ * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
+ * @param data Données de gameActionRes
+ */
+function gameActionResAfterSecondMovement(data) {
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
         if (data.playerID === ID) {
@@ -250,6 +272,10 @@ function checkDoubleDiceAndEndGameActionRes(data) {
 
     console.log("=== fin gameActionRes ===");
 }
+
+/***********************/
+/** FIN GAMEACTIONRES **/
+/***********************/
 
 
 // Accepter d'améliorer sa propriété
