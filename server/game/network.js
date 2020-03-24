@@ -636,7 +636,7 @@ class Network {
         // ajouter carte chance/communauté si une a été tirée
         let cardToSend = null;
         const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
-        const cellPosTmp = player.cellPos !== tmpc ? tmpc : null;
+        const cellPosTmp = (!player.isInPrison && player.cellPos !== tmpc) ? tmpc : null;
 
         if (cellPosTmp === null) {
             if (game.curCell.type === Constants.CELL_TYPE.CHANCE) {

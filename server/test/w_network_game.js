@@ -389,7 +389,6 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
-            console.log(data);
             const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
             const receivedCard = data.extra.newCard;
             if (data.cellPos === 7) {
@@ -436,14 +435,10 @@ describe('Network + Game', () => {
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
                 switch (savedCard.effectType) {
                     case 'advanceAbsolute':
-                        //console.log(data);
                         assert.strictEqual(player.cellPos, data.cellPos);
-                        console.log(player.cellPos);
-                        console.log(data.cellPos);
                         break;
 
                     case 'advanceRelative':
-                        console.log(data);
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 
