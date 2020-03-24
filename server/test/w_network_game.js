@@ -389,14 +389,15 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
+            console.log(data);
+            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+            const receivedCard = data.extra.newCard;
             if (data.cellPos === 7) {
                 assert.deepEqual(data.dicesRes, [3, 4]);
                 assert.strictEqual(data.playerID, player.id);
                 assert.strictEqual(data.cellPos, 7);
                 assert.strictEqual(data.asyncRequestType, null);
 
-                const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra.newCard;
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
@@ -429,19 +430,20 @@ describe('Network + Game', () => {
             else if (data.cellPosTmp !== null) {
                 assert.deepEqual(data.dicesRes, [3, 4]);
                 assert.strictEqual(data.playerID, player.id);
-                assert.strictEqual(data.asyncRequestType, null);
-
-                const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra.newCard;
+                //assert.strictEqual(data.asyncRequestType, 'canBuy');
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
                 switch (savedCard.effectType) {
                     case 'advanceAbsolute':
+                        //console.log(data);
                         assert.strictEqual(player.cellPos, data.cellPos);
+                        console.log(player.cellPos);
+                        console.log(data.cellPos);
                         break;
 
                     case 'advanceRelative':
+                        console.log(data);
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 

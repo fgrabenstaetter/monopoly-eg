@@ -673,6 +673,9 @@ class Network {
                     description: cardToSend.description
                 }
             }
+            if (!player.isInPrison) {
+                game.makeTurnAfterMove(diceRes);
+            }
         }
 
         this.io.to(game.name).emit('gameActionRes', {

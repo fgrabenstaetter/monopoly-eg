@@ -272,33 +272,37 @@ class Game {
 
         // peux être sorti de prison !
         if (!this.curPlayer.isInPrison) {
-            const oldPos = this.curPlayer.cellPos;
-            const total = diceRes[0] + diceRes[1];
-            this.curPlayer.moveRelative(total);
-
-            switch (this.curCell.type) {
-                case Constants.CELL_TYPE.PRISON:
-                    this.turnPlayerPrisonCell();
-                    break;
-
-                case Constants.CELL_TYPE.PROPERTY:
-                    this.turnPlayerPropertyCell(diceRes);
-                    break;
-
-                case Constants.CELL_TYPE.CHANCE:
-                    this.turnPlayerChanceCardCell();
-                    break;
-
-                case Constants.CELL_TYPE.COMMUNITY:
-                    this.turnPlayerCommunityCardCell();
-                    break;
-            }
-
-            if (oldPos > this.curPlayer.cellPos) // recevoir argent de la banque
-                this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+            this.makeTurnAfterMove(diceRes);
         }
 
         return diceRes;
+    }
+
+    makeTurnAfterMove(diceRes) {
+        const oldPos = this.curPlayer.cellPos;
+        const total = diceRes[0] + diceRes[1];
+        this.curPlayer.moveRelative(total);
+
+        switch (this.curCell.type) {
+            case Constants.CELL_TYPE.PRISON:
+                this.turnPlayerPrisonCell();
+                break;
+
+            case Constants.CELL_TYPE.PROPERTY:
+                this.turnPlayerPropertyCell(diceRes);
+                break;
+
+            case Constants.CELL_TYPE.CHANCE:
+                this.turnPlayerChanceCardCell();
+                break;
+
+            case Constants.CELL_TYPE.COMMUNITY:
+                this.turnPlayerCommunityCardCell();
+                break;
+        }
+
+        if (oldPos > this.curPlayer.cellPos) // recevoir argent de la banque
+            this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
     }
 
     //////////////////////////////
