@@ -62,14 +62,11 @@ class Network {
         this.gamePropertyUpgradeReq       (player, game);
         this.gamePropertyMortageReq (player, game);
 
-        // Chat + offres
+        // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
         this.gameOfferSendReq             (player, game);
         this.gameOfferAcceptReq           (player, game);
-
-        // Divers
         this.gameOverbidReq               (player, game);
-        this.gameMortageReq               (player, game);
     }
 
     //////////////////
@@ -831,7 +828,6 @@ class Network {
     gameOverbidReq(player, game) {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
-            // TODO
             if (!data.text || !data.bidID)
                 err = Errors.MISSING_FIELD;
             else if (!(player === game.curPlayer))
@@ -858,14 +854,6 @@ class Network {
             player.socket.emit('gameOverbidRes', {error: err.code, status: err.status});
         });
     }
-
-    gameMortageReq(player, game) {
-        player.socket.on('gameMortageReq', (data) => {
-            let err = Errors.SUCCESS;
-            // TODO
-        });
-    }
-
 
     // UTILIES METHODS
 

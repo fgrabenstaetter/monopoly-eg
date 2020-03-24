@@ -204,11 +204,8 @@ class Game {
         do {
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
             cpt ++;
-            if (cpt > this.players.length) {
-                // tous en faillite
-                // TODO
-                this.delete();
-            }
+            if (cpt > this.players.length)
+                this.delete(); // tous en faillite
         } while (this.curPlayer.failure)
 
         this.turnData.startedTime = Date.now();
@@ -324,7 +321,7 @@ class Game {
                 this.curPlayer.quitPrison();
             else {
                 this.curPlayer.remainingTurnsInJail--;
-                setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison !');
+                setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (3 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
