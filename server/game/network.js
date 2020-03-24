@@ -891,11 +891,9 @@ class Network {
             text        : mess.text,
             createdTime : mess.createdTime
         });
-            console.log('LOG 0');
 
         player.socket.on('gameReadyReq', () => {
 
-            console.log('LOG 1');
             let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
 
             for (const prop of player.properties)
