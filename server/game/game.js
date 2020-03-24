@@ -318,7 +318,7 @@ class Game {
                 this.curPlayer.quitPrison();
             else {
                 this.curPlayer.remainingTurnsInJail--;
-                setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (3 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (3 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
