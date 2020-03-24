@@ -900,6 +900,26 @@
           content: attr(data-loading);
         }
 
+        .action-button.in-progress:before {
+          position: fixed;
+          top: 270px;
+          right: 70px;
+          color: rgba($color: white, $alpha: 0.8);
+          font-family: "Font Awesome\ 5 Pro";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: flex;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f522";
+          font-size: 15px;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(2px);
+        }
+
         /* The same goes for the .finished class */
 
         .action-button.finished:after {
