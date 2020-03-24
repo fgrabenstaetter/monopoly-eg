@@ -272,17 +272,15 @@ class Game {
 
         // peux être sorti de prison !
         if (!this.curPlayer.isInPrison) {
+            const oldPos = this.curPlayer.cellPos;
             const total = diceRes[0] + diceRes[1];
             this.curPlayer.moveRelative(total);
-            this.makeTurnAfterMove(diceRes, this.curPlayer);
+            this.makeTurnAfterMove(diceRes, this.curPlayer, oldPos);
         }
-
         return diceRes;
     }
 
-    makeTurnAfterMove(diceRes, player) {
-        const oldPos = player.cellPos;
-
+    makeTurnAfterMove(diceRes, player, oldPos) {
         switch (this.curCell.type) {
             case Constants.CELL_TYPE.PRISON:
                 this.turnPlayerPrisonCell();
@@ -300,7 +298,6 @@ class Game {
                 this.turnPlayerCommunityCardCell();
                 break;
         }
-
         if (oldPos > player.cellPos) // recevoir argent de la banque
             this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
     }
