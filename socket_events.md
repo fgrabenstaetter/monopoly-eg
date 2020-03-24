@@ -526,8 +526,8 @@
             gameEndTime: timestamp, // timestamp de fin de partie (limite)
             bankMoney: int, // argent initial de la banque
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
-            offers: array, // TODO
-            bids: array, // TODO
+            offers: array, // chaque élément: idem gameOfferReceiveRes
+            bids: array, // chaque élément: idem gameBidRes
             players: [
                 {
                     nickname: string,
@@ -700,10 +700,10 @@
         }
         ```
 
-* **Hypothéquer une/des propriété(s) (si forcé)**
-    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple, lorsque le solde actuel n'est plus suffisant (= vente forcée). Ignorer cet événement pour faire une vente automatique.
+* **Hypothéquer une/des propriété(s)**
+    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple (si forcé) ou par simple volonté, Dans le cas ou l'hypothèque est forcée (recevoir 'shouldMortage' en asyncRequestType de 'gameActionRes'), ignorer cet événement enclenche une vente automatique.
 
-    * **Requête:** gamePropertyForcedMortageReq
+    * **Requête:** gamePropertyMortageReq
         * *Données:*
         ```javascript
         {
@@ -711,17 +711,18 @@
         }
         ```
 
-    * **Réponse:** gamePropertyForcedMortageRes
+    * **Réponse:** gamePropertyMortageRes
         * *Données:*
         ```javascript
         {
             properties: [int, ...], // liste des ID des propriétés hypothéquées
             playerID: int,
             playerMoney: int, // nouveau solde
-            message: string, // message lié à l'hypothèque forcée
-            rentalOwner: { // joueur qui a reçu l'argent (loyer)
+            bankMoney: int,
+            message: string, // message lié à l'hypothèque
+            rentalOwner: { // seulement si hypothèque forcée, sinon null
                 id: int,
-                money: int // son nouveau montant
+                money: int // son nouveau solde
             }
         }
         ```
@@ -831,18 +832,17 @@
 
 ### --- Enchères, hypothèques et divers
 
-- **Une enchère a démarrée/changée/terminée**
+- **Une enchère a démarrée/changée**
     > Peut être reçue plusieurs fois (si sur-enchérissement) pour mettre à jour le prix (alors même bidID)
-        Également reçue lorsque l'enchère est terminée (nom du gagnant compris dans text et price = null)
 
     * **Réponse:** gameBidRes
         * *Données:*
         ```javascript
         {
             bidID: int,
-            playerID: int,
+            playerID: int, // null la première fois
             text: string,
-            price: int | null // null si l'enchère a terminée
+            price: int
         }
         ```
 
@@ -863,6 +863,18 @@
         {
             error: int,
             status: string
+        }
+        ```
+
+- **Fin d'une enchère**
+    * **Réponse:** gameBidEndedRes
+        * *Données:*
+        ```javascript
+        {
+            bidID: int,
+            playerID: int
+            price: int,
+            bankMoney: int
         }
         ```
 
@@ -892,16 +904,4 @@
             questID: int
         }
 
-        ```
-
-- **Fin d'une enchère**
-    * **Réponse:** gameBidEndedRes
-        * *Données:*
-        ```javascript
-        {
-            bidID: int,
-            playerID: int
-            price: int,
-            bankMoney: int
-        }
         ```

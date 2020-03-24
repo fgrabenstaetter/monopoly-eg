@@ -903,7 +903,7 @@
         .action-button.in-progress:before {
           position: fixed;
           top: 270px;
-          right: 70px;
+          right: 65px;
           color: rgba($color: white, $alpha: 0.8);
           font-family: "Font Awesome\ 5 Pro";
           -moz-osx-font-smoothing: grayscale;
@@ -918,6 +918,12 @@
           font-size: 15px;
           vertical-align: text-top;
           transform: translateX(-13px) translateY(2px);
+        }
+
+        @media (max-height: 820px) {
+          .action-button.in-progress:before {
+            top: 190px;
+          }
         }
 
         /* The same goes for the .finished class */

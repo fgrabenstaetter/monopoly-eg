@@ -353,7 +353,7 @@ describe('Network + Game', () => {
             assert.strictEqual(data.asyncRequestType, 'shouldMortage');
             assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
 
-            sock.on('gamePropertyForcedMortageRes', (data) => {
+            sock.on('gamePropertyMortageRes', (data) => {
                 assert.strictEqual(data.error, undefined);
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
@@ -362,7 +362,7 @@ describe('Network + Game', () => {
                 assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
                 done();
             });
-            sock.emit('gamePropertyForcedMortageReq', { properties: [prop.id] });
+            sock.emit('gamePropertyMortageReq', { properties: [prop.id] });
         });
 
         sock.on('gameRollDiceRes', (data) => {
@@ -389,14 +389,14 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
+            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+            const receivedCard = data.extra.newCard;
             if (data.cellPos === 7) {
                 assert.deepEqual(data.dicesRes, [3, 4]);
                 assert.strictEqual(data.playerID, player.id);
                 assert.strictEqual(data.cellPos, 7);
                 assert.strictEqual(data.asyncRequestType, null);
 
-                const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra.newCard;
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
@@ -429,13 +429,11 @@ describe('Network + Game', () => {
             else if (data.cellPosTmp !== null) {
                 assert.deepEqual(data.dicesRes, [3, 4]);
                 assert.strictEqual(data.playerID, player.id);
-                assert.strictEqual(data.asyncRequestType, null);
-
-                const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                const receivedCard = data.extra.newCard;
+                //assert.strictEqual(data.asyncRequestType, 'canBuy');
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
+                console.log(data);
                 switch (savedCard.effectType) {
                     case 'advanceAbsolute':
                         assert.strictEqual(player.cellPos, data.cellPos);

@@ -28,7 +28,7 @@ class Lobby {
         this.pawns = [];
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
 
-        this.targetUsersNb = 4; // de 2 à 8
+        this.targetUsersNb = 2; // de 2 à 8
         this.maxUsersNb = 8;
         this.open = true;
 

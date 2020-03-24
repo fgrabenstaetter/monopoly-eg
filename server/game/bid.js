@@ -11,6 +11,7 @@ class Bid {
         this.property = property;
         this.amountAsked = amountAsked;
         this.game = game;
+        this.text = 'Enchère en cours pour la propriété ' + this.property.name;
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
     }
 
@@ -33,10 +34,10 @@ class Bid {
         this.game.bank.delProperty(this.property);
         this.game.bids.splice(index, 1);
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
-            bidID: this.id,
-            playerID: this.player.id,
-            price: this.amountAsked,
-            bankMoney: this.game.bank.money
+            bidID     : this.id,
+            playerID  : this.player.id,
+            price     : this.amountAsked,
+            bankMoney : this.game.bank.money
         });
     }
 }
