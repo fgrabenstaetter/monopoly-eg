@@ -389,7 +389,6 @@ describe('Network + Game', () => {
             sock = clientSocket2;
 
         sock.on('gameActionRes', (data) => {
-            console.log(data);
             if (data.cellPos === 7) {
                 assert.deepEqual(data.dicesRes, [3, 4]);
                 assert.strictEqual(data.playerID, player.id);
@@ -413,15 +412,12 @@ describe('Network + Game', () => {
                         break;
 
                     case 'jailBreak':
-                        console.log('jailBreak');
                         break;
 
                     case 'jailTime':
-                        console.log('jailTime');
                         break;
 
                     case 'repair':
-                        console.log('repair');
                         break;
 
                     default:
@@ -436,19 +432,16 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.asyncRequestType, null);
 
                 const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                console.log(savedCard);
                 const receivedCard = data.extra.newCard;
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
                 assert.deepStrictEqual(receivedCard.name, savedCard.token);
                 switch (savedCard.effectType) {
                     case 'advanceAbsolute':
-                        console.log('ABSOLUTE MARCHE');
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 
                     case 'advanceRelative':
-                        console.log('RELATIVE MARCHE');
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 
