@@ -569,12 +569,12 @@ class Network {
                 }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime  : game.forcedEndTime,
-                    playersMoney : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    players      : players,
-                    cells        : cells,
-                    properties   : properties
+                    gameEndTime      : game.forcedEndTime,
+                    playersMoney     : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney        : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    players          : players,
+                    cells            : cells,
+                    properties       : properties
                 });
             }
         });
@@ -597,6 +597,8 @@ class Network {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
+            else if (Date.now() - game.turnData.startedTime < Constants.GAME_PARAM.MINIMUM_TIME_TO_END_TURN)
+                err = Errors.GAME.CANT_END_TURN_YET;
             else
                 game.endTurn();
 
@@ -682,6 +684,7 @@ class Network {
             cellPosTmp       : cellPosTmp,
             cellPos          : player.cellPos,
             turnEndTime      : game.turnData.endTime,
+            canEndTurnAfter  : game.turnData.canEndAfter,
             actionMessage    : game.turnData.actionMessage,
             asyncRequestType : game.turnData.asyncRequestType,
             asyncRequestArgs : game.turnData.asyncRequestArgs,
@@ -973,18 +976,22 @@ class Network {
 
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
-                gameEndTime  : game.forcedEndTime,
-                bankMoney    : game.bank.money,
-                chatMessages : chatMessages,
-                offers       : offers,
-                bids         : bids,
-                players      : players,
-                cells        : cells,
-                properties   : properties
+                gameEndTime      : game.forcedEndTime,
+                bankMoney        : game.bank.money,
+                chatMessages     : chatMessages,
+                offers           : offers,
+                bids             : bids,
+                players          : players,
+                cells            : cells,
+                properties       : properties
             });
 
             if (game.curPlayer === player && game.turnData.canRollDiceAgain)
-                player.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
+                player.socket.emit('gameTurnRes', {
+                    playerID        : player.id,
+                    turnEndTime     : game.turnData.endTime,
+                    canEndTurnAfter : game.turnData.canEndAfter
+                });
         });
     }
 }

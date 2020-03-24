@@ -150,6 +150,10 @@ module.exports = Object.freeze({
         NOT_ENOUGH_FOR_OFFER: {
             code: 4,
             status: 'Vous n\'avez pas assez d\'argent pour accepter cette offre'
+        },
+        CANT_END_TURN_YET: {
+            code: 5,
+            status: 'Vous devez encore un peu attendre avant de pouvoir terminer votre tour'
         }
     },
 

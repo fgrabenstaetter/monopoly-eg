@@ -212,9 +212,11 @@ class Game {
 
         this.turnData.startedTime = Date.now();
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
+        this.turnData.canEndAfter = this.turnData.startedTime + Constants.GAME_PARAM.MINIMUM_TIME_TO_END_TURN;
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime
+            playerID    : this.curPlayer.id,
+            turnEndTime : this.turnData.endTime,
+            canEndAfter : this.turnData.canEndAfter
         });
 
         if (!this.curPlayer.connected)
@@ -271,6 +273,7 @@ class Game {
 
                 clearTimeout(this.turnData.timeout);
                 this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                this.turnData.canEndAfter = Date.now() + Constants.GAME_PARAM.MINIMUM_TIME_TO_END_TURN;
             }
         }
 

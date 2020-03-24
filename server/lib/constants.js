@@ -32,8 +32,8 @@ const Constants = {
         TURN_MAX_DURATION                     : 3e4,
         TURN_DISCONNECTED_MAX_DURATION        : 1e4,
         TURN_DOUBLE_DICE_ADDED_TIME           : 1e4,
-        TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT : 5e3
-
+        TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT : 5e3,
+        MINIMUM_TIME_TO_END_TURN              : 4e3
     },
     GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY        : 'canBuy',
