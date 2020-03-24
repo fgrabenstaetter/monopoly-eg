@@ -184,7 +184,7 @@ socket.on('gameActionRes', (data) => {
 /**
  * Continue le tour de jeu (gameActionRes) après le premier déplacement
  * @param data Données de gameActionRes
- * @param currPlayer Joueur courant 
+ * @param currPlayer Joueur courant
  * @param cellPos2 Position #2 (le cas échéant)
  */
 function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
@@ -214,7 +214,7 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
             let level5price = data.asyncRequestArgs[4];
 
             createUpgradeCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
-            
+
         } else if (data.asyncRequestType == "shouldMortage") {
             // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
             let totalMoneyToHave = data.asyncRequestArgs[0];
@@ -228,7 +228,7 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
     // Affichage du message d'action donné par le serveur
     if (afficherMessageAction && data.actionMessage)
         createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
-    
+
     // Traitement des extras
     if (typeof data.extra !== "undefined") {
         // Si on est tombé sur une carte (chance / communauté)
@@ -239,7 +239,7 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
                 createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
             }
         }
-        
+
         // Nb de cartes sortie de prison si il a changé
         if (typeof data.extra.nbJailEscapeCards !== "undefined") {
             currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
@@ -267,6 +267,9 @@ function gameActionResAfterSecondMovement(data) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
             $('#timer').progressInitialize();
+        }
+        else {
+            $(this).attr({ 'data-loading': 'TERMINER' });
         }
     }
 
@@ -544,7 +547,7 @@ function bindOfferListener() {
 
 /**
  * Crée une entrée dans la listedes joueurs
- * @param id Identifiant du joueur 
+ * @param id Identifiant du joueur
  * @param nickname Pseudo du joueur
  * @param money Solde du joueur
  */
@@ -671,8 +674,8 @@ function populateCompanyOverviewCard(roadName, rent) {
     }
     $('.overview-card .header').css("background-color", "rgb(58, 58, 58)");
     $('.overview-card .header').css("color", "white");
-    let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public, 
-                            le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public, 
+    let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
+                            le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ rent +`</div>`
     $('.overview-card .content').html(htmlContent);

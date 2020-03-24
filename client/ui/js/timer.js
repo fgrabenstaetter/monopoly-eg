@@ -4,9 +4,8 @@ $(document).ready(() => {
         // This function will show a progress meter for
         // the specified amount of time
         if ($(this).attr('data-loading') == 'LANCER LES DES') {
-            $(this).attr({ 'data-loading': 'TERMINER' });
             // socket lancer les dés
-
+            $(this).addClass('disabled');
             console.log('gameRollDiceReq');
             socket.emit('gameRollDiceReq');
         }
@@ -16,7 +15,6 @@ $(document).ready(() => {
             $(this).progressFinish();
         }
     });
-
 });
 
 // The progress meter functionality is available as a series of plugins.
