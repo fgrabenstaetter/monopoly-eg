@@ -322,8 +322,10 @@ class Game {
                 this.curPlayer.quitPrison();
             } else if (diceRes[0] === diceRes[1])
                 this.curPlayer.quitPrison();
-            else
+            else {
                 this.curPlayer.remainingTurnsInJail--;
+                setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison !');
+            }
 
         } else {
             // pour linstant sortir = gratuit
@@ -401,7 +403,7 @@ class Game {
     turnPlayerPrisonCell() {
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en taule !');
+            this.curPlayer.nickname + ' est envoyé en prison !');
     }
 
     ///////////////////////////////
