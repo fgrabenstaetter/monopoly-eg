@@ -21,12 +21,12 @@ class Offer {
     }
 
     constructor (game, player, receiver, property, amount) {
-        this.game = game;
-        this.id = Offer.idCounter ++;
-        this.maker = player;
+        this.game     = game;
+        this.id       = Offer.idCounter ++;
+        this.maker    = player;
         this.receiver = receiver;
         this.property = property;
-        this.amount = amount;
+        this.amount   = amount;
         Offer.offers.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.OFFER_EXPIRE_AFTER);
     }
