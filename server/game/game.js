@@ -185,9 +185,8 @@ class Game {
      */
 
     turnMidTimeCheck () {
-        if (this.turnData.canRollDiceAgain) {
+        if (this.turnData.canRollDiceAgain)
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-        }
     }
 
     nextTurn() {
@@ -232,6 +231,7 @@ class Game {
      */
     turnPlayerTimeoutAction () {
         clearTimeout(this.turnData.timeout);
+        clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
 
         if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
@@ -261,16 +261,19 @@ class Game {
             this.turnData.nbDoubleDices ++;
             if (this.turnData.nbDoubleDices >= 3)
                 this.curPlayer.goPrison();
-            else
+            else {
                 this.turnData.canRollDiceAgain = true;
 
-            if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
-                // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
-                const timeLeft = this.turnData.endTime - Date.now();
-                const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
+                if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
+                    // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
+                    const timeLeft = this.turnData.endTime - Date.now();
+                    const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
 
-                clearTimeout(this.turnData.timeout);
-                this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                    clearTimeout(this.turnData.timeout);
+                    clearTimeout(this.turnData.midTimeout);
+                    this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // fin de tour
+                }
             }
         }
 
