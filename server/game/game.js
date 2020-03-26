@@ -201,13 +201,9 @@ class Game {
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
-        let cpt = 0;
-        do {
+        do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
-            cpt ++;
-            if (cpt > this.players.length)
-                this.delete(); // tous en faillite
-        } while (this.curPlayer.failure)
+        while (this.curPlayer.failure)
 
         this.turnData.startedTime = Date.now();
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
