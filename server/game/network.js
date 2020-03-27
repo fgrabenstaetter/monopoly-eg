@@ -606,12 +606,11 @@ class Network {
 
     // n'est pas une écoute d'event !
     gameTurnAction (player, game) {
+        const nbJailEscapeCardsSave = player.nbJailEscapeCards;
+        const cellPosSave = player.cellPos;
         const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
         for (const playr of game.players)
             moneySav.push(playr.money);
-        const nbJailEscapeCardsSave = player.nbJailEscapeCards;
-
-        const cellPosSave = player.cellPos;
 
         const diceRes = game.rollDice();
 
@@ -620,17 +619,8 @@ class Network {
             return;
         }
 
-        let updateMoneyList = [];
-        for (let i = 0; i < game.players.length; i++) {
-            if (moneySav.length > i && game.players[i].money !== moneySav[i])
-                updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
-        }
-
-        const extra = {};
-        if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
-            extra.nbJailEscapeCards = player.nbJailEscapeCards;
-
         // ajouter carte chance/communauté si une a été tirée
+        const extra = {};
         let cardToSend = null;
         const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
         const cellPosTmp = (!player.isInPrison && player.cellPos !== tmpc) ? tmpc : null;
@@ -666,11 +656,20 @@ class Network {
                     description: cardToSend.description
                 }
             }
-            if (!player.isInPrison) {
-                const oldPos = player.cellPos;
-                game.makeTurnAfterMove(diceRes, player, oldPos);
-            }
+
+            // exécuter le nécéssaire pour la case sur laquelle on a été deplacé
+            game.makeTurnAfterMove(diceRes, player, tmpc);
         }
+
+        // calcul les modifs
+        let updateMoneyList = [];
+        for (let i = 0; i < game.players.length; i++) {
+            if (moneySav.length > i && game.players[i].money !== moneySav[i])
+                updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
+        }
+
+        if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
+            extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
         this.io.to(game.name).emit('gameActionRes', {
             dicesRes         : diceRes,

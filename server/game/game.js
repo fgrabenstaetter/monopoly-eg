@@ -280,6 +280,7 @@ class Game {
             this.curPlayer.moveRelative(total);
             this.makeTurnAfterMove(diceRes, this.curPlayer, oldPos);
         }
+
         return diceRes;
     }
 
@@ -301,6 +302,7 @@ class Game {
                 this.turnPlayerCommunityCardCell();
                 break;
         }
+
         if (oldPos > player.cellPos) // recevoir argent de la banque
             this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
     }

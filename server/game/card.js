@@ -33,7 +33,11 @@ class Card {
     }
 
     moveAbsolute (game, player) {
+        const oldPos = player.cellPos;
         player.moveAbsolute(this.effectArg1);
+
+        if (player.cellPos === 30 && oldPos > 30) // = go prison
+            player.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START); // car regagné ensuite => annuler le gain
     }
 
     moveRelative (game, player) {
