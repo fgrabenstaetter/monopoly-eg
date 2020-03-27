@@ -10,9 +10,8 @@ const {createUser} = require('./factories/user');
 describe('Card', function () {
     describe('constructor()', function () {
         it('doit assigner correctement description, effectType, effectArg1 et effectArg2', function() {
-            let card = new Card('test', 'Test', 'gainMoney', 1, 3);
+            let card = new Card('Test', 'gainMoney', 1, 3);
 
-            assert.equal(card.token, 'test');
             assert.equal(card.description, 'Test');
             assert.equal(card.effectType, 'gainMoney');
             assert.equal(card.effectArg1, 1);
@@ -20,25 +19,13 @@ describe('Card', function () {
         });
     });
 
-    describe('goPrison', function () {
-        it('le joueur doit arriver en prison', function () {
-            let game = createGame();
-            let firstPlayer = game.players[0];
-            let card = new Card('test', 'Test', 'jailTime');
-            card.execute(game, firstPlayer);
-            assert.isTrue(firstPlayer.isInPrison);
-
-        });
-    });
-
-    describe('jailBreak', function () {
+    describe('jailEscapeCard', function () {
         it('le joueur doit avoir une carte prison de plus', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
-            let card = new Card('test', 'Test', 'jailBreak');
+            let card = new Card('Test', 'jailEscapeCard');
 
             card.execute(game, firstPlayer);
-
             assert.strictEqual(firstPlayer.nbJailEscapeCards, 1);
         });
     });
@@ -48,10 +35,9 @@ describe('Card', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
             let starting_amount = firstPlayer.money;
-            let card = new Card('test', 'Test', 'gainMoney', 50);
+            let card = new Card('Test', 'gainMoney', 50);
 
             card.execute(game, firstPlayer);
-
             assert.equal(firstPlayer.money, starting_amount + 50);
         });
     });
@@ -61,20 +47,18 @@ describe('Card', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
             let starting_amount = firstPlayer.money;
-            let card = new Card('test', 'Test', 'loseMoney', 50);
+            let card = new Card('Test', 'loseMoney', 50);
 
             card.execute(game, firstPlayer);
-
             assert.equal(firstPlayer.money, starting_amount - 50);
         });
 
         it('l\'argent du joueur ne peut pas baisser moins de 0', function () {
             let game = createGame();
             let firstPlayer = game.players[0];
-            let card = new Card('test', 'Test', 'loseMoney', firstPlayer.money * 2);
+            let card = new Card('Test', 'loseMoney', firstPlayer.money * 2);
 
             card.execute(game, firstPlayer);
-
             assert.equal(firstPlayer.money, 0);
         });
     });

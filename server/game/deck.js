@@ -6,7 +6,6 @@ class Deck {
 
         for (let cardInfo of cardsInfo) {
             let card = new Card(
-                cardInfo.token,
                 cardInfo.description,
                 cardInfo.effectType,
                 cardInfo.effectArg1,

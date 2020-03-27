@@ -399,7 +399,6 @@ describe('Network + Game', () => {
 
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
-                assert.deepStrictEqual(receivedCard.name, savedCard.token);
                 switch (savedCard.effectType) {
                     case 'loseMoney':
                         newMoney = money - savedCard.effectArg1;
@@ -432,13 +431,12 @@ describe('Network + Game', () => {
                 //assert.strictEqual(data.asyncRequestType, 'canBuy');
                 assert.strictEqual('chance', receivedCard.type);
                 assert.deepStrictEqual(receivedCard.description, savedCard.description);
-                assert.deepStrictEqual(receivedCard.name, savedCard.token);
                 switch (savedCard.effectType) {
-                    case 'advanceAbsolute':
+                    case 'moveAbsolute':
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 
-                    case 'advanceRelative':
+                    case 'moveRelative':
                         assert.strictEqual(player.cellPos, data.cellPos);
                         break;
 

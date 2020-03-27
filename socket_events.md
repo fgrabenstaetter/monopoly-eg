@@ -604,7 +604,6 @@
                 nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
                 newCard: {
                     type: string, // chance | community
-                    name: string,
                     description: string
                 }
             }

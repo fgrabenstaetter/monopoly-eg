@@ -640,7 +640,6 @@ class Network {
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'chance',
-                    name: cardToSend.token,
                     description: cardToSend.description
                 }
             }
@@ -648,7 +647,6 @@ class Network {
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'community',
-                    name: cardToSend.token,
                     description: cardToSend.description
                 }
             }
@@ -658,7 +656,6 @@ class Network {
                 cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'chance',
-                    name: cardToSend.token,
                     description: cardToSend.description
                 }
             }
@@ -666,7 +663,6 @@ class Network {
                 cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
                 extra.newCard = {
                     type: 'community',
-                    name: cardToSend.token,
                     description: cardToSend.description
                 }
             }
