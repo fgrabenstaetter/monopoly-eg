@@ -41,7 +41,7 @@ const communityChestCards = [{
     effectArg1: 20
 }, {
     description: "C'est votre anniversaire! Chaque joueur doit vous donner 10€.",
-    effectType: 'gainMoney',
+    effectType: 'anniversary',
     effectArg1: 10
 }, {
     description: "Payez à l'Hopital 100€",
