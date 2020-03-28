@@ -366,24 +366,9 @@ class Game {
                 const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice;
 
                 if (this.curPlayer.money < rentalPrice) {
-                    // Le joueur n'a pas assez pour payer
-                    // regarder si ses propriétés valent assez pour combler ce montant
-                    let sum = this.curPlayer.money;
-                    for (const prop of this.curPlayer.properties)
-                        sum += prop.mortagePrice;
-
-                    if (sum < rentalPrice) {
-                        // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
-                        this.playerFailure(this.curPlayer);
-                        this.setTurnActionData(null, null,
-                            'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')');
-                    } else {
-                        // lui demander quelles propriétés il veux hypothéquer
-                        // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-                        this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [rentalPrice],
-                            'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
-                    }
-
+                    this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
+                        'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')',
+                        'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(rentalPrice);
@@ -460,11 +445,11 @@ class Game {
     }
 
     /**
-     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée ou NON, voir playerAutoMortage)
+     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée (cause: loyer ou taxe) ou NON, voir playerAutoMortage)
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortage(propertiesList) {
-        const rentalPrice = this.turnData.asyncRequestArgs[0]; // null si pas hypothèque forcée
+        const moneyToObtain = this.turnData.asyncRequestArgs[0]; // null si pas hypothèque forcée
         let sum = this.curPlayer.money;
         let properties = [];
 
@@ -476,7 +461,7 @@ class Game {
             }
         }
 
-        if (rentalPrice && sum < rentalPrice) // seulement si hypothèque forcée
+        if (moneyToObtain && sum < moneyToObtain) // seulement si hypothèque forcée (cause: loyer ou taxe)
             return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
 
@@ -561,11 +546,11 @@ class Game {
      * @param properties si null et hypothèque forcée => vente automatique dans l'ordre croissant, sinon liste des propriétés obtenues via asyncActionManualMortage UNIQUEMENT (la somme des hypothèques + argent joueur doit être suffisante dans ce cas !)
      */
     playerAutoMortage(player, properties = null) {
-        // hypothèque forcée = rentalPrice ci-dessous != null SINON PAS FORCÉE
-        const rentalPrice = this.turnData.asyncRequestArgs[0];
+        // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
+        const moneyToObtain = this.turnData.asyncRequestArgs[0];
         let sum = player.money;
 
-        if (!rentalPrice && !properties)
+        if (!moneyToObtain && !properties)
             return false;
 
         if (!properties) { // vente automatique forcée (dans l'ordre)
@@ -573,7 +558,7 @@ class Game {
             for (const prop of properties) {
                 sum += prop.mortagePrice;
                 properties.push(prop);
-                if (sum >= rentalPrice)
+                if (sum >= moneyToObtain)
                     break;
             }
         } else { // liste donnée en paramètre: hyp forcée manuel ou non forcée
@@ -581,7 +566,7 @@ class Game {
                 sum += prop.mortagePrice;
         }
 
-        if (rentalPrice && sum < rentalPrice) // failure
+        if (moneyToObtain && sum < moneyToObtain) // failure
             this.playerFailure(player);
         else {
             // succès
@@ -597,13 +582,20 @@ class Game {
 
 
             let rentalOwner, mess;
-            if (rentalPrice) { // hypothèque forcée
-                // payer le loyer
-                const owner = this.cells[player.cellPos].property.owner;
-                owner.addMoney(rentalPrice);
-                player.loseMoney(rentalPrice);
-                rentalOwner = { id: owner.id, money: owner.money };
-                mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + rentalPrice + '€ de loyer à ' + owner.nickname;
+            if (moneyToObtain) { // hypothèque forcée
+                // payer le loyer ou la taxe
+                player.loseMoney(moneyToObtain);
+                if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
+                    // payer loyer
+                    const owner = this.cells[player.cellPos].property.owner;
+                    owner.addMoney(moneyToObtain);
+                    rentalOwner = { id: owner.id, money: owner.money };
+                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
+                } else if (this.curCell.type === Constants.CELL_TYPE.TAX) {
+                    // payer taxe
+                    this.bank.addMoney(moneyToObtain);
+                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de taxes';
+                }
             } else { // non forcée
                 rentalOwner = null;
                 mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€';
@@ -617,6 +609,30 @@ class Game {
                 message     : mess,
                 rentalOwner : rentalOwner
             });
+        }
+    }
+
+    /**
+     * Cette méthode est appelée lorsqu'un joueur n'a pas assez d'argent pour payer quelque chose. Il va devoir hypothéquer, ou directement en faillite si même en hypothéquant il ne peux pas avoir assez d'argent.
+     * @param player Le joueur qui n'a pas assez d'argent pour payer quelque chose
+     * @param moneyToObtain L'argent qu'il doit réussir à avoir en hypothéquant, sinon faillite (vérifications ICI)
+     * @param msgIfFailure Le message a mettre dans turnData.actionMessage si le joueur est en faillite
+     * @param msgIfShouldMortage Le message a mettre dans turnData.actionMessage si le joueur doit hypothéquer (pas de faillite)
+     */
+    playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortage) {
+        // regarder si ses propriétés valent assez pour combler ce montant
+        let sum = player.money;
+        for (const prop of player.properties)
+            sum += prop.mortagePrice;
+
+        if (sum < moneyToObtain) {
+            // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
+            this.playerFailure(player);
+            this.setTurnActionData(null, null, msgIfFailure);
+        } else {
+            // lui demander quelles propriétés il veux hypothéquer
+            // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
+            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [moneyToObtain], msgIfShouldMortage);
         }
     }
 }
