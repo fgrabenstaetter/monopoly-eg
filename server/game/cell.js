@@ -6,28 +6,12 @@ const Constants = require('./../lib/constants');
 class Cell {
     /**
      * @param type Type de case (voir CELL_TYPE)
-     * @param property Propriété associée à la case (le cas échéant)
+     * @param obj Propriété associée à la case (si type propriété) ou Taxe associée (si type taxe)
      */
-    constructor (type, property = null) {
-        this.type = type;
-        this.property = property;
-    }
-
-    get name () {
-        switch (this.type) {
-            case Constants.CELL_TYPE.START:
-                return 'Début';
-            case Constants.CELL_TYPE.PARC:
-                return 'Parc';
-            case Constants.CELL_TYPE.PRISON:
-                return 'Prison';
-            case Constants.CELL_TYPE.PROPERTY:
-                return this.property.name;
-            case Constants.CELL_TYPE.CHANCE_CARD:
-                return 'Carte chance';
-            case Constants.CELL_TYPE.COMMUNITY_CARD:
-                return 'Carte de communauté';
-        }
+    constructor (type, obj = null) {
+        this.type     = type;
+        this.property = this.type === Constants.CELL_TYPE.PROPERTY ? obj : null;
+        this.tax      = this.type === Constants.CELL_TYPE.TAX ? obj : null;
     }
 }
 

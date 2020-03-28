@@ -449,8 +449,9 @@
             cells: [
                 {
                     id: int,
-                    type: string, // prison | property | chance | community | other (parc ou début)
-                    propertyID: int | null // null ou ID de propriété si type == property
+                    type: string, // prison | property | chance | community | tax | other (parc ou début)
+                    propertyID: int | null, // null ou ID de propriété si type == property
+                    taxID: int | null, // null ou ID de la taxe si type === tax
                 }, ...
             ],
             properties: [ // appartiennent toutes à la banque au début
@@ -460,6 +461,13 @@
                     name: string,
                     description: string,
                     // + autres champs selon type (voir ci-dessous)
+                }, ...
+            ],
+            taxes: [
+                {
+                    id: int,
+                    description: string,
+                    money: int // argent à perdre lorsque on tombe sur cette taxe
                 }, ...
             ]
         }
@@ -719,7 +727,7 @@
             playerMoney: int, // nouveau solde
             bankMoney: int,
             message: string, // message lié à l'hypothèque
-            rentalOwner: { // seulement si hypothèque forcée, sinon null
+            rentalOwner: { // seulement si hypothèque forcée POUR PAYER UN LOYER (pas taxe), sinon null
                 id: int,
                 money: int // son nouveau solde
             }

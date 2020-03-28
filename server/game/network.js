@@ -522,7 +522,7 @@ class Network {
                 game.start();
 
                 // envoyer les données initiales de jeu à tous les joueurs
-                let players = [], cells = [], properties = [], cellsCounter = 0;
+                let players = [], cells = [], properties = [], taxes = [], cellsCounter = 0;
 
                 for (const player of game.players) {
                     players.push({
@@ -536,10 +536,10 @@ class Network {
                     cells.push({
                         id         : cellsCounter ++,
                         type       : cell.type,
-                        propertyID : cell.property ? cell.property.id : null
+                        propertyID : cell.property ? cell.property.id : null,
+                        taxID      : cell.tax ? cell.tax.id : null
                     });
 
-                    // propriétés
                     if (cell.type === Constants.CELL_TYPE.PROPERTY) {
                         let propertyData = {
                             id          : cell.property.id,
@@ -565,6 +565,13 @@ class Network {
                         }
 
                         properties.push(propertyData);
+
+                    } else if (cell.type === Constants.CELL_TYPE.TAX) {
+                        taxes.push({
+                            id          : cell.tax.id,
+                            description : cell.tax.description,
+                            money       : cell.tax.money
+                        });
                     }
                 }
 
@@ -574,7 +581,8 @@ class Network {
                     bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
                     players      : players,
                     cells        : cells,
-                    properties   : properties
+                    properties   : properties,
+                    taxes        : taxes
                 });
             }
         });

@@ -4,6 +4,7 @@ const Constants = {
         COMMUNITY : 'community',
         CHANCE    : 'chance',
         PRISON    : 'prison',
+        TAX       : 'tax',
         OTHER     : 'other'
     },
     PROPERTY_TYPE: {

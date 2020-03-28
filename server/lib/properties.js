@@ -1,6 +1,5 @@
 const Constants = require('./constants.js');
 
-//taxe de luxe 100 et impot sur le revenue 200
 // 40 cases donc moins de 40 propriétés
 const Properties = {
 

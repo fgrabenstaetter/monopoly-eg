@@ -301,6 +301,10 @@ class Game {
             case Constants.CELL_TYPE.COMMUNITY:
                 this.turnPlayerCommunityCardCell();
                 break;
+
+            case Constants.CELL_TYPE.TAX:
+                this.turnPlayerTaxCell();
+                break;
         }
 
         if (oldPos > player.cellPos) // recevoir argent de la banque
@@ -391,6 +395,21 @@ class Game {
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en prison !');
+    }
+
+    turnPlayerTaxCell () {
+        const moneyToPay = this.curCell.tax.money;
+        if (this.curPlayer.money < moneyToPay) {
+            this.playerNotEnoughMoney(this.curPlayer, moneyToPay,
+                'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux pas payer la taxe de ' + moneyToPay + '€)',
+                'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la taxe de ' + moneyToPay + '€');
+        } else {
+            // il a assez d'argent
+            this.curPlayer.loseMoney(moneyToPay);
+            this.bank.addMoney(moneyToPay);
+            this.setTurnActionData(null, null,
+                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes');
+        }
     }
 
     ///////////////////////////////
