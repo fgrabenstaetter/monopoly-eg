@@ -891,12 +891,13 @@ class Network {
         });
 
         player.socket.on('gameReadyReq', () => {
-            let players = [], cells = [], properties = [], playerProperties = [], chatMessages = [], cellsCounter = 0;
-
-            for (const prop of player.properties)
-                playerProperties.push(prop.id);
+            let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {
+                let playerProperties = [];
+                for (const prop of player.properties)
+                    playerProperties.push(prop.id);
+
                 players.push({
                     nickname          : player.nickname,
                     id                : player.id,
