@@ -775,7 +775,7 @@
         ```javascript
         {
             receiverID: int,
-            propertyID: int, // ID de la propriété qu'on veux vendre
+            propertyID: int, // ID de la propriété qu'on veux vendre ou -1 pour carte sortie de prison
             price: int, // montant qu'on lui propose pour la vente
         }
         ```
@@ -798,7 +798,7 @@
             offerID: int, // ID de l'offre
             makerID: int, // ID joueur qui a créer l'offre
             receiverID: int,
-            propertyID: int, // ID de la propriété qu'on veux vendre
+            propertyID: int, // ID de la propriété qu'on veux vendre ou -1 pour carte sortie de prison
             price: int, // montant qu'on lui propose pour la vente
         }
         ```
@@ -823,7 +823,7 @@
         ```
 
 - **Une offre est terminée**
-    > Soit a expirée, soit a été remplie
+    > Soit a expirée, soit a été remplie. Si propertyID vaut -1, il s'agit d'une vente de carte sortie de prison il faut alors ajouter (au niveau de l'affichage) une carte au receveur, et en retirer une au créateur de l'offre
 
     * **Réponse:** gameOfferFinishedRes
         * *Données:*
@@ -832,7 +832,7 @@
             receiverID: int | null, // id player qui a accepté d'acheter ou null si expirée sans acheteur
             offerID: int,
             price: int,
-            propertyID: int,
+            propertyID: int, // ID de la propriété ou -1 pour carte sortie de prison
             makerID: int // ID player du créateur de l'offre
         }
         ```

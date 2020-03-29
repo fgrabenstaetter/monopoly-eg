@@ -784,7 +784,7 @@ class Network {
             let err = Errors.SUCCESS, recvr, prop;
             if (data.receiverID == null || data.propertyID == null || !data.price)
                 err = Errors.MISSING_FIELD;
-            else if (!(prop = player.propertyByID(data.propertyID)) || !(recvr = game.playerByID(data.receiverID)))
+            else if ((data.propertyID === -1 && player.nbJailEscapeCards === 0) || (data.propertyID >= 0 && !(prop = player.propertyByID(data.propertyID))) || !(recvr = game.playerByID(data.receiverID)))
                 err = Errors.UNKNOW;
             else {
                 const offer = new Offer(game, player, recvr, prop, data.price);
@@ -793,7 +793,7 @@ class Network {
                     receiverID : offer.receiver.id,
                     offerID    : offer.id,
                     price      : offer.amount,
-                    propertyID : offer.property.id,
+                    propertyID : offer.property ? offer.property.id : -1,
                     makerID    : offer.maker.id
                 });
             }
@@ -807,7 +807,7 @@ class Network {
             let err = Errors.SUCCESS, offer;
             if (data.offerID == null)
                 err = Errors.MISSING_FIELD;
-            else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player || offer.property.owner !== offer.maker)
+            else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
             else if (player.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
@@ -819,7 +819,7 @@ class Network {
                         receiverID : offer.receiver.id,
                         offerID    : offer.id,
                         price      : offer.amount,
-                        propertyID : offer.property.id,
+                        propertyID : offer.property ? offer.property.id : -1, // -1 => carte sortie de prison
                         makerID    : offer.maker.id
                     });
                 }

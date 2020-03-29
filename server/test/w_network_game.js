@@ -10,6 +10,7 @@ const Game        = require('../game/game');
 const Matchmaking = require('../game/matchmaking');
 const Network     = require('../game/network');
 const Properties  = require('../lib/properties');
+const Offer       = require('../game/offer');
 
 describe('Network + Game', () => {
     const port = 3002;
@@ -497,7 +498,7 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
-    it('Créer, recevoir et accepter une offre', (done) => {
+    it('Créer, recevoir et accepter une offre de propriété', (done) => {
         const game = new Game([user, user2], [0, 1], GLOBAL);
         // démarrage manuel
         for (const player of game.players)
@@ -506,6 +507,7 @@ describe('Network + Game', () => {
         game.start(true);
         const player = game.curPlayer; // va créer et envoyer l'offre à player2
         const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et recevoir la propriété
+        const nextOfferID = Offer.idCounter;
 
         // propriété dont player doit payer le loyer
         const property = game.cells[5].property; // train station
@@ -524,7 +526,7 @@ describe('Network + Game', () => {
         let nb = 0;
 
         sock2.on('gameOfferReceiveRes', (data) => {
-            assert.strictEqual(data.offerID, 0);
+            assert.strictEqual(data.offerID, nextOfferID);
             assert.strictEqual(data.makerID, player.id);
             assert.strictEqual(data.receiverID, player2.id);
             assert.strictEqual(data.propertyID, property.id);
@@ -532,7 +534,7 @@ describe('Network + Game', () => {
 
             sock2.on('gameOfferFinishedRes', (data) => {
                 assert.strictEqual(data.receiverID, player2.id);
-                assert.strictEqual(data.offerID, 0);
+                assert.strictEqual(data.offerID, nextOfferID);
                 assert.strictEqual(data.price, 456);
                 assert.strictEqual(data.propertyID, property.id);
                 assert.strictEqual(data.makerID, player.id);
@@ -541,7 +543,7 @@ describe('Network + Game', () => {
 
             sock.on('gameOfferFinishedRes', (data) => {
                 assert.strictEqual(data.receiverID, player2.id);
-                assert.strictEqual(data.offerID, 0);
+                assert.strictEqual(data.offerID, nextOfferID);
                 assert.strictEqual(data.price, 456);
                 assert.strictEqual(data.propertyID, property.id);
                 assert.strictEqual(data.makerID, player.id);
@@ -559,7 +561,7 @@ describe('Network + Game', () => {
             });
 
             sock2.emit('gameOfferAcceptReq', {
-                offerID: 0
+                offerID: nextOfferID
             });
         });
 
@@ -570,6 +572,81 @@ describe('Network + Game', () => {
         sock.emit('gameOfferSendReq', {
             receiverID: player2.id,
             propertyID: property.id,
+            price: 456
+        });
+    });
+
+    it('Créer, recevoir et accepter une offre de carte sortie de prison', (done) => {
+        const game = new Game([user, user2], [0, 1], GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 2]; // => Properties.STREET[1] (inutile ici)
+        game.start(true);
+        const player = game.curPlayer; // va créer et envoyer l'offre à player2
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et recevoir la carte sortie de prison
+        const nextOfferID = Offer.idCounter;
+        player.nbJailEscapeCards ++; // = 1
+
+        let sock, sock2;
+        if (player.user.socket === serverSocket) {
+            sock = clientSocket;
+            sock2 = clientSocket2;
+        } else {
+            sock = clientSocket2;
+            sock2 = clientSocket;
+        }
+
+        let nb = 0;
+
+        sock2.on('gameOfferReceiveRes', (data) => {
+            assert.strictEqual(data.offerID, nextOfferID);
+            assert.strictEqual(data.makerID, player.id);
+            assert.strictEqual(data.receiverID, player2.id);
+            assert.strictEqual(data.propertyID, -1);
+            assert.strictEqual(data.price, 456);
+
+            sock2.on('gameOfferFinishedRes', (data) => {
+                assert.strictEqual(data.receiverID, player2.id);
+                assert.strictEqual(data.offerID, nextOfferID);
+                assert.strictEqual(data.price, 456);
+                assert.strictEqual(data.propertyID, -1);
+                assert.strictEqual(data.makerID, player.id);
+                if (++ nb === 4) done();
+            });
+
+            sock.on('gameOfferFinishedRes', (data) => {
+                assert.strictEqual(data.receiverID, player2.id);
+                assert.strictEqual(data.offerID, nextOfferID);
+                assert.strictEqual(data.price, 456);
+                assert.strictEqual(data.propertyID, -1);
+                assert.strictEqual(data.makerID, player.id);
+
+                // tests sur game
+                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
+                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
+                assert.strictEqual(player.nbJailEscapeCards, 0);
+                assert.strictEqual(player2.nbJailEscapeCards, 1);
+                if (++ nb === 4) done();
+            });
+
+            sock2.on('gameOfferAcceptRes', (data) => {
+                assert.strictEqual(data.error, 0);
+                if (++ nb === 4) done();
+            });
+
+            sock2.emit('gameOfferAcceptReq', {
+                offerID: nextOfferID
+            });
+        });
+
+        sock.on('gameOfferSendRes', (data) => {
+            assert.strictEqual(data.error, 0);
+            if (++ nb === 4) done();
+        });
+        sock.emit('gameOfferSendReq', {
+            receiverID: player2.id,
+            propertyID: -1,
             price: 456
         });
     });
