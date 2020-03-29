@@ -1,11 +1,10 @@
-let varMovement, varCase, vdp, vartest, varFunction, varPawn, counter = 0; 
+let varMovement, varCase, vdp, vartest, varFunction, varPawn, positionPawn, counter = 0; 
 let scene, light, camera, renderer;
 var pawn, window, cases;
 
 
 function getScene () {
 	let scene = new THREE.Scene();
-
 	return scene;
 }
 
@@ -64,67 +63,89 @@ light = getLight(scene);
 renderer = getRenderer();
 
 
-function resizeRendererToDisplaySize(renderer) {
+function resizeRendererToDisplaySize (renderer) {
 	const canvas = renderer.domElement;
 	const pixelRatio = window.devicePixelRatio;
     const width  = canvas.clientWidth  * pixelRatio | 0;
     const height = canvas.clientHeight * pixelRatio | 0;
 	const needResize = canvas.width !== width || canvas.height !== height;
+
 	if (needResize) {
 		renderer.setSize(width, height, false);
 	}
+
 	return needResize;
 }
 
 
 function render () {
 	//requestAnimationFrame(render);
-	if (counter!=0){
+	if (counter!=0) {
 		movement(varPawn, varMovement, varFunction);
+		//console.log(positionPawn.position);
+		//camera.lookAt(positionPawn.position);
+		// console.log("hjdshks");
+		//camera.updateProjectionMatrix();
 	}
+
 	if (resizeRendererToDisplaySize(renderer)) {
 		const canvas = renderer.domElement;
 		camera.aspect = canvas.clientWidth / canvas.clientHeight;
 		camera.updateProjectionMatrix();
 	}
 
+	if (counter == 0) {
+		const canvas = document.querySelector('#c');
+		let aspectRatio = canvas.clientWidth / canvas.clientHeight;
+		let d = 2;
+		camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
+	
+		camera.position.set(20, 20, 20);
+		camera.lookAt(scene.position);
+	}
+
 	renderer.render(scene, camera);
 }
 render();
 
-function deleteHouse(ncase, nhouse)
-{
+
+function deleteHouse (ncase, nhouse) {
 	var concatS = "";
 	deleteHouseD(concatS.concat(tabHouse[ncase],"_",nhouse));
 }
+
 function deleteHouseD (houseProperty) {
 	requestAnimationFrame(render);
 	scene.remove(window[houseProperty]);
 }
 
 
-function deleteHotel (hotelProperty) {
+function deleteHotel (ncase) {
+	var concatS = "";
+	deleteHotelD(concatS.concat(tabHotel[ncase]));
+}
+
+function deleteHotelD (hotelProperty) {
 	requestAnimationFrame(render);
 	scene.remove(window[hotelProperty]);
 }
 
 
-function deletePawn(pawn)
-{
+function deletePawn (pawn) {
 	requestAnimationFrame(render);
 	scene.remove(window[pawn]);
 }
 
 
-function deleteCase (cases) {
-	requestAnimationFrame(render);
-	scene.remove(window[cases]);
-}
-
-
+// à changer contre les drapeaux / doc API
 function changeColorCase (cases, colore) {
 	deleteCase(cases);
 	loaderCases(cases, colore);
+}
+
+function deleteCase (cases) {
+	requestAnimationFrame(render);
+	scene.remove(window[cases]);
 }
 
 
@@ -136,11 +157,41 @@ function loaderPlateau (load, test) {
   });
 }
 
+
+function loaderDrapeaux (load, test) {
+	load.load('models/drapeaux/'+test+'.gltf', (gltf) => {
+	  requestAnimationFrame(render);
+	  const root = gltf.scene;
+	  root.traverse((o) => {
+            if (o.isMesh){
+				//console.log(o);
+				if(o.name === "Plane.018_0"){
+					//o.material.color.setHex(0xFFFF00);// = new THREE.Color( 0xFFFF00 );
+					o.material.color.set(0x000000);
+				}
+			}
+		});
+	  scene.add(root);
+	});
+  }
+
+
+var plateauDrapeaux = [
+				'f11', 'f12'
+				]
+
+for (var i = 0; i < 2; i++) {
+var objVar = plateauDrapeaux[i];
+var loader = new THREE.GLTFLoader();
+loaderDrapeaux(loader, objVar);
+}
+
+
 var plateauObjects = [
 				'collections', 'eau', 'egout', 'egout',
 				'orangerie', 'parlement', 'pont', 'rail',
 				'route', 'tram', 'campus', 'cascade'
-]
+] //maison
 
 for (var i = 0; i < 12; i++) {
   var objVar = plateauObjects[i];
@@ -187,6 +238,7 @@ function loaderPawn (pawn, vdp) {
 		requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
+		positionPawn = window[pawn];
 		varMovement = vdp;
 		varCase = tabCases[varMovement];
 
@@ -206,14 +258,22 @@ function loaderPawn (pawn, vdp) {
 		} else {
 			root.rotateY(Math.PI * 2);
 		}
-		
+
+		/*root.traverse((o) => {
+            if (o.isMesh){
+				console.log(o);
+				if(o.name === "Cube.002_3" || o.name === "Cube.002_4"){
+					//o.material.color.setHex(0xFFFF00);// = new THREE.Color( 0xFFFF00 );
+					o.material.color.set(0x000000);
+				}
+			}
+		});*/
 		scene.add(root);
 	});
 }
 
 
-function loaderhouseProperty(ncase, nhouse)
-{
+function loaderhouseProperty (ncase, nhouse) {
 	var concatS = "";
 	housePropertyL(concatS.concat(tabHouse[ncase],"_",nhouse));
 }
@@ -229,7 +289,12 @@ function housePropertyL (houseProperty) {
 }
 
 
-function loaderHotelProperty (hotelPropriete) {
+function loaderhotelProperty (ncase) {
+	var concatS = "";
+	hotelPropertyL(concatS.concat(tabHotel[ncase]));
+}
+
+function hotelPropertyL (hotelPropriete) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
 		requestAnimationFrame(render);
@@ -246,6 +311,7 @@ function movement (pawn, vdp, callback) {
 	varMovement = vdp;
 	varCase = tabCases[varMovement];
 	varPawn = pawn;
+
 	var ppx = window[pawn].position.x;
 	ppx = (Math.floor(ppx * 100) / 100);
 	
@@ -270,12 +336,13 @@ function movement (pawn, vdp, callback) {
 	var zmax = 0.335*11.5;
 	zmax = (Math.floor(zmax * 100) / 100);
 	
-	
 	counter = 1;
-	
 
 	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
+		//camera.lookAt(scene.position);
+		// camera.zoom = 0;
+		// camera.updateProjectionMatrix();
 		if (callback)
 			callback();
 	}
@@ -301,14 +368,19 @@ function movement (pawn, vdp, callback) {
 		if (ppx == xmin && ppz == zmax){
 			requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+			console.log("1");
 		} else {
 			requestAnimationFrame(render);
+			//camera.zoom = 2;
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			//camera.position.x -= (Math.floor(0.01 * 100) / 100);
+			//camera.position.y -= (Math.floor(0.01 * 100) / 100);
 		}
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
 		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+		console.log("3");
 
 	// La route d'en bas - Du coin gauche vers le coin gauche d'en haut
 	} else if (ppx == xmin && vdpx == xmin && ppx == vdpx && ppz != vdpz) {
