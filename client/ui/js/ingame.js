@@ -621,7 +621,6 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-// rent doit être une liste de 6 éléments
 function populateStreetOverviewCard(property) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
@@ -656,7 +655,6 @@ function populateStreetOverviewCard(property) {
     $('.overview-card .content').html(htmlContent);
 }
 
-// rent doit être une liste de 4 éléments
 function populateStationOverviewCard(station) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
@@ -682,7 +680,6 @@ function populateStationOverviewCard(station) {
     $('.overview-card .content').html(htmlContent);
 }
 
-// rent doit être un entier
 function populateCompanyOverviewCard(publicCompany) {
     $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
