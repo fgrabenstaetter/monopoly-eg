@@ -12,6 +12,7 @@ class Card {
             moveAbsolute   : this.moveAbsolute,
             moveRelative   : this.moveRelative,
             repair         : this.repair,
+            anniversary    : this.anniversary,
             jailEscapeCard : this.jailEscapeCard,
         }[this.effectType];
     }
@@ -30,6 +31,18 @@ class Card {
 
     jailEscapeCard (game, player) {
         player.nbJailEscapeCards ++;
+    }
+
+    //Chaque joueur doit la somme "effectArg1" au joueur courant => Case Communautaire
+    anniversary (game, player) {
+        let sum = 0;
+        for (const p of game.players) {
+            if (p !== player) {
+                p.loseMoney(this.effectArg1);
+                sum += this.effectArg1;
+            }
+        }
+        player.addMoney(sum);
     }
 
     moveAbsolute (game, player) {
