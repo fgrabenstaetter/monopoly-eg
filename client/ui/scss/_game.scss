@@ -322,6 +322,12 @@
         }
       }
     }
+
+    .buy-button, .sell-button {
+      margin-top: 10px;
+      padding-top: 4px;
+      font-size: 13px;
+    }
   }
 
   // Ligne supérieure du HUD: liste des joueurs
