@@ -64,7 +64,7 @@ const communityChestCards = [{
     effectType: 'gainMoney',
     effectArg1: 100
 }, {
-    description: "Retournez à la rue du vieux marché aux poissons ",
+    description: "Retournez à la rue du vieux marché aux poissons",
     effectType: 'moveAbsolute',
     effectArg1: 1
 }];
