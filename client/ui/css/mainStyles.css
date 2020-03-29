@@ -84,7 +84,7 @@ input {
 
 .board-container {
   position: relative;
-  width: 120%;
+  width: 110%;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
