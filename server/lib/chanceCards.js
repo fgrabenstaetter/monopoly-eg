@@ -41,7 +41,7 @@ const chanceCards = [{
 }, {
     description: 'Allez en prison. Avancez tout droit en prison, ne passez pas par la case départ. Ne recevez pas 200€',
     effectType: 'moveAbsolute',
-    effectArg: 30
+    effectArg1: 30
 }, {
     description: 'Faites des réparations pour toutes vos maisons. Versez pour chaque maison 25€. Versez pour chaque hôtel 100€',
     effectType: 'repair',
