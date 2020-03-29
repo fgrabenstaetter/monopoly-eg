@@ -589,12 +589,14 @@ class Network {
     }
 
     gameRollDiceReq(player, game) {
-        player.socket.on('gameRollDiceReq', () => {
+        player.socket.on('gameRollDiceReq', (data) => {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else
-                this.gameTurnAction(player, game);
+            else {
+                const useExitJailCard = (data && data.useExitJailCard) ? true : false;
+                this.gameTurnAction(player, game, useExitJailCard);
+            }
 
             player.socket.emit('gameRollDiceRes', { error: err.code, status: err.status });
         });
@@ -613,14 +615,14 @@ class Network {
     }
 
     // n'est pas une écoute d'event !
-    gameTurnAction (player, game) {
+    gameTurnAction (player, game, useExitJailCard = false) {
         const nbJailEscapeCardsSave = player.nbJailEscapeCards;
         const cellPosSave = player.cellPos;
         const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
         for (const playr of game.players)
             moneySav.push(playr.money);
 
-        const diceRes = game.rollDice();
+        const diceRes = game.rollDice(useExitJailCard);
 
         if (!diceRes) {
             player.socket.emit('gameRollDiceRes', { error: Errors.UNKNOW.code, status: Errors.UNKNOW.status });

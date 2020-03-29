@@ -575,7 +575,9 @@
     * **Requête:** gameRollDiceReq
         * *Données:*
         ```javascript
-        null
+        {
+            useExitJailCard: bool // true si le joueur possède une carte sortie de prison, qu'il est en prison, et qu'il souhaite l'utiliser, sinon false (si paramètre manquant => false)
+        }
          ```
     * **Réponse:** gameRollDiceRes
         * *Données:*

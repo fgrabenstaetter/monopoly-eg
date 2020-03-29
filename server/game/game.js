@@ -242,7 +242,7 @@ class Game {
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
      * @return [int, int] le résultat des dés ou false si problème quelconque
      */
-    rollDice(useExitJailCard = false) {
+    rollDice (useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
         this.turnData.canRollDiceAgain = false;
@@ -252,7 +252,7 @@ class Game {
         this.forcedDiceRes = null; // forcedDiceRes => ne pas toucher (uniquement pour TU)
 
         if (this.curPlayer.isInPrison)
-            this.turnPlayerAlreadyInPrison(diceRes);
+            this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
         else if (diceRes[0] === diceRes[1]) {
             this.turnData.nbDoubleDices ++;
             if (this.turnData.nbDoubleDices >= 3)
