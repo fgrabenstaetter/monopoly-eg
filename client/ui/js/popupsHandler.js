@@ -13,6 +13,13 @@ $('.player-list').on('click', '.player-entry', function () {
     }
 });
 
+$(document).mouseup(function (e) {
+    var container = $(".popup");
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+});
+
 function initProperty() {
     const html = `
         <div class="properties-container yellow">
@@ -154,7 +161,7 @@ function createTextCard(text, disabled, type, title) {
                     </div>
                 </div>`;
     }
-    
+
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
