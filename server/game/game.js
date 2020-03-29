@@ -308,7 +308,7 @@ class Game {
         }
 
         if (oldPos > player.cellPos) // recevoir argent de la banque
-            this.curPlayer.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+            player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
     }
 
     //////////////////////////////
