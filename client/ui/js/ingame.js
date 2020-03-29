@@ -267,6 +267,7 @@ function gameActionResAfterSecondMovement(data) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
             $('#timer').progressInitialize();
+            // Ajouter le progressTimed
         }
         else {
             $(this).attr({ 'data-loading': 'TERMINER' });
@@ -360,15 +361,38 @@ socket.on("gamePropertyUpgradeRes", (data) => {
         setPlayerMoney(data.playerID, data.playerMoney);
 
         // Construire les maisons / hotels
+        let prevLevel = property.level;
         property.level = data.level
         if (property.level == 1) {
             console.log("Construire 1 maisons case " + cell.id);
+            loaderhouseProperty(cell.id, 1);
         } else if (property.level == 2) {
             console.log("Construire 2 maisons case " + cell.id);
+            if (prevLevel < 1)
+                loaderhouseProperty(cell.id, 1);
+            
+            loaderhouseProperty(cell.id, 2);
         } else if (property.level == 3) {
             console.log("Construire 3 maisons case " + cell.id);
+            if (prevLevel < 1)
+                loaderhouseProperty(cell.id, 1);
+            
+            if (prevLevel < 2)
+                loaderhouseProperty(cell.id, 2);
+            
+            loaderhouseProperty(cell.id, 3);
         } else if (property.level == 4) {
             console.log("Construire 4 maisons case " + cell.id);
+            if (prevLevel < 1)
+                loaderhouseProperty(cell.id, 1);
+            
+            if (prevLevel < 2)
+                loaderhouseProperty(cell.id, 2);
+
+            if (prevLevel < 3)
+                loaderhouseProperty(cell.id, 3);
+
+            loaderhouseProperty(cell.id, 4);
         } else if (property.level == 5) {
             console.log("Construire un hôtel case " + cell.id);
         } else {
@@ -598,43 +622,43 @@ function hideLoaderOverlay() {
 
 // Overview card
 // rent doit être une liste de 6 éléments
-function populateStreetOverviewCard(color, roadName, rent, housePrice, hotelPrice) {
-    $('.overview-card .header').html(roadName);
+function populateStreetOverviewCard(property) {
+    $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
     $('.overview-card .header').removeClass('eau');
     $('.overview-card .header').removeClass('electricite');
-    $('.overview-card .header').css("background-color", color);
+    $('.overview-card .header').css("background-color", property.color);
     $('.overview-card .header').css("color", "white");
-    let htmlContent = `<div class="rent">`+ rent[0] +`</div>
+    let htmlContent = `<div class="rent">`+ property.rentalPrices.empty +`</div>
                         <div class="with-house">
                             <div>Avec 1 Maison</div>
-                            <div>`+ rent[1] +`</div>
+                            <div>`+ property.rentalPrices.house[0] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 2 Maisons</div>
-                            <div>`+ rent[2] +`</div>
+                            <div>`+ property.rentalPrices.house[1] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 3 Maisons</div>
-                            <div>`+ rent[3] +`</div>
+                            <div>`+ property.rentalPrices.house[2] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 4 Maisons</div>
-                            <div>`+ rent[4] +`</div>
+                            <div>`+ property.rentalPrices.house[3] +`</div>
                         </div>
                         <div class="with-hotel">
                             <div>Avec 1 Hotel</div>
-                            <div>`+ rent[5] +`</div>
+                            <div>`+ property.rentalPrices.hostel +`</div>
                         </div>
-                        <div class="house-price">Prix des Maisons `+ housePrice +`€ chacune</div>
-                        <div class="hotel-price">Prix d'un Hôtel `+ hotelPrice +`€ plus 4 maisons</div>`
+                        <div class="house-price">Prix des Maisons `+ property.prices.house +`€ chacune</div>
+                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel +`€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
 }
 
 // rent doit être une liste de 4 éléments
-function populateStationOverviewCard(roadName, rent) {
-    $('.overview-card .header').html(roadName);
+function populateStationOverviewCard(station) {
+    $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
     $('.overview-card .header').removeClass('eau');
@@ -642,34 +666,33 @@ function populateStationOverviewCard(roadName, rent) {
     $('.overview-card .header').addClass('station');
     $('.overview-card .header').css("background-color", "white");
     $('.overview-card .header').css("color", "black");
-    let htmlContent = `<div class="rent">`+ rent[0] +`</div>
+    let htmlContent = `<div class="rent">`+ station.rentalPrices[0] +`</div>
                         <div class="with-house">
                             <div>Si vous avez 2 Gares</div>
-                            <div>`+ rent[1] +`</div>
+                            <div>`+ station.rentalPrices[1] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Si vous avez 3 Gares</div>
-                            <div>`+ rent[2] +`</div>
+                            <div>`+ station.rentalPrices[2] +`</div>
                         </div>
                         <div class="with-house">
                             <div>Si vous avez 4 Gares</div>
-                            <div>`+ rent[3] +`</div>
+                            <div>`+ station.rentalPrices[3] +`</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
 }
 
 // rent doit être un entier
-function populateCompanyOverviewCard(roadName, rent) {
-    $('.overview-card .header').html(roadName);
+function populateCompanyOverviewCard(publicCompany) {
+    $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
     $('.overview-card .header').removeClass('eau');
     $('.overview-card .header').removeClass('electricite');
     $('.overview-card .header').addClass('company');
-    if (roadName == 'Eau') {
+    if (publicCompany.name == 'Syndicat Des Eaux et de l\'Assainissement') {
         $('.overview-card .header').addClass('eau')
-    }
-    else if (roadName == 'Électricité') {
+    } else if (publicCompany.name == 'Eléctricité de Strasbourg') {
         $('.overview-card .header').addClass('electricite')
     }
     $('.overview-card .header').css("background-color", "rgb(58, 58, 58)");
@@ -677,20 +700,50 @@ function populateCompanyOverviewCard(roadName, rent) {
     let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
                             le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                             le loyer est 10 fois le montant indiqué par les dés.</div>
-                        <div class="rent">`+ rent +`</div>`
+                        <div class="rent">`+ publicCompany.price +`</div>`
     $('.overview-card .content').html(htmlContent);
 }
 
 function emptyOverviewCard() {
-    $('.overview-card .header').html('');
-    $('.overview-card .header').removeClass('station');
-    $('.overview-card .header').removeClass('company');
-    $('.overview-card .header').removeClass('eau');
-    $('.overview-card .header').removeClass('electricite');
-    $('.overview-card .header').css("background-color", "white");
-    $('.overview-card .header').css("color", "white");
+    $('.overview-card .header')
+        .html('')
+        .removeClass('station')
+        .removeClass('company')
+        .removeClass('eau')
+        .removeClass('electricite')
+        .css("background-color", "white")
+        .css("color", "white");
     $('.overview-card .content').html('');
 }
+
+/**
+ * Affiche les infos d'une propriété dans le HUD
+ * @param property Propriété dont il faut afficher les informations
+ */
+function displayPropertyInfos(property) {
+    emptyOverviewCard();
+    if (property.type == "street") {
+        populateStreetOverviewCard(property);
+    } else if (property.type == "station") {
+        populateStationOverviewCard(property);
+    } else {
+        populateCompanyOverviewCard(property);
+    }
+    $('.overview-card').fadeIn();
+}
+
+$('.player-list').on('click', '.property', function() {
+    alert('Clic détecté !')
+    let propertyId = $(this).attr('data-id');
+    if (!propertyId)
+        return;
+    
+    let property = getPropertyById(propertyId);
+    if (!property)
+        return;
+    
+    displayPropertyInfos(property);
+});
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
