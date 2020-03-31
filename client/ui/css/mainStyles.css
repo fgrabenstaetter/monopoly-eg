@@ -30,6 +30,10 @@
   display: none;
 }
 
+body {
+  overflow: hidden;
+}
+
 .disabled, *:disabled {
   opacity: .65 !important;
 }
@@ -84,7 +88,7 @@ input {
 
 .board-container {
   position: relative;
-  width: 80%;
+  width: 110%;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -183,6 +187,7 @@ input {
   background-color: rgba(0, 0, 0, 0.3);
   color: white;
   border-radius: 100%;
+  cursor: pointer;
 }
 
 @media (max-width: 1199.98px) {
@@ -1303,6 +1308,24 @@ input {
           transform: rotateX(-90deg) translateZ(100px);
 }
 
+.ingame-ui-container #optionsModal .modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.ingame-ui-container #optionsModal .modal-body .btn {
+  width: 180px;
+  margin: 10px auto;
+}
+
 .ingame-ui-container .overview-card {
   display: none;
   position: absolute;
@@ -1327,7 +1350,7 @@ input {
 }
 
 .ingame-ui-container .overview-card .header {
-  height: 38px;
+  min-height: 38px;
   background: white;
   color: white;
   font-family: "LilitaOne", sans-serif;
@@ -1472,6 +1495,12 @@ input {
 
 .ingame-ui-container .overview-card .content div.house-price {
   margin-top: 8px;
+}
+
+.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button {
+  margin-top: 10px;
+  padding-top: 4px;
+  font-size: 13px;
 }
 
 .ingame-ui-container .container:first-child {

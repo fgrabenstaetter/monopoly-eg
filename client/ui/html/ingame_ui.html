@@ -1,22 +1,6 @@
 <div class="container">
-	<div class="row">
-		<div class="col-md-3">
-			<div class="player-list">
-				<!-- <div class="player-entry current" data-id="1">
-					<div class="name">Kirby</div>
-					<div class="money">1 000</div>
-					<div class="popup top">
-
-					</div>
-				</div> -->
-			</div>
-		</div>
-		<div class="col-md-6">
-
-		</div>
-		<div class="col-md-3">
-
-		</div>
+	<div class="player-list">
+		<!-- ingame.js -->
 	</div>
 </div>
 <div class="container">
@@ -93,6 +77,48 @@
 	</div>
 	<div class="content">
 		
+	</div>
+	<div class="buy-button btn stylized" data-toggle="modal" data-target="#overviewCardModal">ACHETER</div>
+	<div class="buy-button btn stylized" style="display: none;">VENDRE</div>
+</div>
+
+<div class="modal fade" id="overviewCardModal" tabindex="-1" role="dialog" aria-labelledby="overviewCardModalLabel" aria-hidden="true" data-id="1">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="overviewCardModalLabel">Proposer un prix</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				  <input type="text"
+					class="form-control" name="" id="" aria-describedby="helpId" placeholder="Votre prix ici...">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+				<button type="button" class="btn btn-primary">Envoyer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Options -->
+<div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel" aria-hidden="true" data-id="1">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">Options</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+					<span aria-hidden="true" style="cursor: pointer;">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<a name="exit" id="exit-button" class="btn btn-primary" href="#" role="button">RÈGLES</a>
+				<a name="exit" id="exit-button" class="btn btn-primary" href="#" role="button" style="background-color: red;">QUITTER LA PARTIE</a>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -211,16 +237,13 @@
 <script src="js/dices.js"></script>
 <script src="js/timer.js"></script>
 
-
-<!--<script>
+<!--
+<script>
 	generatePlayerEntry(1, "FullMerinos", 1000000);
 	initProperty();
 	createProperty("1", "red", "Avenue", "1");
 	createProperty("1", "red", "Avenue2", "2");
-	$('.property').mouseover(function() {
-		$('.overview-card[data-id="' + $(this).attr('data-id') + '"]').fadeToggle('slow');
-	});
-	$('.property').mouseout(function() {
-		$('.overview-card[data-id="' + $(this).attr('data-id') + '"]').fadeToggle('slow');
-	});
-</script>-->
+	hideLoaderOverlay();
+	displayPropertyInfos(JSON.parse('{"id":0,"type":"street","name":"Rue du vieux marché aux choux","description":"Quelle magnifique rue !","color":"brown","prices":{"empty":60,"house":50,"hostel":250},"rentalPrices":{"empty":2,"house":[10,30,90,160],"hostel":250},"housesNb":0}'));
+</script>
+-->

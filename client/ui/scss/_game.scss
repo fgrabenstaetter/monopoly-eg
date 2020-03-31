@@ -176,6 +176,20 @@
     }
   }
 
+  // Options
+  #optionsModal {
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .btn {
+        width: 180px;
+        margin: 10px auto;
+      }
+    }
+  }
+
   // Overview card
   .overview-card {
     display: none;
@@ -196,7 +210,7 @@
     }
 
     .header {
-      height: 38px;
+      min-height: 38px;
       background: white;
       color: white;
       font-family: "LilitaOne", sans-serif;
@@ -321,6 +335,12 @@
           margin-top: 8px;
         }
       }
+    }
+
+    .buy-button, .sell-button {
+      margin-top: 10px;
+      padding-top: 4px;
+      font-size: 13px;
     }
   }
 

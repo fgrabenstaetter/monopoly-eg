@@ -330,7 +330,7 @@ class Game {
                 this.curPlayer.quitPrison();
             else {
                 this.curPlayer.remainingTurnsInJail--;
-                this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (3 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -394,7 +394,7 @@ class Game {
     turnPlayerPrisonCell() {
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en prison !');
+            this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
     }
 
     turnPlayerTaxCell () {
