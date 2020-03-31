@@ -15,8 +15,10 @@ $('.player-list').on('click', '.player-entry', function () {
 
 $(document).mouseup(function (e) {
     var container = $(".popup");
+    var oc = $(".overview-card");
     if (!container.is(e.target) && container.has(e.target).length === 0) {
         container.hide();
+        oc.hide();
     }
 });
 
