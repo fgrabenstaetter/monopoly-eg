@@ -30,6 +30,10 @@
   display: none;
 }
 
+body {
+  overflow: hidden;
+}
+
 .disabled, *:disabled {
   opacity: .65 !important;
 }
@@ -183,6 +187,7 @@ input {
   background-color: rgba(0, 0, 0, 0.3);
   color: white;
   border-radius: 100%;
+  cursor: pointer;
 }
 
 @media (max-width: 1199.98px) {
@@ -1301,6 +1306,24 @@ input {
   background-color: white;
   -webkit-transform: rotateX(-90deg) translateZ(100px);
           transform: rotateX(-90deg) translateZ(100px);
+}
+
+.ingame-ui-container #optionsModal .modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.ingame-ui-container #optionsModal .modal-body .btn {
+  width: 180px;
+  margin: 10px auto;
 }
 
 .ingame-ui-container .overview-card {
