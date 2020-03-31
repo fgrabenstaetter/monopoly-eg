@@ -82,10 +82,6 @@ function render () {
 	//requestAnimationFrame(render);
 	if (counter!=0) {
 		movement(varPawn, varMovement, varFunction);
-		//console.log(positionPawn.position);
-		//camera.lookAt(positionPawn.position);
-		// console.log("hjdshks");
-		//camera.updateProjectionMatrix();
 	}
 
 	if (resizeRendererToDisplaySize(renderer)) {
@@ -304,7 +300,7 @@ function hotelPropertyL (hotelPropriete) {
 	});
 }
 
-
+let counter2 = 0;
 function movement (pawn, vdp, callback) {
 
 	varFunction = callback;
@@ -340,6 +336,7 @@ function movement (pawn, vdp, callback) {
 
 	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
+		counter2 = 0;
 		//camera.lookAt(scene.position);
 		// camera.zoom = 0;
 		// camera.updateProjectionMatrix();
@@ -371,16 +368,42 @@ function movement (pawn, vdp, callback) {
 			console.log("1");
 		} else {
 			requestAnimationFrame(render);
-			//camera.zoom = 2;
+			camera.zoom = 2;
+
+			if(counter2 <= 70 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.y -= 0.01;
+			else if((window[pawn].position.x > 0.33 && window[pawn].position.x < 1.67))
+				camera.position.y -= 0.005;
+
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-			//camera.position.x -= (Math.floor(0.01 * 100) / 100);
-			//camera.position.y -= (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.x -= (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.x > 0.33 && window[pawn].position.x < 1.67))
+			camera.position.x -= 0.01;
+			
 		}
+
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
 		requestAnimationFrame(render);
-		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-		console.log("3");
+		camera.zoom = 2;
+
+	
+		if(counter2 <= 80 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.y -= 0.01;
+			else if((window[pawn].position.x > 1.00 && window[pawn].position.x < 1.67))
+				camera.position.y += 0.003;
+
+			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.x -= (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.x > 0.33 && window[pawn].position.x < 1.67))
+				camera.position.x -= 0.015;
+
 
 	// La route d'en bas - Du coin gauche vers le coin gauche d'en haut
 	} else if (ppx == xmin && vdpx == xmin && ppx == vdpx && ppz != vdpz) {
@@ -390,12 +413,41 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		}else {
 			requestAnimationFrame(render);
+			camera.zoom = 2;		
+
+
+			/*if(counter2 <= 70 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.x -= 0.01;
+			else*/ if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+				camera.position.x -= 0.0045;
+
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.z -= (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+			camera.position.z -= 0.007;
 		}
+
 	// La route gauche vers une case de la route en haut
-	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin){
+	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin) {
 		requestAnimationFrame(render);
-		window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+		camera.zoom = 2;		
+
+
+			/*if(counter2 <= 70 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.x -= 0.01;
+			else if((window[pawn].position.x > 0.33 && window[pawn].position.x < 1.67))
+				camera.position.x -= 0.0045;
+
+			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.z -= (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+			camera.position.z -= 0.007;*/
 
 	// La route d'en haut - Le coin haut gauche vers le coin haut droite
 	} else if (ppx != vdpx && ppz == vdpz && ppz == zmin && vdpz == zmin) {
@@ -405,14 +457,29 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		} else {
 			requestAnimationFrame(render);
-			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+			console.log("3");
+			/*camera.zoom = 2;
+
+			if(counter2 <= 70 && (window[pawn].position.x > 0.33 && window[pawn].position.x < 3.85))
+				camera.position.y += 0.015;*/
+			/*else if((window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.y += 0.015;*/
+
+			/*window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.x > 0.33 && window[pawn].position.x < 1.67))
+				camera.position.x += (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+			camera.position.x += 0.01;*/
 		}
+
 	// L'opposer de la route d'en bas ->  haut (case 9 -> case 21)
 	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpx && ppz == zmax && vdpz == zmin) {
 		requestAnimationFrame(render);
 		window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 
-	// La route d'en haut - Le coin haut droite vers le coin bas droite
+	// La route de droite - Le coin haut droite vers le coin bas droite
 	} else if (ppx == xmax && vdpx == xmax && ppx == vdpx && ppz != vdpz) {
 		// Pour revenir sur la même route (un tour du plateau)
 		if (ppx == xmax && ppz == zmax) {
@@ -420,8 +487,23 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		} else {
 			requestAnimationFrame(render);
+			/*camera.zoom = 2;		
+
+
+			if(counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+				camera.position.x += 0.02;
+			else if((window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
+				camera.position.x += 0.0045;
+
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+			counter2++;
+
+			if(counter2 >= 75 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+				camera.position.z += (Math.floor(0.01 * 100) / 100);
+			else if((window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.z += 0.007;*/
 		}
+
 	// La route d'en haut vers une case de la route à droite
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmax && ppz == zmin) {
 		requestAnimationFrame(render);
