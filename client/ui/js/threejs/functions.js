@@ -418,7 +418,7 @@ function movement (pawn, vdp, callback) {
 
 			/*if(counter2 <= 70 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
 				camera.position.x -= 0.01;
-			else*/ if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
+			else if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
 				camera.position.x -= 0.0045;
 
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
@@ -427,7 +427,7 @@ function movement (pawn, vdp, callback) {
 			if(counter2 >= 75 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
 				camera.position.z -= (Math.floor(0.01 * 100) / 100);
 			else if((window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
-			camera.position.z -= 0.007;
+			camera.position.z -= 0.007;*/
 		}
 
 	// La route gauche vers une case de la route en haut
