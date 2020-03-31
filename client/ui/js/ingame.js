@@ -461,7 +461,11 @@ socket.on('gameReconnectionRes', (data) => {
         generatePlayerEntry(player.id, player.nickname, player.money);
 
         player.properties.forEach((playerProperty) => {
-            createProperty(player.id, playerProperty.color, playerProperty.name, playerProperty.id);
+            console.log('playerProperty');
+            console.log(playerProperty);
+            let property = getPropertyById(playerProperty);
+            if (property)
+                createProperty(player.id, property.color, property.name, property.id);
         });
     });
 
