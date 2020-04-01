@@ -370,22 +370,22 @@ socket.on("gamePropertyUpgradeRes", (data) => {
             console.log("Construire 2 maisons case " + cell.id);
             if (prevLevel < 1)
                 loaderhouseProperty(cell.id, 1);
-            
+
             loaderhouseProperty(cell.id, 2);
         } else if (property.level == 3) {
             console.log("Construire 3 maisons case " + cell.id);
             if (prevLevel < 1)
                 loaderhouseProperty(cell.id, 1);
-            
+
             if (prevLevel < 2)
                 loaderhouseProperty(cell.id, 2);
-            
+
             loaderhouseProperty(cell.id, 3);
         } else if (property.level == 4) {
             console.log("Construire 4 maisons case " + cell.id);
             if (prevLevel < 1)
                 loaderhouseProperty(cell.id, 1);
-            
+
             if (prevLevel < 2)
                 loaderhouseProperty(cell.id, 2);
 
@@ -633,29 +633,29 @@ function populateStreetOverviewCard(property) {
     $('.overview-card .header').removeClass('electricite');
     $('.overview-card .header').css("background-color", property.color);
     $('.overview-card .header').css("color", "white");
-    let htmlContent = `<div class="rent">`+ property.rentalPrices.empty +`</div>
+    let htmlContent = `<div class="rent">` + property.rentalPrices.empty + `</div>
                         <div class="with-house">
                             <div>Avec 1 Maison</div>
-                            <div>`+ property.rentalPrices.house[0] +`</div>
+                            <div>`+ property.rentalPrices.house[0] + `</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 2 Maisons</div>
-                            <div>`+ property.rentalPrices.house[1] +`</div>
+                            <div>`+ property.rentalPrices.house[1] + `</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 3 Maisons</div>
-                            <div>`+ property.rentalPrices.house[2] +`</div>
+                            <div>`+ property.rentalPrices.house[2] + `</div>
                         </div>
                         <div class="with-house">
                             <div>Avec 4 Maisons</div>
-                            <div>`+ property.rentalPrices.house[3] +`</div>
+                            <div>`+ property.rentalPrices.house[3] + `</div>
                         </div>
                         <div class="with-hotel">
                             <div>Avec 1 Hotel</div>
-                            <div>`+ property.rentalPrices.hostel +`</div>
+                            <div>`+ property.rentalPrices.hostel + `</div>
                         </div>
-                        <div class="house-price">Prix des Maisons `+ property.prices.house +`€ chacune</div>
-                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel +`€ plus 4 maisons</div>`
+                        <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
+                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
 }
 
@@ -668,18 +668,18 @@ function populateStationOverviewCard(station) {
     $('.overview-card .header').addClass('station');
     $('.overview-card .header').css("background-color", "white");
     $('.overview-card .header').css("color", "black");
-    let htmlContent = `<div class="rent">`+ station.rentalPrices[0] +`</div>
+    let htmlContent = `<div class="rent">` + station.rentalPrices[0] + `</div>
                         <div class="with-house">
                             <div>Si vous avez 2 Gares</div>
-                            <div>`+ station.rentalPrices[1] +`</div>
+                            <div>`+ station.rentalPrices[1] + `</div>
                         </div>
                         <div class="with-house">
                             <div>Si vous avez 3 Gares</div>
-                            <div>`+ station.rentalPrices[2] +`</div>
+                            <div>`+ station.rentalPrices[2] + `</div>
                         </div>
                         <div class="with-house">
                             <div>Si vous avez 4 Gares</div>
-                            <div>`+ station.rentalPrices[3] +`</div>
+                            <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
 }
@@ -701,7 +701,7 @@ function populateCompanyOverviewCard(publicCompany) {
     let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
                             le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                             le loyer est 10 fois le montant indiqué par les dés.</div>
-                        <div class="rent">`+ publicCompany.price +`</div>`
+                        <div class="rent">`+ publicCompany.price + `</div>`
     $('.overview-card .content').html(htmlContent);
 }
 
@@ -733,23 +733,23 @@ function displayPropertyInfos(property) {
     $('.overview-card').fadeIn();
 }
 
-$('.player-list').on('click', '.property', function() {
+$('.player-list').on('click', '.property', function () {
     alert('Clic détecté !')
     let propertyId = $(this).attr('data-id');
     if (!propertyId)
         return;
-    
+
     let property = getPropertyById(propertyId);
     if (!property)
         return;
-    
+
     displayPropertyInfos(property);
 });
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 
-$('.overview-card .buy-button').click(function(e) {
+$('.overview-card .buy-button').click(function (e) {
     e.preventDefault();
     let propertyID = $(this).parent('.overview-card').attr('data-id');
     $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
@@ -758,10 +758,13 @@ $('.overview-card .buy-button').click(function(e) {
     return false;
 });
 
-$('#overviewCardBuyForm').submit(function(e) {
+$('#overviewCardBuyForm').submit(function (e) {
     e.preventDefault();
-    let propertyID = $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val();
-    let price = $('#overviewCardBuyForm #overviewCardBuyFormPrice').val();
-    console.log('Formulaire achat validé');
+    let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
+    let price = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPrice').val());
+    socket.emit('gameOfferSendReq', { reveiverID: null, propertyID: propertyID, price: price });
+    console.log('gameOfferSendReq :');
+    console.log(price);
+    console.log(propertyID);
     return false;
 });
