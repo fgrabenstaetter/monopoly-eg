@@ -459,7 +459,11 @@ socket.on('gameReconnectionRes', (data) => {
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
         generatePlayerEntry(player.id, player.nickname, player.money);
+    });
+    
+    initProperty();
 
+    DATA.players.forEach((player) => {
         player.properties.forEach((playerProperty) => {
             console.log('playerProperty');
             console.log(playerProperty);
