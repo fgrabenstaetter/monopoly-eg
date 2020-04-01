@@ -1640,12 +1640,12 @@ input {
   white-space: nowrap;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
@@ -1670,7 +1670,7 @@ input {
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.pink .property {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
   background-color: #dfb8bf;
   color: white;
 }
@@ -1899,8 +1899,8 @@ input {
   background-color: red;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.pink {
-  background-color: pink;
+.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.purple {
+  background-color: purple;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.green {
