@@ -748,3 +748,20 @@ $('.player-list').on('click', '.property', function() {
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
+
+$('.overview-card .buy-button').click(function(e) {
+    e.preventDefault();
+    let propertyID = $(this).parent('.overview-card').attr('data-id');
+    $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
+    $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(0);
+    $('#overviewCardModal').modal('show');
+    return false;
+});
+
+$('#overviewCardBuyForm').submit(function(e) {
+    e.preventDefault();
+    let propertyID = $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val();
+    let price = $('#overviewCardBuyForm #overviewCardBuyFormPrice').val();
+    console.log('Formulaire achat validé');
+    return false;
+});
