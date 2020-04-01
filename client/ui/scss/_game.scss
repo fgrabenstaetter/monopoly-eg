@@ -459,7 +459,7 @@
             &.blue,
             &.red,
             &.orange,
-            &.pink,
+            &.purple,
             &.brown,
             &.green {
               .property {
@@ -469,7 +469,7 @@
             }
 
             &.yellow,
-            &.pink,
+            &.purple,
             &.cyan {
               .property {
                 outline: 1px solid #fff;
@@ -506,7 +506,7 @@
               }
             }
 
-            &.pink {
+            &.purple {
               .property {
                 background-color: rgb(223, 184, 191);
                 color: white;
@@ -713,8 +713,8 @@
             background-color: red;
           }
 
-          &.pink {
-            background-color: pink;
+          &.purple {
+            background-color: purple;
           }
 
           &.green {
