@@ -906,7 +906,8 @@ class Network {
                     money             : player.money,
                     properties        : playerProperties,
                     nbJailEscapeCards : player.nbJailEscapeCards,
-                    cellPos           : player.cellPos
+                    cellPos           : player.cellPos,
+                    connected         : player.connected
                 });
             }
 
