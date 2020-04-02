@@ -554,6 +554,17 @@
         }
         ```
 
+- **Fin du jeu**
+    > Envoyé à tous les joueurs lorsque un seul joueur n'est pas en faillite => il a gagné. Lorsque reçu, ne plus envoyer aucune requête (et rediriger sous peu le client vers une nouvelle page ?)
+
+    * **Réponse:** gameEndRes
+        * *Données:*
+        ```javascript
+        {
+            winnerID: int, // ID joueur qui a gagné
+            duration: timestamp // durée totale du jeu en ms
+        }
+        ```
 
 ### --- Tour de jeu
 

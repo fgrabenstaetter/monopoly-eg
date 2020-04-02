@@ -66,6 +66,10 @@ class Game {
     }
 
     delete() {
+        clearTimeout(this.turnData.timeout);
+        clearTimeout(this.turnData.midTimeout);
+        clearTimeout(this.turnData.timeoutActionTimeout);
+        this.players = [];
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
@@ -181,6 +185,28 @@ class Game {
     }
 
     /**
+     * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite)
+     */
+    checkEnd () {
+        let nb = 0, solo;
+        for (const pl of this.players) {
+            if (pl.failure)
+                nb ++;
+            else
+                solo = pl;
+        }
+
+        if (nb === this.players.length - 1) { // fin de partie
+            const winner = solo;
+            this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
+                winnerID: winner.id,
+                duration: Date.now() - this.startedTime
+            });
+            this.delete();
+        }
+    }
+
+    /**
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
 
@@ -200,6 +226,7 @@ class Game {
             this.asyncActionExpired();
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
+        this.checkEnd();
 
         do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
