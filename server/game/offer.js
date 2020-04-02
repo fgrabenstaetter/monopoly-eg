@@ -21,7 +21,7 @@ class Offer {
     }
 
     /**
-     * @param property La propriété à vendre ou null pour carte sortie de prison
+     * @param property La propriété à acheter ou null pour carte sortie de prison
      */
     constructor (game, player, receiver, property, amount) {
         this.game     = game;
@@ -50,25 +50,26 @@ class Offer {
     }
 
     accept () {
-        if (!Offer.delOffer(this))
+        if (!Offer.delOffer(this) || this.maker.money < this.amount)
             return false;
 
-        this.maker.addMoney(this.amount);
-        this.receiver.loseMoney(this.amount);
 
         if (this.property) {
-            if (this.property.owner !== this.maker)
+            if (this.property.owner !== this.receiver) // peux avoir changé entre temps
                 return false;
 
-            this.maker.delProperty(this.property);
-            this.receiver.addProperty(this.property);
+            this.receiver.delProperty(this.property);
+            this.maker.addProperty(this.property);
         } else { // carte sortie de prison
-            if (this.maker.nbJailEscapeCards === 0)
+            if (this.receiver.nbJailEscapeCards === 0)
                 return false;
 
-            this.maker.nbJailEscapeCards --;
-            this.receiver.nbJailEscapeCards ++;
+            this.receiver.nbJailEscapeCards --;
+            this.maker.nbJailEscapeCards ++;
         }
+
+        this.maker.loseMoney(this.amount);
+        this.receiver.addMoney(this.amount);
 
         return true;
     }

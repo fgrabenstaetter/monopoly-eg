@@ -786,11 +786,12 @@ class Network {
             let err = Errors.SUCCESS, recvr, prop;
             if (data.receiverID == null || data.propertyID == null || !data.price)
                 err = Errors.MISSING_FIELD;
-            else if ((data.propertyID === -1 && player.nbJailEscapeCards === 0) || (data.propertyID >= 0 && !(prop = player.propertyByID(data.propertyID))) || !(recvr = game.playerByID(data.receiverID)))
+            else if (!(recvr = game.playerByID(data.receiverID)) ||
+                     (data.propertyID === -1 && recvr.nbJailEscapeCards === 0) ||
+                     (data.propertyID >= 0 && !(prop = recvr.propertyByID(data.propertyID))))
                 err = Errors.UNKNOW;
             else {
                 const offer = new Offer(game, player, recvr, prop, data.price);
-
                 this.io.to(game.name).emit('gameOfferReceiveRes', {
                     receiverID : offer.receiver.id,
                     offerID    : offer.id,
@@ -811,7 +812,7 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
-            else if (player.money < offer.amount)
+            else if (offer.receiver.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else {
                 if (!offer.accept())

@@ -505,14 +505,13 @@ describe('Network + Game', () => {
             player.isReady = true;
         game.forcedDiceRes = [1, 2]; // => Properties.STREET[1] (inutile ici)
         game.start(true);
-        const player = game.curPlayer; // va créer et envoyer l'offre à player2
-        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et recevoir la propriété
+        const player = game.curPlayer; // va créer et envoyer l'offre à player2 et donc recevoir la propriété et perdre l'argent
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et donc perdre sa propriété
         const nextOfferID = Offer.idCounter;
 
-        // propriété dont player doit payer le loyer
         const property = game.cells[5].property; // train station
         game.bank.delProperty(property);
-        player.addProperty(property);
+        player2.addProperty(property);
 
         let sock, sock2;
         if (player.user.socket === serverSocket) {
@@ -549,9 +548,9 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.makerID, player.id);
 
                 // tests sur game
-                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
-                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
-                assert.strictEqual(property.owner, player2);
+                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
+                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
+                assert.strictEqual(property.owner, player);
                 if (++ nb === 4) done();
             });
 
@@ -583,10 +582,10 @@ describe('Network + Game', () => {
             player.isReady = true;
         game.forcedDiceRes = [1, 2]; // => Properties.STREET[1] (inutile ici)
         game.start(true);
-        const player = game.curPlayer; // va créer et envoyer l'offre à player2
-        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et recevoir la carte sortie de prison
+        const player = game.curPlayer; // va créer et envoyer l'offre à player2 donc recevoir la carte prison et perdre l'argent
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // va accepter l'offre et donc perdre la carte prison et gagner l'argent
         const nextOfferID = Offer.idCounter;
-        player.nbJailEscapeCards ++; // = 1
+        player2.nbJailEscapeCards ++; // = 1
 
         let sock, sock2;
         if (player.user.socket === serverSocket) {
@@ -623,10 +622,10 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.makerID, player.id);
 
                 // tests sur game
-                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
-                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
-                assert.strictEqual(player.nbJailEscapeCards, 0);
-                assert.strictEqual(player2.nbJailEscapeCards, 1);
+                assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
+                assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 456);
+                assert.strictEqual(player2.nbJailEscapeCards, 0);
+                assert.strictEqual(player.nbJailEscapeCards, 1);
                 if (++ nb === 4) done();
             });
 

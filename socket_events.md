@@ -770,15 +770,15 @@
         }
         ```
 
-- **Faire une proposition d'offre (vente à un joueur)**
+- **Faire une proposition d'offre (acheter une propriété / carte prison à un joueur)**
 
     * **Requête:** gameOfferSendReq
         * *Données:*
         ```javascript
         {
-            receiverID: int,
-            propertyID: int, // ID de la propriété qu'on veux vendre ou -1 pour carte sortie de prison
-            price: int, // montant qu'on lui propose pour la vente
+            receiverID: int, // ID joueur à qui on souhaite acheter
+            propertyID: int, // ID de la propriété qu'on veux acheter ou -1 pour carte sortie de prison
+            price: int, // montant qu'on lui propose pour l'achat
         }
         ```
 
@@ -794,14 +794,15 @@
 - **Réception d'une proposition d'offre**
 
     * **Réponse:** gameOfferReceiveRes
+        > Tout le monde reçoit cette réponse, mais seul le joueur d'ID receiverID pourra l'accepter
         * *Données:*
         ```javascript
         {
             offerID: int, // ID de l'offre
             makerID: int, // ID joueur qui a créer l'offre
-            receiverID: int,
-            propertyID: int, // ID de la propriété qu'on veux vendre ou -1 pour carte sortie de prison
-            price: int, // montant qu'on lui propose pour la vente
+            receiverID: int, // ID joueur auquel on souhaite acheter
+            propertyID: int, // ID de la propriété que le créateur de l'offre souhaite acheter (appartient au joueur d'ID receiverID)
+            price: int, // montant proposé pour l'achat
         }
         ```
 
@@ -825,17 +826,17 @@
         ```
 
 - **Une offre est terminée**
-    > Soit a expirée, soit a été remplie. Si propertyID vaut -1, il s'agit d'une vente de carte sortie de prison il faut alors ajouter (au niveau de l'affichage) une carte au receveur, et en retirer une au créateur de l'offre
+    > Soit a expirée, soit a été remplie. Si propertyID vaut -1, il s'agit d'un achat de carte sortie de prison il faut alors ajouter (au niveau de l'affichage) une carte au création (maker), et en retirer une au récepteur (receiver) de l'offre qui l'a accepté
 
     * **Réponse:** gameOfferFinishedRes
         * *Données:*
         ```javascript
         {
-            receiverID: int | null, // id player qui a accepté d'acheter ou null si expirée sans acheteur
+            receiverID: int | null, // ID player qui a accepté d'acheter ou null si expirée sans qu'il accepte
             offerID: int,
             price: int,
             propertyID: int, // ID de la propriété ou -1 pour carte sortie de prison
-            makerID: int // ID player du créateur de l'offre
+            makerID: int // ID player du créateur de l'offre => celui qui gagne la propriété / carte prison
         }
         ```
 
