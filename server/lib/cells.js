@@ -22,7 +22,7 @@ class Cells {
             new Cell(Constants.CELL_TYPE.CHANCE    ,  null),                                                           // case 7
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[3])),                               // case 8
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[4])),                               // case 9
-            new Cell(Constants.CELL_TYPE.OTHER     ,  null),                                                           // case 10 = parlement
+            new Cell(Constants.CELL_TYPE.PRISON     ,  null),                                                          // case 10 = prison
             // Violet
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[5])),                               // case 11
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new PublicCompany(Properties.PUBLIC_COMPANY[0])),                // case 12
@@ -46,7 +46,7 @@ class Cells {
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[15])),                              // case 27
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new PublicCompany(Properties.PUBLIC_COMPANY[1])),                // case 28
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[16])),                              // case 29
-            new Cell(Constants.CELL_TYPE.PRISON    ,  null),                                                           // case 30 = Prison
+            new Cell(Constants.CELL_TYPE.OTHER    ,  null),                                                           // case 30 = Parlement
             // Vert
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[17])),                              // case 31
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[18])),                              // case 32

@@ -49,7 +49,7 @@ class Card {
         const oldPos = player.cellPos;
         player.moveAbsolute(this.effectArg1);
 
-        if (player.cellPos === 30 && oldPos > 30) // = go prison
+        if (player.cellPos === 10 && oldPos > 10) // = go prison
             player.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START); // car regagné ensuite => annuler le gain
     }
 

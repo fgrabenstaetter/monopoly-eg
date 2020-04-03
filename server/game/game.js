@@ -333,6 +333,13 @@ class Game {
             case Constants.CELL_TYPE.TAX:
                 this.turnPlayerTaxCell();
                 break;
+
+            case Constants.CELL_TYPE.OTHER:
+                if (this.curPlayer.cellPos === 30) {
+                    this.curPlayer.moveAbsolute(10);
+                    //Perdre l'argent gagné au passage de la case départ
+                    this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+                }
         }
 
         if (oldPos > player.cellPos) // recevoir argent de la banque
