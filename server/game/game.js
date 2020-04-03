@@ -182,7 +182,6 @@ class Game {
     endTurn() {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
-        this.successManager.check(this);
         this.nextTurn();
     }
 
@@ -223,13 +222,13 @@ class Game {
             this.turnPlayerTimeoutAction();
             return;
         }
+        this.successManager.check(this);
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
         this.checkEnd();
-
         do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
         while (this.curPlayer.failure)
