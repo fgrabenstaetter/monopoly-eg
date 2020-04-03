@@ -13,6 +13,8 @@ class SuccessManager {
                 case '5timesInJail':
                     break;
 
+                case 'build3hostels':
+                    break;
                 default:
                     break;
             }
