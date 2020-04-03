@@ -9,6 +9,7 @@ const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
+const SuccessManager          = require('./successManager');
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -22,7 +23,7 @@ class Game {
      * @param paws La liste de leurs pions (même ordre) = liste d'entiers de 0 à 7
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor(users, pawns, GLOBAL) {
+    constructor (users, pawns, GLOBAL) {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
@@ -33,7 +34,7 @@ class Game {
         this.chat               = new Chat();
         this.bids               = [];
         this.bank               = new Bank(this.cells);
-
+        this.successManager     = new SuccessManager();
         for (let i = 0, l = users.length; i < l; i++) {
             const player = new Player(users[i], pawns[i]);
             this.players.push(player);
@@ -181,6 +182,7 @@ class Game {
     endTurn() {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
+        this.successManager.check(this);
         this.nextTurn();
     }
 

@@ -1,4 +1,4 @@
-const quests = [{
+const Success = [{
     token: 'make6double',
     description: 'Faites un total de 6 doubles pendant une partie',
     exp: 300
@@ -8,4 +8,4 @@ const quests = [{
     exp: 500
 }];
 
-module.exports = quests;
+module.exports = Success;
