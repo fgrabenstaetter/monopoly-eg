@@ -4,7 +4,7 @@ class Deck {
     constructor (cardsInfo) {
         let cards = [];
 
-        for (let cardInfo of cardsInfo) {
+        for (const cardInfo of cardsInfo) {
             let card = new Card(
                 cardInfo.description,
                 cardInfo.effectType,

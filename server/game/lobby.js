@@ -1,4 +1,6 @@
 const Chat = require('./chat');
+const Quests = require('./../lib/quests');
+const Quest = require('./quest');
 
 /**
  * Représente un Lobby
@@ -32,6 +34,11 @@ class Lobby {
         this.maxUsersNb = 8;
         this.open = true;
 
+        this.quests = [];
+        for (const questInfos of Quests) {
+            const quest = new Quest(questInfos.token, questInfos.description, questInfos.exp);
+            this.quests.push(quest);
+        }
         this.addUser(user);
     }
 
