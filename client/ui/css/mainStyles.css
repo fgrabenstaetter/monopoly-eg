@@ -1908,7 +1908,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
-  background-color: yellow;
+  background-color: #e4e441;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
