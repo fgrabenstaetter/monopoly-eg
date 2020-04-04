@@ -132,7 +132,7 @@ class Network {
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
                     err = Errors.FRIENDS.NOT_EXISTS;
-                else if (lobby.users.length >= maxUsersNb)
+                else if (lobby.users.length >= lobby.maxUsersNb)
                     err = Errors.LOBBY.FULL;
                 else if (lobby.userByID(data.friendID))
                     err = Errors.FRIENDS.ALREADY_SAME_LOBBY;
