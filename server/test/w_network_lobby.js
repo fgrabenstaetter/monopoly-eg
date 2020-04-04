@@ -197,4 +197,32 @@ describe('Network + Lobby', () => {
             done();
         });
     });
+
+    it('Lancement d\'une game avec 2 utilisateurs chacun lobby séparé pour une partie à 2 joueurs', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        const lobby2 = new Lobby(user2, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        GLOBAL.lobbies.push(lobby2);
+        assert.equal(true, lobby.open);
+        assert.equal(true, lobby2.open);
+        lobby.changeTargetUsersNb(2);
+        lobby2.changeTargetUsersNb(2);
+
+        clientSocket.on('lobbyPlayRes', (data) => {
+            clientSocket2.on('lobbyPlayRes', (data) => {
+                assert.equal(false, lobby.open);
+                assert.equal(false, lobby2.open);
+                assert.equal(data.error, 0);
+                GLOBAL.matchmaking.checkLaunch();
+                const game = GLOBAL.games[0];
+                assert.equal(GLOBAL.games.length, 1);
+                assert.strictEqual(game.players.length, 2);
+                assert.notStrictEqual(game.playerByID(user.id), null);
+                assert.notStrictEqual(game.playerByID(user2.id), null);
+                done();
+            });
+            clientSocket2.emit('lobbyPlayReq');
+        });
+        clientSocket.emit('lobbyPlayReq');
+    });
 });

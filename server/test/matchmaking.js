@@ -53,23 +53,23 @@ describe("Matchmaking", function() {
     };
 
     beforeEach(() => {
-		const express = new Express();
-		this._http = Http.Server(express);
-		this._ioserver = ioserver(this._http);
-		this._http.listen(NODE_PORT);
-		this._client = null;
-	});
+        const express = new Express();
+        this._http = Http.Server(express);
+        this._ioserver = ioserver(this._http);
+        this._http.listen(NODE_PORT);
+        this._client = null;
+    });
     //Lancez un matchmaking Ici
     it("Lancement d'une partie", (done) => {
-		this._ioserver.use((socket, next) => {
-			return next();
-		});
+        this._ioserver.use((socket, next) => {
+            return next();
+        });
 
-		this._client = ioclient.connect('http://localhost:${NODE_PORT}');
-		/* si nous attendons le serveur et tuons le socket du serveur
-		* le client essaiera de se reconnecter et ne sera pas tué par mocha
-        */
-		this._client.on('connect', () => {
+        this._client = ioclient.connect('http://localhost:${NODE_PORT}');
+        /* si nous attendons le serveur et tuons le socket du serveur
+         * le client essaiera de se reconnecter et ne sera pas tué par mocha
+         */
+        this._client.on('connect', () => {
             GLOBAL.matchmaking = new Matchmaking(GLOBAL);
             GLOBAL.network = new Network(this._ioserver, GLOBAL);
             let user = new User(userSchema1);
@@ -78,16 +78,16 @@ describe("Matchmaking", function() {
             lobby.changeTargetUsersNb(2);
             lobby.searchGame();
             assert.equal(2, lobby.targetUsersNb);
-			done();
-		});
+            done();
+        });
         done();
-	});
+    });
 
     afterEach(() => {
-		// this last call forces the client to stop connecting
-		// even if tests failed
-		this._client.close();
-		this._ioserver.close();
-		this._http.close();
-	});
+        // this last call forces the client to stop connecting
+        // even if tests failed
+        this._client.close();
+        this._ioserver.close();
+        this._http.close();
+    });
 });

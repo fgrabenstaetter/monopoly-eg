@@ -95,9 +95,9 @@ class Matchmaking {
 
                             let mergedLobby = [];
                             for (let f of fusion)
-                                this.lobbies.push(this.queue[i][f]);
+                                mergedLobby.push(this.queue[i][f]);
 
-                            this.createGame(this.lobbies);
+                            this.createGame(mergedLobby);
                         }
                     }
                 }
