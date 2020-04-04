@@ -17,7 +17,7 @@
             });) -> deplacement de la moto vers la case 12 et une fois arrivé à la case 12 affichage du texte.
 
 
-*  loaderhouseProperty(ncase, nhouse);
+* loaderhouseProperty(ncase, nhouse);
     Une API pour charger une maison à la bonne case.
     ncase -> Chiffre de la case.
 
