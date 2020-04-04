@@ -37,8 +37,11 @@ class Matchmaking {
 
         // Sinon on l'insère dans la bonne file d'attente
         const index = lobby.targetUsersNb - 2;
-        if (this.queue[index].indexOf(lobby) === -1)
+        if (this.queue[index].indexOf(lobby) === -1) {
             this.queue[index].push(lobby);
+            //console.log(index);
+            //console.log(this.queue[index]);
+        }
     }
 
     /**
@@ -62,12 +65,14 @@ class Matchmaking {
             pawns = pawns.concat(lobby.pawns);
             this.delLobby(lobby);
         }
-
+        console.log(users);
+        console.log(pawns);
         let game = new Game(users, pawns, this.GLOBAL);
         this.GLOBAL.games.push(game);
     }
 
     checkLaunch () {
+        //console.log(this.queue[0]);
         for (let i = 0; i < 7; i++) {
             let nbMax = i + 2;
 
@@ -76,16 +81,18 @@ class Matchmaking {
                 let fusion = [];
 
                 for (let k = 0; k < this.queue[i].length; k++) {
+                    console.log(sum);
                     sum += this.queue[i][k].users.length;
-
                     if (k !== j) {
                         if (sum < nbMax) {
                             if (fusion.indexOf(j) === -1)
                                 fusion.push(i);
                             if (fusion.indexOf(k) === -1)
                                 fusion.push(j);
-                        } else if (sum > nbMax)
+                        }
+                        else if (sum > nbMax) {
                             sum -= this.queue[i][k].users.length;
+                        }
                         else {
                             if (fusion.indexOf(j) === -1)
                                 fusion.push(j);
@@ -94,9 +101,9 @@ class Matchmaking {
 
                             let mergedLobby = [];
                             for (let f of fusion)
-                                this.lobbies.push(this.queue[i][f]);
-
-                            this.createGame(this.lobbies);
+                                this.GLOBAL.lobbies.push(this.queue[i][f]);
+                            console.log('TOTOT');
+                            this.createGame(this.GLOBAL.lobbies);
                         }
                     }
                 }
