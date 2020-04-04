@@ -293,14 +293,21 @@
          ```
 
     * **Réponse:** lobbyPlayRes
-        > Lors d'un succès, est envoyé à tous les joueurs du lobby
-
         * *Données:*
         ```javascript
         {
             error: int,
             status: string
         }
+        ```
+
+* **Une partie a été trouvée => GO**
+    > Lorsque reçu, rediriger vers /game pour entrer dans le jeu
+
+    * **Réponse:** lobbyGameFoundRes
+        * *Données:*
+        ```javascript
+        null
         ```
 
 ### --- Amis

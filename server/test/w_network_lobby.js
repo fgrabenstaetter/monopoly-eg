@@ -188,7 +188,7 @@ describe('Network + Lobby', () => {
         assert.equal(true, lobby.open);
         lobby.changeTargetUsersNb(2);
         clientSocket.emit('lobbyPlayReq');
-        clientSocket.on('lobbyPlayRes', (data) => {
+        clientSocket.on('lobbyGameFoundRes', (data) => {
             assert.equal(false, lobby.open);
             //La game a été lancée
             assert.equal(Errors.SUCCESS.code, data.error);
@@ -209,7 +209,7 @@ describe('Network + Lobby', () => {
         lobby2.changeTargetUsersNb(2);
 
         clientSocket.on('lobbyPlayRes', (data) => {
-            clientSocket2.on('lobbyPlayRes', (data) => {
+            clientSocket2.on('lobbyGameFoundRes', (data) => {
                 assert.equal(false, lobby.open);
                 assert.equal(false, lobby2.open);
                 assert.equal(data.error, 0);

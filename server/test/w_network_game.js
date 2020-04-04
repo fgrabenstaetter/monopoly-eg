@@ -111,14 +111,14 @@ describe('Network + Game', () => {
                 done();
         }
 
-        clientSocket.on('lobbyPlayRes', () => {
+        clientSocket.on('lobbyGameFoundRes', () => {
             clientSocket.on('gameStartedRes', (data) => {
                 check(data);
             });
             clientSocket.emit('gameReadyReq');
         });
 
-        clientSocket2.on('lobbyPlayRes', () => {
+        clientSocket2.on('lobbyGameFoundRes', () => {
             clientSocket2.on('gameStartedRes', (data) => {
                 check(data);
             });

@@ -439,11 +439,10 @@ class Network {
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
 
-            if (err.code === Errors.SUCCESS.code) {
-                this.io.to(lobby.name).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+            if (err.code === Errors.SUCCESS.code)
                 lobby.searchGame();
-            } else
-                user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
+
+            user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
         });
     }
 
@@ -885,8 +884,11 @@ class Network {
     // UTILIES METHODS
 
     gamePlayerDisconnected (player, game) {
+        if (!game.allPlayersReady)
+            return;
         console.log(player.nickname + ' s\'est déconnecté du jeu !');
         player.connected = false;
+
         this.io.to(game.name).emit('gamePlayerDisconnectedRes', { playerID: player.id });
 
         const mess = game.chat.addMessage(null, 'Le joueur ' + player.nickname + ' s\'est déconnecté');
@@ -898,6 +900,8 @@ class Network {
     }
 
     gamePlayerReconnected (player, game) {
+        if (!game.allPlayersReady)
+            return;
         console.log(player.nickname + ' s\'est reconnecté au jeu !');
         player.connected = true;
 

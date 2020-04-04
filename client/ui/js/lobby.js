@@ -171,10 +171,12 @@ socket.on('lobbyTargetUsersNbChangedRes', (res) => {
 });
 
 socket.on('lobbyPlayRes', (res) => {
-    if (res.error === 0)
-        window.location = '/game';
-    else // hôte uniquement
+    if (res.error !== 0)
         alert(res.status);
+});
+
+socket.on('lobbyGameFoundRes', () => {
+    window.location = '/game';
 });
 
 /**Vérifications des Res asynchrones
@@ -340,7 +342,7 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 
 /**
  * Ajoute un joueur dans son groupe (lobby)
- * @param id Identifiant du joueur 
+ * @param id Identifiant du joueur
  * @param pawn Pion du joueur
  */
 function addPlayerInGroup(id, pawn) {
@@ -358,7 +360,7 @@ function addPlayerInGroup(id, pawn) {
 
 /**
  * Retire un joueur de son groupe (lobby)
- * @param id Identifiant du joueur 
+ * @param id Identifiant du joueur
  */
 function delPlayerFromGroup(id) {
     const nick = idToNick(id);

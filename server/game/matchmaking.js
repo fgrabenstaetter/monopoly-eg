@@ -66,6 +66,10 @@ class Matchmaking {
 
         let game = new Game(users, pawns, duration, this.GLOBAL);
         this.GLOBAL.games.push(game);
+
+        // signaler à tous les joueurs que la partie a été trouvée
+        for (const usr of users)
+            usr.socket.emit('lobbyGameFoundRes');
     }
 
     checkLaunch () {
