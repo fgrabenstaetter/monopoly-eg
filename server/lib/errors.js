@@ -123,12 +123,8 @@ module.exports = Object.freeze({
             code: 4,
             status: 'Lobby fermé'
         },
-        NOT_FULL: {
-            code: 5,
-            status: 'Lobby non plein'
-        },
         PAWN_ALREADY_USED: {
-            code: 6,
+            code: 5,
             status: 'Pion déjà utilisé'
         }
     },

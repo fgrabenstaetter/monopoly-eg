@@ -129,7 +129,7 @@ class Network {
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
                     err = Errors.FRIENDS.NOT_EXISTS;
-                else if (lobby.users.length >= lobby.targetUsersNb)
+                else if (lobby.users.length >= maxUsersNb)
                     err = Errors.LOBBY.FULL;
                 else if (lobby.userByID(data.friendID))
                     err = Errors.FRIENDS.ALREADY_SAME_LOBBY;
@@ -305,7 +305,7 @@ class Network {
 
                     if (!friendLobby)
                         err = Errors.LOBBY.CLOSED;
-                    else if (friendLobby.users.length >= 8)
+                    else if (friendLobby.users.length >= friendLobby.maxUsersNb)
                         err = Errors.LOBBY.FULL;
                     else {
                         // quitter son lobby
@@ -417,8 +417,6 @@ class Network {
 
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
-            else if (lobby.users.length < lobby.targetUsersNb)
-                err = Errors.LOBBY.NOT_FULL;
 
             if (err.code === Errors.SUCCESS.code) {
                 this.io.to(lobby.name).emit('lobbyPlayRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
