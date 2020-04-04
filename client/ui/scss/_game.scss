@@ -220,7 +220,7 @@
 
       &.station {
         &:before {
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -240,7 +240,7 @@
 
       &.company {
         &.eau:before {
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -258,7 +258,7 @@
         }
 
         &.electricite:before {
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -385,7 +385,7 @@
         }
 
         .money::before {
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -436,14 +436,14 @@
             bottom: 1px;
           }
 
-          .properties-container {
+        .Freeperties-container {
             position: relative;
             display: flex;
             flex-direction: column;
             margin: 0;
             height: max-content;
 
-            .property {
+          .Freeperty {
               text-align: center;
               width: 120px;
               border: none;
@@ -462,7 +462,7 @@
             &.purple,
             &.brown,
             &.green {
-              .property {
+            .Freeperty {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
@@ -471,71 +471,71 @@
             &.yellow,
             &.purple,
             &.cyan {
-              .property {
+            .Freeperty {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
             }
 
-            // Classes couleurs propriétés
+            // Classes coulers Freepriétés
             &.yellow {
-              .property {
+            .Freeperty {
                 background-color: rgb(228, 228, 65);
                 color: white;
               }
             }
 
             &.blue {
-              .property {
+            .Freeperty {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-              .property {
+            .Freeperty {
                 background-color: red;
                 color: white;
               }
             }
 
             &.orange {
-              .property {
+            .Freeperty {
                 background-color: orange;
                 color: white;
               }
             }
 
             &.purple {
-              .property {
+            .Freeperty {
                 background-color: rgb(223, 184, 191);
                 color: white;
               }
             }
 
             &.brown {
-              .property {
+            .Freeperty {
                 background-color: brown;
                 color: white;
               }
             }
 
             &.cyan {
-              .property {
+            .Freeperty {
                 background-color: rgb(35, 212, 212);
                 color: white;
               }
             }
 
             &.green {
-              .property {
+            .Freeperty {
                 background-color: green;
                 color: white;
               }
             }
 
             &.station {
-              .property {
+            .Freeperty {
                 background-color: white;
                 color: black;
                 text-align: left;
@@ -543,7 +543,7 @@
               }
 
               :before {
-                font-family: "Font Awesome\ 5 Pro";
+                font-family: "Font Awesome 5 Free";
                 -moz-osx-font-smoothing: grayscale;
                 -webkit-font-smoothing: antialiased;
                 display: inline-block;
@@ -561,14 +561,14 @@
             }
 
             &.company {
-              .property {
-                background-color: rgb(58, 58, 58);
+            .Freeperty {
+                background-color: black;
                 text-align: left;
                 padding-left: 12px;
                 color: white;
 
                 &.eau:before {
-                  font-family: "Font Awesome\ 5 Pro";
+                  font-family: "Font Awesome 5 Free";
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
                   display: inline-block;
@@ -585,7 +585,7 @@
                 }
 
                 &.electricite:before {
-                  font-family: "Font Awesome\ 5 Pro";
+                  font-family: "Font Awesome 5 Free";
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
                   display: inline-block;
@@ -627,7 +627,7 @@
         }
 
         &.current::before {
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -730,7 +730,7 @@
           }
 
           &.company {
-            background-color: rgb(58, 58, 58);
+            background-color: black;
 
             .title {
               display: inline;
@@ -739,7 +739,7 @@
             }
 
             &.eau:before {
-              font-family: "Font Awesome\ 5 Pro";
+              font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
               display: inline-block;
@@ -757,7 +757,7 @@
             }
 
             &.electricite:before {
-              font-family: "Font Awesome\ 5 Pro";
+              font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
               display: inline-block;
@@ -786,7 +786,7 @@
             }
 
             &:before {
-              font-family: "Font Awesome\ 5 Pro";
+              font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
               display: inline-block;
@@ -896,12 +896,12 @@
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
 
-        .action-button.in-progress,
+        .action-buttonin-Freegress,
         .action-button.finished {
           color: transparent !important;
         }
 
-        .action-button.in-progress:after,
+        .action-buttonin-Freegress:after,
         .action-button.finished:after {
           position: absolute;
           z-index: 2;
@@ -913,19 +913,19 @@
           left: 0;
         }
 
-        /* If the .in-progress class is set on the button, show the
+        /* If the in-Freegress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
 
-        .action-button.in-progress:after {
+        .action-buttonin-Freegress:after {
           content: attr(data-loading);
         }
 
-        .action-button.in-progress:before {
+        .action-buttonin-Freegress:before {
           position: fixed;
           top: 270px;
           right: 65px;
           color: rgba($color: white, $alpha: 0.8);
-          font-family: "Font Awesome\ 5 Pro";
+          font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: flex;
@@ -941,7 +941,7 @@
         }
 
         @media (max-height: 820px) {
-          .action-button.in-progress:before {
+          .action-buttonin-Freegress:before {
             top: 190px;
           }
         }
@@ -952,7 +952,7 @@
           content: attr(data-finished);
         }
 
-        /* The colorful bar that grows depending on the progress */
+        /* The colorful bar that grows depending on he Freegress */
 
         .action-button .tz-bar {
           background-color: rgba(255, 98, 0, 1);
