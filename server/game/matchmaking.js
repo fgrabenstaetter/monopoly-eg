@@ -50,8 +50,8 @@ class Matchmaking {
     delLobby (lobby) {
         const index = lobby.targetUsersNb - 2;
         if (Matchmaking.queue[index].indexOf(lobby) !== -1) {
-            Matchmaking.queue[index].splice(Matchmaking.queue[index].indexOf(lobby), 1);
             lobby.delete();
+            Matchmaking.queue[index].splice(Matchmaking.queue[index].indexOf(lobby), 1);
         }
     }
 
@@ -65,8 +65,9 @@ class Matchmaking {
             pawns = pawns.concat(lobby.pawns);
             this.delLobby(lobby);
         }
-        console.log(users);
-        console.log(pawns);
+        //console.log(users);
+        //console.log(pawns);
+        //Problème de pions à fix
         let game = new Game(users, pawns, this.GLOBAL);
         this.GLOBAL.games.push(game);
     }
@@ -102,7 +103,7 @@ class Matchmaking {
                             let mergedLobby = [];
                             for (let f of fusion)
                                 this.GLOBAL.lobbies.push(Matchmaking.queue[i][f]);
-                            console.log('TOTOT');
+                            //console.log('TOTOT');
                             this.createGame(this.GLOBAL.lobbies);
                         }
                     }
