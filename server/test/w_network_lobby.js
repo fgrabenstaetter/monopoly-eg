@@ -187,15 +187,21 @@ describe('Network + Lobby', () => {
         GLOBAL.lobbies.push(lobby);
         assert.equal(true, lobby.open);
         lobby.changeTargetUsersNb(2);
-        clientSocket.emit('lobbyPlayReq');
+        let nb = 0;
+
+        clientSocket.on('lobbyPlayRes', (data) => {
+            assert.equal(data.error, 0);
+            if (++ nb === 2) done();
+        });
+
         clientSocket.on('lobbyGameFoundRes', (data) => {
             assert.equal(false, lobby.open);
             //La game a été lancée
-            assert.equal(Errors.SUCCESS.code, data.error);
-            assert.equal(Errors.SUCCESS.status, data.status);
             assert.equal(1, GLOBAL.games.length);
-            done();
+            if (++ nb === 2) done();
         });
+
+        clientSocket.emit('lobbyPlayReq');
     });
 
     it('Lancement d\'une game avec 2 utilisateurs chacun lobby séparé pour une partie à 2 joueurs', (done) => {
@@ -203,26 +209,33 @@ describe('Network + Lobby', () => {
         const lobby2 = new Lobby(user2, GLOBAL);
         GLOBAL.lobbies.push(lobby);
         GLOBAL.lobbies.push(lobby2);
-        assert.equal(true, lobby.open);
-        assert.equal(true, lobby2.open);
+        assert.strictEqual(true, lobby.open);
+        assert.strictEqual(true, lobby2.open);
         lobby.changeTargetUsersNb(2);
         lobby2.changeTargetUsersNb(2);
+        let nb = 0;
 
-        clientSocket.on('lobbyPlayRes', (data) => {
-            clientSocket2.on('lobbyGameFoundRes', (data) => {
-                assert.equal(false, lobby.open);
-                assert.equal(false, lobby2.open);
-                assert.equal(data.error, 0);
+        for (const sock of [clientSocket, clientSocket2]) {
+            sock.on('lobbyPlayRes', (data) => {
+                assert.strictEqual(data.error, 0);
                 GLOBAL.matchmaking.checkLaunch();
+                if (++ nb === 4) done();
+            });
+
+            sock.on('lobbyGameFoundRes', (data) => {
+                assert.strictEqual(false, lobby.open);
+                assert.strictEqual(false, lobby2.open);
+                assert.strictEqual(GLOBAL.games.length, 1);
                 const game = GLOBAL.games[0];
-                assert.equal(GLOBAL.games.length, 1);
                 assert.strictEqual(game.players.length, 2);
                 assert.notStrictEqual(game.playerByID(user.id), null);
                 assert.notStrictEqual(game.playerByID(user2.id), null);
-                done();
+
+                if (++ nb === 4)
+                    done();
             });
-            clientSocket2.emit('lobbyPlayReq');
-        });
-        clientSocket.emit('lobbyPlayReq');
+
+            sock.emit('lobbyPlayReq');
+        }
     });
 });
