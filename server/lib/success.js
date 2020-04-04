@@ -1,10 +1,10 @@
 const Success = [{
-    token: 'make6double',
-    description: 'Faites un total de 6 doubles pendant une partie',
+    token: 'make10doubles',
+    description: 'Faites un total de 10 doubles pendant une partie',
     exp: 300
 }, {
-    token: '5timesInJail',
-    description: 'Allez au moins 5 fois en prison en 1 partie',
+    token: '3timesInJail',
+    description: 'Allez au moins 3 fois en prison en 1 partie',
     exp: 500
 }, {
     token: 'build3hostels',
