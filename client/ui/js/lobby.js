@@ -43,7 +43,7 @@ socket.on('lobbyCreatedRes', (res) => {
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
     imHost();
     users.push({ nickname: NICKNAME, id: ID });
-    addPlayerInGroup(ID, res.pawn);
+    addPlayerInGroup(ID);
 
     $('.profile-row > .username').text(NICKNAME);
 });
@@ -52,7 +52,6 @@ socket.on('lobbyJoinedRes', (res) => {
     console.log('lobbyJoinedRes: ' + Object.keys(res));
     console.log(res);
     // res.targetUsersNb
-    // res.pawn = pion du joueur (non hôte)
     // res.users = liste des users présents (nickname + pion)
     // res.messages = liste des anciens messages du lobby (senderNickname + text + createdTime)
 
@@ -64,7 +63,7 @@ socket.on('lobbyJoinedRes', (res) => {
 
     for (const usr of res.users) {
         users.push(usr);
-        addPlayerInGroup(usr.id, usr.pawn);
+        addPlayerInGroup(usr.id);
     }
 
     for (const mess of res.messages)
@@ -130,7 +129,7 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
     users.push({ nickname: res.nickname, id: res.id });
-    addPlayerInGroup(res.id, res.pawn);
+    addPlayerInGroup(res.id);
 
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
     const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
@@ -343,9 +342,8 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 /**
  * Ajoute un joueur dans son groupe (lobby)
  * @param id Identifiant du joueur
- * @param pawn Pion du joueur
  */
-function addPlayerInGroup(id, pawn) {
+function addPlayerInGroup(id) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
     const html = `

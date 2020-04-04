@@ -109,18 +109,6 @@ describe('Network + Lobby', () => {
         });
     });
 
-    it('Changement de pion', (done) => {
-        const lobby = new Lobby(user, GLOBAL);
-        GLOBAL.lobbies.push(lobby);
-        clientSocket.emit('lobbyChangePawnReq', {pawn: 6});
-
-        clientSocket.on('lobbyUserPawnChangedRes', (data) => {
-            assert.equal(data.userID, user.id);
-            assert.equal(data.pawn, 6);
-            done();
-        });
-    });
-
     it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
         const lobby = new Lobby(user, GLOBAL);
         GLOBAL.lobbies.push(lobby);

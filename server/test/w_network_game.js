@@ -102,8 +102,6 @@ describe('Network + Game', () => {
             assert.strictEqual(data.playersMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY);
             assert.strictEqual(data.bankMoney, Constants.GAME_PARAM.BANK_INITIAL_MONEY);
             assert.strictEqual(data.players.length, 2);
-            assert.deepStrictEqual(data.players, [{ id: user.id,  nickname: user.nickname, pawn: 0 },
-                                                  { id: user2.id, nickname: user2.nickname, pawn: 1 }]);
             assert.strictEqual(data.cells.length, 40);
             assert.strictEqual(data.properties.length >= 10, true);
 
@@ -129,7 +127,7 @@ describe('Network + Game', () => {
     });
 
     it('Réception de gameTurnRes + cohérence données', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -153,7 +151,7 @@ describe('Network + Game', () => {
     });
 
     it('Un joueur dont ce n\'est pas le tour ne peux pas lancer les dés', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -173,7 +171,7 @@ describe('Network + Game', () => {
     });
 
     it('Le joueur actuel lance les dés + cohérence données action de jeu', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -207,7 +205,7 @@ describe('Network + Game', () => {
     });
 
     it('Achat d\'une propriété par un joueur', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -246,7 +244,7 @@ describe('Network + Game', () => {
     });
 
     it('Amélioration d\'une propriété par un joueur', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -288,7 +286,7 @@ describe('Network + Game', () => {
     });
 
     it('Payer un loyer (avec assez d\'argent)', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -323,7 +321,7 @@ describe('Network + Game', () => {
     });
 
     it('Hypothèque forcée (pas assez pour payer loyer)', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -375,7 +373,7 @@ describe('Network + Game', () => {
     });
 
     it('Test sur le retrait de carte chance/communauté', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -458,7 +456,7 @@ describe('Network + Game', () => {
     });
 
     it('Enchère créée sans surrenchérissement', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -501,7 +499,7 @@ describe('Network + Game', () => {
     });
 
     it('Créer, recevoir et accepter une offre de propriété', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
@@ -578,7 +576,7 @@ describe('Network + Game', () => {
     });
 
     it('Créer, recevoir et accepter une offre de carte sortie de prison', (done) => {
-        const game = new Game([user, user2], [0, 1], null, GLOBAL);
+        const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;

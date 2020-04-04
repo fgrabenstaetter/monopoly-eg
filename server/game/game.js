@@ -24,7 +24,7 @@ class Game {
      * @param duration La durée souhaitée de temps de jeu en ms ou null si illimité
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (users, pawns, duration, GLOBAL) {
+    constructor (users, duration, GLOBAL) {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
@@ -41,9 +41,15 @@ class Game {
         this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
+        const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
         for (let i = 0, l = users.length; i < l; i++) {
-            const player = new Player(users[i], pawns[i]);
+            const randInd = Math.floor(Math.random() * pawns.length);
+            const pawn = pawns[randInd];
+            pawns.splice(randInd, 1);
+
+            const player = new Player(users[i], pawn);
             this.players.push(player);
+
             // nécéssaire uniquement pour tests unitaires (env normal: socket change et donc inutile
             if (this.GLOBAL.network)
                 this.GLOBAL.network.gamePlayerListen(player, this);

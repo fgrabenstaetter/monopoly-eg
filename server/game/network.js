@@ -32,7 +32,6 @@ class Network {
         // Paramètres + Chat
         this.lobbyChangeTargetUsersNbReq    (user, lobby);
         this.lobbyChangeDurationReq         (user, lobby);
-        this.lobbyChangePawnReq             (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
         this.lobbyPlayReq                   (user, lobby);
 
@@ -79,8 +78,7 @@ class Network {
         if (lobby.users[0] === user) { // est l'hôte
             user.socket.emit('lobbyCreatedRes', {
                 targetUsersNb: lobby.targetUsersNb,
-                duration: lobby.gameDuration,
-                pawn: lobby.userPawn(user)
+                duration: lobby.gameDuration
             });
 
             // message de bienvenue
@@ -102,8 +100,7 @@ class Network {
         for (const usr of lobby.users) {
             users.push({
                 nickname : usr.nickname,
-                id       : usr.id,
-                pawn     : lobby.userPawn(usr)
+                id       : usr.id
             });
         }
 
@@ -117,8 +114,7 @@ class Network {
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
             nickname : user.nickname,
-            id       : user.id,
-            pawn     : lobby.pawns[lobby.users.indexOf(user)]
+            id       : user.id
         });
     }
 
@@ -368,25 +364,6 @@ class Network {
             }
 
             user.socket.emit('lobbyChangeTargetUsersNbRes', { error: err.code, status: err.status });
-        });
-    }
-
-    lobbyChangePawnReq(user, lobby) {
-        user.socket.on('lobbyChangePawnReq', (data) => {
-            let err = Errors.SUCCESS;
-
-            if (!data.pawn)
-                err = Errors.MISSING_FIELD;
-            else if (!lobby.changePawn(user, data.pawn))
-                err = Errors.LOBBY.PAWN_ALREADY_USED;
-            else {
-                this.io.to(lobby.name).emit('lobbyUserPawnChangedRes', {
-                    userID : user.id,
-                    pawn   : data.pawn
-                });
-            }
-
-            user.socket.emit('lobbyChangePawnRes', { error: err.code, status: err.status });
         });
     }
 

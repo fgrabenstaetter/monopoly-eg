@@ -56,15 +56,14 @@ class Matchmaking {
      * @param lobbies La liste des lobbies qui matchent pour jouer
      */
     createGame (lobbies) {
-        let users = [], pawns = [], nb = 0;
+        let users = [], nb = 0;
         const duration = lobbies[0].gameDuration; // TMP
         for (const lobby of lobbies) {
             users = users.concat(lobby.users);
-            pawns = pawns.concat(lobby.pawns);
             this.delLobby(lobby);
         }
 
-        let game = new Game(users, pawns, duration, this.GLOBAL);
+        let game = new Game(users, duration, this.GLOBAL);
         this.GLOBAL.games.push(game);
 
         // signaler à tous les joueurs que la partie a été trouvée

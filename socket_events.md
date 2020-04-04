@@ -35,8 +35,7 @@
         ```javascript
         {
             duration: int, // 30 | 60 | null (temps de partie par défaut en minutes ou null pour illimité) par défault à null
-            targetUsersNb: int, // par défaut à 2
-            pawn: int // par défaut à 0
+            targetUsersNb: int // par défaut à 2
         }
         ```
 
@@ -100,8 +99,7 @@
                 // premier user = host
                 {
                     nickname: string,
-                    id: int,
-                    pawn: int
+                    id: int
                 },
                 ...
                 // dernier user = le nouveau qui a reçu cet évènnement
@@ -123,8 +121,7 @@
         ```javascript
         {
             nickname: string,
-            id: int,
-            pawn: int
+            id: int
         }
         ```
 
@@ -190,36 +187,6 @@
         ```javascript
         {
             nb: int // 2 - 8
-        }
-        ```
-
-- **Modifier son pion**
-    * **Requête:** lobbyChangePawnReq
-        * *Données:*
-        ```javascript
-        {
-            pawn: int
-        }
-        ```
-
-    * **Réponse:** lobbyChangePawnRes
-        * *Données:*
-        ```javascript
-        {
-            error: int,
-            status: string
-        }
-        ```
-
-- **Un joueur a changé son pion**
-    > Reçu par tous les utilisateurs dans le lobby
-
-    * **Réponse:** lobbyUserPawnChangedRes
-        * *Données:*
-        ```javascript
-        {
-            userID: int,
-            pawn: int
         }
         ```
 

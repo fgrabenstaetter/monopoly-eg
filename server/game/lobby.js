@@ -25,9 +25,6 @@ class Lobby {
 
         // le user à l'indice 0 => hôte
         this.users = [];
-        this.pawns = [];
-        // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
-
         this.targetUsersNb = 2; // de 2 à 8
         this.gameDuration = null; // durée en ms ou null pour illimité
         this.maxUsersNb = 8;
@@ -44,7 +41,6 @@ class Lobby {
             return false;
 
         this.users.push(user);
-        this.pawns.push(this.nextPawn);
         if (this.users.length > this.targetUsersNb)
             this.targetUsersNb = this.users.length;
 
@@ -65,7 +61,6 @@ class Lobby {
         if (isInvited)
             return; // NE PAS LE SUPPRIMER CAR IL VIENT DACCEPTER LINVITATION LOBBY DUN AMI
 
-        this.pawns.splice(ind, 1);
         this.users.splice(ind, 1);
 
         if (this.users.length === 0) {
@@ -148,49 +143,12 @@ class Lobby {
         return null;
     }
 
-
-    /**
-     * @param user L'utilisateur dont on veut récupérer le pion
-     * @return son pion (int) si user trouvé, sinon null
-     */
-    userPawn(user) {
-        const ind = this.users.indexOf(user);
-        if (ind !== -1)
-            return this.pawns[ind];
-        return null;
-    }
-
-    /**
-     * @param user L'utilisateur dont on veut modifier le pion
-     * @param pawn Le nouveau pion
-     * @return true si succès, false sinon (pion déjà utilisé)
-     */
-    changePawn(user, pawn) {
-        const ok = this.pawns.indexOf(pawn) === -1;
-        if (!ok)
-            return false;
-
-        this.pawns[this.users.indexOf(user)] = pawn;
-        return true;
-    }
-
     /**
      * @param user L'utilisateur qu'on veut tester hote ou non
      * @return true si il est l'hôte, false sinon
      */
     isHost(user) {
         return this.users[0] === user;
-    }
-
-    /**
-     * @return un pion disponible
-     */
-    get nextPawn() {
-        for (let i = 0; i < 7; i++) {
-            if (this.pawns.indexOf(i) === -1)
-                return i;
-        }
-        // ne peut pas arriver ici
     }
 
     /**

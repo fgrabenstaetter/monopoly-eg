@@ -6,7 +6,6 @@ const {createUser} = require('./user');
 function createGame(playersCount=4, userSchemas=null, inputPawns=null, inputGlobal=null) {
     // initialise les utilisateurs
     let users = [];
-    let pawns = [0,1,2,3,4,5,6,7];
     let _global = {
         users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
         lobbies: [], // Lobbies actuellement créés
@@ -21,7 +20,7 @@ function createGame(playersCount=4, userSchemas=null, inputPawns=null, inputGlob
         for (let i of Array(playersCount).keys())
             users.push(createUser());
 
-    game = new Game(users, pawns, null,  _global);
+    game = new Game(users, null,  _global);
     return game;
 }
 
