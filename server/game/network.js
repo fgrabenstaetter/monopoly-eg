@@ -31,6 +31,7 @@ class Network {
 
         // Paramètres + Chat
         this.lobbyChangeTargetUsersNbReq    (user, lobby);
+        this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChangePawnReq             (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
         this.lobbyPlayReq                   (user, lobby);
@@ -78,6 +79,7 @@ class Network {
         if (lobby.users[0] === user) { // est l'hôte
             user.socket.emit('lobbyCreatedRes', {
                 targetUsersNb: lobby.targetUsersNb,
+                duration: lobby.gameDuration,
                 pawn: lobby.userPawn(user)
             });
 
@@ -107,6 +109,7 @@ class Network {
 
         user.socket.emit('lobbyJoinedRes', {
             targetUsersNb : lobby.targetUsersNb,
+            duration      : lobby.gameDuration,
             users         : users,
             messages      : messages
         });
@@ -387,6 +390,24 @@ class Network {
         });
     }
 
+    lobbyChangeDurationReq (user, lobby) {
+        user.socket.on('lobbyChangeDurationReq', (data) => {
+            let err = Errors.SUCCESS;
+
+            if (data.newDuration === undefined)
+                err = Errors.MISSING_FIELD;
+            else if (!lobby.changeDuration(data.newDuration))
+                err = Errors.LOBBY.WRONG_DURATION;
+            else {
+                this.io.to(lobby.name).emit('lobbyDurationChangedRes', {
+                    newDuration: data.newDuration
+                });
+            }
+
+            user.socket.emit('lobbyChangeDurationRes', { error: err.code, status: err.status });
+        });
+    }
+
     lobbyChatSendReq(user, lobby) {
         user.socket.on('lobbyChatSendReq', (data) => {
             let err = Errors.SUCCESS;
@@ -575,6 +596,7 @@ class Network {
 
                 this.io.to(game.name).emit('gameStartedRes', {
                     gameEndTime  : game.forcedEndTime,
+                    duration     : game.maxDuration,
                     playersMoney : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
                     bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
                     players      : players,
@@ -980,6 +1002,7 @@ class Network {
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
                 gameEndTime  : game.forcedEndTime,
+                duration     : game.maxDuration,
                 bankMoney    : game.bank.money,
                 chatMessages : chatMessages,
                 offers       : offers,

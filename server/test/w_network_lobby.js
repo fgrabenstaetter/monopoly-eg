@@ -115,7 +115,6 @@ describe('Network + Lobby', () => {
         clientSocket.emit('lobbyChangePawnReq', {pawn: 6});
 
         clientSocket.on('lobbyUserPawnChangedRes', (data) => {
-            //console.log(data);
             assert.equal(data.userID, user.id);
             assert.equal(data.pawn, 6);
             done();
@@ -130,12 +129,29 @@ describe('Network + Lobby', () => {
         clientSocket.emit('lobbyChangeTargetUsersNbReq', {nb: random});
 
         clientSocket.on('lobbyTargetUsersNbChangedRes', (data) => {
-            //console.log(data);
             assert.equal(data.nb, lobby.targetUsersNb);
             done();
         });
     });
 
+    it('Changement de la durée de partie', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        let nb = 0;
+
+        clientSocket.on('lobbyChangeDurationRes', (data) => {
+            assert.strictEqual(data.error, 0);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket.on('lobbyDurationChangedRes', (data) => {
+            assert.strictEqual(data.newDuration, 60);
+            assert.strictEqual(lobby.gameDuration, 60);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket.emit('lobbyChangeDurationReq', { newDuration: 60 });
+    });
     it('Envoi de message dans le chat', (done) => {
         const lobby = new Lobby(user, GLOBAL);
         lobby.addUser(user2);
@@ -146,7 +162,6 @@ describe('Network + Lobby', () => {
 
         clientSocket2.on('lobbyChatReceiveRes', (data) => {
             if (data.senderUserId === user.id) {
-                console.log(data);
                 assert.equal(user.id, data.senderUserID);
                 assert.equal(msg, data.content);
 

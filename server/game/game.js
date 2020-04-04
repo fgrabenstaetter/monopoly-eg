@@ -21,9 +21,10 @@ class Game {
     /**
      * @param users La liste des utilisateurs de la partie de jeu
      * @param paws La liste de leurs pions (même ordre) = liste d'entiers de 0 à 7
+     * @param duration La durée souhaitée de temps de jeu en ms ou null si illimité
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (users, pawns, GLOBAL) {
+    constructor (users, pawns, duration, GLOBAL) {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
@@ -35,6 +36,11 @@ class Game {
         this.bids               = [];
         this.bank               = new Bank(this.cells);
         this.successManager     = new SuccessManager();
+
+        this.startedTime = null; // timestamp de démarrage en ms
+        this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
+
         for (let i = 0, l = users.length; i < l; i++) {
             const player = new Player(users[i], pawns[i]);
             this.players.push(player);
@@ -61,9 +67,6 @@ class Game {
             timeoutActionTimeout : null,
             playerInd            : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
         };
-
-        this.startedTime = null; // timestamp de démarrage en ms
-        this.maxDuration = null; // durée max d'une partie en ms (null = illimité) (option à rajouter)
     }
 
     delete() {
@@ -82,6 +85,10 @@ class Game {
                 return bid;
         }
         return null;
+    }
+
+    get active () {
+        return this.players.length > 0;
     }
 
     /**
@@ -142,10 +149,10 @@ class Game {
     }
 
     /**
-     * @return le timestamp de fin de partie forcé (en ms)
+     * @return le timestamp de fin de partie forcé (en ms) ou null si illimité
      */
     get forcedEndTime() {
-        return this.startedTime + this.maxDuration;
+        return this.maxDuration ? this.startedTime + this.maxDuration * 60 * 1e3 : null;
     }
 
     /**
@@ -174,6 +181,8 @@ class Game {
             this.nextTurn();
         else
             setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
+
+        this.endTime = this.duration ? this.startedTime + this.duration * 60 * 1e3 : null;
     }
 
     /**
@@ -186,25 +195,54 @@ class Game {
     }
 
     /**
-     * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite)
+     * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite OU le timeout de partie a été atteint)
+     * @return true si la partie est finie, false sinon
      */
     checkEnd () {
-        let nb = 0, solo;
-        for (const pl of this.players) {
-            if (pl.failure)
-                nb ++;
-            else
-                solo = pl;
-        }
+        const gameTimeout = this.forcedEndTime && this.forcedEndTime >= Date.now();
+        if (gameTimeout) {
+            // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
+            let winnerPlayer, winnerValue = 0;
+            for (const pl of this.players) {
+                let sum = pl.money;
+                for  (const prop of pl.properties)
+                    sum += prop.value;
+                if (sum > winnerValue) {
+                    winnerValue = sum;
+                    winnerPlayer = pl;
+                }
+            }
 
-        if (nb === this.players.length - 1) { // fin de partie
-            const winner = solo;
             this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
-                winnerID: winner.id,
+                type: 'timeout',
+                winnerID: winnerPlayer.id,
                 duration: Date.now() - this.startedTime
             });
             this.delete();
+            return true;
+
+        } else {
+            let nb = 0, solo;
+            for (const pl of this.players) {
+                if (pl.failure)
+                    nb ++;
+                else
+                    solo = pl;
+            }
+
+            if (nb === this.players.length - 1) { // fin de partie
+                const winner = solo;
+                this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
+                    type: 'normal',
+                    winnerID: winner.id,
+                    duration: Date.now() - this.startedTime
+                });
+                this.delete();
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**
@@ -228,7 +266,9 @@ class Game {
             this.asyncActionExpired();
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
-        this.checkEnd();
+        if (this.checkEnd())
+            return;
+
         do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
         while (this.curPlayer.failure)
@@ -258,7 +298,7 @@ class Game {
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
 
-        if (this.turnData.canRollDiceAgain) { // relancer dés à chaque double aussi
+        if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
             this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else

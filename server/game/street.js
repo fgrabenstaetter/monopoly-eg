@@ -59,19 +59,26 @@ class Street extends Property {
             price = this.rentalPrices.empty;
 
         return price * (this.owner.colorMonopoly(this.color) ? 2 : 1);
-}
+    }
 
     /**
-     * @return Le prix d'hypothèque de la rue
+     * @return La valeur totale de la rue
      */
-    get mortagePrice () {
+    get value () {
         let sum = this.prices.empty;
         if (this.hostel)
             sum += this.prices.hostelPrice + this.prices.house * 4;
         else
             sum += this.prices.house * this.housesNb;
 
-        return sum / 2;
+        return sum;
+    }
+
+    /**
+     * @return Le prix d'hypothèque de la rue
+     */
+    get mortagePrice () {
+        return this.value / 2;
     }
 
     /**

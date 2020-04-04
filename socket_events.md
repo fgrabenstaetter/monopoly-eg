@@ -28,12 +28,14 @@
     > Lors de la connexion au socket, un lobby est automatiquement créé pour vous avec des paramètres par défaut
 
     * **Réponse:** lobbyCreatedRes
+
         > Automatiquement envoyé après la connexion au socket
 
         * *Données:*
         ```javascript
         {
-            targetUsersNb: int, // par défaut à 4
+            duration: int, // 30 | 60 | null (temps de partie par défaut en minutes ou null pour illimité) par défault à null
+            targetUsersNb: int, // par défaut à 2
             pawn: int // par défaut à 0
         }
         ```
@@ -93,6 +95,7 @@
         ```javascript
         {
             targetUsersNb: int, // nombre de joueurs désirés pour la partie
+            duration: int, // 30 | 60 | null (temps de partie par défaut en minutes ou null pour illimité)
             users: [
                 // premier user = host
                 {
@@ -223,12 +226,12 @@
 - **Envoyer un message dans le chat du lobby**
     * **Requête:** lobbyChatSendReq
         * Envoyer un message
-        * *Données:*
-        ```javascript
-        {
-            text: string
-        }
-        ```
+            * *Données:*
+            ```javascript
+            {
+                text: string
+            }
+            ```
 
     * **Réponse:** lobbyChatSendRes
         * *Données:*
@@ -238,6 +241,36 @@
             status: string,
         }
         ```
+
+- **Changer la durée de la partie de jeu**
+    > Hôte uniquement
+
+    * **Requête:** lobbyChangeDurationReq
+        * *Données:*
+        ```javascript
+        {
+            newDuration: int // 30 | 60 | null (temps max d'une partie en minutes ou null si illimité)
+        }
+        ```
+
+    * **Réponse:** lobbyChangeDurationRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **La durée de la partie de jeu a été changée**
+    > Reçu par tous les joueurs
+
+    * **Réponse:** lobbyDurationChangedRes
+    ```javascript
+    {
+        newDuration: int // 30 | 60 | null (temps max d'une partie en minutes ou null si illimité)
+    }
+    ```
 
 - **Recevoir un message dans le chat**
     * **Réponse:** lobbyChatReceiveRes
@@ -436,7 +469,8 @@
         * *Données:*
         ```javascript
         {
-            gameEndTime: timestamp, // timestamp de fin de partie (limite)
+            gameEndTime: timestamp, // timestamp de fin de partie en ms ou null si illimité
+            duration: int, 30 | 60 | null, // durée max en minutes ou null si illimité
             playersMoney: int, // argent initial de chaque joueur
             bankMoney: int, // argent initial de la banque
             players: [
@@ -531,7 +565,8 @@
         * *Données:*
         ```javascript
         {
-            gameEndTime: timestamp, // timestamp de fin de partie (limite)
+            gameEndTime: timestamp, // timestamp de fin de partie en ms ou null si illimité
+            duration: int, 30 | 60 | null, // durée max en minutes ou null si illimité
             bankMoney: int, // argent initial de la banque
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
             offers: array, // chaque élément: idem gameOfferReceiveRes
@@ -561,6 +596,7 @@
         * *Données:*
         ```javascript
         {
+            type: string, // 'failure' si dernier joueur qui n'a pas fait faillite ou 'timeout' si le timeout de partie a expiré et que c'est le joueur qui possède la plus grande valeur
             winnerID: int, // ID joueur qui a gagné
             duration: timestamp // durée totale du jeu en ms
         }

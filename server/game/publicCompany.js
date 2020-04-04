@@ -20,10 +20,17 @@ class PublicCompany extends Property {
     }
 
     /**
+     * @return La valeur totale de la compagnie
+     */
+    get value () {
+        return this.price;
+    }
+
+    /**
      * @return Le prix d'hypothéque de la compagnie
      */
     get mortagePrice () {
-        return this.price / 2;
+        return this.value / 2;
     }
 
     /**

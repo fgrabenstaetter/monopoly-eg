@@ -29,10 +29,17 @@ class TrainStation extends Property {
     }
 
     /**
+     * @return La valeur totale de la gare
+     */
+    get value () {
+        return this.price;
+    }
+
+    /**
      * @return Le prix d'hypothèque de la gare
      */
     get mortagePrice () {
-        return this.price / 2;
+        return this.value / 2;
     }
 }
 

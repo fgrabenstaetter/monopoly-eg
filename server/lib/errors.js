@@ -126,6 +126,10 @@ module.exports = Object.freeze({
         PAWN_ALREADY_USED: {
             code: 5,
             status: 'Pion déjà utilisé'
+        },
+        WRONG_DURATION: {
+            code: 6,
+            status: 'Valeur de durée de partie incorrecte'
         }
     },
 

@@ -29,6 +29,7 @@ class Lobby {
         // pawn = int de 0 à 7 (car max 8 joueurs = 8 pions différents)
 
         this.targetUsersNb = 2; // de 2 à 8
+        this.gameDuration = null; // durée en ms ou null pour illimité
         this.maxUsersNb = 8;
         this.open = true;
 
@@ -103,6 +104,17 @@ class Lobby {
             this.targetUsersNb = this.users.length;
         else
             this.targetUsersNb = newNb;
+    }
+
+    /**
+     * @param duration La durée souhaité en minutes (soit 30 soit 60 soit null pour illimité)
+     * @return false si erreur (mauvaise durée) sinon true
+     */
+    changeDuration (duration) {
+        if ([30, 60, null].indexOf(duration) === -1)
+            return false;
+        this.gameDuration = duration;
+        return true;
     }
 
     searchGame() {
