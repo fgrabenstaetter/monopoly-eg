@@ -151,13 +151,18 @@ class Player {
      * @param pos Le nb de cases à avancer/reculer
      */
     moveRelative (pos) {
+        const oldPos = this.cellPos;
         this.cellPos = (this.cellPos + pos) % 40; // 40 cellules au total
+        if (this.cellPos === 10 && oldPos > 10)
+            this.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);  // car regagné ensuite => annuler le gain
     }
 
     /*
      * @param pos La case où aller (0 <= pos < 40)
      */
     moveAbsolute (pos) {
+        if (pos === 10 && this.cellPos > 10)
+            this.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START); // car regagné ensuite => annuler le gain
         this.cellPos = pos;
     }
 }
