@@ -32,7 +32,7 @@ function initProperty() {
         </div>
         <div class="properties-container orange">
         </div>
-        <div class="properties-container pink">
+        <div class="properties-container purple">
         </div>
         <div class="properties-container brown">
         </div>
