@@ -80,8 +80,8 @@ class Matchmaking {
                 let fusion = [];
 
                 for (let k = 0; k < Matchmaking.queue[i].length; k++) {
-                    sum += Matchmaking.queue[i][k].users.length;
                     if (k !== j) {
+                        sum += Matchmaking.queue[i][k].users.length;
                         if (sum < nbMax) {
                             if (fusion.indexOf(j) === -1)
                                 fusion.push(i);
