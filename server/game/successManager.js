@@ -13,8 +13,6 @@ class SuccessManager {
             this.datas[key].nbJailTimes = 0;
             this.datas[key].nbHostels = 0;
             this.datas[key].completed = false;
-            //console.log(this.datas[key]);
-            //console.log(key);
         }
     }
 
@@ -23,7 +21,8 @@ class SuccessManager {
         for (const succ of Success) {
             switch (succ.token) {
                 case 'make10doubles':
-                    const key = game.curPlayer.id;
+                    const player = game.curPlayer;
+                    const key = player.id;
                     if (game.turnData.nbDoubleDices !== 0) {
                         this.datas[key].nbDoubles += game.turnData.nbDoubleDices;
                         if (this.datas[key].nbDoubles >= 10) {
@@ -33,10 +32,20 @@ class SuccessManager {
                     break;
 
                 case '3timesInJail':
+                    const player = game.curPlayer;
+                    const key = player.id;
+                    if (player.remainingTurnsInJail === 3) {
+                        this.datas[key].nbJailTimes++;
+                        if (this.datas[key].nbJailTimes >= 3) {
+                            this.datas[key].completed = true;
+                        }
+                    }
                     break;
 
                 case 'build3hostels':
                     break;
+
+                //Ajouter d'autres succès ?
                 default:
                     break;
             }
