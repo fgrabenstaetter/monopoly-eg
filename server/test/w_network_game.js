@@ -685,4 +685,39 @@ describe('Network + Game', () => {
         });
         sock.emit('gameRollDiceReq');
     });
+
+    it('Le joueur actuel fait un double et tombe en prison, les 2 premiers succès s\'activent', (done) => {
+        const game = new Game([user, user2], null, GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [5, 5]; //On force un double
+        game.start(true);
+        const player = game.curPlayer;
+
+        let sock, id, nb = 0;
+        if (player.user.socket === serverSocket) {
+            sock = clientSocket;
+            id = user.id;
+        } else {
+            sock = clientSocket2;
+            id = user2.id;
+        }
+
+        // A Modifier lorsque l'event pour les succès sera prêt
+        sock.on('gameActionRes', (data) => {
+            game.successManager.check(game);
+            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
+            assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 1);
+            assert.deepEqual(data.dicesRes, [5, 5]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 10);
+            done();
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
 });
