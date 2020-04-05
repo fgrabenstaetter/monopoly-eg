@@ -1,4 +1,5 @@
-const Success  = require('./../lib/success');
+const Success   = require('./../lib/success');
+const Constants = require('./../lib/constants');
 
 class SuccessManager {
     constructor (game) {
@@ -18,31 +19,41 @@ class SuccessManager {
 
     check (game) {
         //use game.turnData pour les données du tour qui vient de s'achever
+        const player = game.curPlayer;
+        const key = player.id;
         for (const succ of Success) {
             switch (succ.token) {
                 case 'make10doubles':
-                    const player = game.curPlayer;
-                    const key = player.id;
                     if (game.turnData.nbDoubleDices !== 0) {
                         this.datas[key].nbDoubles += game.turnData.nbDoubleDices;
-                        if (this.datas[key].nbDoubles >= 10) {
-                            this.datas[key].completed = true;
-                        }
+                    }
+                    if (this.datas[key].nbDoubles >= 10) {
+                        this.datas[key].completed = true;
                     }
                     break;
 
                 case '3timesInJail':
-                    const player = game.curPlayer;
-                    const key = player.id;
                     if (player.remainingTurnsInJail === 3) {
                         this.datas[key].nbJailTimes++;
-                        if (this.datas[key].nbJailTimes >= 3) {
-                            this.datas[key].completed = true;
-                        }
+                    }
+                    if (this.datas[key].nbJailTimes >= 3) {
+                        this.datas[key].completed = true;
                     }
                     break;
 
                 case 'build3hostels':
+                    let cpt = 0;
+                    for (const prop of player.properties) {
+                        if (prop.type === Constants.PROPERTY_TYPE.STREET) {
+                            if (prop.hostel) {
+                                cpt++;
+                            }
+                        }
+                    }
+                    this.datas[key].nbHostels += cpt;
+                    if (this.datas[key].nbHostels >= 3) {
+                        this.datas[key].completed = true;
+                    }
                     break;
 
                 //Ajouter d'autres succès ?
