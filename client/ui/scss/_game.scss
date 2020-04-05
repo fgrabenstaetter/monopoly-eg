@@ -352,6 +352,7 @@
     transform: translate(-50%, 0);
 
     .player-list {
+      width: max-content;
       height: 50vh;
       display: flex;
       flex-direction: column;
