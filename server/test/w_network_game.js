@@ -649,4 +649,40 @@ describe('Network + Game', () => {
             price: 456
         });
     });
+
+    it('Le joueur actuel lance les dés fait un double donc le premier succès est actif ?', (done) => {
+        const game = new Game([user, user2], null, GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [3, 3]; //On force un double
+        game.start(true);
+        const player = game.curPlayer;
+
+        let sock, id, nb = 0;
+        if (player.user.socket === serverSocket) {
+            sock = clientSocket;
+            id = user.id;
+        } else {
+            sock = clientSocket2;
+            id = user2.id;
+        }
+
+        // A Modifier lorsque l'event pour les succès sera prêt
+        sock.on('gameActionRes', (data) => {
+            game.successManager.check(game);
+            //console.log(game.turnData);
+            //console.log(game.successManager.datas[player.id]);
+            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
+            assert.deepEqual(data.dicesRes, [3, 3]);
+            assert.strictEqual(data.playerID, player.id);
+            assert.strictEqual(data.cellPos, 6);
+            done();
+        });
+
+        sock.on('gameRollDiceRes', (data) => {
+            assert.strictEqual(data.error, Errors.SUCCESS.code);
+        });
+        sock.emit('gameRollDiceReq');
+    });
 });
