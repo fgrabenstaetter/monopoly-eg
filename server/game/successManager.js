@@ -44,6 +44,7 @@ class SuccessManager {
                 case 'build3hostels':
                     let cpt = 0;
                     for (const prop of player.properties) {
+                        console.log(prop);
                         if (prop.type === Constants.PROPERTY_TYPE.STREET) {
                             if (prop.hostel) {
                                 cpt++;
