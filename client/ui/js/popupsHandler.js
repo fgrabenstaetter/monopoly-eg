@@ -77,9 +77,9 @@ function delProperty(roadID) {
 function createSaleCard(propertyID, type, roadName, price, disabled) {
     let newType;
     if (type == 'company') {
-        if (roadName == 'Eau') {
+        if (roadName == "Syndicat Des Eaux et de l'Assainissement") {
             newType = 'company eau';
-        } else if (roadName == 'Électricité') {
+        } else if (roadName == 'Eléctricité de Strasbourg') {
             newType = 'company electricite';
         }
     } else {

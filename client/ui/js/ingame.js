@@ -203,10 +203,18 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
     if (data.asyncRequestType && property) {
         if (data.asyncRequestType == "canBuy") {
             let price = data.asyncRequestArgs[0];
-            createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
-            console.log("propriety.color :");
-            console.log(property.color);
-        } else if (data.asyncRequestType == "canUpgrade") {
+            if (property.type == "publicCompany") {
+                if (property.name == 'Eléctricité de Strasbourg')
+                    createSaleCard(property.id, "company electricite", property.name, price, (currPlayer.id != ID));
+                else
+                    createSaleCard(property.id, "company eau", property.name, price, (currPlayer.id != ID));
+            }
+            else if (property.type == "trainStation")
+                createSaleCard(property.id, "station", property.name, price, (currPlayer.id != ID));
+            else
+                createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+        }
+        else if (data.asyncRequestType == "canUpgrade") {
             // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
             let level1Price = data.asyncRequestArgs[0];
             let level2Price = data.asyncRequestArgs[1];

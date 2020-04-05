@@ -32,7 +32,7 @@ const communityChestCards = [{
     effectType: 'moveAbsolute',
     effectArg1: 30
 }, {
-    description: 'Recevez votre revenue annuel. 100€.',
+    description: 'Recevez votre revenu annuel. 100€.',
     effectType: 'gainMoney',
     effectArg1: 100
 }, {
@@ -56,7 +56,7 @@ const communityChestCards = [{
     effectType: 'gainMoney',
     effectArg1: 25
 }, {
-    description: 'Vous avez gagné le premier prix de mocheté. Recevez 10€',
+    description: 'Votre ami Benjamin vous rembourse enfin les cafés que vous lui avez avancé. Recevez 10€',
     effectType: 'gainMoney',
     effectArg1: 10
 }, {
