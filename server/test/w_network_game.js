@@ -310,7 +310,9 @@ describe('Network + Game', () => {
             assert.strictEqual(data.cellPos, 3);
             assert.strictEqual(data.asyncRequestType, null);
             assert.deepStrictEqual(data.asyncRequestArgs, null);
-            assert.deepStrictEqual(data.updateMoney, [{ playerID: player.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - property.rentalPrice }]);
+            assert.strictEqual(player.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - property.rentalPrice);
+            assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice);
+            assert.deepStrictEqual(data.updateMoney.length, 2);
             done();
         });
 
