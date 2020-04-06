@@ -424,6 +424,26 @@ socket.on("gamePropertyUpgradeRes", (data) => {
     }
 });
 
+socket.on("gameOfferSendRes", (res) => {
+    if (res.error === 0)
+        console.log("gameOfferSendRes")
+    else // hôte uniquement
+        alert("gameOfferSendRes " + res.status);
+});
+
+socket.on("gameOfferReceiveRes", (res) => {
+    console.log("gameOfferReceiveRes");
+    addPurchaseOffer(res.offerID, idToNick(res.makerID), idToNick(res.receiverID), getPropertyById(res.propertyID).name, res.price);
+});
+
+socket.on("gameOfferAcceptRes", (res) => {
+    if (res.error === 0)
+        console.log("gameOfferAcceptRes")
+    else // hôte uniquement
+        alert("gameOfferAcceptRes " + res.status);
+});
+
+
 socket.on("gameRollDicesRes", (res) => {
     if (res.error === 0)
         console.log("gameRollDicesRes")
@@ -530,10 +550,10 @@ function setCurrentPlayer(playerId) {
     $('.player-list .player-entry[data-id="' + playerId + '"]').addClass('current');
 }
 
-function addPurchaseOffer(id, name, roadName, price) {
+function addPurchaseOffer(id, buyerName, ownerName, roadName, price) {
     $("#msgChat").append(`
         <div class="purchase-offer" data-id="` + id + `">
-            <span>` + name + `</span> propose de vous acheter ` + roadName + ` pour ` + price + `€
+            <span>` + buyerName + `</span> propose à <span>` + ownerName + `</span> d'acheter ` + roadName + ` pour ` + price + `€
             <div class="buttons-container">
                 <div class="accept-button">accepter</div>
                 <div class="deny-button">refuser</div>
@@ -565,7 +585,7 @@ function bindOfferListener() {
         let status;
         const id = $(this).parent().parent().attr('data-id');
         //if ($(this).parent().parent().hasClass('purchase-offer')) {
-        alert('gameOfferAcceptReq a implementer');
+        socket.emit('gameOfferAcceptReq', { offerID: id });
         console.log('gameOfferAcceptReq');
         //}
         /*else {
@@ -766,16 +786,20 @@ $('.overview-card .buy-button').click(function (e) {
     e.preventDefault();
     let propertyID = $(this).parent('.overview-card').attr('data-id');
     $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
-    $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(0);
+    $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
     $('#overviewCardModal').modal('show');
+
     return false;
 });
 
+// problèmes:
+// receiverID pas atteignable, utilisé = id(come) en hardcode pour test
+// propertyID n'est pas le bon -> NAN, hardcode du id de chemin du wacken pour test
 $('#overviewCardBuyForm').submit(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
     let price = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPrice').val());
-    socket.emit('gameOfferSendReq', { reveiverID: null, propertyID: propertyID, price: price });
+    socket.emit('gameOfferSendReq', { receiverID: "5e6a357965a67909e8c110e3", propertyID: 6, price: price });
     console.log('gameOfferSendReq :');
     console.log(price);
     console.log(propertyID);
