@@ -615,6 +615,7 @@ class Network {
         const nbJailEscapeCardsSave = player.nbJailEscapeCards;
         const cellPosSave = player.cellPos;
         const moneySav = []; // sauvegarder l'argent des joueurs avant rollDice()
+        const wasInPrison = player.isInPrison;
         for (const playr of game.players)
             moneySav.push(playr.money);
 
@@ -629,7 +630,7 @@ class Network {
         const extra = {};
         let cardToSend = null;
         const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
-        const cellPosTmp = (!player.isInPrison && player.cellPos !== tmpc) ? tmpc : null;
+        const cellPosTmp = ((!player.isInPrison || (!wasInPrison && player.isInPrison)) && player.cellPos !== tmpc) ? tmpc : null;
 
         if (cellPosTmp === null) {
             if (game.curCell.type === Constants.CELL_TYPE.CHANCE) {

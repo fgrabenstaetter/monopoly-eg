@@ -32,16 +32,15 @@ const chanceCards = [{
     effectType: 'gainMoney',
     effectArg1: 50
 }, {
-    description: "Vous êtes libérés de prison. Cette carte peut être conservée jusqu'à être utilisée ou vendue",
+    description: "Vous obtenez une carte sortie de prison. Elle peut être conservée jusqu'à être utilisée ou vendue",
     effectType: 'jailEscapeCard'
 }, {
-    description: 'Reculez de 3 cases',
+    description: 'Reculez de 4 cases',
     effectType: 'moveRelative',
-    effectArg1: -3
+    effectArg1: -4
 }, {
     description: 'Allez en prison. Avancez tout droit en prison, ne passez pas par la case départ. Ne recevez pas 200€',
-    effectType: 'moveAbsolute',
-    effectArg1: 30
+    effectType: 'goJail'
 }, {
     description: 'Faites des réparations pour toutes vos maisons. Versez pour chaque maison 25€. Versez pour chaque hôtel 100€',
     effectType: 'repair',

@@ -28,7 +28,7 @@ class Game {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
-        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes      = [5,5]; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells              = Cells.new;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
@@ -360,8 +360,8 @@ class Game {
 
     makeTurnAfterMove(diceRes, player, oldPos) {
         switch (this.curCell.type) {
-            case Constants.CELL_TYPE.PRISON:
-                this.turnPlayerPrisonCell();
+            case Constants.CELL_TYPE.GOPRISON:
+                this.turnPlayerGoPrisonCell();
                 break;
 
             case Constants.CELL_TYPE.PROPERTY:
@@ -388,7 +388,7 @@ class Game {
                 }
         }
 
-        if (oldPos > player.cellPos) // recevoir argent de la banque
+        if (!this.curPlayer.isInPrison && oldPos > player.cellPos) // recevoir argent de la banque
             player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
     }
 
@@ -411,7 +411,8 @@ class Game {
                 this.curPlayer.quitPrison();
             else {
                 this.curPlayer.remainingTurnsInJail--;
-                this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                if (this.curPlayer.remainingTurnsInJail > 0)
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -472,7 +473,7 @@ class Game {
         this.communityChestDeck.drawCard(this, this.curPlayer);
     }
 
-    turnPlayerPrisonCell() {
+    turnPlayerGoPrisonCell() {
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');

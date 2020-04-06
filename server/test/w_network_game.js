@@ -411,15 +411,6 @@ describe('Network + Game', () => {
                         assert.strictEqual(newMoney, player.money);
                         break;
 
-                    case 'jailBreak':
-                        break;
-
-                    case 'jailTime':
-                        break;
-
-                    case 'repair':
-                        break;
-
                     default:
                         //NE RIEN FAIRE
                         break;
@@ -689,7 +680,7 @@ describe('Network + Game', () => {
         // démarrage manuel
         for (const player of game.players)
             player.isReady = true;
-        game.forcedDiceRes = [5, 5]; //On force un double
+        game.forcedDiceRes = [15, 15]; //On force un double
         game.start(true);
         const player = game.curPlayer;
 
@@ -707,7 +698,7 @@ describe('Network + Game', () => {
             game.successManager.check(game);
             assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
             assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 1);
-            assert.deepEqual(data.dicesRes, [5, 5]);
+            assert.deepEqual(data.dicesRes, [15, 15]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 10);
             done();
@@ -745,9 +736,6 @@ describe('Network + Game', () => {
             //assert.deepStrictEqual(data.asyncRequestArgs, Properties.STREET[1]);
             sock.on('gamePropertyUpgradeRes', (data2) => {
                 property.upgrade(data2.level);
-                //console.log(property);
-                console.log(game.successManager.datas[player.id]);
-                //console.log(game.turnData);
                 assert.strictEqual(data2.error, undefined);
                 assert.strictEqual(data2.propertyID, game.curCell.property.id);
                 assert.strictEqual(data2.playerID, player.id);

@@ -4,7 +4,6 @@ const Constants = require('./../lib/constants');
 class SuccessManager {
     constructor (game) {
         const count = game.players.length;
-        //console.log(count);
         this.datas = new Array(count);
         for (let i = 0; i < count; i++) {
             const key = game.players[i].id;
@@ -44,7 +43,6 @@ class SuccessManager {
                 case 'build3hostels':
                     let cpt = 0;
                     for (const prop of player.properties) {
-                        console.log(prop);
                         if (prop.type === Constants.PROPERTY_TYPE.STREET) {
                             if (prop.hostel) {
                                 cpt++;

@@ -457,7 +457,7 @@
             cells: [
                 {
                     id: int,
-                    type: string, // prison | property | chance | community | tax | other (parc ou début)
+                    type: string, // goprison | property | chance | community | tax | other (parc ou début)
                     propertyID: int | null, // null ou ID de propriété si type == property
                     taxID: int | null, // null ou ID de la taxe si type === tax
                 }, ...

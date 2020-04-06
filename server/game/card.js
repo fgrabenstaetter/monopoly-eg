@@ -14,6 +14,7 @@ class Card {
             repair         : this.repair,
             anniversary    : this.anniversary,
             jailEscapeCard : this.jailEscapeCard,
+            goJail         : this.goJail
         }[this.effectType];
     }
 
@@ -65,6 +66,13 @@ class Card {
         }
 
         player.loseMoney(price);
+    }
+
+    goJail (game, player) {
+        player.goPrison();
+        player.remainingTurnsInJail ++; // car un -- juste après en exécutant l'action de la nouvelle case ! (case 10 prison)
+        game.setTurnActionData(null, null,
+            game.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
     }
 }
 

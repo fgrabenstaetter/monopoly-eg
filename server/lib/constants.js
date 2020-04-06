@@ -3,7 +3,7 @@ const Constants = {
         PROPERTY: 'property',
         COMMUNITY: 'community',
         CHANCE: 'chance',
-        PRISON: 'prison',
+        GOPRISON: 'goprison',
         TAX: 'tax',
         OTHER: 'other'
     },
@@ -30,7 +30,7 @@ const Constants = {
         PLAYER_INITIAL_MONEY: 1500,
         OFFER_EXPIRE_AFTER: 2e4,
         BID_EXPIRE_AFTER: 15e3,
-        TURN_MAX_DURATION: 9e4,
+        TURN_MAX_DURATION: 6e4,
         TURN_DISCONNECTED_MAX_DURATION: 1e4,
         TURN_DOUBLE_DICE_ADDED_TIME: 1e4,
         TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT: 5e3
