@@ -84,9 +84,10 @@ socket.on('gameStartedRes', (data) => {
     console.log(data);
 
     // Level par défaut des propriétés = 0 (car non upgrade)
-    for (const i in DATA.properties)
+    for (const i in DATA.properties) {
         DATA.properties[i].level = 0;
-
+        DATA.properties[i].ownerID = null;
+    };
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
         // Champs par défaut du joueur
@@ -485,6 +486,11 @@ socket.on('gameReconnectionRes', (data) => {
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
 
+    for (const i in DATA.properties) {
+        DATA.properties[i].level = 0;
+        DATA.properties[i].ownerID = null;
+    };
+
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
@@ -660,7 +666,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property) {
+function populateStreetOverviewCard(property, isMine) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -692,7 +698,7 @@ function populateStreetOverviewCard(property) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -704,7 +710,7 @@ function populateStreetOverviewCard(property) {
     }
 }
 
-function populateStationOverviewCard(station) {
+function populateStationOverviewCard(station, isMine) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -727,7 +733,7 @@ function populateStationOverviewCard(station) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -739,7 +745,7 @@ function populateStationOverviewCard(station) {
     }
 }
 
-function populateCompanyOverviewCard(publicCompany) {
+function populateCompanyOverviewCard(publicCompany, isMine) {
     $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -758,6 +764,16 @@ function populateCompanyOverviewCard(publicCompany) {
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ publicCompany.price + `</div>`
     $('.overview-card .content').html(htmlContent);
+    if (isMine) {
+        $('.overview-card .buy-button').css("display", "none");
+        $('.overview-card .sell-button').css("display", "block");
+        $('.overview-card .mortgage-button').css("display", "block");
+    }
+    else {
+        $('.overview-card .buy-button').css("display", "block");
+        $('.overview-card .sell-button').css("display", "none");
+        $('.overview-card .mortgage-button').css("display", "none");
+    }
 }
 
 function emptyOverviewCard() {
@@ -781,12 +797,13 @@ function emptyOverviewCard() {
 function displayPropertyInfos(property) {
     emptyOverviewCard();
     $('.overview-card').attr('data-id', property.id);
+    let isMine = (property.ownerID == ID);
     if (property.type == "street") {
-        populateStreetOverviewCard(property);
+        populateStreetOverviewCard(property, isMine);
     } else if (property.type == "station") {
-        populateStationOverviewCard(property);
+        populateStationOverviewCard(property, isMine);
     } else {
-        populateCompanyOverviewCard(property);
+        populateCompanyOverviewCard(property, isMine);
     }
     $('.overview-card').fadeIn();
 }
