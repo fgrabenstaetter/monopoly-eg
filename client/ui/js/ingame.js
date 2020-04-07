@@ -692,7 +692,6 @@ function populateStreetOverviewCard(property) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -703,8 +702,6 @@ function populateStreetOverviewCard(property) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
-=======
->>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
 function populateStationOverviewCard(station) {
@@ -730,7 +727,6 @@ function populateStationOverviewCard(station) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -741,8 +737,6 @@ function populateStationOverviewCard(station) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
-=======
->>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
 function populateCompanyOverviewCard(publicCompany) {
