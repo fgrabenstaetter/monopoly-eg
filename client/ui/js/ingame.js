@@ -443,6 +443,7 @@ socket.on("gameOfferReceiveRes", (res) => {
 socket.on("gameOfferAcceptRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferAcceptRes")
+
     else // hôte uniquement
         alert("gameOfferAcceptRes " + res.status);
 });
@@ -594,14 +595,13 @@ function bindOfferListener() {
         let error = 0;
         let status;
         const id = $(this).parent().parent().attr('data-id');
-        //if ($(this).parent().parent().hasClass('purchase-offer')) {
-        socket.emit('gameOfferAcceptReq', { offerID: id });
+        console.log(id);
+
+        socket.emit('gameOfferAcceptReq', { offerID: parseInt(id) });
         console.log('gameOfferAcceptReq');
-        //}
-        /*else {
-            alert('gameOfferAcceptReq a implementer');
-            console.log('gameOfferAcceptReq');
-        }*/
+
+
+        //!!! changer la couleur du drapeau !!!
         if (!error) {
             $(this).parent().parent().remove();
         }
