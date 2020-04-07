@@ -35,6 +35,7 @@ class Game {
         this.chat               = new Chat();
         this.bids               = [];
         this.bank               = new Bank(this.cells);
+        this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
 
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
