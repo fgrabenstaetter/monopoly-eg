@@ -1,10 +1,14 @@
-const Lobby = require('./lobby');
+const Constants = require('./../lib/constants');
 const Game = require('./game');
+const GameSchema = require('../models/game');
+const Lobby = require('./lobby');
+
 
 /**
  * Représente un matchmaking (recherche de partie)
  */
 class Matchmaking {
+    static localGamesCounter = 0;
     static queue = new Array(7);
     /**
      * @param GLOBAL L'instance globale de données du serveur
@@ -62,8 +66,28 @@ class Matchmaking {
             users = users.concat(lobby.users);
             this.delLobby(lobby);
         }
+        let userIds = [];
+        for(const user of users)
+            userIds.push(user.id);
 
-        let game = new Game(users, duration, this.GLOBAL);
+        let gameId;
+        if (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST) {
+            let gameModel = GameSchema({
+                players: userIds,
+                startedTime: Date.now(),
+                duration: duration,
+                isActive: true,
+                gameEndTime: null
+            });
+            gameModel.save();
+
+            gameId = gameModel.id;
+        } else {
+            gameId = this.localGamesCounter;
+            this.localGamesCounter += 1;
+        }
+
+        let game = new Game(gameId, users, duration, this.GLOBAL, true);
         this.GLOBAL.games.push(game);
 
         // signaler à tous les joueurs que la partie a été trouvée

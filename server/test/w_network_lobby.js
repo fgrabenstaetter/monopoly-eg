@@ -11,6 +11,10 @@ const Matchmaking = require('../game/matchmaking');
 const Network     = require('../game/network');
 const Properties  = require('../lib/properties');
 
+
+Constants.ENVIRONMENT = 'test';
+
+
 describe('Network + Lobby', () => {
     const port = 3003;
     const server = http.createServer(app).listen(port);
@@ -261,8 +265,6 @@ describe('Network + Lobby', () => {
         clientSocket2.on('lobbyDurationChangedRes', (data) => {
             assert.strictEqual(data.newDuration, 60);
             assert.strictEqual(lobby2.gameDuration, 60);
-            console.log('YOYO');
-            console.log(lobby2);
             if (++ nb === 2) done();
         });
 
