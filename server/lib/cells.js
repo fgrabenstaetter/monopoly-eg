@@ -56,7 +56,7 @@ class Cells {
             new Cell(Constants.CELL_TYPE.CHANCE    ,  null),                                                           // case 36
             // Bleu foncé
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[20])),                              // case 37
-            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Remboursez vos dettes à la banques. Payez 300€', 300)), // case 38 = Taxe de luxe
+            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Remboursez vos dettes à la banques. Payez 200€', 200)), // case 38 = Taxe de luxe
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[21]))                               // case 39 = dernière case, puis retour case 0
         ];
     }
