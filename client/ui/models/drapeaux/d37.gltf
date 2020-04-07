@@ -15,7 +15,7 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "drapeau.012",
+            "name" : "d37",
             "rotation" : [
                 0.7071067690849304,
                 0,
@@ -30,7 +30,7 @@
             "translation" : [
                 1.6675397157669067,
                 -0.0018858909606933594,
-                -1.0041176080703735
+                0.6849400997161865
             ]
         }
     ],
@@ -72,7 +72,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Plane.025",
+            "name" : "Plane37",
             "primitives" : [
                 {
                     "attributes" : {
@@ -230,7 +230,7 @@
     "buffers" : [
         {
             "byteLength" : 7028,
-            "uri" : "f19.bin"
+            "uri" : "d37.bin"
         }
     ]
 }

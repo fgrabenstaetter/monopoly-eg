@@ -15,7 +15,7 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "drapeau.015",
+            "name" : "d31",
             "rotation" : [
                 0.7071067690849304,
                 0,
@@ -30,7 +30,7 @@
             "translation" : [
                 1.6675397157669067,
                 -0.0018858909606933594,
-                1.3527071475982666
+                -1.3483989238739014
             ]
         }
     ],
@@ -72,7 +72,7 @@
     ],
     "meshes" : [
         {
-            "name" : "Plane.028",
+            "name" : "Plane31",
             "primitives" : [
                 {
                     "attributes" : {
@@ -230,7 +230,7 @@
     "buffers" : [
         {
             "byteLength" : 7028,
-            "uri" : "f22.bin"
+            "uri" : "d31.bin"
         }
     ]
 }

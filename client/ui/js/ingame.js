@@ -332,7 +332,8 @@ socket.on("gamePropertyBuyRes", (data) => {
     let cell = getCellByProperty(property);
     if (property && cell) {
         let player = getPlayerById(data.playerID);
-        player.properties.push(property);
+        // player.properties.push(property);
+        property.ownerID = player.id;
 
         createProperty(player.id, property.color, property.name, property.id);
         setPlayerMoney(player.id, data.playerMoney);
@@ -494,11 +495,11 @@ socket.on('gameReconnectionRes', (data) => {
 
     DATA.players.forEach((player) => {
         player.properties.forEach((playerProperty) => {
-            console.log('playerProperty');
-            console.log(playerProperty);
             let property = getPropertyById(playerProperty);
-            if (property)
+            if (property) {
                 createProperty(player.id, property.color, property.name, property.id);
+                property.ownerID = player.id;
+            }
         });
     });
 
@@ -741,6 +742,8 @@ function populateCompanyOverviewCard(publicCompany) {
 function emptyOverviewCard() {
     $('.overview-card .header')
         .html('')
+        .attr('data-id', '')
+        .attr('data-owner-id', '')
         .removeClass('station')
         .removeClass('company')
         .removeClass('eau')
@@ -756,6 +759,7 @@ function emptyOverviewCard() {
  */
 function displayPropertyInfos(property) {
     emptyOverviewCard();
+    $('.overview-card').attr('data-id', property.id);
     if (property.type == "street") {
         populateStreetOverviewCard(property);
     } else if (property.type == "station") {
@@ -799,9 +803,19 @@ $('#overviewCardBuyForm').submit(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
     let price = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPrice').val());
-    socket.emit('gameOfferSendReq', { receiverID: "5e6a357965a67909e8c110e3", propertyID: 6, price: price });
+
+    let property = getPropertyById(propertyID);
+    if (!property)
+        return;
+    
+    console.log(property);
+
+    socket.emit('gameOfferSendReq', { receiverID: property.ownerID, propertyID: property.id, price: price });
     console.log('gameOfferSendReq :');
     console.log(price);
     console.log(propertyID);
+
+    $('#overviewCardModal').modal('hide');
+
     return false;
 });
