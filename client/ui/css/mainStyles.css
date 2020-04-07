@@ -99,7 +99,6 @@ input {
   height: 100%;
   width: 177,77777vh;
   display: block;
-  border: solid black 1px;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   left: 50vw;
