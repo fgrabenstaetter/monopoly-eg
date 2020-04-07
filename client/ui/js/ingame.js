@@ -256,10 +256,12 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
     }
 
     if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
-        movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
-            currPlayer.cellPos = cellPos2;
-            gameActionResAfterSecondMovement(data);
-        });
+        setTimeout(() => {
+            movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
+                currPlayer.cellPos = cellPos2;
+                gameActionResAfterSecondMovement(data);
+            });
+        }, 1000);
     } else {
         gameActionResAfterSecondMovement(data);
     }
