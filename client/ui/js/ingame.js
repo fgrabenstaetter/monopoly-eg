@@ -335,7 +335,8 @@ socket.on("gamePropertyBuyRes", (data) => {
         let player = getPlayerById(data.playerID);
         // player.properties.push(property);
         property.ownerID = player.id;
-
+        // MANQUE ACCÈS A LA COULEUR DU JOUEUR 
+        loaderFlag("d" + cell.id, "cyan");
         createProperty(player.id, property.color, property.name, property.id);
         setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
