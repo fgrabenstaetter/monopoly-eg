@@ -157,7 +157,12 @@ socket.on('gameActionRes', (data) => {
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
-        $('#timer').progressSetStateTerminer();
+        if (data.dicesRes[0] != data.dicesRes[1]) {
+            $('#timer').progressSetStateTerminer();
+        }
+        else {
+            $('#timer').attr({ 'data-loading': 'RELANCER LES DES' });
+        }
     }
 
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
@@ -474,6 +479,7 @@ socket.on('gamePlayerReconnectedRes', (data) => {
     console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
     console.log(data);
     reconnectPlayerEntry(data.playerID);
+    $('#timer').progressInitialize();
 });
 
 // Données de reconnexion
