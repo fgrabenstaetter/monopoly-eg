@@ -872,6 +872,7 @@
         ```javascript
         {
             bidID: int,
+            propertyID: int,
             playerID: int, // null la première fois
             text: string,
             price: int
@@ -904,7 +905,8 @@
         ```javascript
         {
             bidID: int,
-            playerID: int
+            playerID: int,
+            propertyID: int,
             price: int,
             bankMoney: int
         }
