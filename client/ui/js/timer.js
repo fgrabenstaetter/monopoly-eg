@@ -26,7 +26,7 @@ $(document).ready(() => {
     // initialize and control the progress meters.
 
     $.fn.progressInitialize = function () {
-
+        console.log("initial !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         // This function creates the necessary markup for the progress meter
         // and sets up a few event listeners.
 
@@ -34,10 +34,6 @@ $(document).ready(() => {
 
         var button = $(this),
             progress = 0;
-
-        if (button.hasClass('disabled')) {
-            button.removeClass('disabled');
-        }
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
@@ -95,6 +91,14 @@ $(document).ready(() => {
         }
     };
 
+    $.fn.progressReset = function () {
+        var button = $(this);
+        console.log('reset !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        if (button.hasClass('disabled')) {
+            button.removeClass('disabled');
+        }
+        button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
+    }
     // progressStart simulates activity on the progress meter. Call it first,
     // if the progress is going to take a long time to finish.
 
