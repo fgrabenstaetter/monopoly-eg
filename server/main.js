@@ -203,6 +203,7 @@ io.on('connection', (socket) => {
                 GLOBAL.network.gamePlayerReconnected(player, game);
             else // ARRIVÉE DANS LE JEU DEPUIS LOBBY
                 GLOBAL.network.gamePlayerListen(player, game);
+            socket.emit('canReconnectToGame');
             return;
         }
     }

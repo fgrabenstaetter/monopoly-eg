@@ -157,6 +157,14 @@
         }
         ```
 
+- **Possibilité de se reconnecter à une partie (Game) en cours (info)**
+    * **Réponse:** lobbyReconnectToGameRes
+        > Est envoyé uniquement lorsqu'une partie est toujours en cours avec ce joueur, pour informer que vous pouvez vous rediriger vers /game pour reprendre la partie
+        * *Données:*
+        ```javascript
+        null
+        ```
+
 ### --- Paramètres / Chat
 
 - **Modifier le nombre désiré de joueurs du lobby**
@@ -716,7 +724,7 @@
         * *Données:*
         ```javascript
         {
-        level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel
+            level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel
         }
         ```
 
