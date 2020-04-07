@@ -1498,7 +1498,7 @@ input {
   margin-top: 8px;
 }
 
-.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button {
+.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button, .ingame-ui-container .overview-card .mortgage-button {
   margin-top: 10px;
   padding-top: 4px;
   font-size: 13px;

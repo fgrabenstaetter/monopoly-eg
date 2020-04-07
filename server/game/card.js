@@ -27,7 +27,16 @@ class Card {
     }
 
     loseMoney (game, player) {
-        player.loseMoney(this.effectArg1);
+        if (player.money < this.effectArg1) {
+            // pas asser => hypothèque forcée | faillite
+            game.playerNotEnoughMoney(player, this.effectArg1,
+                'Le joueur ' + player.nickname + ' est en faillite (ne peux payer payer la carte chance/communautée de ' + this.effectArg1 + '€)',
+                'Le joueur ' + player.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la carte chance/commuanutée de ' + this.effectArg1 + '€');
+        } else {
+            // assez d'argent
+            player.loseMoney(this.effectArg1);
+            game.bank.addMoney(this.effectArg1);
+        }
     }
 
     jailEscapeCard (game, player) {
