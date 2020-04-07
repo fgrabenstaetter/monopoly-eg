@@ -337,7 +337,7 @@
       }
     }
 
-    .buy-button, .sell-button, .mortgage-button {
+    .buy-button, .sell-button {
       margin-top: 10px;
       padding-top: 4px;
       font-size: 13px;
@@ -481,56 +481,56 @@
             // Classes coulers propriétés
             &.yellow {
             .property {
-                background-color: $street-yellow;
+                background-color: rgb(228, 228, 65);
                 color: white;
               }
             }
 
             &.blue {
             .property {
-                background-color: $street-blue;
+                background-color: blue;
                 color: white;
               }
             }
 
             &.red {
             .property {
-                background-color: $street-red;
+                background-color: red;
                 color: white;
               }
             }
 
             &.orange {
             .property {
-                background-color: $street-orange;
+                background-color: orange;
                 color: white;
               }
             }
 
             &.purple {
             .property {
-                background-color: $street-purple;
+                background-color: rgb(223, 184, 191);
                 color: white;
               }
             }
 
             &.brown {
             .property {
-                background-color: $street-brown;
+                background-color: brown;
                 color: white;
               }
             }
 
             &.cyan {
             .property {
-                background-color: $street-cyan;
+                background-color: rgb(35, 212, 212);
                 color: white;
               }
             }
 
             &.green {
             .property {
-                background-color: $street-green;
+                background-color: green;
                 color: white;
               }
             }
@@ -699,35 +699,35 @@
           padding-bottom: 10px;
 
           &.brown {
-            background-color: $street-brown;
+            background-color: brown;
           }
 
           &.orange {
-            background-color: $street-orange;
+            background-color: orange;
           }
 
           &.blue {
-            background-color: $street-blue;
+            background-color: blue;
           }
 
           &.red {
-            background-color: $street-red;
+            background-color: red;
           }
 
           &.purple {
-            background-color: $street-purple;
+            background-color: purple;
           }
 
           &.green {
-            background-color: $street-green;
+            background-color: green;
           }
 
           &.yellow {
-            background-color: $street-yellow;
+            background-color: rgb(228, 228, 65);
           }
 
           &.cyan {
-            background-color: $street-cyan;
+            background-color: cyan;
           }
 
           &.company {
@@ -897,12 +897,12 @@
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
 
-        .action-button.in-progress,
+        .action-buttonin-progress,
         .action-button.finished {
           color: transparent !important;
         }
 
-        .action-button.in-progress:after,
+        .action-buttonin-progress:after,
         .action-button.finished:after {
           position: absolute;
           z-index: 2;
@@ -917,11 +917,11 @@
         /* If the in-progress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
 
-        .action-button.in-progress:after {
+        .action-buttonin-progress:after {
           content: attr(data-loading);
         }
 
-        .action-button.in-progress:before {
+        .action-buttonin-progress:before {
           position: fixed;
           top: 270px;
           right: 65px;
@@ -942,7 +942,7 @@
         }
 
         @media (max-height: 820px) {
-          .action-button.in-progress:before {
+          .action-buttonin-progress:before {
             top: 190px;
           }
         }
