@@ -35,6 +35,7 @@ class Bid {
         this.game.bids.splice(index, 1);
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID     : this.id,
+            propertyID: this.property.id,
             playerID  : this.player.id,
             price     : this.amountAsked,
             bankMoney : this.game.bank.money

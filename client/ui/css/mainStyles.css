@@ -88,20 +88,21 @@ input {
 
 .board-container {
   position: relative;
-  height: 100%;
+  height: 100vh;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  top: 50vh;
-  left: 50vw;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
 }
 
 .board-container #c {
-  width: 100%;
+  margin: 0 auto;
   height: 100%;
+  width: 177,77777vh;
   display: block;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  left: 50vw;
+  position: absolute;
 }
 
 /*** IMPORTANT: ces styles prennent effet UNIQUEMENT DANS L'ECRAN DE CONNEXION ET D'INSCRIPTION ***/
@@ -1615,7 +1616,7 @@ input {
   bottom: 1px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1630,7 +1631,7 @@ input {
   height: max-content;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
   text-align: center;
   width: 120px;
   border: none;
@@ -1643,64 +1644,64 @@ input {
   white-space: nowrap;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.blue .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.red .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.orange .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.purple .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.brown .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.green .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.yellow .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.purple .Freeperty, .ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.cyan .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.yellow .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
   background-color: #e4e441;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.blue .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
   background-color: blue;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.red .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
   background-color: red;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.orange .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property {
   background-color: orange;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.purple .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
   background-color: #dfb8bf;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.brown .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property {
   background-color: brown;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.cyan .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
   background-color: #23d4d4;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.green .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
   background-color: green;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.station .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property {
   background-color: white;
   color: black;
   text-align: left;
   padding-left: 12px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.station :before {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station :before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -1717,14 +1718,14 @@ input {
   vertical-align: text-top;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.company .Freeperty {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
   background-color: black;
   text-align: left;
   padding-left: 12px;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.company .Freeperty.eau:before {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.eau:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -1741,7 +1742,7 @@ input {
   vertical-align: text-top;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .Freeperties-container.company .Freeperty.electricite:before {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.electricite:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2078,10 +2079,10 @@ input {
   padding: 0;
   /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
-  /* If the in-Freegress class is set on the button, show the
+  /* If the in-progress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
   /* The same goes for the .finished class */
-  /* The colorful bar that grows depending on he Freegress */
+  /* The colorful bar that grows depending on he progress */
   /* The bar can be either horizontal, or vertical */
 }
 
@@ -2101,12 +2102,12 @@ input {
           box-shadow: 0 1px 1px #ccc;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-Freegress,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress,
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished {
   color: transparent !important;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-Freegress:after,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:after,
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
   position: absolute;
   z-index: 2;
@@ -2118,11 +2119,11 @@ input {
   left: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-Freegress:after {
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:after {
   content: attr(data-loading);
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-Freegress:before {
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:before {
   position: fixed;
   top: 270px;
   right: 65px;
@@ -2146,7 +2147,7 @@ input {
 }
 
 @media (max-height: 820px) {
-  .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-Freegress:before {
+  .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:before {
     top: 190px;
   }
 }
