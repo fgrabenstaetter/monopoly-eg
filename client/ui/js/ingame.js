@@ -659,7 +659,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property) {
+function populateStreetOverviewCard(property, ismine) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -691,9 +691,21 @@ function populateStreetOverviewCard(property) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
+    if (ismine)
+    {
+        $('.overview-card .buy-button').css("display", "none");
+        $('.overview-card .sell-button').css("display", "block");
+        $('.overview-card .mortgage-button').css("display", "block");
+    }
+    else
+    {
+        $('.overview-card .buy-button').css("display", "block");
+        $('.overview-card .sell-button').css("display", "none");
+        $('.overview-card .mortgage-button').css("display", "none");
+    }
 }
 
-function populateStationOverviewCard(station) {
+function populateStationOverviewCard(station, ismine) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -716,6 +728,18 @@ function populateStationOverviewCard(station) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
+    if (ismine)
+    {
+        $('.overview-card .buy-button').css("display", "none");
+        $('.overview-card .sell-button').css("display", "block");
+        $('.overview-card .mortgage-button').css("display", "block");
+    }
+    else
+    {
+        $('.overview-card .buy-button').css("display", "block");
+        $('.overview-card .sell-button').css("display", "none");
+        $('.overview-card .mortgage-button').css("display", "none");
+    }
 }
 
 function populateCompanyOverviewCard(publicCompany) {
