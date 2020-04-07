@@ -52,14 +52,5 @@ describe('Card', function () {
             card.execute(game, firstPlayer);
             assert.equal(firstPlayer.money, starting_amount - 50);
         });
-
-        it('l\'argent du joueur ne peut pas baisser moins de 0', function () {
-            let game = createGame();
-            let firstPlayer = game.players[0];
-            let card = new Card('Test', 'loseMoney', firstPlayer.money * 2);
-
-            card.execute(game, firstPlayer);
-            assert.equal(firstPlayer.money, 0);
-        });
     });
 });
