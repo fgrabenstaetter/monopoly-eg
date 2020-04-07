@@ -158,36 +158,46 @@ function loaderPlateau (load, test) {
   });
 }
 
+function changeColorFlag (flag, colore) {
+	deleteFlag(flag);
+	loaderFlag(flag, colore);
+}
 
-function loaderDrapeaux (load, test) {
-	load.load('models/drapeaux/'+test+'.gltf', (gltf) => {
+function deleteFlag (flag) {
+	requestAnimationFrame(render);
+	scene.remove(window[flag]);
+}
+
+function loaderFlag (flag, colore) {
+	var load = new THREE.GLTFLoader();
+	load.load('models/drapeaux/'+flag+'.gltf', (gltf) => {
 	  requestAnimationFrame(render);
 	  const root = gltf.scene;
-	//	console.log(root);
-	//   root.traverse((o) => {
-    //         if (o.isMesh){
-	// 			console.log(o);
-	// 			if(o.parent.name === "drapeau021"){
-	// 				//o.material.color.setHex(0xFFFF00);// = new THREE.Color( 0xFFFF00 );
-	// 				/*o.material.color.set(0x000000);
-	// 				ntm = o;*/
-	// 				//alert("fdp");
-	// 			}
-	// 		}
-	// 	});
+	  window[flag] = gltf.scene;
+		window[flag].traverse((o) => {
+			if (o.isMesh) {
+				console.log(o);
+				if(o.name === 'Plane1_0') {
+					o.material.color.setHex(colore);
+				}
+			}
+		});
 	  scene.add(root);
 	});
   }
 
 
 var plateauDrapeaux = [
-				'f11', 'f12'
+				'd1', 'd3', 'd5', 'd6', 'd8', 'd9',
+				'd11', 'd12', 'd13', 'd14', 'd15', 'd16', 'd18',
+				'd19', 'd21', 'd23', 'd24', 'd25', 'd26', 'd27',   
+				'd28', 'd29', 'd31', 'd32', 'd34', 'd35', 'd37', 
+				'd39'
 				]
 
-for (var i = 0; i < 2; i++) {
+for (var i = 0; i < 28; i++) {
 var objVar = plateauDrapeaux[i];
-var loader = new THREE.GLTFLoader();
-loaderDrapeaux(loader, objVar);
+loaderFlag(objVar, 0xFFFF00);
 }
 
 
@@ -298,7 +308,7 @@ function Onmouseclick(event) {
 			tesee = intersects[i];
 			console.log(tesee.object);
 			if(tesee.object.name === 'bordure'){
-				console.log("ntmfdp");
+				//console.log("ntmfdp");
 				//console.log(tesee.object);
 			}
 		}

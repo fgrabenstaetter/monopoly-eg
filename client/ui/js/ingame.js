@@ -118,7 +118,7 @@ socket.on('gameTurnRes', (data) => {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
-        $('#timer').progressReset();
+        $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressTimed(turnTimeSeconds);
     } else {
@@ -149,16 +149,16 @@ socket.on('gameActionRes', (data) => {
         console.log('JOUEUR INTROUVABLE');
         return;
     }
-    /*
+
     if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        $('#timer').progressReset();
+        $('#timer').progressInitialize();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
         $('#timer').progressSetStateTerminer();
     }
-    */
+
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
@@ -255,13 +255,11 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
         }
     }
 
-    if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
-        setTimeout(() => {
-            movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
-                currPlayer.cellPos = cellPos2;
-                gameActionResAfterSecondMovement(data);
-            });
-        }, 1000);
+    if (cellPos2 && cellPos2 != currPlayer.cellPos) {
+        movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
+            currPlayer.cellPos = cellPos2;
+            gameActionResAfterSecondMovement(data);
+        });
     } else {
         gameActionResAfterSecondMovement(data);
     }
@@ -277,7 +275,7 @@ function gameActionResAfterSecondMovement(data) {
         if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
-            $('#timer').progressReset();
+            $('#timer').progressInitialize();
             // Ajouter le progressTimed
         }
         else {
@@ -662,7 +660,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property, ismine) {
+function populateStreetOverviewCard(property) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -694,6 +692,7 @@ function populateStreetOverviewCard(property, ismine) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
+<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -704,9 +703,11 @@ function populateStreetOverviewCard(property, ismine) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
+=======
+>>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
-function populateStationOverviewCard(station, ismine) {
+function populateStationOverviewCard(station) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -729,6 +730,7 @@ function populateStationOverviewCard(station, ismine) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
+<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -739,6 +741,8 @@ function populateStationOverviewCard(station, ismine) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
+=======
+>>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
 function populateCompanyOverviewCard(publicCompany) {
