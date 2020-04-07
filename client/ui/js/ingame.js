@@ -84,9 +84,10 @@ socket.on('gameStartedRes', (data) => {
     console.log(data);
 
     // Level par défaut des propriétés = 0 (car non upgrade)
-    for (const i in DATA.properties)
+    for (const i in DATA.properties) {
         DATA.properties[i].level = 0;
-
+        DATA.properties[i].ownerID = null;
+    };
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
         // Champs par défaut du joueur
@@ -100,6 +101,7 @@ socket.on('gameStartedRes', (data) => {
 
     initProperty();
     hideLoaderOverlay();
+    $('#timer').progressInitialize();
 });
 
 socket.on('gameTurnRes', (data) => {
@@ -118,7 +120,7 @@ socket.on('gameTurnRes', (data) => {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressTimed(turnTimeSeconds);
     } else {
@@ -152,7 +154,7 @@ socket.on('gameActionRes', (data) => {
 
     if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
@@ -275,7 +277,7 @@ function gameActionResAfterSecondMovement(data) {
         if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
-            $('#timer').progressInitialize();
+            $('#timer').progressReset();
             // Ajouter le progressTimed
         }
         else {
@@ -334,7 +336,8 @@ socket.on("gamePropertyBuyRes", (data) => {
         let player = getPlayerById(data.playerID);
         // player.properties.push(property);
         property.ownerID = player.id;
-
+        // MANQUE ACCÈS A LA COULEUR DU JOUEUR 
+        loaderFlag("d" + cell.id, "cyan");
         createProperty(player.id, property.color, property.name, property.id);
         setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
@@ -484,6 +487,11 @@ socket.on('gameReconnectionRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
+
+    for (const i in DATA.properties) {
+        DATA.properties[i].level = 0;
+        DATA.properties[i].ownerID = null;
+    };
 
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
@@ -660,7 +668,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property) {
+function populateStreetOverviewCard(property, isMine) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -692,7 +700,7 @@ function populateStreetOverviewCard(property) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -704,7 +712,7 @@ function populateStreetOverviewCard(property) {
     }
 }
 
-function populateStationOverviewCard(station) {
+function populateStationOverviewCard(station, isMine) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -727,7 +735,7 @@ function populateStationOverviewCard(station) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -739,7 +747,7 @@ function populateStationOverviewCard(station) {
     }
 }
 
-function populateCompanyOverviewCard(publicCompany) {
+function populateCompanyOverviewCard(publicCompany, isMine) {
     $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -758,6 +766,16 @@ function populateCompanyOverviewCard(publicCompany) {
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ publicCompany.price + `</div>`
     $('.overview-card .content').html(htmlContent);
+    if (isMine) {
+        $('.overview-card .buy-button').css("display", "none");
+        $('.overview-card .sell-button').css("display", "block");
+        $('.overview-card .mortgage-button').css("display", "block");
+    }
+    else {
+        $('.overview-card .buy-button').css("display", "block");
+        $('.overview-card .sell-button').css("display", "none");
+        $('.overview-card .mortgage-button').css("display", "none");
+    }
 }
 
 function emptyOverviewCard() {
@@ -772,6 +790,10 @@ function emptyOverviewCard() {
         .css("background-color", "white")
         .css("color", "white");
     $('.overview-card .content').html('');
+
+    $('.overview-card .buy-button').css("display", "none");
+    $('.overview-card .sell-button').css("display", "none");
+    $('.overview-card .mortgage-button').css("display", "none");
 }
 
 /**
@@ -781,12 +803,13 @@ function emptyOverviewCard() {
 function displayPropertyInfos(property) {
     emptyOverviewCard();
     $('.overview-card').attr('data-id', property.id);
+    let isMine = (property.ownerID == ID);
     if (property.type == "street") {
-        populateStreetOverviewCard(property);
+        populateStreetOverviewCard(property, isMine);
     } else if (property.type == "station") {
-        populateStationOverviewCard(property);
+        populateStationOverviewCard(property, isMine);
     } else {
-        populateCompanyOverviewCard(property);
+        populateCompanyOverviewCard(property, isMine);
     }
     $('.overview-card').fadeIn();
 }

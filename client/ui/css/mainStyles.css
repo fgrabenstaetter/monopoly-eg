@@ -1498,8 +1498,8 @@ input {
   margin-top: 8px;
 }
 
-.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button {
-  margin-top: 10px;
+.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button, .ingame-ui-container .overview-card .mortgage-button {
+  margin: 10px 0;
   padding-top: 4px;
   font-size: 13px;
 }
@@ -2102,12 +2102,12 @@ input {
           box-shadow: 0 1px 1px #ccc;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress,
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished {
   color: transparent !important;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:after,
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after,
 .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
   position: absolute;
   z-index: 2;
@@ -2119,11 +2119,11 @@ input {
   left: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:after {
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after {
   content: attr(data-loading);
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:before {
+.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:before {
   position: fixed;
   top: 270px;
   right: 65px;
@@ -2147,7 +2147,7 @@ input {
 }
 
 @media (max-height: 820px) {
-  .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-buttonin-progress:before {
+  .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:before {
     top: 190px;
   }
 }
