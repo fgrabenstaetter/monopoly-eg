@@ -481,56 +481,56 @@
             // Classes coulers propriétés
             &.yellow {
             .property {
-                background-color: rgb(228, 228, 65);
+                background-color: $street-yellow;
                 color: white;
               }
             }
 
             &.blue {
             .property {
-                background-color: blue;
+                background-color: $street-blue;
                 color: white;
               }
             }
 
             &.red {
             .property {
-                background-color: red;
+                background-color: $street-red;
                 color: white;
               }
             }
 
             &.orange {
             .property {
-                background-color: orange;
+                background-color: $street-orange;
                 color: white;
               }
             }
 
             &.purple {
             .property {
-                background-color: rgb(223, 184, 191);
+                background-color: $street-purple;
                 color: white;
               }
             }
 
             &.brown {
             .property {
-                background-color: brown;
+                background-color: $street-brown;
                 color: white;
               }
             }
 
             &.cyan {
             .property {
-                background-color: rgb(35, 212, 212);
+                background-color: $street-cyan;
                 color: white;
               }
             }
 
             &.green {
             .property {
-                background-color: green;
+                background-color: $street-green;
                 color: white;
               }
             }
@@ -699,35 +699,35 @@
           padding-bottom: 10px;
 
           &.brown {
-            background-color: brown;
+            background-color: $street-brown;
           }
 
           &.orange {
-            background-color: orange;
+            background-color: $street-orange;
           }
 
           &.blue {
-            background-color: blue;
+            background-color: $street-blue;
           }
 
           &.red {
-            background-color: red;
+            background-color: $street-red;
           }
 
           &.purple {
-            background-color: purple;
+            background-color: $street-purple;
           }
 
           &.green {
-            background-color: green;
+            background-color: $street-green;
           }
 
           &.yellow {
-            background-color: rgb(228, 228, 65);
+            background-color: $street-yellow;
           }
 
           &.cyan {
-            background-color: cyan;
+            background-color: $street-cyan;
           }
 
           &.company {

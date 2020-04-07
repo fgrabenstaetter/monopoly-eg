@@ -1655,7 +1655,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
-  background-color: #e4e441;
+  background-color: yellow;
   color: white;
 }
 
@@ -1675,7 +1675,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
-  background-color: #dfb8bf;
+  background-color: purple;
   color: white;
 }
 
@@ -1685,7 +1685,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
-  background-color: #23d4d4;
+  background-color: cyan;
   color: white;
 }
 
@@ -1912,7 +1912,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
-  background-color: #e4e441;
+  background-color: yellow;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
