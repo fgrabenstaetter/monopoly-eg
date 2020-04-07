@@ -84,9 +84,10 @@ socket.on('gameStartedRes', (data) => {
     console.log(data);
 
     // Level par défaut des propriétés = 0 (car non upgrade)
-    for (const i in DATA.properties)
+    for (const i in DATA.properties) {
         DATA.properties[i].level = 0;
-
+        DATA.properties[i].ownerID = null;
+    };
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
         // Champs par défaut du joueur
@@ -340,7 +341,8 @@ socket.on("gamePropertyBuyRes", (data) => {
         let player = getPlayerById(data.playerID);
         // player.properties.push(property);
         property.ownerID = player.id;
-
+        // MANQUE ACCÈS A LA COULEUR DU JOUEUR 
+        loaderFlag("d" + cell.id, "cyan");
         createProperty(player.id, property.color, property.name, property.id);
         setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
@@ -446,6 +448,7 @@ socket.on("gameOfferReceiveRes", (res) => {
 socket.on("gameOfferAcceptRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferAcceptRes")
+
     else // hôte uniquement
         alert("gameOfferAcceptRes " + res.status);
 });
@@ -491,6 +494,11 @@ socket.on('gameReconnectionRes', (data) => {
     DATA.cells = data.cells;
     DATA.properties = data.properties;
     DATA.gameEndTime = data.gameEndTime;
+
+    for (const i in DATA.properties) {
+        DATA.properties[i].level = 0;
+        DATA.properties[i].ownerID = null;
+    };
 
     // Génération de la liste de joueurs
     DATA.players.forEach((player) => {
@@ -593,14 +601,13 @@ function bindOfferListener() {
         let error = 0;
         let status;
         const id = $(this).parent().parent().attr('data-id');
-        //if ($(this).parent().parent().hasClass('purchase-offer')) {
-        socket.emit('gameOfferAcceptReq', { offerID: id });
+        console.log(id);
+
+        socket.emit('gameOfferAcceptReq', { offerID: parseInt(id) });
         console.log('gameOfferAcceptReq');
-        //}
-        /*else {
-            alert('gameOfferAcceptReq a implementer');
-            console.log('gameOfferAcceptReq');
-        }*/
+
+
+        //!!! changer la couleur du drapeau !!!
         if (!error) {
             $(this).parent().parent().remove();
         }
@@ -667,7 +674,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property, ismine) {
+function populateStreetOverviewCard(property, isMine) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -699,8 +706,7 @@ function populateStreetOverviewCard(property, ismine) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -712,7 +718,7 @@ function populateStreetOverviewCard(property, ismine) {
     }
 }
 
-function populateStationOverviewCard(station, ismine) {
+function populateStationOverviewCard(station, isMine) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -735,7 +741,7 @@ function populateStationOverviewCard(station, ismine) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -747,7 +753,7 @@ function populateStationOverviewCard(station, ismine) {
     }
 }
 
-function populateCompanyOverviewCard(publicCompany, ismine) {
+function populateCompanyOverviewCard(publicCompany, isMine) {
     $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -766,8 +772,7 @@ function populateCompanyOverviewCard(publicCompany, ismine) {
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ publicCompany.price + `</div>`
     $('.overview-card .content').html(htmlContent);
-
-    if (ismine) {
+    if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
@@ -804,12 +809,13 @@ function emptyOverviewCard() {
 function displayPropertyInfos(property) {
     emptyOverviewCard();
     $('.overview-card').attr('data-id', property.id);
+    let isMine = (property.ownerID == ID);
     if (property.type == "street") {
-        populateStreetOverviewCard(property);
+        populateStreetOverviewCard(property, isMine);
     } else if (property.type == "station") {
-        populateStationOverviewCard(property);
+        populateStationOverviewCard(property, isMine);
     } else {
-        populateCompanyOverviewCard(property);
+        populateCompanyOverviewCard(property, isMine);
     }
     $('.overview-card').fadeIn();
 }

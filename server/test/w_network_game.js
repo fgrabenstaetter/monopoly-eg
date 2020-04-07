@@ -735,13 +735,13 @@ describe('Network + Game', () => {
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 3);
             assert.strictEqual(data.asyncRequestType, 'canUpgrade');
-            //assert.deepStrictEqual(data.asyncRequestArgs, Properties.STREET[1]);
             sock.on('gamePropertyUpgradeRes', (data2) => {
                 property.upgrade(data2.level);
+                game.successManager.check(game);
                 assert.strictEqual(data2.error, undefined);
                 assert.strictEqual(data2.propertyID, game.curCell.property.id);
                 assert.strictEqual(data2.playerID, player.id);
-                //assert.strictEqual(data2.playerMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 1200);
+                assert.notStrictEqual(game.successManager.datas[player.id], 0);
                 assert.strictEqual(data2.level, 5);
                 done();
             });

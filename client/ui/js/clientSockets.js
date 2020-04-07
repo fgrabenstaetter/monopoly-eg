@@ -1,4 +1,5 @@
 let socket;
+const pathname = window.location.pathname;
 
 function connectToSocketServer (jwt) {
     socket = io.connect(socketUrl, {
@@ -30,9 +31,14 @@ function connectToSocketServer (jwt) {
     socket.on('notLoggedRes', () => {
         window.location = '/login';
     });
+
+    if (pathname === '/lobby') {
+        socket.on('canReconnectToGame', () => {
+            window.location = '/game';
+        });
+    }
 }
 
-let pathname = window.location.pathname;
 
 if (jwt && pathname != '/login' && pathname != '/register' && pathname != '/')
     connectToSocketServer(jwt);
