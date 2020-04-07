@@ -157,14 +157,6 @@
         }
         ```
 
-- **Possibilité de se reconnecter à une partie (Game) en cours (info)**
-    * **Réponse:** lobbyReconnectToGameRes
-        > Est envoyé uniquement lorsqu'une partie est toujours en cours avec ce joueur, pour informer que vous pouvez vous rediriger vers /game pour reprendre la partie
-        * *Données:*
-        ```javascript
-        null
-        ```
-
 ### --- Paramètres / Chat
 
 - **Modifier le nombre désiré de joueurs du lobby**
