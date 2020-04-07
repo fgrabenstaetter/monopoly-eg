@@ -1,4 +1,6 @@
 $(document).ready(() => {
+    $('#timer').progressInitialize();
+
     $('#timer').click(function (e) {
         e.preventDefault();
         // This function will show a progress meter for
@@ -34,10 +36,6 @@ $(document).ready(() => {
 
         var button = $(this),
             progress = 0;
-
-        if (button.hasClass('disabled')) {
-            button.removeClass('disabled');
-        }
 
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
@@ -94,6 +92,19 @@ $(document).ready(() => {
             bar.filter('.tz-bar').width(percentage + '%');
         }
     };
+
+    $.fn.progressReset = function () {
+        var button = $(this),
+            progress = 0;
+
+        // Add the data attributes if they are missing from the element.
+        // They are used by our CSS code to show the messages
+        button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
+
+        if (button.hasClass('disabled')) {
+            button.removeClass('disabled');
+        }
+    }
 
     // progressStart simulates activity on the progress meter. Call it first,
     // if the progress is going to take a long time to finish.

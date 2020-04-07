@@ -846,6 +846,7 @@ class Network {
                     bid.updateBid(player, data.price);
                     this.io.to(game.name).emit('gameBidRes', {
                         bidID: bid.id,
+                        propertyID: bid.property.id,
                         playerID: player.id,
                         text: bid.text,
                         price: data.price

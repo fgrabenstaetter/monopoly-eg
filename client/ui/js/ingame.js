@@ -118,7 +118,7 @@ socket.on('gameTurnRes', (data) => {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressTimed(turnTimeSeconds);
     } else {
@@ -149,16 +149,16 @@ socket.on('gameActionRes', (data) => {
         console.log('JOUEUR INTROUVABLE');
         return;
     }
-
+    /*
     if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
         $('#timer').progressSetStateTerminer();
     }
-
+    */
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
@@ -275,7 +275,7 @@ function gameActionResAfterSecondMovement(data) {
         if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
-            $('#timer').progressInitialize();
+            $('#timer').progressReset();
             // Ajouter le progressTimed
         }
         else {
@@ -799,7 +799,7 @@ $('.overview-card .buy-button').click(function (e) {
 // problèmes:
 // receiverID pas atteignable, utilisé = id(come) en hardcode pour test
 // propertyID n'est pas le bon -> NAN, hardcode du id de chemin du wacken pour test
-$('#overviewCardBuyForm').submit(function (e) {
+$('#overviewCardBuyForm .send').click(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
     let price = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPrice').val());
