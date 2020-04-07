@@ -176,7 +176,7 @@ function loaderFlag (flag, colore) {
 	  window[flag] = gltf.scene;
 		window[flag].traverse((o) => {
 			if (o.isMesh) {
-				console.log(o);
+				//console.log(o);
 				if(o.name === 'Plane1_0') {
 					o.material.color.setHex(colore);
 				}
@@ -306,7 +306,7 @@ function Onmouseclick(event) {
 		console.log(tesee.object.name);*/
 		for(var i = 0; i < intersects.length; i++){
 			tesee = intersects[i];
-			console.log(tesee.object);
+			//console.log(tesee.object);
 			if(tesee.object.name === 'bordure'){
 				//console.log("ntmfdp");
 				//console.log(tesee.object);
