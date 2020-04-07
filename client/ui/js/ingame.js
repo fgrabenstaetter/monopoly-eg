@@ -799,7 +799,7 @@ $('.overview-card .buy-button').click(function (e) {
 // problèmes:
 // receiverID pas atteignable, utilisé = id(come) en hardcode pour test
 // propertyID n'est pas le bon -> NAN, hardcode du id de chemin du wacken pour test
-$('#overviewCardBuyForm').submit(function (e) {
+$('#overviewCardBuyForm .send').click(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
     let price = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPrice').val());
