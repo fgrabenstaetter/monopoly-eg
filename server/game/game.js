@@ -547,7 +547,7 @@ class Game {
     }
 
     /**
-     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée (cause: loyer ou taxe) ou NON, voir playerAutoMortage)
+     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée (cause: loyer ou taxe ou carte) ou NON, voir playerAutoMortage)
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortage(propertiesList) {
@@ -612,15 +612,18 @@ class Game {
                         price = curProp.price;
                         break;
                 }
+
                 const bid = new Bid(curProp, price, this);
                 this.bids.push(bid);
                 const msg = 'Une enchère a demarré pour' + curProp.name;
                 this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {
-                    bidID    : bid.id,
-                    playerID : null,
-                    text     : msg,
-                    price    : bid.amountAsked
+                    bidID      : bid.id,
+                    playerID   : null,
+                    text       : msg,
+                    propertyID : bid.property.id,
+                    price      : bid.amountAsked
                 });
+
                 break;
         }
     }
@@ -688,15 +691,19 @@ class Game {
                 // payer le loyer ou la taxe
                 player.loseMoney(moneyToObtain);
                 if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
-                    // payer loyer
+                    // LOYER
                     const owner = this.cells[player.cellPos].property.owner;
                     owner.addMoney(moneyToObtain);
                     rentalOwner = { id: owner.id, money: owner.money };
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
                 } else if (this.curCell.type === Constants.CELL_TYPE.TAX) {
-                    // payer taxe
+                    // TAXE | IMPOT
                     this.bank.addMoney(moneyToObtain);
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de taxes';
+                } else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
+                    // CARTE CHANCE | COMMUNAUTEE
+                    bank.addMoney(moneyToObtain);
+                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer la carte chance/communautée';
                 }
             } else { // non forcée
                 rentalOwner = null;
