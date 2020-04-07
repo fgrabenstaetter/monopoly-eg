@@ -437,14 +437,14 @@
             bottom: 1px;
           }
 
-        .Freeperties-container {
+        .properties-container {
             position: relative;
             display: flex;
             flex-direction: column;
             margin: 0;
             height: max-content;
 
-          .Freeperty {
+          .property {
               text-align: center;
               width: 120px;
               border: none;
@@ -463,7 +463,7 @@
             &.purple,
             &.brown,
             &.green {
-            .Freeperty {
+            .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
@@ -472,71 +472,71 @@
             &.yellow,
             &.purple,
             &.cyan {
-            .Freeperty {
+            .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
             }
 
-            // Classes coulers Freepriétés
+            // Classes coulers propriétés
             &.yellow {
-            .Freeperty {
+            .property {
                 background-color: rgb(228, 228, 65);
                 color: white;
               }
             }
 
             &.blue {
-            .Freeperty {
+            .property {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-            .Freeperty {
+            .property {
                 background-color: red;
                 color: white;
               }
             }
 
             &.orange {
-            .Freeperty {
+            .property {
                 background-color: orange;
                 color: white;
               }
             }
 
             &.purple {
-            .Freeperty {
+            .property {
                 background-color: rgb(223, 184, 191);
                 color: white;
               }
             }
 
             &.brown {
-            .Freeperty {
+            .property {
                 background-color: brown;
                 color: white;
               }
             }
 
             &.cyan {
-            .Freeperty {
+            .property {
                 background-color: rgb(35, 212, 212);
                 color: white;
               }
             }
 
             &.green {
-            .Freeperty {
+            .property {
                 background-color: green;
                 color: white;
               }
             }
 
             &.station {
-            .Freeperty {
+            .property {
                 background-color: white;
                 color: black;
                 text-align: left;
@@ -562,7 +562,7 @@
             }
 
             &.company {
-            .Freeperty {
+            .property {
                 background-color: black;
                 text-align: left;
                 padding-left: 12px;
@@ -897,12 +897,12 @@
         /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
 
-        .action-buttonin-Freegress,
+        .action-buttonin-progress,
         .action-button.finished {
           color: transparent !important;
         }
 
-        .action-buttonin-Freegress:after,
+        .action-buttonin-progress:after,
         .action-button.finished:after {
           position: absolute;
           z-index: 2;
@@ -914,14 +914,14 @@
           left: 0;
         }
 
-        /* If the in-Freegress class is set on the button, show the
+        /* If the in-progress class is set on the button, show the
           contents of the data-loading attribute on the butotn */
 
-        .action-buttonin-Freegress:after {
+        .action-buttonin-progress:after {
           content: attr(data-loading);
         }
 
-        .action-buttonin-Freegress:before {
+        .action-buttonin-progress:before {
           position: fixed;
           top: 270px;
           right: 65px;
@@ -942,7 +942,7 @@
         }
 
         @media (max-height: 820px) {
-          .action-buttonin-Freegress:before {
+          .action-buttonin-progress:before {
             top: 190px;
           }
         }
@@ -953,7 +953,7 @@
           content: attr(data-finished);
         }
 
-        /* The colorful bar that grows depending on he Freegress */
+        /* The colorful bar that grows depending on he progress */
 
         .action-button .tz-bar {
           background-color: rgba(255, 98, 0, 1);
