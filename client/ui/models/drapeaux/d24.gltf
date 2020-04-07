@@ -106,8 +106,8 @@
     "images" : [
         {
             "mimeType" : "image/png",
-            "name" : "jaune",
-            "uri" : "jaune.png"
+            "name" : "blanc",
+            "uri" : "blanc.png"
         },
         {
             "mimeType" : "image/png",

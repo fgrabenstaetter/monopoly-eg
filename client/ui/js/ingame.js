@@ -788,6 +788,10 @@ function emptyOverviewCard() {
         .css("background-color", "white")
         .css("color", "white");
     $('.overview-card .content').html('');
+
+    $('.overview-card .buy-button').css("display", "none");
+    $('.overview-card .sell-button').css("display", "none");
+    $('.overview-card .mortgage-button').css("display", "none");
 }
 
 /**
