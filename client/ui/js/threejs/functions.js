@@ -177,9 +177,8 @@ function loaderFlag (flag, colore) {
 		window[flag].traverse((o) => {
 			if (o.isMesh) {
 				//console.log(o);
-				if(o.name === 'Plane1_0') {
-					o.material.color.setHex(colore);
-				}
+				if (o.name === drapPlane[flag])
+					o.material.color = new THREE.Color(colore);
 			}
 		});
 	  scene.add(root);
@@ -195,10 +194,10 @@ var plateauDrapeaux = [
 				'd39'
 				]
 
-for (var i = 0; i < 28; i++) {
-var objVar = plateauDrapeaux[i];
-loaderFlag(objVar, 0xFFFF00);
-}
+/*for (var i = 0; i < 28; i++) {
+	var objVar = plateauDrapeaux[i];
+	loaderFlag(objVar, 0xFFFFFF);
+}*/
 
 
 var plateauObjects = [

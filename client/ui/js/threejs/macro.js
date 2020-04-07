@@ -106,3 +106,34 @@ var tabHotel = {
 	37 : "H8_1",
 	39 : "H8_2"
 }
+
+var drapPlane = { 
+        'd1' : 'Plane1_0',
+        'd3' : 'Plane3_0',
+        'd5' : 'Plane5_0',
+        'd6' : 'Plane6_0',
+        'd8' : 'Plane8_0',
+        'd9' : 'Plane9_0',
+        'd11' : 'Plane11_0',
+        'd12' : 'Plane12_0',
+        'd13' : 'Plane13_0',
+        'd14' : 'Plane14_0',
+        'd15' : 'Plane15_0',
+        'd16' : 'Plane16_0',
+        'd18' : 'Plane18_0',
+        'd19' : 'Plane19_0',
+        'd21' : 'Plane21_0',
+        'd23' : 'Plane23_0',
+        'd24' : 'Plane24_0',
+        'd25' : 'Plane25_0',
+        'd26' : 'Plane26_0',
+        'd27' : 'Plane27_0',
+        'd28' : 'Plane28_0',
+        'd29' : 'Plane29_0',
+        'd31' : 'Plane31_0',
+        'd32' : 'Plane32_0',
+        'd34' : 'Plane34_0',
+        'd35' : 'Plane35_0',
+        'd37' : 'Plane37_0',
+        'd39' : 'Plane39_0'
+}

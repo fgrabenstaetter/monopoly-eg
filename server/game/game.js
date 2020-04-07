@@ -28,13 +28,14 @@ class Game {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
-        this.forcedDiceRes      = [5,5]; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells              = Cells.new;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat               = new Chat();
         this.bids               = [];
         this.bank               = new Bank(this.cells);
+        this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
 
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
