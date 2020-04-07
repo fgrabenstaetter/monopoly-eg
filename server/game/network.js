@@ -678,7 +678,7 @@ class Network {
         if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
             extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
-        this.io.to(game.name).emit('gameActionRes', {
+        const res = {
             dicesRes         : diceRes,
             playerID         : player.id,
             cellPosTmp       : cellPosTmp,
@@ -689,7 +689,10 @@ class Network {
             asyncRequestArgs : game.turnData.asyncRequestArgs,
             updateMoney      : updateMoneyList,
             extra            : extra
-        });
+        }
+
+        this.io.to(game.name).emit('gameActionRes', res);
+        game.networkLastGameActionRes = res;
     }
 
     gamePropertyBuyReq(player, game) {
@@ -995,8 +998,11 @@ class Network {
                 properties   : properties
             });
 
-            if (game.curPlayer === player && game.turnData.canRollDiceAgain)
+            if (game.startedTime) { // partie commencée
+                if (game.networkLastGameActionRes) // il y a déjà eu une action de tour
+                    player.socket.emit('gameActionRes', game.networkLastGameActionRes);
                 player.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
+            }
         });
     }
 }
