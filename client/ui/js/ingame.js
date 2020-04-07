@@ -577,12 +577,13 @@ function addSaleOffer(id, name, roadName, price) {
         </div>`);
 
     bindOfferListener();
+
 }
 
 function bindOfferListener() {
     $('.accept-button').unbind();
     $('.deny-button').unbind();
-
+    updateScroll();
     $('.accept-button').click(function () {
         let error = 0;
         let status;
@@ -693,14 +694,12 @@ function populateStreetOverviewCard(property, ismine) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine)
-    {
+    if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
     }
-    else
-    {
+    else {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
@@ -730,14 +729,12 @@ function populateStationOverviewCard(station, ismine) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-    if (ismine)
-    {
+    if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
     }
-    else
-    {
+    else {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
@@ -797,7 +794,7 @@ function displayPropertyInfos(property) {
 }
 
 $('.player-list').on('click', '.property', function () {
-    alert('Clic détecté !')
+
     let propertyId = $(this).attr('data-id');
     if (!propertyId)
         return;
@@ -833,7 +830,7 @@ $('#overviewCardBuyForm .send').click(function (e) {
     let property = getPropertyById(propertyID);
     if (!property)
         return;
-    
+
     console.log(property);
 
     socket.emit('gameOfferSendReq', { receiverID: property.ownerID, propertyID: property.id, price: price });
