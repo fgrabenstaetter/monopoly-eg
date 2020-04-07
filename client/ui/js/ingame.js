@@ -100,6 +100,7 @@ socket.on('gameStartedRes', (data) => {
 
     initProperty();
     hideLoaderOverlay();
+    $('#timer').progressInitialize();
 });
 
 socket.on('gameTurnRes', (data) => {
@@ -118,7 +119,7 @@ socket.on('gameTurnRes', (data) => {
         console.log('C\'est à mon tour de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressTimed(turnTimeSeconds);
     } else {
@@ -152,7 +153,7 @@ socket.on('gameActionRes', (data) => {
 
     if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        $('#timer').progressInitialize();
+        $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Resynchronisation du timer");
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
         $('#timer').progressTimed(turnTimeSeconds);
@@ -275,7 +276,7 @@ function gameActionResAfterSecondMovement(data) {
         if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
-            $('#timer').progressInitialize();
+            $('#timer').progressReset();
             // Ajouter le progressTimed
         }
         else {
@@ -692,7 +693,6 @@ function populateStreetOverviewCard(property) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -703,8 +703,6 @@ function populateStreetOverviewCard(property) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
-=======
->>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
 function populateStationOverviewCard(station) {
@@ -730,7 +728,6 @@ function populateStationOverviewCard(station) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-<<<<<<< HEAD
     if (ismine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
@@ -741,8 +738,6 @@ function populateStationOverviewCard(station) {
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
     }
-=======
->>>>>>> 8b046ad351997ce20b92d173a06b247a3ad749e6
 }
 
 function populateCompanyOverviewCard(publicCompany) {
