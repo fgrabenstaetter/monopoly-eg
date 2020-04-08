@@ -379,7 +379,7 @@ function movement (pawn, vdp, callback) {
 	zmax = (Math.floor(zmax * 100) / 100);
 	
 	counter = 1;
-	zoomOn = 1;
+	zoomOn = 0;
 
 	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
@@ -413,9 +413,13 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		} else {
 			//console.log("2");
-			requestAnimationFrame(render);	
+			if (zoomOn === 0) {
+				requestAnimationFrame(render);	
+				window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			}
 
 			if (zoomOn === 1) {
+				requestAnimationFrame(render);
 				camera.zoom = 1.5;
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
 					camera.position.y -= 0.01;
@@ -433,7 +437,10 @@ function movement (pawn, vdp, callback) {
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
 		//console.log("3");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {
 			camera.zoom = 1.5;
@@ -459,7 +466,10 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		} else {
 			//console.log("5");
-			requestAnimationFrame(render);
+			if (zoomOn === 0) {
+				requestAnimationFrame(render);
+				window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+			}
 			
 			if (zoomOn === 1) {
 				camera.zoom = 1.5;		
@@ -480,7 +490,10 @@ function movement (pawn, vdp, callback) {
 	// La route gauche vers une case de la route en haut
 	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin) {
 		//console.log("6");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {
 			camera.zoom = 1.5;		
@@ -506,7 +519,10 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		} else {
 			//console.log("8");
-			requestAnimationFrame(render);
+			if (zoomOn === 0) {
+				requestAnimationFrame(render);
+				window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+			}
 			
 			if (zoomOn === 1) {
 				camera.zoom = 1.5;
@@ -529,7 +545,10 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route d'en bas ->  haut (case 9 -> case 21)
 	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpx && ppz == zmax && vdpz == zmin) {
 		//console.log("9");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;
@@ -555,7 +574,10 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		} else {
 			//console.log("11");
-			requestAnimationFrame(render);
+			if (zoomOn === 0) {
+				requestAnimationFrame(render);
+				window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+			}
 			
 			if (zoomOn === 1) {
 				camera.zoom = 1.5;		
@@ -564,8 +586,7 @@ function movement (pawn, vdp, callback) {
 					camera.position.x += 0.01;
 				else if (counter2 <= 30 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.35))
 					camera.position.x += 0.01;
-
-				
+			
 				window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 				counter2++;
 
@@ -584,7 +605,10 @@ function movement (pawn, vdp, callback) {
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		} else {
 			//console.log("13");
-			requestAnimationFrame(render);
+			if (zoomOn === 0) {
+				requestAnimationFrame(render);
+				window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+			}
 			
 			if (zoomOn === 1) {
 				camera.zoom = 1.5;
@@ -607,7 +631,10 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route de gauche ->  droit (case 19 -> case 31)
 	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmin && vdpx == xmax) {
 		//console.log("14");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;		
@@ -627,7 +654,10 @@ function movement (pawn, vdp, callback) {
 	// La route de droite vers une case de la route en bas
 	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmax) {
 		//console.log("15");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;		
@@ -637,7 +667,6 @@ function movement (pawn, vdp, callback) {
 			else if (counter2 <= 30 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
 				camera.position.x += 0.02;
 
-			
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 			counter2++;
 
@@ -650,7 +679,10 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route du haut ->  bas (case 29 -> case 1)
 	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpz && ppz == zmin && vdpz == xmax) {
 		//console.log("16");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;
@@ -672,7 +704,10 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route de droite ->  gauche (case 39 -> case 11)
 	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmax && vdpx == xmin) {
 		//console.log("17");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;		
@@ -681,7 +716,6 @@ function movement (pawn, vdp, callback) {
 				camera.position.x += 0.01;
 			else if (counter2 <= 30 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
 				camera.position.x += 0.015;
-
 			
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 			counter2++;
@@ -695,7 +729,10 @@ function movement (pawn, vdp, callback) {
 	// La route de gauche vers une case de la route en bas
 	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmax) {
 		//console.log("18");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;		
@@ -715,7 +752,10 @@ function movement (pawn, vdp, callback) {
 	// La route d'en haut vers une case de la route de gauche
 	} else if((ppx != vdpx) && (ppz != vdpz) && (ppz == zmin) && (vdpx == xmin)) {
 		//console.log("19");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;
@@ -737,7 +777,10 @@ function movement (pawn, vdp, callback) {
 	// La route de droite vers une case de la route d'en haut
 	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmin) {
 		//console.log("20");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;		
@@ -760,7 +803,10 @@ function movement (pawn, vdp, callback) {
 	// La route d'en bas vers une case de la route de droite
 	} else if(ppx != vdpx && ppz != vdpz && ppz == vdpx) {
 		//console.log("21");
-		requestAnimationFrame(render);
+		if (zoomOn === 0) {
+			requestAnimationFrame(render);
+			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+		}
 		
 		if (zoomOn === 1) {	
 			camera.zoom = 1.5;
