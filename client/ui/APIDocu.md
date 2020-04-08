@@ -54,21 +54,22 @@
 * deletePawn('nom_du_pion');
 	Supprime un pion en cas de défaite.
     Exemple: deletePawn('boat') -> supprime le pion bateau.
+    
 	
 * loaderFlag(flag,colore);
 	charge un drapeau sur la propriété achetée au couleur du joueur
 	Exemple : loaderFlag('d1','street-yellow')
+
 	
 * deleteFlag (flag)
 	supprime un drapeau
 	Exemple : deleteFlag('d1)
+
 	
 * changeColorFlag (flag, colore)
 	change la couleur d'un drapeau
 	Exemple : changeColorFlag('d1','street-yellow')
-	
 
-	
 
 * deleteCase(cases):
 	Supprime une case (utilisé dans le changement de couleur).
