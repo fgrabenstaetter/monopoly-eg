@@ -379,7 +379,7 @@ function movement (pawn, vdp, callback) {
 	zmax = (Math.floor(zmax * 100) / 100);
 	
 	counter = 1;
-	zoomOn = 0;
+	zoomOn = 1;
 
 	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
@@ -387,6 +387,7 @@ function movement (pawn, vdp, callback) {
 		if (callback)
 			callback();
 	}
+
 
 	// Rotation pour les pions
 	if (ppx == xmin && ppz == zmax) {
@@ -443,6 +444,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -472,6 +474,7 @@ function movement (pawn, vdp, callback) {
 			}
 			
 			if (zoomOn === 1) {
+				requestAnimationFrame(render);
 				camera.zoom = 1.5;		
 
 				if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -496,6 +499,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -525,6 +529,7 @@ function movement (pawn, vdp, callback) {
 			}
 			
 			if (zoomOn === 1) {
+				requestAnimationFrame(render);
 				camera.zoom = 1.5;
 
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -551,6 +556,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -580,6 +586,7 @@ function movement (pawn, vdp, callback) {
 			}
 			
 			if (zoomOn === 1) {
+				requestAnimationFrame(render);
 				camera.zoom = 1.5;		
 
 				if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -611,6 +618,7 @@ function movement (pawn, vdp, callback) {
 			}
 			
 			if (zoomOn === 1) {
+				requestAnimationFrame(render);
 				camera.zoom = 1.5;
 
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -637,6 +645,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -660,6 +669,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -685,6 +695,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -710,6 +721,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -735,6 +747,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -758,6 +771,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -783,6 +797,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -809,6 +824,7 @@ function movement (pawn, vdp, callback) {
 		}
 		
 		if (zoomOn === 1) {	
+			requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
