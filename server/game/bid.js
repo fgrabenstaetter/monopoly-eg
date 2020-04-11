@@ -5,16 +5,16 @@ class Bid {
     static idCounter = 0;
     static bids = [];
 
-    static bidByID (bidID) {
+    static bidByID (id) {
         for (const bid of Bid.bids) {
-            if (bidID === bid.id)
+            if (bid.id === id)
                 return bid;
         }
         return false;
     }
 
     static delBid (bid) {
-        const ind = Bid.bids.indexOf(curBid);
+        const ind = Bid.bids.indexOf(bid);
         if (ind === -1)
             return false;
         Bid.bids.splice(ind, 1);
@@ -51,6 +51,8 @@ class Bid {
             this.expired();
             return false;
         }
+
+        return true;
     }
 
     expired () {
@@ -65,8 +67,10 @@ class Bid {
         if (this.player) {
             this.player.loseMoney(this.amountAsked);
             this.player.addProperty(this.property);
-            this.game.bank.addMoney(this.amountAsked);
-            this.game.bank.delProperty(this.property);
+
+            const pOwner = this.property.owner ? this.property.owner : this.game.bank;
+            pOwner.addMoney(this.amountAsked);
+            pOwner.delProperty(this.property);
         }
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {

@@ -11,6 +11,7 @@ const Matchmaking = require('../game/matchmaking');
 const Network     = require('../game/network');
 const Properties  = require('../lib/properties');
 const Offer       = require('../game/offer');
+const Bid         = require('../game/bid');
 
 describe('Network + Game', () => {
     const port = 3002;
@@ -448,7 +449,7 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
-    it('Enchère créée sans surrenchérissement', (done) => {
+    it('Enchère créée + surrenchérissement', (done) => {
         const game = new Game([user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
@@ -456,30 +457,52 @@ describe('Network + Game', () => {
         game.forcedDiceRes = [2, 4]; // => Properties.STREET[0]
         game.start(true);
         const player = game.curPlayer;
-        let sock;
-        if (player.user.socket === serverSocket)
+        let sock, sock2;
+        if (player.user.socket === serverSocket) {
             sock = clientSocket;
-        else
+            sock2 = clientSocket2;
+        } else {
             sock = clientSocket2;
+            sock2 = clientSocket;
+        }
+
+        const nextBidID = Bid.idCounter;
         let nb = 0;
+
         sock.on('gameActionRes', (data) => {
             assert.deepEqual(data.dicesRes, [2, 4]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 6);
             assert.strictEqual(data.asyncRequestType, 'canBuy');
-            //On teste si les 2 joueurs ont bien reçu tous les deux l'évent gameBidRes
-            clientSocket.on('gameBidRes', (data) => {
-                assert.strictEqual(null, data.playerID);
-                assert.strictEqual(data.price, game.cells[player.cellPos].property.prices.empty);
-                assert.strictEqual(0, data.bidID);
+
+            sock.on('gameOverbidRes', (data) => {
+                assert.strictEqual(data.error, 0);
                 if (++ nb === 2) done();
             });
 
-            clientSocket2.on('gameBidRes', (data) => {
-                assert.strictEqual(null, data.playerID);
+            sock.on('gameBidRes', (data) => {
+                assert.strictEqual(data.playerID, null);
                 assert.strictEqual(data.price, game.cells[player.cellPos].property.prices.empty);
-                assert.strictEqual(0, data.bidID);
-                if (++ nb === 2) done();
+                assert.strictEqual(data.bidID, nextBidID);
+
+                sock.off('gameBidRes');
+                // clientSocket2.off('gameBidRes');
+                sock.on('gameBidRes', (data) => {
+                    assert.strictEqual(data.bidID, nextBidID);
+                    assert.strictEqual(data.propertyID, game.cells[player.cellPos].property.id);;
+                    assert.strictEqual(data.playerID, player.id);
+                    assert.ok(data.text);
+                    assert.strictEqual(data.price, 300);
+
+                    const bid = Bid.bidByID(nextBidID);
+                    assert.strictEqual(bid.amountAsked, 300);
+                    assert.strictEqual(bid.player, player);
+                    assert.strictEqual(bid.property, game.cells[player.cellPos].property);
+                    if (++ nb === 2) done();
+                });
+
+                sock.emit('gameOverbidReq', { bidID: nextBidID, price: 300 });
+
             });
             //Utile car sinon le timer du test expire avant celui du vrai timeout "IN-GAME"
             sock.emit('gameTurnEndReq');

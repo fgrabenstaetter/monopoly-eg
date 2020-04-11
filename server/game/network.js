@@ -836,10 +836,8 @@ class Network {
     gameOverbidReq(player, game) {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
-            if (!data.text || !data.bidID)
+            if (!data.price || data.bidID == null)
                 err = Errors.MISSING_FIELD;
-            else if (!(player === game.curPlayer))
-                err = err = Errors.GAME.NOT_MY_TURN;
             else if (player.money < data.price)
                 err = Errors.BID_ERRORS.NOT_ENOUGH_MONEY;
             else {
