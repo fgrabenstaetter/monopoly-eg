@@ -26,6 +26,10 @@ module.exports = Object.freeze({
         BID_DIFF_LOWER_THAN_TWENTY: {
             code: 2,
             status: 'Votre enchère n\'est pas assez élevée'
+        },
+        BID_NOT_ENOUGH_MONEY: {
+            code: 3,
+            status: 'Vous n\'avez pas assez d\'argent pour surenchérir'
         }
     },
 

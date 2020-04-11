@@ -2,6 +2,7 @@ const Constants                   = require('../lib/constants');
 const Errors                      = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
 const Offer                       = require('./offer');
+const Bid                         = require('./bid');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -839,26 +840,32 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (!(player === game.curPlayer))
                 err = err = Errors.GAME.NOT_MY_TURN;
+            else if (player.money < data.price)
+                err = Errors.BID_ERRORS.NOT_ENOUGH_MONEY;
             else {
-                const bid = game.bidByID(data.bidID);
-                if (bid === null)
+                const bid = Bid.bidByID(data.bidID);
+                if (!bid)
                     err = Errors.BID_ERRORS.BID_ENDED;
-                const boundary = bid.amountAsked - data.price;
-                //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
-                if (boundary >= 20) {
-                    bid.updateBid(player, data.price);
-                    this.io.to(game.name).emit('gameBidRes', {
-                        bidID: bid.id,
-                        propertyID: bid.property.id,
-                        playerID: player.id,
-                        text: bid.text,
-                        price: data.price
-                    });
+                else {
+                    const boundary = data.price - bid.amountAsked;
+                    //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
+                    if (boundary >= 10) {
+                        if (!bid.updateBid(player, data.price))
+                            err = Errors.UNKNOW;
+                        else {
+                            this.io.to(game.name).emit('gameBidRes', {
+                                bidID      : bid.id,
+                                propertyID : bid.property.id,
+                                playerID   : player.id,
+                                text       : bid.text,
+                                price      : data.price
+                            });
+                        }
+                    } else
+                        err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
                 }
-                else
-                    err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
-
             }
+
             player.socket.emit('gameOverbidRes', {error: err.code, status: err.status});
         });
     }

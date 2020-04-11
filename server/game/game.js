@@ -1,6 +1,5 @@
 const Chat                    = require('./chat');
 const Constants               = require('./../lib/constants');
-const Bid                     = require('./bid');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
 const Bank                    = require('./bank');
@@ -9,6 +8,7 @@ const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
+const Bid                     = require('./bid');
 const SuccessManager          = require('./successManager');
 
 /**
@@ -33,7 +33,6 @@ class Game {
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
         this.chat               = new Chat();
-        this.bids               = [];
         this.bank               = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
 
@@ -84,14 +83,6 @@ class Game {
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
-    }
-
-    bidByID (bidID) {
-        for (const bid of this.bids) {
-            if (bidID === bid.id)
-                return bid;
-        }
-        return null;
     }
 
     get active () {
@@ -615,15 +606,6 @@ class Game {
                 }
 
                 const bid = new Bid(curProp, price, this);
-                this.bids.push(bid);
-                const msg = 'Une enchère a demarré pour' + curProp.name;
-                this.GLOBAL.network.io.to(this.name).emit('gameBidRes', {
-                    bidID      : bid.id,
-                    playerID   : null,
-                    text       : msg,
-                    propertyID : bid.property.id,
-                    price      : bid.amountAsked
-                });
 
                 break;
         }
