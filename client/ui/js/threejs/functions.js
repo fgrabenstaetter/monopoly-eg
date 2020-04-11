@@ -3,7 +3,8 @@ let scene, light, camera, renderer;
 var pawn, window, cases;
 let name, zoom = 0;
 
-document.addEventListener('click', Onmouseclick, false);
+
+//document.addEventListener('click', Onmouseclick, false);
 
 function getScene () {
 	let scene = new THREE.Scene();
@@ -64,7 +65,6 @@ scene = getScene();
 camera = getCamera();
 light = getLight(scene);
 renderer = getRenderer();
-
 
 
 function resizeRendererToDisplaySize (renderer) {
@@ -158,6 +158,7 @@ function loaderPlateau (load, test) {
   });
 }
 
+
 function changeColorFlag (flag, colore) {
 	deleteFlag(flag);
 	loaderFlag(flag, colore);
@@ -171,9 +172,9 @@ function deleteFlag (flag) {
 function loaderFlag (flag, colore) {
 	var load = new THREE.GLTFLoader();
 	load.load('models/drapeaux/'+flag+'.gltf', (gltf) => {
-	  requestAnimationFrame(render);
-	  const root = gltf.scene;
-	  window[flag] = gltf.scene;
+		requestAnimationFrame(render);
+		const root = gltf.scene;
+	  	window[flag] = gltf.scene;
 		window[flag].traverse((o) => {
 			if (o.isMesh) {
 				//console.log(o);
@@ -185,19 +186,13 @@ function loaderFlag (flag, colore) {
 	});
   }
 
-
 var plateauDrapeaux = [
 				'd1', 'd3', 'd5', 'd6', 'd8', 'd9',
 				'd11', 'd12', 'd13', 'd14', 'd15', 'd16', 'd18',
 				'd19', 'd21', 'd23', 'd24', 'd25', 'd26', 'd27',   
 				'd28', 'd29', 'd31', 'd32', 'd34', 'd35', 'd37', 
 				'd39'
-				]
-
-/*for (var i = 0; i < 28; i++) {
-	var objVar = plateauDrapeaux[i];
-	loaderFlag(objVar, 0xFFFFFF);
-}*/
+]
 
 
 var plateauObjects = [
@@ -244,6 +239,7 @@ for(var i = 0; i < 40; i++){
   loaderCases(objVar, 0xFFFFFF);
 };
 
+
 function loaderPawn (pawn, vdp) {
 	load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
@@ -262,14 +258,18 @@ function loaderPawn (pawn, vdp) {
 		vdpz = (Math.floor(vdpz * 100) / 100);
 		root.position.set(vdpx, 2, vdpz);
 
-		if (vdp >= 1 && vdp <= 10) {
+		if (vdp >= 0 && vdp <= 9) {
 			root.rotateY(Math.PI / -2);
-		} else if (vdp >= 11 && vdp <= 20) {
+			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+		} else if (vdp >= 10 && vdp <= 19) {
 			root.rotateY(Math.PI);
-		} else if (vdp >= 21 && vdp <= 30) {
+			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+		} else if (vdp >= 20 && vdp <= 29) {
 			root.rotateY(Math.PI / 2);
+			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		} else {
 			root.rotateY(Math.PI * 2);
+			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		}
 
 		/*root.traverse((o) => {
@@ -285,7 +285,8 @@ function loaderPawn (pawn, vdp) {
 	});
 }
 
-function Onmouseclick(event) {
+
+/*function Onmouseclick(event) {
 
     event.preventDefault();
 
@@ -300,10 +301,10 @@ function Onmouseclick(event) {
 
 	var tesee;
 
-    if (intersects.length > 0) {
+    if (intersects.length > 0) {*/
 		/*tesee = intersects[1];
 		console.log(tesee.object.name);*/
-		for(var i = 0; i < intersects.length; i++){
+		/*for(var i = 0; i < intersects.length; i++){
 			tesee = intersects[i];
 			//console.log(tesee.object);
 			if(tesee.object.name === 'bordure'){
@@ -312,13 +313,14 @@ function Onmouseclick(event) {
 			}
 		}
     }
+}*/
 
-}
 
 function loaderhouseProperty (ncase, nhouse) {
 	var concatS = "";
 	housePropertyL(concatS.concat(tabHouse[ncase],"_",nhouse));
 }
+
 
 function housePropertyL (houseProperty) {
 	var load = new THREE.GLTFLoader();
@@ -335,6 +337,7 @@ function loaderhotelProperty (ncase) {
 	var concatS = "";
 	hotelPropertyL(concatS.concat(tabHotel[ncase]));
 }
+
 
 function hotelPropertyL (hotelPropriete) {
 	var load = new THREE.GLTFLoader();
@@ -802,17 +805,16 @@ function movement (pawn, vdp, callback) {
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
 				camera.position.x += 0.01;
-			else if (counter2 <= 30 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
-				camera.position.x += 0.015;
-
+			else if (counter2 <= 150 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
+				camera.position.x += 0.01;
 			
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 			counter2++;
 
-			if (counter2 >= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.35))
-				camera.position.z += 0.007;
+			if (counter2 >= 5 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.35))
+				camera.position.z += 0.01;
 			else if (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67)
-				camera.position.z += 0.007;
+				camera.position.z += 0.01;
 		}
 
 	// La route d'en bas vers une case de la route de droite
