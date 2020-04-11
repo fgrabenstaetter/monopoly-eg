@@ -594,18 +594,7 @@ class Game {
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
-                let price;
-                switch (curProp.type) {
-                    case Constants.PROPERTY_TYPE.STREET:
-                        price = curProp.prices.empty;
-                        break;
-
-                    default:
-                        price = curProp.price;
-                        break;
-                }
-
-                const bid = new Bid(curProp, price, this);
+                const bid = new Bid(curProp, curProp.value, this);
 
                 break;
         }

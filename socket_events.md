@@ -926,6 +926,25 @@
         null
         ```
 
+- **Démarée une enchère manuelle**
+    > = Démarrée une enchère pour vendre une de ses propriétés
+
+    * **Requête:** gameManualBidReq
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int
+        }
+        ```
+
+    * **Réponse:** gameManualBidRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+
 - **Une quête vient d'être accomplie**
     > Le client et le serveur doivent connaître toutes les quêtes selon leur ID
 

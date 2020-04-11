@@ -868,6 +868,22 @@ class Network {
         });
     }
 
+    gameManualBidReq (player, game) {
+        player.socket.on('gameManualBidReq', (data) => {
+            let err = Errors.SUCCESS, prop;
+            if (!data.propertyID)
+                err = Errors.MISSING_FIELD;
+            else if (!(prop = player.propertyByID(data.propertyID)))
+                err = Errors.UNKNOW;
+            else {
+                new Bid(prop, prop.value, game);
+                // réponse envoyée depuis le constructeur de Bid
+            }
+
+            player.socket.emit('gameManualBidRes', { error: err.code, status: err.status });
+        });
+    }
+
     // UTILIES METHODS
 
     gamePlayerDisconnected (player, game) {
