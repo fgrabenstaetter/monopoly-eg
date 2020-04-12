@@ -1,14 +1,14 @@
-$(document).ready( () => {
+$(document).ready(() => {
 
     updateScroll();
-    $('#chat').keypress( (e) => {
+    $('#chat').keypress((e) => {
         if (e.keyCode == '13') { // touche entrer
             sendMsg()
             updateScroll();
         }
     });
 
-    $('#btnSendMsg').click( () => {
+    $('#btnSendMsg').click(() => {
         sendMsg()
         updateScroll();
     });
@@ -21,14 +21,14 @@ socket.on('lobbyChatReceiveRes', (mess) => {
 
 /** Fonction qui remet la barre de défilement en bas
 */
-function updateScroll(){
+function updateScroll() {
     const element = document.getElementById('msgChat');
     element.scrollTop = element.scrollHeight;
 }
 
 /** Fonction qui envoie un message via socket
 */
-function sendMsg () {
+function sendMsg() {
     const chatMsg = document.getElementById('chat');
     if (chatMsg.value.trim() != '') {
         const inGame = window.location.pathname === '/game';
@@ -44,7 +44,7 @@ function sendMsg () {
  * Fonction qui affiche un messag reçu
  * @param msg L'object message reçu par socket
  */
-function addMsg (senderID, text, createdTime) {
+function addMsg(senderID, text, createdTime) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
     const msgClass = 'msg-' + (senderID === ID ? 'me' : 'other');
@@ -52,8 +52,31 @@ function addMsg (senderID, text, createdTime) {
     const html = `
         <div class="` + msgClass + `" title="` + localeDate + `">
             <div class="msg-author">` + (senderID === -1 ? '[Server]' : idToNick(senderID)) + `</div>`
-            + text +
+        + text +
         `</div>`;
+
+    $('#msgChat').append(html);
+    if (isScroll)
+        updateScroll();
+}
+
+/**
+ * Fonction qui affiche une offre d'enchère reçue
+ * @param msg L'object message reçu par socket
+ */
+function addMsg(senderID, text, createdTime, amount) {
+    const element = document.getElementById('msgChat');
+    const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
+    const localeDate = new Date(createdTime).toLocaleString();
+    const html = `
+        <div class="purchase-offer" title="` + localeDate + `">
+            <div class="msg-author">Enchère</div>
+            <span>` + (senderID === -1 ? '[Server]' : idToNick(senderID)) + `</span> propose de vous acheter ??? pour ` + amout + `€
+			<div class="buttons-container">
+                <div class="accept-button">accepter</div>
+                <div class="deny-button">refuser</div>
+            </div>
+        </div>`;
 
     $('#msgChat').append(html);
     if (isScroll)
