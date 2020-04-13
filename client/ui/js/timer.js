@@ -26,7 +26,6 @@ $(document).ready(() => {
     // initialize and control the progress meters.
 
     $.fn.progressInitialize = function () {
-        console.log("initial !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         // This function creates the necessary markup for the progress meter
         // and sets up a few event listeners.
 
@@ -93,7 +92,6 @@ $(document).ready(() => {
 
     $.fn.progressReset = function () {
         var button = $(this);
-        console.log('reset !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
         if (button.hasClass('disabled')) {
             button.removeClass('disabled');
         }
@@ -102,41 +100,40 @@ $(document).ready(() => {
     // progressStart simulates activity on the progress meter. Call it first,
     // if the progress is going to take a long time to finish.
 
-    $.fn.progressStart = function () {
+    $.fn.progressStart = function(time){
+		var button = this.first(),
+			last_progress = new Date().getTime();
 
-        var button = this.first(),
-            last_progress = new Date().getTime();
+		if(button.hasClass('in-progress')){
+			// Don't start it a second time!
+			window.clearInterval(interval);
+		}
 
-        if (button.hasClass('in-progress')) {
-            // Don't start it a second time!
-            return this;
-        }
+		button.on('progress', function(){
+			last_progress = new Date().getTime();
+		});
 
-        button.on('progress', function () {
-            last_progress = new Date().getTime();
-        });
+		// Every half a second check whether the progress
+		// has been incremented in the last two seconds
 
-        // Every half a second check whether the progress
-        // has been incremented in the last two seconds
+		var interval = window.setInterval(function(){
+			if($('.tz-bar').width() >= $('#controlButton').innerWidth())
+			{
+				button.trigger('progress-finish');
+				button.trigger('progress',[0, false, true]);
+			}
+			else{
+				// There has been no activity for two seconds. Increment the progress
+				// bar a little bit to show that something is happening
+				button.progressIncrement(100/(time/0.2));
+			}
 
-        var interval = window.setInterval(function () {
+		}, 200);
 
-            if (new Date().getTime() > 2000 + last_progress) {
-
-                // There has been no activity for two seconds. Increment the progress
-                // bar a little bit to show that something is happening
-
-                button.progressIncrement(5);
-            }
-
-        }, 500);
-
-        button.on('progress-finish', function () {
-            window.clearInterval(interval);
-        });
-
-        return button.progressIncrement(10);
-    };
+		button.on('progress-finish',function(){
+			window.clearInterval(interval);
+		});
+	};
 
     $.fn.progressFinish = function(){
         $(this).addClass('disabled');
@@ -144,6 +141,10 @@ $(document).ready(() => {
         return this.first().progressSet(100);
     };
 
+    $.fn.progressIncrement = function(val){
+		var button = this.first();
+        return button.trigger('progress',[val, false]);
+	};
 
     $.fn.progressSetStateTerminer = function(){
         $(this).attr({'data-loading': 'TERMINER'});
