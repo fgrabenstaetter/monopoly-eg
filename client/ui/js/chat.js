@@ -64,7 +64,7 @@ function addMsg(senderID, text, createdTime) {
  * Fonction qui affiche une offre d'enchère reçue
  * @param msg L'object message reçu par socket
  */
-function addMsg(senderID, text, createdTime, amount) {
+function addOfferMsg(senderID, text, createdTime, amount) {
     const element = document.getElementById('msgChat');
     const isScroll = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
     const localeDate = new Date(createdTime).toLocaleString();
