@@ -31,7 +31,7 @@ Team EG
 
 ### Serveur
 
-(Testé avec nodejs LTS 12.16.1 et MongoDB 4.2.3)
+(Testé avec nodejs LTS 12.16.2 et MongoDB 4.2.5)
 
 0. Avoir installé la dernière version Node LTS et MongoDB sur sa machine (et avoir le service MongoDB en cours d'exécution)
 
