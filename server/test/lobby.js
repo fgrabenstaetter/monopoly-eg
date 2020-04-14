@@ -10,7 +10,7 @@ const ioserver = require('socket.io');
 const ioclient = require('socket.io-client');
 const assert = require('assert');
 
-const NODE_PORT = process.env.NODE_PORT || 3000
+const NODE_PORT = process.env.NODE_PORT || 3004 // pas 3000 ou 3001 car c juste test
 
 let GLOBAL = {
     users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
@@ -69,7 +69,7 @@ describe('Lobby', function () {
 			done();
 		});
 		this._client = ioclient.connect('http://localhost:${NODE_PORT}');
-        done();
+            done();
 	});
 
 	it("Doit se terminer même s'il y a une erreur", (done) => {

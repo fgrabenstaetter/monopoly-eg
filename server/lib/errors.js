@@ -30,6 +30,10 @@ module.exports = Object.freeze({
         BID_NOT_ENOUGH_MONEY: {
             code: 3,
             status: 'Vous n\'avez pas assez d\'argent pour surenchérir'
+        },
+        BID_ONE_MANUAL_MAX: {
+            code: 4,
+            status: 'Une enchère manuelle est déjà en cours'
         }
     },
 
