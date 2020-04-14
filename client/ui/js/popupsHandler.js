@@ -51,12 +51,12 @@ function initProperty() {
 }
 
 function createProperty(playerID, type, roadName, roadID) {
-    if (roadName == 'Eau') {
+    if (roadName == "Syndicat Des Eaux et de l'Assainissement") {
         html = `<div class="property eau data-id="` + roadID + `">`
             + roadName +
             `</div>`;
     }
-    else if (roadName == 'Électricité') {
+    else if (roadName == 'Eléctricité de Strasbourg') {
         html = `<div class="property electricite" data-id="` + roadID + `">`
             + roadName +
             `</div>`;
