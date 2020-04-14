@@ -2,7 +2,7 @@ $(document).ready(function () {
     $('.popup').hide();
 })
 
-$('.player-list').on('click', '.player-entry', function () {
+$('.player-list').on('click', '.player-entry', function (e) {
     const popup = $(this).find('.popup');
     if (popup.is(':visible')) {
         popup.toggle();
@@ -11,9 +11,10 @@ $('.player-list').on('click', '.player-entry', function () {
         $('.popup').hide();
         popup.show();
     }
+    e.stopPropagation();
 });
 
-$(document).mouseup(function (e) {
+$(document).on('click', function (e) {
     var container = $(".popup");
     var oc = $(".overview-card");
     if (!container.is(e.target) && container.has(e.target).length === 0) {

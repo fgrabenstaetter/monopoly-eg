@@ -308,7 +308,8 @@
           }
         }
 
-        &.with-house, &.with-hotel {
+        &.with-house,
+        &.with-hotel {
           display: flex;
           justify-content: space-between;
 
@@ -337,7 +338,9 @@
       }
     }
 
-    .buy-button, .sell-button, .mortgage-button {
+    .buy-button,
+    .sell-button,
+    .mortgage-button {
       margin: 10px 0;
       padding-top: 4px;
       font-size: 13px;
@@ -437,14 +440,14 @@
             bottom: 1px;
           }
 
-        .properties-container {
+          .properties-container {
             position: relative;
             display: flex;
             flex-direction: column;
             margin: 0;
             height: max-content;
 
-          .property {
+            .property {
               text-align: center;
               width: 120px;
               border: none;
@@ -452,9 +455,6 @@
               padding: 10px 5px;
               font-size: 10px;
               margin: 5px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
             }
 
             &.blue,
@@ -463,7 +463,7 @@
             &.purple,
             &.brown,
             &.green {
-            .property {
+              .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
@@ -472,7 +472,7 @@
             &.yellow,
             &.purple,
             &.cyan {
-            .property {
+              .property {
                 outline: 1px solid #fff;
                 outline-offset: -4px;
               }
@@ -480,63 +480,63 @@
 
             // Classes coulers propriétés
             &.yellow {
-            .property {
+              .property {
                 background-color: rgb(228, 228, 65);
                 color: white;
               }
             }
 
             &.blue {
-            .property {
+              .property {
                 background-color: blue;
                 color: white;
               }
             }
 
             &.red {
-            .property {
+              .property {
                 background-color: red;
                 color: white;
               }
             }
 
             &.orange {
-            .property {
+              .property {
                 background-color: orange;
                 color: white;
               }
             }
 
             &.purple {
-            .property {
+              .property {
                 background-color: rgb(223, 184, 191);
                 color: white;
               }
             }
 
             &.brown {
-            .property {
+              .property {
                 background-color: brown;
                 color: white;
               }
             }
 
             &.cyan {
-            .property {
+              .property {
                 background-color: rgb(35, 212, 212);
                 color: white;
               }
             }
 
             &.green {
-            .property {
+              .property {
                 background-color: green;
                 color: white;
               }
             }
 
             &.station {
-            .property {
+              .property {
                 background-color: white;
                 color: black;
                 text-align: left;
@@ -562,7 +562,7 @@
             }
 
             &.company {
-            .property {
+              .property {
                 background-color: black;
                 text-align: left;
                 padding-left: 12px;
@@ -821,8 +821,8 @@
           display: flex;
           flex-direction: column;
           align-items: center;
-          
-          &.no-header{
+
+          &.no-header {
             border-radius: 15px 15px 15px 15px;
           }
 
@@ -859,7 +859,7 @@
         }
 
         &.event {
-          p{
+          p {
             color: white;
             font-size: 15px;
             margin-bottom: 20px;

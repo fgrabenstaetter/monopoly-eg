@@ -122,7 +122,7 @@ socket.on('gameTurnRes', (data) => {
         console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
-        $('#timer').progressTimed(turnTimeSeconds);
+        $('#timer').progressStart(turnTimeSeconds);
     } else {
         console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
         console.log("[BOUTON D'ACTION] Passage en attente");
@@ -154,10 +154,6 @@ socket.on('gameActionRes', (data) => {
 
     if (currPlayer.id == ID) {
         console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        $('#timer').progressReset();
-        console.log("[BOUTON D'ACTION] Resynchronisation du timer");
-        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
-        $('#timer').progressTimed(turnTimeSeconds);
         if (data.dicesRes[0] != data.dicesRes[1]) {
             $('#timer').progressSetStateTerminer();
         }
@@ -277,13 +273,15 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
  * @param data Données de gameActionRes
  */
 function gameActionResAfterSecondMovement(data) {
+    if (data.playerID === ID) {
+        $('#timer').progressReset(false);
+    }
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
         if (data.playerID === ID) {
             // LABEL -> "RE-LANCER LES DÉS"
             console.log("[BOUTON D'ACTION] Initialisation");
-            $('#timer').progressReset();
-            // Ajouter le progressTimed
+            // Ajouter le progressStart
         }
         else {
             $(this).attr({ 'data-loading': 'TERMINER' });
@@ -341,7 +339,7 @@ socket.on("gamePropertyBuyRes", (data) => {
         let player = getPlayerById(data.playerID);
         // player.properties.push(property);
         property.ownerID = player.id;
-        // MANQUE ACCÈS A LA COULEUR DU JOUEUR 
+        // MANQUE ACCÈS A LA COULEUR DU JOUEUR
         loaderFlag("d" + cell.id, "cyan");
         if (property.type == "publicCompany") {
             createProperty(player.id, 'company', property.name, property.id);

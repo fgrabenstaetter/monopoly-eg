@@ -4,6 +4,7 @@ class Bid {
 
     static idCounter = 0;
     static bids = [];
+    static alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
 
     static bidByID (id) {
         for (const bid of Bid.bids) {
@@ -15,22 +16,29 @@ class Bid {
 
     static delBid (bid) {
         const ind = Bid.bids.indexOf(bid);
-        if (ind === -1)
+        if (ind === -1) {
+            if (bid.manual)
+                Bid.alreadyOneManualBid = false;
             return false;
+        }
         Bid.bids.splice(ind, 1);
         return true;
     }
 
-    constructor (property, amountAsked, game) {
+    constructor (property, amountAsked, game, manual = false) {
         this.id                   = Bid.idCounter ++;
         this.player               = null;
         this.property             = property;
         this.initialPropertyOwner = property.owner;
         this.amountAsked          = amountAsked;
         this.game                 = game;
+        this.manual               = manual;
         this.text                 = 'Enchère en cours pour la propriété ' + this.property.name;
         Bid.bids.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
+
+        if (manual)
+            Bid.alreadyOneManualBid = true;
 
         const msg = 'Une enchère a démarrée pour' + this.property.name;
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidRes', {
@@ -72,6 +80,8 @@ class Bid {
             pOwner.addMoney(this.amountAsked);
             pOwner.delProperty(this.property);
         }
+
+        Bid.delBid(this);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID     : this.id,

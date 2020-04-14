@@ -10,7 +10,7 @@ const ioserver = require('socket.io');
 const ioclient = require('socket.io-client');
 const assert = require('assert');
 
-const NODE_PORT = process.env.NODE_PORT || 3000
+const NODE_PORT = process.env.NODE_PORT || 3004
 
 let GLOBAL = {
     users: [], // Utilisateurs actuellement connectés (hors jeu ou en jeu)
