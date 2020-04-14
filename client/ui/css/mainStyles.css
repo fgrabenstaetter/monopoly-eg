@@ -1498,7 +1498,9 @@ input {
   margin-top: 8px;
 }
 
-.ingame-ui-container .overview-card .buy-button, .ingame-ui-container .overview-card .sell-button, .ingame-ui-container .overview-card .mortgage-button {
+.ingame-ui-container .overview-card .buy-button,
+.ingame-ui-container .overview-card .sell-button,
+.ingame-ui-container .overview-card .mortgage-button {
   margin: 10px 0;
   padding-top: 4px;
   font-size: 13px;
@@ -1639,9 +1641,6 @@ input {
   padding: 10px 5px;
   font-size: 10px;
   margin: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
