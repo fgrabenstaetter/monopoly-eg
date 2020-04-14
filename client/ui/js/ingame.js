@@ -341,7 +341,16 @@ socket.on("gamePropertyBuyRes", (data) => {
         property.ownerID = player.id;
         // MANQUE ACCÈS A LA COULEUR DU JOUEUR
         loaderFlag("d" + cell.id, "cyan");
-        createProperty(player.id, property.color, property.name, property.id);
+        if (property.type == "publicCompany") {
+            createProperty(player.id, 'company', property.name, property.id);
+        }
+        else if (property.type == "trainStation") {
+            createProperty(player.id, 'station', property.name, property.id);
+        }
+        else {
+            createProperty(player.id, property.color, property.name, property.id);
+
+        }
         setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
 
@@ -510,8 +519,16 @@ socket.on('gameReconnectionRes', (data) => {
         player.properties.forEach((playerProperty) => {
             let property = getPropertyById(playerProperty);
             if (property) {
-                createProperty(player.id, property.color, property.name, property.id);
-                property.ownerID = player.id;
+                if (property.type == "publicCompany") {
+                    createProperty(player.id, 'company', property.name, property.id);
+                }
+                else if (property.type == "trainStation") {
+                    createProperty(player.id, 'station', property.name, property.id);
+                }
+                else {
+                    createProperty(player.id, property.color, property.name, property.id);
+
+                }
             }
         });
     });
