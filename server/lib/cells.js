@@ -15,7 +15,7 @@ class Cells {
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[0])),                               // case 1
             new Cell(Constants.CELL_TYPE.COMMUNITY ,  null),                                                           // case 2
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[1])),                               // case 3
-            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Payez 100€ d\'impôts au pays', 100)),                   // case 4 = impot sur le revenu
+            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Payez 200€ d\'impôts au pays', 200)),                   // case 4 = impot sur le revenu
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new TrainStation(Properties.TRAIN_STATION[0])),                  // case 5
             // Bleu ciel
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[2])),                               // case 6
@@ -56,7 +56,7 @@ class Cells {
             new Cell(Constants.CELL_TYPE.CHANCE    ,  null),                                                           // case 36
             // Bleu foncé
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[20])),                              // case 37
-            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Remboursez vos dettes à la banques. Payez 200€', 200)), // case 38 = Taxe de luxe
+            new Cell(Constants.CELL_TYPE.TAX       ,  new Tax('Remboursez vos dettes à la banques. Payez 100€', 100)), // case 38 = Taxe de luxe
             new Cell(Constants.CELL_TYPE.PROPERTY  ,  new Street(Properties.STREET[21]))                               // case 39 = dernière case, puis retour case 0
         ];
     }
