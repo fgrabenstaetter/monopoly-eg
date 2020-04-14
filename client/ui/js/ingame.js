@@ -273,7 +273,9 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
  * @param data Données de gameActionRes
  */
 function gameActionResAfterSecondMovement(data) {
-    $('#timer').progressReset(false);
+    if (data.playerID === ID) {
+        $('#timer').progressReset(false);
+    }
     // Si double avec les dés, on peut les relancer
     if (data.dicesRes[0] == data.dicesRes[1]) {
         if (data.playerID === ID) {

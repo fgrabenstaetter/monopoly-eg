@@ -72,7 +72,7 @@ $(document).ready(() => {
             if (finish) {
 
                 button.removeClass('in-progress').addClass('finished');
-
+                console.log(button);
                 bar.fadeOut(function () {
                     // Trigger the custom progress-finish event
                     setProgress(0);
