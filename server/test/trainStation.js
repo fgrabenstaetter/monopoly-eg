@@ -18,7 +18,7 @@ describe("TrainStation", function() {
 
     it("Le nom de la gare est Gare de Strasbourg", function() {
         const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
-        assert.equal("Arret de tram : Homme de Fer", tStation.name);
+        assert.equal("Homme de Fer", tStation.name);
     });
 
     it("Le prix du terrain est de 200", function() {
