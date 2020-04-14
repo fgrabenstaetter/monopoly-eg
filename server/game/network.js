@@ -873,6 +873,8 @@ class Network {
             let err = Errors.SUCCESS, prop;
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
+            else if (Bid.alreadyOneManualBid)
+                err = Errors.BID.BID_ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
