@@ -73,10 +73,8 @@ $(document).ready(() => {
 
                 button.removeClass('in-progress').addClass('finished');
 
-                bar.delay(500).fadeOut(function () {
-
+                bar.fadeOut(function () {
                     // Trigger the custom progress-finish event
-                    button.trigger('progress-finish');
                     setProgress(0);
                 });
 
@@ -90,55 +88,59 @@ $(document).ready(() => {
         }
     };
 
-    $.fn.progressReset = function () {
+    $.fn.progressReset = function (hard =true) {
         var button = $(this);
         if (button.hasClass('disabled')) {
             button.removeClass('disabled');
         }
-        button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
+        if (hard) {
+            button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
+        }
     }
     // progressStart simulates activity on the progress meter. Call it first,
     // if the progress is going to take a long time to finish.
 
     $.fn.progressStart = function(time){
-		var button = this.first(),
-			last_progress = new Date().getTime();
+      var button = this.first(),
+  			last_progress = new Date().getTime();
 
-		if(button.hasClass('in-progress')){
-			// Don't start it a second time!
-			window.clearInterval(interval);
-		}
+  		if(button.hasClass('in-progress')){
+  			// Don't start it a second time!
+  			window.clearInterval(interval);
+            button.progressSet(0);
+  		}
 
-		button.on('progress', function(){
-			last_progress = new Date().getTime();
-		});
+  		button.on('progress', function(){
+  			last_progress = new Date().getTime();
+  		});
 
-		// Every half a second check whether the progress
-		// has been incremented in the last two seconds
+  		// Every half a second check whether the progress
+  		// has been incremented in the last two seconds
 
-		var interval = window.setInterval(function(){
-			if($('.tz-bar').width() >= $('#controlButton').innerWidth())
-			{
-				button.trigger('progress-finish');
-				button.trigger('progress',[0, false, true]);
-			}
-			else{
-				// There has been no activity for two seconds. Increment the progress
-				// bar a little bit to show that something is happening
-				button.progressIncrement(100/(time/0.2));
-			}
+  		var interval = window.setInterval(function(){
+  			if($('.tz-bar').width() >= $('#controlButton').innerWidth())
+  			{
+  				button.trigger('progress-finish');
+  				button.trigger('progress',[0, false, true]);
+  			}
+  			else{
+  				// There has been no activity for two seconds. Increment the progress
+  				// bar a little bit to show that something is happening
+  				button.progressIncrement(100/(time/0.2));
+  			}
 
-		}, 200);
+  		}, 200);
 
-		button.on('progress-finish',function(){
-			window.clearInterval(interval);
-		});
-	};
+  		button.on('progress-finish',function(){
+  			window.clearInterval(interval);
+  		});
+  	};
 
     $.fn.progressFinish = function(){
         $(this).addClass('disabled');
         $(this).attr({'data-loading': 'LANCER LES DES'});
-        return this.first().progressSet(100);
+        console.log('finish');
+        return this.first().progressIncrement(100);
     };
 
     $.fn.progressIncrement = function(val){
@@ -152,8 +154,8 @@ $(document).ready(() => {
     };
 
     $.fn.progressSet = function (val) {
-        val = val || 10;
-
+        val = val;
+        console.log('set : ' + val);
         var finish = false;
         if (val >= 100) {
             finish = true;
@@ -162,24 +164,5 @@ $(document).ready(() => {
         return this.first().trigger('progress', [val, true, finish]);
     };
 
-    // This function creates a progress meter that
-    // finishes in a specified amount of time.
-
-    $.fn.progressTimed = function (seconds, cb) {
-
-        var button = this.first(),
-            bar = button.find('.tz-bar');
-
-        if (button.is('.in-progress')) {
-            return this;
-        }
-
-        // Set a transition declaration for the duration of the meter.
-        // CSS will do the job of animating the progress bar for us.
-
-        bar.css('transition', seconds + 's linear');
-        button.progressSet(99);
-
-    };
 
 })(jQuery);
