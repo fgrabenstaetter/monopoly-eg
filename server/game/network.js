@@ -971,7 +971,7 @@ class Network {
 
             let bids = [], offers = [];
 
-            for (const bid of game.bids) {
+            for (const bid of Bid.bids) {
                 bids.push({
                     bidID    : bid.id,
                     playerID : bid.player ? bid.player.id : null,
