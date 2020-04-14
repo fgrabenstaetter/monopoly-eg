@@ -519,6 +519,9 @@ socket.on('gameReconnectionRes', (data) => {
         player.properties.forEach((playerProperty) => {
             let property = getPropertyById(playerProperty);
             if (property) {
+                // MANQUE ACCÈS A LA COULEUR DU JOUEUR
+                let cell = getCellByProperty(property)
+                loaderFlag("d" + cell.id, "cyan");
                 if (property.type == "publicCompany") {
                     createProperty(player.id, 'company', property.name, property.id);
                 }
