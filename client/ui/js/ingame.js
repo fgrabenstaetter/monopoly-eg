@@ -519,6 +519,9 @@ socket.on('gameReconnectionRes', (data) => {
         player.properties.forEach((playerProperty) => {
             let property = getPropertyById(playerProperty);
             if (property) {
+                // MANQUE ACCÈS A LA COULEUR DU JOUEUR
+                let cell = getCellByProperty(property)
+                loaderFlag("d" + cell.id, "cyan");
                 if (property.type == "publicCompany") {
                     createProperty(player.id, 'company', property.name, property.id);
                 }
@@ -827,7 +830,7 @@ function displayPropertyInfos(property) {
     let isMine = (property.ownerID == ID);
     if (property.type == "street") {
         populateStreetOverviewCard(property, isMine);
-    } else if (property.type == "station") {
+    } else if (property.type == "trainStation") {
         populateStationOverviewCard(property, isMine);
     } else {
         populateCompanyOverviewCard(property, isMine);
