@@ -511,3 +511,12 @@ $('.grouplist').on('click', '.friend-action', function () {
     let userToKickID = $(this).prev('.friends-name').attr('data-id');
     socket.emit('lobbyKickReq', { userToKickID: userToKickID });
 });
+
+// Notifications Simples
+function createNotification(type, content) {
+    let html = `<div class="` + type + `-notification">
+                    ` + content + ` 
+                </div>`;
+
+    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast').delay(5000).fadeOut('fast');
+}

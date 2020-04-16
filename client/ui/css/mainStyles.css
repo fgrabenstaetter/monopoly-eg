@@ -77,6 +77,28 @@ input {
   color: white;
 }
 
+.danger-notification, .success-notification, .info-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+}
+
+.danger-notification {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.success-notification {
+  background-color: rgba(0, 128, 0, 0.8);
+}
+
+.info-notification {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .background-container {
   position: absolute;
   z-index: -2;
@@ -1327,6 +1349,72 @@ input {
   margin: 10px auto;
 }
 
+.ingame-ui-container #auction-popup {
+  position: absolute;
+  top: 10px;
+  width: 500px;
+  left: 50vw;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px 20px 20px;
+  border-radius: 20px;
+  -webkit-transform: translateX(-50%) translateY(-100px);
+          transform: translateX(-50%) translateY(-100px);
+  display: none;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+}
+
+.ingame-ui-container #auction-popup .content {
+  width: 100%;
+  text-align: center;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.ingame-ui-container #auction-popup .auction-input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.ingame-ui-container #auction-popup .auction-input input {
+  -webkit-box-flex: 10;
+      -ms-flex-positive: 10;
+          flex-grow: 10;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  padding-left: 10px;
+}
+
+.ingame-ui-container #auction-popup .auction-input button {
+  margin-left: 10px;
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
 .ingame-ui-container .overview-card {
   display: none;
   position: absolute;
@@ -2063,28 +2151,6 @@ input {
   font-size: 15px;
   margin-bottom: 20px;
   font-weight: bold;
-}
-
-.ingame-ui-container .container:nth-child(2) .notification-container .danger-notification, .ingame-ui-container .container:nth-child(2) .notification-container .success-notification, .ingame-ui-container .container:nth-child(2) .notification-container .info-notification {
-  border-radius: 20px;
-  padding: 20px;
-  color: white;
-  max-width: 300px;
-  text-align: center;
-  font-size: 13px;
-  margin-top: 20px;
-}
-
-.ingame-ui-container .container:nth-child(2) .notification-container .danger-notification {
-  background-color: rgba(255, 0, 0, 0.8);
-}
-
-.ingame-ui-container .container:nth-child(2) .notification-container .success-notification {
-  background-color: rgba(0, 128, 0, 0.8);
-}
-
-.ingame-ui-container .container:nth-child(2) .notification-container .info-notification {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .ingame-ui-container .container:nth-child(2) .action-button-container {

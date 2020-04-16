@@ -96,6 +96,15 @@
 	</div>
 </div>
 
+<!-- Popup d'Enchères -->
+<div id="auction-popup">
+	<div class="content">??? lance une enchère pour la rue ???</div>
+	<div class="auction-input">
+		<input id="auction-input" type="number" placeholder="Entrez votre prix ici..."></input>
+		<button id="auction-validation" onclick="validateAuction()">Valider</button>
+	</div>
+</div>
+
 <!-- Dices -->
 <div class="dice-container">
 	<div id="view1">
@@ -220,5 +229,6 @@
 	createProperty("1", "red", "Avenue2", "2");
 	hideLoaderOverlay();
 	displayPropertyInfos(JSON.parse('{"id":0,"type":"company","name":"Eau","description":"Quelle magnifique rue !","color":"brown","prices":{"empty":60,"house":50,"hostel":250},"rentalPrices":{"empty":2,"house":[10,30,90,160],"hostel":250},"housesNb":0}'));
+	createNotification("success", "Ceci n'est qu'un test! Par contre c'set un texte de test beaucoup trop long parcequ'il est necessaire de savoir combien de place cela va prendre");
 </script>
 -->
