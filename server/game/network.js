@@ -680,7 +680,7 @@ class Network {
             extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
         if (!wasInPrison && player.isInPrison)
-            extra.goJail = null;
+            extra.goJail = true;
 
         const res = {
             dicesRes         : diceRes,
