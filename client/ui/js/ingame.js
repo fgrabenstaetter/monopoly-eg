@@ -667,10 +667,9 @@ function generatePlayerEntry(id, nickname, money) {
         // Any option (other than auto and selector) can be passed in here
         format: '',
         theme: 'digital',
-        format: '(,ddd).dd', // Change how digit groups are formatted, and how many digits are shown after the decimal point
+        format: '( ddd),dd', // Change how digit groups are formatted, and how many digits are shown after the decimal point
         duration: 3000, // Change how long the javascript expects the CSS animation to take
-        theme: 'car', // Specify the theme (if you have more than one theme css file on the page)
-        animation: 'count'
+        theme: 'default', // Specify the theme (if you have more than one theme css file on the page)
     });
 }
 
