@@ -11,7 +11,7 @@ let DATA = {
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
-
+const PLAYERS_COLORS = ['yellow', '#d43333', '#006aff', '#22d406', 'white', 'violet', 'cyan', 'orange'];
 
 function nickToId(nick) {
     for (const i in DATA.players) {
@@ -89,12 +89,12 @@ socket.on('gameStartedRes', (data) => {
         DATA.properties[i].ownerID = null;
     };
     // Génération de la liste de joueurs
-    DATA.players.forEach((player) => {
+    DATA.players.forEach((player, index) => {
         // Champs par défaut du joueur
         player.properties = [];
         player.money = data.playersMoney;
         player.cellPos = 0;
-
+        player.color = PLAYERS_COLORS[index];
         loaderPawn(PAWNS[player.pawn], player.cellPos.toString());
         generatePlayerEntry(player.id, player.nickname, player.money);
     });
@@ -340,7 +340,7 @@ socket.on("gamePropertyBuyRes", (data) => {
         // player.properties.push(property);
         property.ownerID = player.id;
         // MANQUE ACCÈS A LA COULEUR DU JOUEUR
-        loaderFlag("d" + cell.id, "cyan");
+        loaderFlag("d" + cell.id, player.color);
         if (property.type == "publicCompany") {
             createProperty(player.id, 'company', property.name, property.id);
         }
@@ -508,9 +508,11 @@ socket.on('gameReconnectionRes', (data) => {
     };
 
     // Génération de la liste de joueurs
-    DATA.players.forEach((player) => {
+    DATA.players.forEach((player, index) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
         generatePlayerEntry(player.id, player.nickname, player.money);
+        player.color = PLAYERS_COLORS[index];
+
     });
 
     initProperty();
@@ -519,9 +521,10 @@ socket.on('gameReconnectionRes', (data) => {
         player.properties.forEach((playerProperty) => {
             let property = getPropertyById(playerProperty);
             if (property) {
+                property.ownerID = player.id;
                 // MANQUE ACCÈS A LA COULEUR DU JOUEUR
                 let cell = getCellByProperty(property)
-                loaderFlag("d" + cell.id, "cyan");
+                loaderFlag("d" + cell.id, player.color);
                 if (property.type == "publicCompany") {
                     createProperty(player.id, 'company', property.name, property.id);
                 }
@@ -841,9 +844,10 @@ function displayPropertyInfos(property) {
 $('.player-list').on('click', '.property', function () {
 
     let propertyId = $(this).attr('data-id');
-    if (!propertyId)
+    if (!propertyId) {
+        console.log("id_property==null");
         return;
-
+    }
     let property = getPropertyById(propertyId);
     if (!property)
         return;
@@ -856,7 +860,7 @@ $('.player-list').on('click', '.property', function () {
 
 $('.overview-card .buy-button').click(function (e) {
     e.preventDefault();
-    let propertyID = $(this).parent('.overview-card').attr('data-id');
+    const propertyID = $(this).parent('.overview-card').attr('data-id');
     $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
     $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
     $('#overviewCardModal').modal('show');
@@ -864,9 +868,16 @@ $('.overview-card .buy-button').click(function (e) {
     return false;
 });
 
-// problèmes:
-// receiverID pas atteignable, utilisé = id(come) en hardcode pour test
-// propertyID n'est pas le bon -> NAN, hardcode du id de chemin du wacken pour test
+$('.overview-card .mortgage-button').click(function (e) {
+    e.preventDefault();
+    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
+
+
+    return false;
+});
+
+
 $('#overviewCardBuyForm .send').click(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
