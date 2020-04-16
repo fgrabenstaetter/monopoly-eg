@@ -176,6 +176,21 @@ function createNotification(type, content) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast').delay(5000).fadeOut('fast');
 }
 
+function validateAuction() {
+    $("#auction-input").prop('disabled', true);
+}
+
+function openAuctionPopup() {
+    $("#auction-input").prop('disabled', false);
+    $("#auction-popup").fadeIn(500);
+    $("#auction-popup").css('transform', 'translateX(-50%) translateY(0)');
+}
+
+function closeAuctionPopup() {
+    $("#auction-popup").css('transform', 'translateX(-50%) translateY(-100px)');
+    $("#auction-popup").fadeOut(500);
+}
+
 // initProperty()
 // createProperty('1', 'yellow', 'Avenue des Vosges', 2);
 // createProperty('1', 'yellow', 'Rue de la rue', 3);

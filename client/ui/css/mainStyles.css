@@ -1351,7 +1351,7 @@ input {
 
 .ingame-ui-container #auction-popup {
   position: absolute;
-  top: 20px;
+  top: 10px;
   width: 500px;
   left: 50vw;
   -webkit-transform: translateX(-50%);
@@ -1364,11 +1364,23 @@ input {
       -ms-flex-direction: column;
           flex-direction: column;
   z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px 20px 20px;
+  border-radius: 20px;
+  -webkit-transform: translateX(-50%) translateY(-100px);
+          transform: translateX(-50%) translateY(-100px);
+  display: none;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
 }
 
 .ingame-ui-container #auction-popup .content {
   width: 100%;
   text-align: center;
+  color: white;
+  margin-bottom: 10px;
 }
 
 .ingame-ui-container #auction-popup .auction-input {
@@ -1385,14 +1397,22 @@ input {
   -webkit-box-flex: 10;
       -ms-flex-positive: 10;
           flex-grow: 10;
-  margin-right: 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  padding-left: 10px;
 }
 
 .ingame-ui-container #auction-popup .auction-input button {
-  margin-left: 20px;
+  margin-left: 10px;
   -webkit-box-flex: 2;
       -ms-flex-positive: 2;
           flex-grow: 2;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+  color: white;
 }
 
 .ingame-ui-container .overview-card {
