@@ -1557,6 +1557,7 @@ input {
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
   color: white;
   font-size: 13px;
+  padding-left: 25px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::before {
@@ -1574,9 +1575,12 @@ input {
   font-size: 15px;
   color: white;
   vertical-align: text-top;
+  position: absolute;
+  left: 0;
+  top: -1px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .money::after {
+.ingame-ui-container .container:first-child .player-list .player-entry .odometer-inside::after {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -2018,6 +2022,7 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  font-size: 13px;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body.no-header {
@@ -2058,6 +2063,28 @@ input {
   font-size: 15px;
   margin-bottom: 20px;
   font-weight: bold;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .danger-notification, .ingame-ui-container .container:nth-child(2) .notification-container .success-notification, .ingame-ui-container .container:nth-child(2) .notification-container .info-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .danger-notification {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .success-notification {
+  background-color: rgba(0, 128, 0, 0.8);
+}
+
+.ingame-ui-container .container:nth-child(2) .notification-container .info-notification {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .ingame-ui-container .container:nth-child(2) .action-button-container {

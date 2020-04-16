@@ -386,6 +386,7 @@
         .money {
           color: white;
           font-size: 13px;
+          padding-left: 25px;
         }
 
         .money::before {
@@ -403,9 +404,12 @@
           font-size: 15px;
           color: white;
           vertical-align: text-top;
+          position: absolute;
+          left: 0;
+          top: -1px;
         }
 
-        .money::after {
+        .odometer-inside::after {
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -821,6 +825,7 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          font-size: 13px;
 
           &.no-header {
             border-radius: 15px 15px 15px 15px;
@@ -866,6 +871,28 @@
             font-weight: bold;
           }
         }
+      }
+
+      .danger-notification, .success-notification, .info-notification {
+        border-radius: 20px;
+        padding: 20px;
+        color: white;
+        max-width: 300px;
+        text-align: center;
+        font-size: 13px;
+        margin-top: 20px;
+      }
+
+      .danger-notification {
+        background-color: rgba($color: red, $alpha: 0.8);
+      }
+
+      .success-notification {
+        background-color: rgba($color: green, $alpha: 0.8);
+      }
+
+      .info-notification {
+        background-color: rgba($color: black, $alpha: 0.5);
       }
     }
 

@@ -652,12 +652,28 @@ function bindOfferListener() {
 function generatePlayerEntry(id, nickname, money) {
     let html = `<div class="player-entry" data-id="` + id + `">
                         <div class="name" title="`+ nickname + `">` + nickname + `</div>
-                        <div class="money odometer">`+ money + `</div>
+                        <div class="money"></div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
 
+
     $('.player-list').append(html);
+
+    const nodes = document.querySelectorAll('.player-list .player-entry');
+    const last = nodes[nodes.length- 1];
+    const el = last.querySelector('.money');
+    new Odometer({
+        el: el,
+        value: money,
+
+        // Any option (other than auto and selector) can be passed in here
+        format: '',
+        theme: 'digital',
+        format: '( ddd),dd', // Change how digit groups are formatted, and how many digits are shown after the decimal point
+        duration: 3000, // Change how long the javascript expects the CSS animation to take
+        theme: 'default', // Specify the theme (if you have more than one theme css file on the page)
+    });
 }
 
 /**

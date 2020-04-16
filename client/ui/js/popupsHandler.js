@@ -168,6 +168,14 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
+function createNotification(type, content) {
+    let html = `<div class="` + type + `-notification">
+                    ` + content + ` 
+                </div>`;
+
+    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast').delay(5000).fadeOut('fast');
+}
+
 // initProperty()
 // createProperty('1', 'yellow', 'Avenue des Vosges', 2);
 // createProperty('1', 'yellow', 'Rue de la rue', 3);

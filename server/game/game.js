@@ -543,7 +543,7 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortage(propertiesList) {
-        const moneyToObtain = this.turnData.asyncRequestArgs[0]; // null si pas hypothèque forcée
+        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si pas hypothèque forcée (= manuel)
         let sum = this.curPlayer.money;
         let properties = [];
 
