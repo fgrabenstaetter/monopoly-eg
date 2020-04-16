@@ -634,7 +634,7 @@
             extra: {
                 // contient 0, 1 ou plusieurs de ces champs (tester existence !)
                 nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
-                goJail: null, // reçu uniquement lorsque on entre en prison et doit y rester
+                goJail: true, // reçu uniquement lorsque on entre en prison et doit y rester
                 newCard: {
                     type: string, // chance | community
                     description: string
