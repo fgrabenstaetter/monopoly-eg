@@ -533,56 +533,56 @@
             // Classes coulers propriétés
             &.yellow {
               .property {
-                background-color: rgb(228, 228, 65);
+                background-color: $property-yellow;
                 color: white;
               }
             }
 
             &.blue {
               .property {
-                background-color: blue;
+                background-color: $property-blue;
                 color: white;
               }
             }
 
             &.red {
               .property {
-                background-color: red;
+                background-color: $property-red;
                 color: white;
               }
             }
 
             &.orange {
               .property {
-                background-color: orange;
+                background-color: $property-orange;
                 color: white;
               }
             }
 
             &.purple {
               .property {
-                background-color: rgb(223, 184, 191);
+                background-color: $property-purple;
                 color: white;
               }
             }
 
             &.brown {
               .property {
-                background-color: brown;
+                background-color: $property-brown;
                 color: white;
               }
             }
 
             &.cyan {
               .property {
-                background-color: rgb(35, 212, 212);
+                background-color: $property-cyan;
                 color: white;
               }
             }
 
             &.green {
               .property {
-                background-color: green;
+                background-color: $property-green;
                 color: white;
               }
             }
@@ -751,35 +751,35 @@
           padding-bottom: 10px;
 
           &.brown {
-            background-color: brown;
+            background-color: $property-brown;
           }
 
           &.orange {
-            background-color: orange;
+            background-color: $property-orange;
           }
 
           &.blue {
-            background-color: blue;
+            background-color: $property-blue;
           }
 
           &.red {
-            background-color: red;
+            background-color: $property-red;
           }
 
           &.purple {
-            background-color: purple;
+            background-color: $property-purple;
           }
 
           &.green {
-            background-color: green;
+            background-color: $property-green;
           }
 
           &.yellow {
-            background-color: rgb(228, 228, 65);
+            background-color: $property-yellow;
           }
 
           &.cyan {
-            background-color: cyan;
+            background-color: $property-cyan;
           }
 
           &.company {
