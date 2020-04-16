@@ -1381,6 +1381,7 @@ input {
   text-align: center;
   color: white;
   margin-bottom: 10px;
+  font-size: 13px;
 }
 
 .ingame-ui-container #auction-popup .auction-input {
