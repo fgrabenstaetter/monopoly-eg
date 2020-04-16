@@ -1,7 +1,9 @@
 let varMovement, varCase, vdp, vartest, varFunction, varPawn, positionPawn, counter = 0, counter2 = 0;
 let scene, light, camera, renderer;
 var pawn, window, cases;
-let name, zoom = 0;
+let name, zoomOn = 0;
+/*var mouse, raycaster;
+var objects = []; */
 
 
 //document.addEventListener('click', Onmouseclick, false);
@@ -80,13 +82,16 @@ function resizeRendererToDisplaySize (renderer) {
 
 	return needResize;
 }
-
+var lastLoop = new Date();
 
 function render () {
 	//requestAnimationFrame(render);
-
+	// var thisLoop = new Date();
+	// var fps = 1000 / (thisLoop - lastLoop);
+	// lastLoop = thisLoop;
 	if (counter!=0) {
 		movement(varPawn, varMovement, varFunction);
+		//console.log(fps);
 	}
 
 	if (resizeRendererToDisplaySize(renderer)) {
@@ -107,6 +112,7 @@ function render () {
 
 	renderer.render(scene, camera);
 }
+
 render();
 
 
@@ -198,10 +204,10 @@ var plateauDrapeaux = [
 var plateauObjects = [
 				'collections', 'eau', 'egout', 'egout',
 				'orangerie', 'parlement', 'pont', 'rail',
-				'route', 'tram', 'campus', 'cascade'
-] //maison
+				'route', 'tram', 'campus', 'cascade', 'maison'
+]
 
-for (var i = 0; i < 12; i++) {
+for (var i = 0; i < 13; i++) {
   var objVar = plateauObjects[i];
   var loader = new THREE.GLTFLoader();
   loaderPlateau(loader, objVar);
@@ -282,9 +288,34 @@ function loaderPawn (pawn, vdp) {
 			}
 		});*/
 		scene.add(root);
+		scene.traverse(function(children){
+            objects.push(children);
+		});
 	});
 }
+/*raycaster = new THREE.Raycaster();
+mouse = new THREE.Vector2();
+document.addEventListener('mousedown', onDocumentMouseDown, false);*/
 
+/*function onDocumentMouseDown(event){
+	event.preventDefault();
+	mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+	mouse.y = - (event.clientY / renderer.domElement.height) * 2 + 1;
+	
+	raycaster.setFromCamera(mouse, camera);
+
+	var intersects = raycaster.intersectObjects(objects);
+
+	var color = (Math.random() * 0xffffff);
+	console.log(objects);
+	if (intersects.length > 0) {
+		intersects[0].object.material.color.setHex(color);
+
+		this.temp = intersects[0].object.material.color.getHexString();
+		this.name = intersects[0].object.name;
+		console.log(this.name + ", " + this.name);
+	}
+}*/
 
 /*function Onmouseclick(event) {
 
@@ -301,9 +332,9 @@ function loaderPawn (pawn, vdp) {
 
 	var tesee;
 
-    if (intersects.length > 0) {*/
-		/*tesee = intersects[1];
-		console.log(tesee.object.name);*/
+    if (intersects.length > 0) {
+		tesee = intersects[1];
+		console.log(tesee.object.name);
 		/*for(var i = 0; i < intersects.length; i++){
 			tesee = intersects[i];
 			//console.log(tesee.object);
@@ -350,6 +381,11 @@ function hotelPropertyL (hotelPropriete) {
 }
 
 
+function zoomOnOff(number) {
+	zoomOn = number;
+}
+
+
 function movement (pawn, vdp, callback) {
 
 	varFunction = callback;
@@ -382,7 +418,6 @@ function movement (pawn, vdp, callback) {
 	zmax = (Math.floor(zmax * 100) / 100);
 	
 	counter = 1;
-	zoomOn = 1;
 
 	if (ppx == vdpx && ppz == vdpz) {
 		counter = 0;
