@@ -460,6 +460,11 @@ socket.on("gameOfferAcceptRes", (res) => {
         alert("gameOfferAcceptRes " + res.status);
 });
 
+socket.on("gamePropertyMortageRes", (res) => {
+    console.log("gamePropertyMortageRes");
+    setPlayerMoney(res.playerID, res.playerMoney);
+
+});
 
 socket.on("gameRollDicesRes", (res) => {
     if (res.error === 0)
@@ -661,7 +666,7 @@ function generatePlayerEntry(id, nickname, money) {
     $('.player-list').append(html);
 
     const nodes = document.querySelectorAll('.player-list .player-entry');
-    const last = nodes[nodes.length- 1];
+    const last = nodes[nodes.length - 1];
     const el = last.querySelector('.money');
     new Odometer({
         el: el,
@@ -888,7 +893,7 @@ $('.overview-card .mortgage-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
     socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
-
+    console.log("gamepropertymortageReq");
 
     return false;
 });
