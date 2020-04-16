@@ -624,7 +624,7 @@ class Game {
      */
     playerAutoMortage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
-        const moneyToObtain = this.turnData.asyncRequestArgs[0];
+        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
 
         if (!moneyToObtain && !properties)
