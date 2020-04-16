@@ -53,3 +53,26 @@ input {
     color: white;
   }
 }
+
+// Notifications Simples
+.danger-notification, .success-notification, .info-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+}
+
+.danger-notification {
+  background-color: rgba($color: red, $alpha: 0.8);
+}
+
+.success-notification {
+  background-color: rgba($color: green, $alpha: 0.8);
+}
+
+.info-notification {
+  background-color: rgba($color: black, $alpha: 0.5);
+}
