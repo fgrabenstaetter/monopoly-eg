@@ -878,7 +878,7 @@ class Network {
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
-                new Bid(prop, prop.value, game);
+                new Bid(prop, prop.value, game, true);
                 // réponse envoyée depuis le constructeur de Bid
             }
 
