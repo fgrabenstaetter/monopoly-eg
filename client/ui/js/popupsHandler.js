@@ -181,6 +181,7 @@ function validateAuction() {
 }
 
 function openAuctionPopup() {
+    $("#auction-input").val('');
     $("#auction-input").prop('disabled', false);
     $("#auction-popup").fadeIn(500);
     $("#auction-popup").css('transform', 'translateX(-50%) translateY(0)');
