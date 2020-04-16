@@ -646,7 +646,7 @@ function bindOfferListener() {
 function generatePlayerEntry(id, nickname, money) {
     let html = `<div class="player-entry" data-id="` + id + `">
                         <div class="name" title="`+ nickname + `">` + nickname + `</div>
-                        <div class="money">`+ money + `</div>
+                        <div class="money odometer">`+ money + `</div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
