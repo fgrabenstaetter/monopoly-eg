@@ -168,15 +168,6 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-// Notifications Simples
-function createNotification(type, content, time) {
-    let html = `<div class="` + type + `-notification">
-                    ` + content + ` 
-                </div>`;
-
-    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast').delay(time * 1000).fadeOut('fast');
-}
-
 function validateAuction() {
     $("#auction-input").prop('disabled', true);
 }

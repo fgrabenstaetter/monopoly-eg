@@ -1,15 +1,8 @@
 // Animation bouton JOUER pendant matchmaking
-$(function () {
-    $("#play").click(function () {
-        if ($("#play").hasClass("loading")) {
-            $(this).removeClass("loading");
-        }
-        else {
-            $(this).addClass("loading");
-        }
-    });
+$("#play").click(function () {
+    $(this).addClass('loading');
+    $('#play').text('CHARGEMENT...');
 });
-
 
 let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
@@ -170,8 +163,11 @@ socket.on('lobbyTargetUsersNbChangedRes', (res) => {
 });
 
 socket.on('lobbyPlayRes', (res) => {
-    if (res.error !== 0)
-        alert(res.status);
+    console.log(res);
+    if (res.error !== 0) {
+        toast(`Erreur ${res.status}`, 'danger', 5);
+        $('#play').removeClass('loading').prop('disabled', false);;
+    }
 });
 
 socket.on('lobbyGameFoundRes', () => {
@@ -183,24 +179,24 @@ socket.on('lobbyGameFoundRes', () => {
 socket.on('lobbyFriendInvitationSendRes', (res) => {
     if (res.error === 0) {
         console.log("lobbyFriendInvitationSendRes")
-        alert('invitation envoyée ');
+        toast('Invitation envoyée', 'success', 3);
     }
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyInvitationRes", (res) => {
     if (res.error === 0)
         console.log("lobbyInvitationRes")
-    else // hôte uniquement
-        alert(res.status);
+    else // hôte uniquemen
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyFriendInvitationActionRes", (res) => {
     if (res.error === 0)
         console.log("lobbyFriendInvitationActionRes")
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyInvitationAcceptRes", (res) => {
@@ -208,7 +204,7 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
         console.log("lobbyInvitationAcceptRes")
         window.location = '/lobby';
     } else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
@@ -220,7 +216,7 @@ socket.on("lobbyKickRes", (res) => {
     if (res.error === 0)
         console.log("lobbyKickRes")
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
@@ -258,8 +254,9 @@ $(document).ready(() => {
     });
 
     $('#play').click(() => {
-        if (hostID === ID)
+        if (hostID === ID) {
             socket.emit('lobbyPlayReq');
+        }
     });
 
     $('#submitButton').click(function (e) {
@@ -439,7 +436,7 @@ $('.friends-entries-container').on('click', '.friend-request .accept-button', fu
         $(this).parent().remove();
         socket.emit('lobbyFriendListReq');
     } else {
-        alert("erreur : " + status);
+        toast(`Erreur ${status}`, 'danger', 5);
     }
 
 });
@@ -457,7 +454,7 @@ $('.friends-entries-container').on('click', '.friend-request .deny-button', func
     if (!error)
         $(this).parent().remove();
     else
-        alert("erreur : " + status)
+        toast(`Erreur ${status}`, 'danger', 5);
 });
 
 

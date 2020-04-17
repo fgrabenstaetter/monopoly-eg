@@ -2271,3 +2271,37 @@ input {
   border-radius: 2px;
 }
 /*# sourceMappingURL=mainStyles.css.map */
+
+
+
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 50px;;
+  text-align: center;
+  max-width: 300px;
+  z-index:1000;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  opacity: 0.8
+}
+
+.toast-notification.danger {
+  background-color: red;
+}
+
+.toast-notification.success {
+  background-color: green;
+}
+
+.toast-notification.info {
+  background-color: black;
+}

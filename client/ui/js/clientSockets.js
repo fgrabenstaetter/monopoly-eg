@@ -9,21 +9,21 @@ function connectToSocketServer (jwt) {
     });
 
     socket.io.on('connect_error', (err) => {
-        alert('Impossible de se connecter au serveur de sockets...');
+        toast('Impossible de se connecter au serveur de sockets...', 'danger', 5);
         window.location = '/login';
     });
 
     socket.on('error', (error) => {
         if (error.type == 'UnauthorizedError' || error.code == 'invalid_token') {
             // redirect user to login page perhaps?
-            alert('Le token a expiré');
+            toast('Le token a expiré', 'danger', 5);
             window.location = '/login';
         }
     });
 
     socket.on('unauthorized', (error) => {
         if (error.data.type == 'UnauthorizedError' || error.data.code == 'invalid_token') {
-            alert('Le token a expiré (token invalide)');
+            toast('Le token a expiré (token invalide)', 'danger', 5);
             window.location = '/login';
         }
     });

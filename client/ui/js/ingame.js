@@ -12,6 +12,7 @@ let DATA = {
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
 const PLAYERS_COLORS = ['yellow', '#d43333', '#006aff', '#22d406', 'white', 'violet', 'cyan', 'orange'];
+const CELL_PRISON = 10;
 
 function nickToId(nick) {
     for (const i in DATA.players) {
@@ -95,6 +96,7 @@ socket.on('gameStartedRes', (data) => {
         player.money = data.playersMoney;
         player.cellPos = 0;
         player.color = PLAYERS_COLORS[index];
+        player.isInJail = false;
         loaderPawn(PAWNS[player.pawn], player.cellPos.toString());
         generatePlayerEntry(player.id, player.nickname, player.money);
     });
@@ -162,6 +164,9 @@ socket.on('gameActionRes', (data) => {
         }
     }
 
+    if (currPlayer.isInJail && currPlayer.isInJail > 3)
+        currPlayer.isInJail = false;
+
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
@@ -171,8 +176,8 @@ socket.on('gameActionRes', (data) => {
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
-        // On ne déplace le joueur que s'il doit aller sur une nouvelle case
-        if (cellPos1 != currPlayer.cellPos) {
+        // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
+        if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
             console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
             currPlayer.cellPos = cellPos1;
             movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
@@ -256,6 +261,18 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
         if (typeof data.extra.nbJailEscapeCards !== "undefined") {
             currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
         }
+
+        if (typeof data.extra.goJail !== "undefined" && data.extra.goJail) {
+            cellPos2 = null;
+            currPlayer.isInJail = 1;
+            setTimeout(() => {
+                deletePawn(PAWNS[currPlayer.pawn]);
+                setTimeout(() => {
+                    loaderPawn(PAWNS[currPlayer.pawn], CELL_PRISON);
+                    return gameActionResAfterSecondMovement(data);
+                }, 1000);
+            }, 1000);
+        }
     }
 
     if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
@@ -287,6 +304,9 @@ function gameActionResAfterSecondMovement(data) {
             $(this).attr({ 'data-loading': 'TERMINER' });
         }
     }
+
+    if (currPlayer.isInJail)
+        currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
 
     console.log("=== fin gameActionRes ===");
 }
@@ -444,7 +464,7 @@ socket.on("gameOfferSendRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferSendRes")
     else // hôte uniquement
-        alert("gameOfferSendRes " + res.status);
+        toast(`gameOfferSendRes ${res.status}`, 'danger', 5);
 });
 
 socket.on("gameOfferReceiveRes", (res) => {
@@ -455,9 +475,8 @@ socket.on("gameOfferReceiveRes", (res) => {
 socket.on("gameOfferAcceptRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferAcceptRes")
-
     else // hôte uniquement
-        alert("gameOfferAcceptRes " + res.status);
+        toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
 socket.on("gamePropertyMortageRes", (res) => {
@@ -517,7 +536,7 @@ socket.on('gameReconnectionRes', (data) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
         generatePlayerEntry(player.id, player.nickname, player.money);
         player.color = PLAYERS_COLORS[index];
-
+        player.isInJail = false;
     });
 
     initProperty();
@@ -634,12 +653,10 @@ function bindOfferListener() {
 
 
         //!!! changer la couleur du drapeau !!!
-        if (!error) {
+        if (!error)
             $(this).parent().parent().remove();
-        }
-        else {
-            alert('erreur :' + status);
-        }
+        else
+            toast(`erreur : ${status}`, 'danger', 5);
     });
 
 
@@ -917,5 +934,11 @@ $('#overviewCardBuyForm .send').click(function (e) {
 
     $('#overviewCardModal').modal('hide');
 
+    return false;
+});
+
+$('.quit-game').click((e) => {
+    e.preventDefault();
+    alert('Event quit game à implémenter côté serveur !');
     return false;
 });
