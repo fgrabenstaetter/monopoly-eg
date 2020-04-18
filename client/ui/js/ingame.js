@@ -499,6 +499,12 @@ socket.on("gameBidRes", (res) => {
 
 });
 
+socket.on("gameOverbidRes", (res) => {
+    if (res.error === 0)
+        console.log("gameOfferAcceptRes")
+    else // hôte uniquement
+        toast(`gameOverbidRes ${res.status}`, 'danger', 5);
+
 socket.on("gameBidEndedRes", (res) => {
     console.log("gameBidEndedRes");
     let playerNick = idToNick(res.playerID);
