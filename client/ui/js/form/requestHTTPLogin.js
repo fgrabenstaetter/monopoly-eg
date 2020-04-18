@@ -26,6 +26,7 @@ $(document).ready( () => {
                 localStorage.setItem('id', res.user._id);
                 localStorage.setItem('nickname', res.user.nickname);
                 localStorage.setItem('email', res.user.email);
+                localStorage.setItem('avatar', res.avatar);
                 location.replace('/lobby');
             },
 

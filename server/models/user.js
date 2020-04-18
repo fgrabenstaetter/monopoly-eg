@@ -1,19 +1,33 @@
-const bcrypt   = require('bcrypt');
+const bcrypt = require('bcrypt');
+const fs = require('fs');
 const mongoose = require('mongoose');
-const User     = require('../game/user.js');
-const Errors   = require('../lib/errors');
-const friends  = require('mongoose-friends');
-const Schema   = mongoose.Schema;
+const User = require('../game/user.js');
+const Errors = require('../lib/errors');
+const friends = require('mongoose-friends');
+const Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-    nickname        : { type : String , required : true },
-    email           : { type : String , required : true },
-    password        : { type : String , required : true },
-    inscriptionDate : { type : Date   , required : true  , default : Date.now },
-    level           : { type : Number , required : true  , default : 1        },
-    exp             : { type : Number , required : true  , default : 0        },
-    friends: [{ type: Schema.Types.ObjectId, ref: 'Friend'}]
+    nickname: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    inscriptionDate: { type: Date, required: true, default: Date.now },
+    level: { type: Number, required: true, default: 1 },
+    exp: { type: Number, required: true, default: 0 },
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Friend' }]
 });
+
+userSchema.methods.getAvatar = function () {
+    try {
+        const avatarPath = `/avatars/${this._id}.jpg`;
+        if (fs.existsSync(`${__dirname}/../public${avatarPath}`)) {
+            return avatarPath;
+        } else {
+            return '/avatars/default.jpg';
+        }
+    } catch (err) {
+        return '/avatars/default.jpg';
+    }
+};
 
 userSchema.plugin(friends());
 
@@ -30,7 +44,7 @@ class UserManager { // abstract
      * @callback-return code d'erreur (Errors.LOGIN, voir errors.js)
      * En cas de succès, l'objet est mis à jour avec les attributs de l'utilisateur auquel la connexion à réussie
      */
-    static login (nickname, rawPassword, cb) {
+    static login(nickname, rawPassword, cb) {
         if (!nickname || !rawPassword)
             return cb(Errors.MISSING_FIELD);
 
@@ -58,7 +72,7 @@ class UserManager { // abstract
      * @param cb La fonction de callback
      * @callback-return code d'erreur (Errors.REGISTER, voir errors.js)
      */
-    static register (nickname, email, rawPassword, cb) {
+    static register(nickname, email, rawPassword, cb) {
         if (!nickname || !email || !rawPassword)
             return cb(Errors.MISSING_FIELD);
 
@@ -116,7 +130,7 @@ class UserManager { // abstract
      * @param cb La fonction de callback
      * @callback-return code d'erreur (Errors.REGISTER, voir errors.js)
      */
-    static updateProfile (id, nickname, email, rawPassword, cb) {
+    static updateProfile(id, nickname, email, rawPassword, cb) {
         if (!nickname || !email)
             return cb(Errors.MISSING_FIELD, null);
 
@@ -130,10 +144,6 @@ class UserManager { // abstract
             return cb(Errors.REGISTER.ERR_EMAIL_FORMAT, null);
 
         UserSchema.findById(id, (errDb, userDb) => {
-            // console.log('=== updateProfile ===');
-            // console.log(errDb);
-            // console.log('---');
-            // console.log(userDb);
             if (errDb || !userDb) {
                 return cb(Errors.UPDATE_PROFILE.NOT_EXISTS, null);
             }
@@ -152,7 +162,7 @@ class UserManager { // abstract
                     if (user)
                         return cb(Errors.REGISTER.NICKNAME_TAKEN, null);
 
-                    
+
                     if (rawPassword) {
                         UserManager.encryptPassword(rawPassword, (hash) => {
                             if (!hash)
@@ -191,7 +201,7 @@ class UserManager { // abstract
      * @param cb La fonction de callback
      * @callback-return null si erreur, le hash sinon
      */
-    static encryptPassword (rawPassword, cb) {
+    static encryptPassword(rawPassword, cb) {
         const saltRounds = 10;
         bcrypt.hash(rawPassword, saltRounds, (err, hash) => {
             if (err != null)
@@ -207,7 +217,7 @@ class UserManager { // abstract
      * @param cb La fonction de callback
      * @callback-return false s'ils ne correpondent pas, true sinon
      */
-    static validPassword (rawPassword, hashPassword, cb) {
+    static validPassword(rawPassword, hashPassword, cb) {
         bcrypt.compare(rawPassword, hashPassword, (err, res) => {
             if (err == null && res === true)
                 cb(true);
@@ -221,7 +231,7 @@ class UserManager { // abstract
      * @param email L'email à tester
      * @return true si email est valide, false sinon
      */
-    static isEmail (email) {
+    static isEmail(email) {
         const regex = /^[a-zA-Z0-9_.-]+@[A-Za-z]+\.[a-z]{2,6}/;
         return regex.test(email);
     }

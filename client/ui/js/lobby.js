@@ -35,11 +35,11 @@ socket.on('lobbyCreatedRes', (res) => {
 
     // je suis l'hote => activer les flèches pour changer le nb désiré de joueurs
     imHost();
-    users.push({ nickname: NICKNAME, id: ID });
-    addPlayerInGroup(ID);
+    users.push({ id: ID, nickname: NICKNAME, avatar: AVATAR });
+    addPlayerInGroup(ID, NICKNAME, socketUrl + AVATAR);
 
     $('.profile-row > .username').text(NICKNAME).attr('data-id', ID);
-    $('.profile-row > .user-avatar').attr('data-id', ID);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -57,14 +57,15 @@ socket.on('lobbyJoinedRes', (res) => {
 
     for (const usr of res.users) {
         users.push(usr);
-        addPlayerInGroup(usr.id);
+        addPlayerInGroup(usr.id, usr.nickname, socketUrl + usr.avatar);
     }
 
     for (const mess of res.messages)
         addMsg(mess.senderUserID, mess.content, mess.createdTime);
 
-    // afficher pseudo
+    // afficher pseudo & avatar
     $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
 });
 
 /** Système de gestion d'amis
@@ -79,7 +80,7 @@ socket.on('lobbyFriendListRes', (res) => {
     console.log(res);
     if (res.friends.length != 0)
         for (let i = 0; i < res.friends.length; i++) {
-            addFriend(res.friends[i].id, res.friends[i].nickname, "img/ui/avatar1.jpg");
+            addFriend(res.friends[i].id, res.friends[i].nickname, socketUrl + res.friends[i].avatar);
         }
 })
 
@@ -122,8 +123,8 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
  */
 socket.on('lobbyUserJoinedRes', (res) => {
     console.log('[Lobby] ' + res.nickname + 'a rejoin !');
-    users.push({ nickname: res.nickname, id: res.id });
-    addPlayerInGroup(res.id);
+    users.push({ id: res.id, nickname: res.nickname, avatar: res.avatar });
+    addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
 
     const nb = parseInt(document.getElementById('nbJoueurs').textContent);
     const nbUsers = parseInt(document.getElementsByClassName('group-entry').length);
@@ -208,7 +209,7 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
 
 socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
     console.log("lobbyFriendInvitationAcceptedRes");
-    addFriend(res.id, res.nickname, "img/ui/avatar1.jpg");
+    addFriend(res.id, res.nickname, socketUrl + res.avatar);
 });
 
 socket.on("lobbyKickRes", (res) => {
@@ -338,14 +339,16 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 /**
  * Ajoute un joueur dans son groupe (lobby)
  * @param id Identifiant du joueur
+ * @param nickname Pseudo du joueur
+ * @param avatar Avatar du joueur
  */
-function addPlayerInGroup(id) {
+function addPlayerInGroup(id, nickname, avatar) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
-            <img class="friends-avatar" src="img/ui/avatar1.jpg" data-toggle="modal" data-target="#` + idToNick(id) + `" />
-            <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + idToNick(id) + `">` + idToNick(id) + `</div>
+            <img class="friends-avatar" data-id="${id}" src="${avatar}" data-toggle="modal" data-target="#` + nickname + `" />
+            <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + nickname + `">` + nickname + `</div>
             <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
         </div>`;
 
@@ -519,6 +522,10 @@ $('#optionsModal').on('shown.bs.modal', () => {
     $('#user-settings input:first').focus();
 });
 
+$('#optionsModal').on('hidden.bs.modal', () => {
+    $('form#user-settings')[0].reset();
+});
+
 $('#user-settings').submit((e) => {
     e.preventDefault();
 
@@ -539,13 +546,15 @@ socket.on('lobbyUpdateProfileRes', (res) => {
     if (res.error !== 0) {
         toast(res.status, 'danger', 5);
     } else {
-        NICKNAME = res.user.nickname;
-        EMAIL = res.user.email;
+        if (res.user) {
+            NICKNAME = res.user.nickname;
+            EMAIL = res.user.email;
 
-        localStorage.setItem('nickname', NICKNAME);
-        localStorage.setItem('email', EMAIL);
-        
-        $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
+            localStorage.setItem('nickname', NICKNAME);
+            localStorage.setItem('email', EMAIL);
+            $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
+        }
+            
         toast('Profil mis à jour', 'success', 3);
         $('#optionsModal').modal('hide');
     }
@@ -561,11 +570,27 @@ socket.on('lobbyUserNicknameUpdatedRes', (res) => {
     $(`[data-id="${res.id}"]`).not('img').text(res.nickname);
 });
 
+
+/****** GESTION AVATAR ******/
+let siofu = new SocketIOFileUpload(socket);
+siofu.listenOnSubmit(document.getElementById("user-settings"), document.getElementById("avatar"));
+
+siofu.addEventListener("error", (event) => {
+    if (event.code === 0)
+        toast('Erreur avatar : image trop lourde (> 1Mo)', 'danger', 3);
+});
+
 socket.on('lobbyUserAvatarUpdatedRes', (res) => {
     console.log('lobbyUserAvatarUpdatedRes');
     console.log(res);
-    $(`img[data-id="${res.id}"]`).attr('src', socketUrl + res.path);
+    const d = new Date();
+    const timeCacheRefresh = d.getTime();
+    $(`img[data-id="${res.id}"]`).attr('src', socketUrl + res.path + '?' + timeCacheRefresh);
 });
 
-let siofu = new SocketIOFileUpload(socket);
-siofu.listenOnSubmit(document.getElementById("user-settings"), document.getElementById("avatar"));
+socket.on('lobbyUpdateAvatarRes', (res) => {
+    console.log('lobbyUpdateAvatarRes');
+    console.log(res);
+    if (res.error !== 0)
+        toast(res.status, 'danger', 3);
+});

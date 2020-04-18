@@ -76,6 +76,10 @@ function getCellByProperty(property) {
 /////////////////////////////
 
 socket.on('gameStartedRes', (data) => {
+    // afficher pseudo & avatar
+    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
+
     DATA.players = data.players;
     DATA.cells = data.cells;
     DATA.properties = data.properties;
@@ -550,6 +554,10 @@ socket.on('gamePlayerReconnectedRes', (data) => {
 
 // Données de reconnexion
 socket.on('gameReconnectionRes', (data) => {
+    // afficher pseudo & avatar
+    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
+    
     console.log(' --- RECONNEXION DATA');
     console.log(data);
 
