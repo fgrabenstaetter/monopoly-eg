@@ -991,32 +991,70 @@ input {
           transform: translate(-50%, 0);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container {
-  position: relative;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container, .lobby-ui-container .container:nth-child(2) .game-time-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container #nbJoueurs {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime {
   height: 50px;
   width: 50px;
   border-radius: 100%;
   padding: 0;
+  position: relative;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container div:first-of-type {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime:after {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-right: 15px;
+  bottom: -40px;
+  content: "Durée de la Partie";
+  width: 140px;
+  left: -47.5px;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .stylized {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs:after {
+  position: absolute;
+  bottom: -40px;
+  content: "Nombre de Joueurs";
+  width: 140px;
+  left: -45px;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .stylized {
   border-color: rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-left {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
   position: absolute;
-  top: 15px;
+  bottom: 15px;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -1026,24 +1064,44 @@ input {
   border-bottom: 10px solid transparent;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-right {
-  left: 55px;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right {
+  right: -8px;
   border-left: 17px solid rgba(255, 255, 255, 0.5);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-left {
-  right: 55px;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
+  left: -8px;
   border-right: 17px solid rgba(255, 255, 255, 0.5);
 }
 
-.lobby-ui-container .container:nth-child(2) .btn {
+.lobby-ui-container .container:nth-child(2) .play-button-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button {
   height: 50px;
   border-radius: 25px;
   font-size: 20px;
   padding: 6px 30px;
 }
 
-.lobby-ui-container .container:nth-child(2) .btn.loading {
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button:hover {
+  color: white;
+}
+
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button.loading {
   background-size: 30px 30px;
   background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
   -webkit-animation: barberpole 0.5s linear infinite;
@@ -1066,10 +1124,6 @@ input {
   to {
     background-position: 60px 30px;
   }
-}
-
-.lobby-ui-container .container:nth-child(2) .btn:hover {
-  color: white;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container {

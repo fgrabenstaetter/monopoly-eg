@@ -87,7 +87,7 @@ class Bid {
             bidID              : this.id,
             propertyID         : this.property.id,
             playerID           : this.player ? this.player.id : null,
-            playerMoney        : this.player.money,
+            playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,
             bankMoney          : this.game.bank.money,
             propertyOwnerMoney : this.property.owner ? this.property.owner.money : null
