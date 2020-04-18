@@ -106,7 +106,7 @@ function createSaleCard(propertyID, type, roadName, price, disabled) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function createUpgradeCard(propertyID, type, roadName, price, disabled) {
+function createUpgradeCard(propertyID, type, roadName, disabled) {
     let newType;
     if (type == 'company') {
         if (roadName == 'Eau') {

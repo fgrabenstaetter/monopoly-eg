@@ -236,7 +236,7 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
             let level4Price = data.asyncRequestArgs[3];
             let level5price = data.asyncRequestArgs[4];
 
-            createUpgradeCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+            createUpgradeCard(property.id, property.color, property.name, (currPlayer.id != ID));
 
         } else if (data.asyncRequestType == "shouldMortage") {
             // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
@@ -486,11 +486,16 @@ socket.on("gameOfferAcceptRes", (res) => {
 });
 
 //Hypothèque
-// ! Mettre affichage de propriété à jour
 socket.on("gamePropertyMortageRes", (res) => {
     console.log("gamePropertyMortageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
-
+    $('.overview-card').fadeOut();
+    // Ne pas supprimer les cartes mais afficher (avec une classe ?) le fait qu'elles soient hypothéquées !
+    // for (const i in res.properties) {
+    //     $(`.player-entry[data-id="${res.playerID}"] .property[data-id="${res.properties[i].id}"]`).fadeOut(function() {
+    //         $(this).remove();
+    //     });
+    // }
 });
 
 //Enchères
