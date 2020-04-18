@@ -18,20 +18,20 @@ module.exports = Object.freeze({
     },
 
     //BID ERRORS
-    BID_ERRORS: {
-        BID_ENDED: {
+    BID: {
+        ENDED: {
             code: 1,
             status: 'Enchère terminée'
         },
-        BID_DIFF_LOWER_THAN_TWENTY: {
+        DIFF_LOWER_THAN_MIN: {
             code: 2,
             status: 'Votre enchère n\'est pas assez élevée'
         },
-        BID_NOT_ENOUGH_MONEY: {
+        NOT_ENOUGH_MONEY: {
             code: 3,
             status: 'Vous n\'avez pas assez d\'argent pour surenchérir'
         },
-        BID_ONE_MANUAL_MAX: {
+        ONE_MANUAL_MAX: {
             code: 4,
             status: 'Une enchère manuelle est déjà en cours'
         }

@@ -858,11 +858,11 @@ class Network {
             if (!data.price || data.bidID == null)
                 err = Errors.MISSING_FIELD;
             else if (player.money < data.price)
-                err = Errors.BID_ERRORS.NOT_ENOUGH_MONEY;
+                Errors.BID.NOT_ENOUGH_MONEY;
             else {
                 const bid = Bid.bidByID(data.bidID);
                 if (!bid)
-                    err = Errors.BID_ERRORS.BID_ENDED;
+                    err = Errors.BID.ENDED;
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
@@ -879,7 +879,7 @@ class Network {
                             });
                         }
                     } else
-                        err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
+                        err = Errors.BID.DIFF_LOWER_THAN_MIN;
                 }
             }
 
@@ -893,7 +893,7 @@ class Network {
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
             else if (Bid.alreadyOneManualBid)
-                err = Errors.BID.BID_ONE_MANUAL_MAX;
+                err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
