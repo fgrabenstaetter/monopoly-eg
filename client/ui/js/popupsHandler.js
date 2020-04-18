@@ -168,10 +168,12 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function validateBid(id) {
-    $('*[data-bidID="' + id + '"]').find('input').prop('disabled', true);
-}
-
+/**
+ * Génère une popup pour la gestion d'une enchère
+ * @param {int} id id de la popup d'enchère !DOIT ÊTRE UNIQUE!
+ * @param {string} playername nom du vendeur
+ * @param {string} streetname nom de la rue mise en enchères
+ */
 function openBidPopup(id, playername, streetname) {
     var html = 
         `<div class="bid-popup" data-bidID="` + id + `">
@@ -185,6 +187,18 @@ function openBidPopup(id, playername, streetname) {
     $(html).prependTo('#bid-popup-container').fadeIn(500);
 }
 
+/**
+ * Valide la saisie
+ * @param {int} id id de la popup d'enchère à valider
+ */
+function validateBid(id) {
+    $('*[data-bidID="' + id + '"]').find('input').prop('disabled', true);
+}
+
+/**
+ * Ferme la popup possèdant l'identifiant id
+ * @param {int} id id de la popup d'enchère à fermer
+ */
 function closeBidPopup(id) {
     $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
 }
