@@ -615,7 +615,6 @@ socket.on('gameReconnectionRes', (data) => {
      * - couleur des cases pour celles déjà achetées
      */
 
-    initProperty();
     hideLoaderOverlay();
 
     $('#timer').progressInitialize();
