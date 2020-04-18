@@ -175,7 +175,7 @@ function createTextCard(text, disabled, type, title) {
  * @param {string} streetname nom de la rue mise en enchères
  */
 function openBidPopup(id, playername, streetname) {
-    if (playername == "null") {
+    if (playername == "undefined") {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">Une enchère est lancée pour ` + streetname + `</div>

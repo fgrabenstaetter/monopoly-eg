@@ -491,7 +491,12 @@ socket.on("gamePropertyMortageRes", (res) => {
 socket.on("gameBidRes", (res) => {
     console.log("gameBidRes");
     console.log(res);
-    openBidPopup(res.bidID, res.playerID, res.text);
+    let playerNick = idToNick(res.playerID);
+    if (playerNick == null)
+        openBidPopup(res.bidID, 'undefined', res.text);
+    else
+        openBidPopup(res.bidID, playerNick, res.text);
+
 });
 
 socket.on("gameBidEndedRes", (res) => {
