@@ -1418,13 +1418,27 @@ input {
   margin: 10px auto;
 }
 
-.ingame-ui-container #auction-popup {
+.ingame-ui-container #auction-popup-container {
   position: absolute;
   top: 10px;
+  width: 100vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ingame-ui-container #auction-popup-container .auction-popup {
   width: 500px;
-  left: 50vw;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1433,19 +1447,17 @@ input {
       -ms-flex-direction: column;
           flex-direction: column;
   z-index: 10;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 10px 20px 20px 20px;
   border-radius: 20px;
-  -webkit-transform: translateX(-50%) translateY(-100px);
-          transform: translateX(-50%) translateY(-100px);
-  display: none;
   -webkit-transition: -webkit-transform 0.5s ease;
   transition: -webkit-transform 0.5s ease;
   transition: transform 0.5s ease;
   transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+  margin: 10px auto;
 }
 
-.ingame-ui-container #auction-popup .content {
+.ingame-ui-container #auction-popup-container .auction-popup .content {
   width: 100%;
   text-align: center;
   color: white;
@@ -1453,7 +1465,7 @@ input {
   font-size: 13px;
 }
 
-.ingame-ui-container #auction-popup .auction-input {
+.ingame-ui-container #auction-popup-container .auction-popup .auction-input {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1463,7 +1475,7 @@ input {
           flex-direction: row;
 }
 
-.ingame-ui-container #auction-popup .auction-input input {
+.ingame-ui-container #auction-popup-container .auction-popup .auction-input input {
   -webkit-box-flex: 10;
       -ms-flex-positive: 10;
           flex-grow: 10;
@@ -1474,7 +1486,7 @@ input {
   padding-left: 10px;
 }
 
-.ingame-ui-container #auction-popup .auction-input button {
+.ingame-ui-container #auction-popup-container .auction-popup .auction-input button {
   margin-left: 10px;
   -webkit-box-flex: 2;
       -ms-flex-positive: 2;
@@ -1483,6 +1495,7 @@ input {
   border: none;
   border-radius: 5px;
   color: white;
+  font-size: 13px;
 }
 
 .ingame-ui-container .overview-card {
