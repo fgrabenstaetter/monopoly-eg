@@ -358,7 +358,7 @@ class Network {
         user.socket.on('lobbyUpdateProfileReq', (data) => {
             UserManager.updateProfile(user.id, data.nickname, data.email, data.password, (err, userUpdated) => {
                 user.socket.emit('lobbyUpdateProfileRes', { error: err.code, status: err.status, user: userUpdated });
-                
+
                 if (err == Errors.SUCCESS) {
                     user.nickname = userUpdated.nickname;
                     user.email = userUpdated.email;

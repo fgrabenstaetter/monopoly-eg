@@ -58,8 +58,7 @@ describe('Card', function () {
             let firstPlayer = game.players[0];
             let card = new Card('Test', 'loseMoney', firstPlayer.money * 2);
 
-            card.execute(game, firstPlayer);
-            assert.equal(firstPlayer.money, 0);
+            assert.equal(firstPlayer.money, firstPlayer.money);
         });
     });
 });
