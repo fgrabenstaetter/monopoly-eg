@@ -1005,7 +1005,8 @@ class Network {
                 bids         : bids,
                 players      : players,
                 cells        : cells,
-                properties   : properties
+                properties   : properties,
+                isInJail     : player.isInPrison ? 4 - this.curPlayer.remainingTurnsInJail : false
             });
 
             if (game.startedTime) { // partie commencée

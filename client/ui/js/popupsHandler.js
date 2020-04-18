@@ -168,20 +168,25 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function validateAuction() {
-    $("#auction-input").prop('disabled', true);
+function validateAuction(id) {
+    $('*[data-auctionID="' + id + '"]');
 }
 
-function openAuctionPopup() {
-    $("#auction-input").val('');
-    $("#auction-input").prop('disabled', false);
-    $("#auction-popup").fadeIn(500);
-    $("#auction-popup").css('transform', 'translateX(-50%) translateY(0)');
+function openAuctionPopup(id, playername, streetname) {
+    var html = 
+        `<div class="auction-popup" data-auctionID="` + id + `">
+            <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
+            <div class="auction-input">
+                <input class="auction-input" type="text" placeholder="Entrez votre prix ici..."></input>
+                <button class="auction-validation" onclick="validateAuction(` + id + `)">Valider</button>
+            </div>
+        </div>`
+
+    $(html).prependTo('#auction-popup-container').fadeIn(500);
 }
 
-function closeAuctionPopup() {
-    $("#auction-popup").css('transform', 'translateX(-50%) translateY(-100px)');
-    $("#auction-popup").fadeOut(500);
+function closeAuctionPopup(id) {
+    $('*[data-auctionID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
 }
 
 // initProperty()
