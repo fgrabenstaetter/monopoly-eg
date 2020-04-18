@@ -918,6 +918,7 @@ $('.overview-card .buy-button').click(function (e) {
 $('.overview-card .mortgage-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    console.log(propertyID);
     socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
     console.log("gamepropertymortageReq");
 
@@ -942,6 +943,16 @@ $('#overviewCardBuyForm .send').click(function (e) {
     console.log(propertyID);
 
     $('#overviewCardModal').modal('hide');
+
+    return false;
+});
+
+$('body').on('click', '.bid-popup .bid-validation', function (e) {
+    e.preventDefault();
+    const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
+    const price = parseInt($('input.bid-input').val());
+    socket.emit('gameOverbidReq', { bidID: bidID, price : price });
+    console.log("gameOverbidReq");
 
     return false;
 });
