@@ -278,18 +278,19 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
     if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
         movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
             currPlayer.cellPos = cellPos2;
-            gameActionResAfterSecondMovement(data);
+            gameActionResAfterSecondMovement(data, currPlayer);
         });
     } else {
-        gameActionResAfterSecondMovement(data);
+        gameActionResAfterSecondMovement(data, currPlayer);
     }
 }
 
 /**
  * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
  * @param data Données de gameActionRes
+ * @param currPlayer Joueur actuel
  */
-function gameActionResAfterSecondMovement(data) {
+function gameActionResAfterSecondMovement(data, currPlayer) {
     if (data.playerID === ID) {
         $('#timer').progressReset(false);
     }
