@@ -18,7 +18,7 @@
 
 
 * loaderHouseProperty(ncase, nhouse);
-    Une API pour charger une maison à la bonne case.
+    Une API pour charger une maison à la case spécifiée.
     ncase -> Chiffre de la case.
 
     nhouse -> 1 pour mettre la maison en bas à droite. 2 pour la maison en bas à gauche.
@@ -31,7 +31,7 @@
 
 
 * loaderHotelProperty(ncase);
-    Une API pour charger un hôtel à la bonne case.
+    Une API pour charger un hôtel à la case spécifiée.
     ncase -> Chiffre de la case. 
     ATTENTION! Pour les propriétés marrons et bleus foncé, il y a que 2 cases pour chaque propriété.
     Exemple : loaderHotelProperty(3).
@@ -69,15 +69,6 @@
 * changeColorFlag(flag, colore)
 	Change la couleur d'un drapeau
 	Exemple : changeColorFlag('d1','yellow')
-
-
-* deleteCase(cases):
-	Supprime une case (utilisé dans le changement de couleur).
-	
-
-* changeColorCase(cases, colore);
-	Modifie la couleur d'une case. 
-    Exemple : changecolorCase('case12', 0X00FF00).
 	
 
 * zoomOnOff(number);

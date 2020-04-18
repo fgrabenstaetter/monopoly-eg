@@ -1,3 +1,7 @@
+/**
+ * Tableau de Pion
+ * @type {array} 
+ */
 var pawn = [
     'moto', 'citroen C4', 
     'boat', 'montgolfiere', 
@@ -6,6 +10,10 @@ var pawn = [
 ];
 
 
+/**
+ * Tableau de position des cases
+ * @type {array} 
+ */
 let tabCases = {
     0 : new THREE.Vector3(0.335*11.5, 2, 0.335*11.5),      
 
@@ -56,6 +64,10 @@ let tabCases = {
 };
 
 
+/**
+ * Tableau de nom des maisons
+ * @type {array} 
+ */
 let tabHouse = {
 	1 : 'M1_1',
 	3 : 'M1_2',
@@ -82,6 +94,10 @@ let tabHouse = {
 };
 
 
+/**
+ * Tableau de nom des hotels
+ * @type {array} 
+ */
 let tabHotel = {
 	1 : 'H1_1',
 	3 : 'H1_2',
@@ -108,6 +124,10 @@ let tabHotel = {
 };
 
 
+/**
+ * Tableau de nom des drapeaux
+ * @type {array} 
+ */
 let drapPlane = { 
     'd1' : 'Plane1_0',
     'd3' : 'Plane3_0',
