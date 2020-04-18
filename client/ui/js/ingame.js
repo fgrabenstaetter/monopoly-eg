@@ -11,7 +11,8 @@ let DATA = {
 };
 
 const PAWNS = ['tracteur', 'boat', 'moto', 'camion', 'montgolfiere', 'citroen C4', 'overboard', 'schoolbus'];
-
+const PLAYERS_COLORS = ['yellow', '#d43333', '#006aff', '#22d406', 'white', 'violet', 'cyan', 'orange'];
+const CELL_PRISON = 10;
 
 function nickToId(nick) {
     for (const i in DATA.players) {
@@ -89,12 +90,13 @@ socket.on('gameStartedRes', (data) => {
         DATA.properties[i].ownerID = null;
     };
     // Génération de la liste de joueurs
-    DATA.players.forEach((player) => {
+    DATA.players.forEach((player, index) => {
         // Champs par défaut du joueur
         player.properties = [];
         player.money = data.playersMoney;
         player.cellPos = 0;
-
+        player.color = PLAYERS_COLORS[index];
+        player.isInJail = false;
         loaderPawn(PAWNS[player.pawn], player.cellPos.toString());
         generatePlayerEntry(player.id, player.nickname, player.money);
     });
@@ -162,6 +164,9 @@ socket.on('gameActionRes', (data) => {
         }
     }
 
+    if (currPlayer.isInJail && currPlayer.isInJail > 3)
+        currPlayer.isInJail = false;
+
     let totalDices = data.dicesRes[0] + data.dicesRes[1];
     console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
 
@@ -171,8 +176,8 @@ socket.on('gameActionRes', (data) => {
     // Lancement de l'animation des dés
     triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
-        // On ne déplace le joueur que s'il doit aller sur une nouvelle case
-        if (cellPos1 != currPlayer.cellPos) {
+        // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
+        if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
             console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
             currPlayer.cellPos = cellPos1;
             movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
@@ -256,9 +261,21 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
         if (typeof data.extra.nbJailEscapeCards !== "undefined") {
             currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
         }
+
+        if (typeof data.extra.goJail !== "undefined" && data.extra.goJail) {
+            cellPos2 = null;
+            currPlayer.isInJail = 1;
+            setTimeout(() => {
+                deletePawn(PAWNS[currPlayer.pawn]);
+                setTimeout(() => {
+                    loaderPawn(PAWNS[currPlayer.pawn], CELL_PRISON);
+                    return gameActionResAfterSecondMovement(data);
+                }, 1000);
+            }, 1000);
+        }
     }
 
-    if (cellPos2 && cellPos2 != currPlayer.cellPos) {
+    if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
         movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
             currPlayer.cellPos = cellPos2;
             gameActionResAfterSecondMovement(data);
@@ -287,6 +304,9 @@ function gameActionResAfterSecondMovement(data) {
             $(this).attr({ 'data-loading': 'TERMINER' });
         }
     }
+
+    if (currPlayer.isInJail)
+        currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
 
     console.log("=== fin gameActionRes ===");
 }
@@ -340,8 +360,17 @@ socket.on("gamePropertyBuyRes", (data) => {
         // player.properties.push(property);
         property.ownerID = player.id;
         // MANQUE ACCÈS A LA COULEUR DU JOUEUR
-        loaderFlag("d" + cell.id, "cyan");
-        createProperty(player.id, property.color, property.name, property.id);
+        loaderFlag("d" + cell.id, player.color);
+        if (property.type == "publicCompany") {
+            createProperty(player.id, 'company', property.name, property.id);
+        }
+        else if (property.type == "trainStation") {
+            createProperty(player.id, 'station', property.name, property.id);
+        }
+        else {
+            createProperty(player.id, property.color, property.name, property.id);
+
+        }
         setPlayerMoney(player.id, data.playerMoney);
         changeColorCase('case' + cell.id.toString(), property.color);
 
@@ -435,7 +464,7 @@ socket.on("gameOfferSendRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferSendRes")
     else // hôte uniquement
-        alert("gameOfferSendRes " + res.status);
+        toast(`gameOfferSendRes ${res.status}`, 'danger', 5);
 });
 
 socket.on("gameOfferReceiveRes", (res) => {
@@ -446,11 +475,40 @@ socket.on("gameOfferReceiveRes", (res) => {
 socket.on("gameOfferAcceptRes", (res) => {
     if (res.error === 0)
         console.log("gameOfferAcceptRes")
-
     else // hôte uniquement
-        alert("gameOfferAcceptRes " + res.status);
+        toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+//Hypothèque
+// ! Mettre affichage de propriété à jour
+socket.on("gamePropertyMortageRes", (res) => {
+    console.log("gamePropertyMortageRes");
+    setPlayerMoney(res.playerID, res.playerMoney);
+
+});
+
+//Enchères
+socket.on("gameBidRes", (res) => {
+    console.log("gameBidRes");
+    console.log(res);
+    let playerNick = idToNick(res.playerID);
+    if (playerNick == null)
+        openBidPopup(res.bidID, 'undefined', res.text);
+    else
+        openBidPopup(res.bidID, playerNick, res.text);
+
+});
+
+socket.on("gameBidEndedRes", (res) => {
+    console.log("gameBidEndedRes");
+    let playerNick = idToNick(res.playerID);
+    if (res.playerID == null)
+        toast("Le terrain n'a pas été acheté", "info", 10);
+    else
+        toast("Le joueur " + playerNick + " a remporté l'enchère pour " + res.price + "€", "success", 10);
+
+    closeBidPopup(res.bidID);
+});
 
 socket.on("gameRollDicesRes", (res) => {
     if (res.error === 0)
@@ -498,9 +556,11 @@ socket.on('gameReconnectionRes', (data) => {
     };
 
     // Génération de la liste de joueurs
-    DATA.players.forEach((player) => {
+    DATA.players.forEach((player, index) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
         generatePlayerEntry(player.id, player.nickname, player.money);
+        player.color = PLAYERS_COLORS[index];
+        player.isInJail = false;
     });
 
     initProperty();
@@ -509,8 +569,20 @@ socket.on('gameReconnectionRes', (data) => {
         player.properties.forEach((playerProperty) => {
             let property = getPropertyById(playerProperty);
             if (property) {
-                createProperty(player.id, property.color, property.name, property.id);
                 property.ownerID = player.id;
+                // MANQUE ACCÈS A LA COULEUR DU JOUEUR
+                let cell = getCellByProperty(property)
+                loaderFlag("d" + cell.id, player.color);
+                if (property.type == "publicCompany") {
+                    createProperty(player.id, 'company', property.name, property.id);
+                }
+                else if (property.type == "trainStation") {
+                    createProperty(player.id, 'station', property.name, property.id);
+                }
+                else {
+                    createProperty(player.id, property.color, property.name, property.id);
+
+                }
             }
         });
     });
@@ -607,12 +679,10 @@ function bindOfferListener() {
 
 
         //!!! changer la couleur du drapeau !!!
-        if (!error) {
+        if (!error)
             $(this).parent().parent().remove();
-        }
-        else {
-            alert('erreur :' + status);
-        }
+        else
+            toast(`erreur : ${status}`, 'danger', 5);
     });
 
 
@@ -630,12 +700,28 @@ function bindOfferListener() {
 function generatePlayerEntry(id, nickname, money) {
     let html = `<div class="player-entry" data-id="` + id + `">
                         <div class="name" title="`+ nickname + `">` + nickname + `</div>
-                        <div class="money">`+ money + `</div>
+                        <div class="money"></div>
                         <div class="popup top" style="display: none;">
                         </div>
                 </div>`;
 
+
     $('.player-list').append(html);
+
+    const nodes = document.querySelectorAll('.player-list .player-entry');
+    const last = nodes[nodes.length - 1];
+    const el = last.querySelector('.money');
+    new Odometer({
+        el: el,
+        value: money,
+
+        // Any option (other than auto and selector) can be passed in here
+        format: '',
+        theme: 'digital',
+        format: '( ddd),dd', // Change how digit groups are formatted, and how many digits are shown after the decimal point
+        duration: 3000, // Change how long the javascript expects the CSS animation to take
+        theme: 'default', // Specify the theme (if you have more than one theme css file on the page)
+    });
 }
 
 /**
@@ -811,7 +897,7 @@ function displayPropertyInfos(property) {
     let isMine = (property.ownerID == ID);
     if (property.type == "street") {
         populateStreetOverviewCard(property, isMine);
-    } else if (property.type == "station") {
+    } else if (property.type == "trainStation") {
         populateStationOverviewCard(property, isMine);
     } else {
         populateCompanyOverviewCard(property, isMine);
@@ -822,9 +908,10 @@ function displayPropertyInfos(property) {
 $('.player-list').on('click', '.property', function () {
 
     let propertyId = $(this).attr('data-id');
-    if (!propertyId)
+    if (!propertyId) {
+        console.log("id_property==null");
         return;
-
+    }
     let property = getPropertyById(propertyId);
     if (!property)
         return;
@@ -837,7 +924,7 @@ $('.player-list').on('click', '.property', function () {
 
 $('.overview-card .buy-button').click(function (e) {
     e.preventDefault();
-    let propertyID = $(this).parent('.overview-card').attr('data-id');
+    const propertyID = $(this).parent('.overview-card').attr('data-id');
     $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
     $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
     $('#overviewCardModal').modal('show');
@@ -845,9 +932,16 @@ $('.overview-card .buy-button').click(function (e) {
     return false;
 });
 
-// problèmes:
-// receiverID pas atteignable, utilisé = id(come) en hardcode pour test
-// propertyID n'est pas le bon -> NAN, hardcode du id de chemin du wacken pour test
+$('.overview-card .mortgage-button').click(function (e) {
+    e.preventDefault();
+    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
+    console.log("gamepropertymortageReq");
+
+    return false;
+});
+
+
 $('#overviewCardBuyForm .send').click(function (e) {
     e.preventDefault();
     let propertyID = parseInt($('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val());
@@ -866,5 +960,11 @@ $('#overviewCardBuyForm .send').click(function (e) {
 
     $('#overviewCardModal').modal('hide');
 
+    return false;
+});
+
+$('.quit-game').click((e) => {
+    e.preventDefault();
+    alert('Event quit game à implémenter côté serveur !');
     return false;
 });

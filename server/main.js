@@ -10,6 +10,7 @@ const express     = require('express');
 const jwt         = require('jsonwebtoken');
 const expressJwt  = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
+const SocketIOFileUpload = require("socketio-file-upload");
 const mongoose    = require('mongoose');
 
 const Constants   = require('./lib/constants');
@@ -18,7 +19,6 @@ const User        = require('./game/user');
 const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
-const ObjectId    = require('mongoose').Types.ObjectId;
 const { UserSchema, UserManager } = require('./models/user');
 
 let server;
@@ -71,6 +71,7 @@ if (production) {
 }
 
 const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
+SocketIOFileUpload.listen(app);
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
@@ -94,9 +95,9 @@ let GLOBAL = {
 GLOBAL.matchmaking = new Matchmaking(GLOBAL);
 GLOBAL.network     = new Network(io, GLOBAL);
 
-function nicknameToUser (nickname) {
+function getConnectedUserById (id) {
     for (const usr of GLOBAL.users) {
-        if (usr.nickname === nickname)
+        if (usr.id === id)
             return usr;
     }
     return null;
@@ -127,14 +128,14 @@ app.post('/api/login', (req, res) => {
 
         if (err.code === Errors.SUCCESS.code) {
             // si le user n'est pas déjà dans la liste, l'y ajouter
-            let user = nicknameToUser(userSchema.nickname);
+            let user = getConnectedUserById(userSchema._id);
             if (!user) {
                 user = new User(userSchema);
                 GLOBAL.users.push(user);
             }
 
             id = userSchema.id;
-            token = jwt.sign({ id: userSchema._id, nickname: user.nickname, email: user.email }, JWT_SECRET, {
+            token = jwt.sign({ id: userSchema._id }, JWT_SECRET, {
                 expiresIn: 86400 // expires in 24 hours
             });
         } else
@@ -144,7 +145,7 @@ app.post('/api/login', (req, res) => {
             error  : err.code,
             status : err.status,
             token  : token,
-            id     : id
+            user: userSchema
         });
     });
 });
@@ -160,16 +161,17 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
-    console.log('[SOCKET] Utilisateur ' + decodedToken.nickname + ' connecté');
 
     // ------------------------------------------------
 
-    let user = nicknameToUser(decodedToken.nickname);
+    let user = getConnectedUserById(decodedToken.id);
     if (!user) {
         console.log('[SOCKET] USER NOT FOUND (not connected), sending notLoggedRes');
         socket.emit('notLoggedRes');
         return;
     }
+
+    console.log('[SOCKET] Utilisateur ' + user.id + ' (' + user.nickname + ') connecté');
 
     socket.on('disconnect', () => {
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');

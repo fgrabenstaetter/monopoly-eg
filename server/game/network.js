@@ -31,6 +31,8 @@ class Network {
         this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
+        this.lobbyUpdateProfile             (user, lobby);
+        // this.lobbyUpdateAvatar              (user, lobby);
         this.lobbyChangeTargetUsersNbReq    (user, lobby);
         this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
@@ -349,6 +351,20 @@ class Network {
                 lobby.delUser(userToKick, false); // lui envoie l'event socket lobbyUserLeftRes
 
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
+        });
+    }
+
+    lobbyUpdateProfile(user, lobby) {
+        user.socket.on('lobbyUpdateProfileReq', (data) => {
+            UserManager.updateProfile(user.id, data.nickname, data.email, data.password, (err, userUpdated) => {
+                user.socket.emit('lobbyUpdateProfileRes', { error: err.code, status: err.status, user: userUpdated });
+
+                if (err == Errors.SUCCESS) {
+                    user.nickname = userUpdated.nickname;
+                    user.email = userUpdated.email;
+                    this.io.emit('lobbyUserNicknameUpdatedRes', { id: userUpdated._id, nickname: userUpdated.nickname });
+                }
+            });
         });
     }
 
@@ -679,6 +695,9 @@ class Network {
         if (nbJailEscapeCardsSave !== player.nbJailEscapeCards)
             extra.nbJailEscapeCards = player.nbJailEscapeCards;
 
+        if (!wasInPrison && player.isInPrison)
+            extra.goJail = true;
+
         const res = {
             dicesRes         : diceRes,
             playerID         : player.id,
@@ -839,11 +858,11 @@ class Network {
             if (!data.price || data.bidID == null)
                 err = Errors.MISSING_FIELD;
             else if (player.money < data.price)
-                err = Errors.BID_ERRORS.NOT_ENOUGH_MONEY;
+                Errors.BID.NOT_ENOUGH_MONEY;
             else {
                 const bid = Bid.bidByID(data.bidID);
                 if (!bid)
-                    err = Errors.BID_ERRORS.BID_ENDED;
+                    err = Errors.BID.ENDED;
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
@@ -860,7 +879,7 @@ class Network {
                             });
                         }
                     } else
-                        err = Errors.BID_ERRORS.BID_DIFF_LOWER_THAN_TWENTY;
+                        err = Errors.BID.DIFF_LOWER_THAN_MIN;
                 }
             }
 
@@ -874,11 +893,11 @@ class Network {
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
             else if (Bid.alreadyOneManualBid)
-                err = Errors.BID.BID_ONE_MANUAL_MAX;
+                err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
-                new Bid(prop, prop.value, game);
+                new Bid(prop, prop.value, game, true);
                 // réponse envoyée depuis le constructeur de Bid
             }
 
@@ -1002,7 +1021,8 @@ class Network {
                 bids         : bids,
                 players      : players,
                 cells        : cells,
-                properties   : properties
+                properties   : properties,
+                isInJail     : player.isInPrison ? 4 - this.curPlayer.remainingTurnsInJail : false
             });
 
             if (game.startedTime) { // partie commencée

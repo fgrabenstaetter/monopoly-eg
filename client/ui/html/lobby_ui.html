@@ -34,7 +34,9 @@
         </div>
         <div class="col-md-6 avatar-container">
             <div class="avatar">
-                <div class="avatar-model" style="background-color:#d4faff; text-align:center; line-height:250px; width:250px; height:250px; color:white;">AVATAR</div>
+                <div class="avatar-model"
+                    style="background-color:#d4faff; text-align:center; line-height:250px; width:250px; height:250px; color:white;">
+                    AVATAR</div>
                 <div class="avatar-ui">
                     <div class="avatar-bubble">CHANGER DE PION</div>
                     <i class="fas fa-sync-alt"></i>
@@ -80,16 +82,21 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 nb-joueurs-container">
-            <div>
+        <div class="col-md-1 game-time-container">
+            <div class="game-time-selector">
+                <button class="arrow-left" id="leftGameTime"></button>
+                <button class="btn btn-primary stylized" id="gameTime" style="cursor: default;">?</button>
+                <button class="arrow-right" id="rightGameTime"></button>
+            </div>
+        </div>
+        <div class="col-md-2 play-button-container">
+            <a class="btn btn-primary stylized play-button" id="play">JOUER</a>
+        </div>
+        <div class="col-md-1 nb-joueurs-container">
+            <div class="nb-joueurs-selector">
                 <button class="arrow-left" id="leftNbJ"></button>
                 <button class="btn btn-primary stylized" id="nbJoueurs" style="cursor: default;">?</button>
                 <button class="arrow-right" id="rightNbJ"></button>
-            </div>
-        </div>
-        <div class="col-md-2 text-center" style="position: relative;">
-            <div style="position: absolute; bottom: 0; left: 0; margin-left: 15px;">
-                <a class="btn btn-primary stylized" id="play">JOUER</a>
             </div>
         </div>
         <div class="col-md-4 notification-container" id="inviteGameContainer">
@@ -102,6 +109,46 @@
                     <button class="btn btn-primary">ACCEPTER</button>
                     <button class="btn btn-secondary">REFUSER</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- settings -->
+<div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Mon profil</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                    <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="user-settings">
+                    <div class="form-group">
+                        <label>Pseudo</label>
+                        <input type="text" class="form-control" name="nickname" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse email</label>
+                        <input type="email" class="form-control" name="email" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nouveau mot de passe</label>
+                        <input type="password" class="form-control" name="password" autocomplete="off">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="avatar">Nouvel avatar</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                aria-describedby="avatar">
+                            <label class="custom-file-label" for="inputGroupFile01">Choisir un fichier...</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
             </div>
         </div>
     </div>
@@ -132,4 +179,3 @@
 
 <script src="js/chat.js"></script>
 <script src="js/lobby.js"></script>
-

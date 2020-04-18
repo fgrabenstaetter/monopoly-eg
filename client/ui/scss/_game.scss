@@ -190,6 +190,61 @@
     }
   }
 
+  // bid Popup
+  #bid-popup-container {
+    position: absolute;
+    top: 10px;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    .bid-popup {
+      width: 500px;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      background-color: rgba($color: black, $alpha: 0.7);
+      padding: 10px 20px 20px 20px;
+      border-radius: 20px;
+      transition: transform 0.5s ease;
+      margin: 10px auto;
+  
+      .content {
+        width: 100%;
+        text-align: center;
+        color: white;
+        margin-bottom: 10px;
+        font-size: 13px;
+      }
+  
+      .bid-input {
+        display: flex;
+        flex-direction: row;
+  
+        input {
+          flex-grow: 10;
+          margin-right: 10px;
+          border: none;
+          border-radius: 5px;
+          font-size: 12px;
+          padding-left: 10px;
+        }
+    
+        button {
+          margin-left: 10px;
+          flex-grow: 2;
+          background-color: green;
+          border: none;
+          border-radius: 5px;
+          color: white;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
   // Overview card
   .overview-card {
     display: none;
@@ -386,6 +441,7 @@
         .money {
           color: white;
           font-size: 13px;
+          padding-left: 25px;
         }
 
         .money::before {
@@ -403,9 +459,12 @@
           font-size: 15px;
           color: white;
           vertical-align: text-top;
+          position: absolute;
+          left: 0;
+          top: -1px;
         }
 
-        .money::after {
+        .odometer-inside::after {
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           display: inline-block;
@@ -481,56 +540,56 @@
             // Classes coulers propriétés
             &.yellow {
               .property {
-                background-color: rgb(228, 228, 65);
+                background-color: $property-yellow;
                 color: white;
               }
             }
 
             &.blue {
               .property {
-                background-color: blue;
+                background-color: $property-blue;
                 color: white;
               }
             }
 
             &.red {
               .property {
-                background-color: red;
+                background-color: $property-red;
                 color: white;
               }
             }
 
             &.orange {
               .property {
-                background-color: orange;
+                background-color: $property-orange;
                 color: white;
               }
             }
 
             &.purple {
               .property {
-                background-color: rgb(223, 184, 191);
+                background-color: $property-purple;
                 color: white;
               }
             }
 
             &.brown {
               .property {
-                background-color: brown;
+                background-color: $property-brown;
                 color: white;
               }
             }
 
             &.cyan {
               .property {
-                background-color: rgb(35, 212, 212);
+                background-color: $property-cyan;
                 color: white;
               }
             }
 
             &.green {
               .property {
-                background-color: green;
+                background-color: $property-green;
                 color: white;
               }
             }
@@ -699,35 +758,35 @@
           padding-bottom: 10px;
 
           &.brown {
-            background-color: brown;
+            background-color: $property-brown;
           }
 
           &.orange {
-            background-color: orange;
+            background-color: $property-orange;
           }
 
           &.blue {
-            background-color: blue;
+            background-color: $property-blue;
           }
 
           &.red {
-            background-color: red;
+            background-color: $property-red;
           }
 
           &.purple {
-            background-color: purple;
+            background-color: $property-purple;
           }
 
           &.green {
-            background-color: green;
+            background-color: $property-green;
           }
 
           &.yellow {
-            background-color: rgb(228, 228, 65);
+            background-color: $property-yellow;
           }
 
           &.cyan {
-            background-color: cyan;
+            background-color: $property-cyan;
           }
 
           &.company {
@@ -821,6 +880,7 @@
           display: flex;
           flex-direction: column;
           align-items: center;
+          font-size: 13px;
 
           &.no-header {
             border-radius: 15px 15px 15px 15px;
@@ -985,4 +1045,33 @@
       }
     }
   }
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  max-width: 500px;
+  z-index:1000;
+}
+
+.toast-notification.danger {
+  background-color: rgba($color: red, $alpha: 0.8);
+}
+
+.toast-notification.success {
+  background-color: rgba($color: green, $alpha: 0.8);
+}
+
+.toast-notification.info {
+  background-color: rgba($color: black, $alpha: 0.5);
 }

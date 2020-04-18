@@ -27,7 +27,7 @@ $(document).ready( () => {
             // Fonction qui teste les erreurs qui sont retournées par le serveur
             error: (err) => {
                 if (err.status === 400)
-                    alert(JSON.parse(err.responseText).status);
+                    toast(JSON.parse(err.responseText).status, 'danger', 5);
             }
         });
     });

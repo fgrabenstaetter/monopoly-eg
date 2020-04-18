@@ -514,7 +514,6 @@ class Game {
         this.curPlayer.addProperty(property);
 
         this.resetTurnActionData();
-
         return Errors.SUCCESS;
     }
 
@@ -543,7 +542,7 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortage(propertiesList) {
-        const moneyToObtain = this.turnData.asyncRequestArgs[0]; // null si pas hypothèque forcée
+        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si pas hypothèque forcée (= manuel)
         let sum = this.curPlayer.money;
         let properties = [];
 
@@ -594,7 +593,7 @@ class Game {
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
-                const bid = new Bid(curProp, curProp.value, this);
+                const bid = new Bid(curProp, 0, this);
 
                 break;
         }
@@ -624,7 +623,7 @@ class Game {
      */
     playerAutoMortage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
-        const moneyToObtain = this.turnData.asyncRequestArgs[0];
+        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
 
         if (!moneyToObtain && !properties)

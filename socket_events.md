@@ -422,6 +422,44 @@
         }
         ```
 
+### --- Créer / Inviter / Rejoindre / Quitter
+- **Mettre à jour son profil**
+    > Mettre à jour pseudo, adresse email et mot de passe (optionnel)
+
+    * **Requête:** lobbyUpdateProfileReq
+        * *Données:*
+        ```javascript
+        {
+            nickname: string,
+            email: string,
+            password: string // peut être vide
+        }
+        ```
+
+    * **Réponse:** lobbyUpdateProfileRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string,
+            user: UserSchema // Toutes les données de l'utilisateur, uniquement si error = 0 (pas d'erreur)
+        }
+        ```
+
+- **Mettre à jour le pseudo d'un joueur**
+    > Si un joueur met son profil à jour et change son pseudo, il doit être mis à jour chez tout le monde
+
+    * **Réponse:** lobbyUserNicknameUpdatedRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string,
+            user: UserSchema // Toutes les données de l'utilisateur, uniquement si error = 0 (pas d'erreur)
+        }
+        ```
+
+
 ## Game
 
 ### --- Début, fin, déconnexion et reconnexion
@@ -634,6 +672,7 @@
             extra: {
                 // contient 0, 1 ou plusieurs de ces champs (tester existence !)
                 nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
+                goJail: true, // reçu uniquement lorsque on entre en prison et doit y rester
                 newCard: {
                     type: string, // chance | community
                     description: string
@@ -906,7 +945,9 @@
             bidID: int,
             playerID: int
             price: int,
-            bankMoney: int
+            bankMoney: int,
+            playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)
+            propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
 

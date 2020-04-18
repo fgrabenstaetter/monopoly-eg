@@ -5,25 +5,25 @@ const Properties = {
 
     TRAIN_STATION: [
         {
-            name: 'Arret de tram : Homme de Fer',
+            name: 'Homme de Fer',
             description: 'Quelle magnifique gare !',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
-            name: "Arret de tram : Droits de l'Homme",
+            name: "Droits de l'Homme",
             description: 'Gare perdue',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
-            name: 'Arret de tram : Université',
+            name: 'Université',
             description: 'Quelle magnifique gare !',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
-            name: "Arret de tram : Porte de l'Hôpital",
+            name: "Porte de l'Hôpital",
             description: 'Gare perdue',
             price: 200,
             rentalPrices: [25, 50, 100, 200]

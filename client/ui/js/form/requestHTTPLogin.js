@@ -23,15 +23,16 @@ $(document).ready( () => {
             success:  (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 localStorage.setItem('jwt', res.token);
-                localStorage.setItem('nickname', nickname);
-                localStorage.setItem('id', res.id);
+                localStorage.setItem('id', res.user._id);
+                localStorage.setItem('nickname', res.user.nickname);
+                localStorage.setItem('email', res.user.email);
                 location.replace('/lobby');
             },
 
             // Fonction qui teste les erreurs qui sont retournées par le serveur
             error: (err) => {
                 if (err.status === 400)
-                    alert(JSON.parse(err.responseText).status);
+                    toast(JSON.parse(err.responseText).status, 'danger', 5);
             }
         });
     });

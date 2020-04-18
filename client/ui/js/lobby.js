@@ -1,15 +1,8 @@
 // Animation bouton JOUER pendant matchmaking
-$(function () {
-    $("#play").click(function () {
-        if ($("#play").hasClass("loading")) {
-            $(this).removeClass("loading");
-        }
-        else {
-            $(this).addClass("loading");
-        }
-    });
+$("#play").click(function () {
+    $(this).addClass('loading');
+    $('#play').text('CHARGEMENT...');
 });
-
 
 let users = []; // = liste de { nickname: string, id: int }
 function nickToId(nick) {
@@ -45,7 +38,7 @@ socket.on('lobbyCreatedRes', (res) => {
     users.push({ nickname: NICKNAME, id: ID });
     addPlayerInGroup(ID);
 
-    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .username').text(NICKNAME).attr('data-id', ID);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -170,8 +163,11 @@ socket.on('lobbyTargetUsersNbChangedRes', (res) => {
 });
 
 socket.on('lobbyPlayRes', (res) => {
-    if (res.error !== 0)
-        alert(res.status);
+    console.log(res);
+    if (res.error !== 0) {
+        toast(`Erreur ${res.status}`, 'danger', 5);
+        $('#play').removeClass('loading').prop('disabled', false);;
+    }
 });
 
 socket.on('lobbyGameFoundRes', () => {
@@ -181,26 +177,24 @@ socket.on('lobbyGameFoundRes', () => {
 /**Vérifications des Res asynchrones
 */
 socket.on('lobbyFriendInvitationSendRes', (res) => {
-    if (res.error === 0) {
-        console.log("lobbyFriendInvitationSendRes")
-        alert('invitation envoyée ');
-    }
+    if (res.error === 0)
+        toast('Invitation envoyée', 'success', 3);
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyInvitationRes", (res) => {
     if (res.error === 0)
-        console.log("lobbyInvitationRes")
+        toast('Invitation envoyée', 'success', 3);
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyFriendInvitationActionRes", (res) => {
     if (res.error === 0)
         console.log("lobbyFriendInvitationActionRes")
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyInvitationAcceptRes", (res) => {
@@ -208,7 +202,7 @@ socket.on("lobbyInvitationAcceptRes", (res) => {
         console.log("lobbyInvitationAcceptRes")
         window.location = '/lobby';
     } else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
@@ -220,7 +214,7 @@ socket.on("lobbyKickRes", (res) => {
     if (res.error === 0)
         console.log("lobbyKickRes")
     else // hôte uniquement
-        alert(res.status);
+        toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
@@ -258,8 +252,9 @@ $(document).ready(() => {
     });
 
     $('#play').click(() => {
-        if (hostID === ID)
+        if (hostID === ID) {
             socket.emit('lobbyPlayReq');
+        }
     });
 
     $('#submitButton').click(function (e) {
@@ -439,7 +434,7 @@ $('.friends-entries-container').on('click', '.friend-request .accept-button', fu
         $(this).parent().remove();
         socket.emit('lobbyFriendListReq');
     } else {
-        alert("erreur : " + status);
+        toast(`Erreur ${status}`, 'danger', 5);
     }
 
 });
@@ -457,7 +452,7 @@ $('.friends-entries-container').on('click', '.friend-request .deny-button', func
     if (!error)
         $(this).parent().remove();
     else
-        alert("erreur : " + status)
+        toast(`Erreur ${status}`, 'danger', 5);
 });
 
 
@@ -510,4 +505,57 @@ $('.notification-container').on('click', '.lobby-invitation .btn-secondary', fun
 $('.grouplist').on('click', '.friend-action', function () {
     let userToKickID = $(this).prev('.friends-name').attr('data-id');
     socket.emit('lobbyKickReq', { userToKickID: userToKickID });
+});
+
+/**** PARAMETRES DU PROFIL *****/
+$('#optionsModal').on('show.bs.modal', () => {
+    $('#user-settings input[name="nickname"]').val(NICKNAME);
+    $('#user-settings input[name="email"]').val(EMAIL);
+    $('#user-settings input[name="password"]').val('');
+});
+
+$('#optionsModal').on('shown.bs.modal', () => {
+    $('#user-settings input:first').focus();
+});
+
+$('#user-settings').submit((e) => {
+    e.preventDefault();
+
+    $('#user-settings button[type="submit"]')
+        .prop('disabled', true)
+        .text('Chargement...');
+    
+    socket.emit('lobbyUpdateProfileReq', {
+        nickname: $('#user-settings input[name="nickname"]').val(),
+        email: $('#user-settings input[name="email"]').val(),
+        password: $('#user-settings input[name="password"]').val()
+    });
+
+    return false;
+});
+
+socket.on('lobbyUpdateProfileRes', (res) => {
+    if (res.error !== 0) {
+        toast(res.status, 'danger', 5);
+    } else {
+        NICKNAME = res.user.nickname;
+        EMAIL = res.user.email;
+
+        localStorage.setItem('nickname', NICKNAME);
+        localStorage.setItem('email', EMAIL);
+        
+        $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
+        toast('Profil mis à jour', 'success', 3);
+        $('#optionsModal').modal('hide');
+    }
+
+    $('#user-settings button[type="submit"]')
+        .text('Enregistrer')
+        .prop('disabled', false);
+});
+
+socket.on('lobbyUserNicknameUpdatedRes', (res) => {
+    console.log('lobbyUserNicknameUpdatedRes');
+    console.log(res);
+    $(`[data-id="${res.id}"]`).text(res.nickname);
 });

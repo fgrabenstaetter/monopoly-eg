@@ -34,11 +34,15 @@ body {
   overflow: hidden;
 }
 
-.disabled, *:disabled {
-  opacity: .65 !important;
+.disabled,
+*:disabled {
+  opacity: 0.65 !important;
 }
 
-.disabled, *:disabled, .disabled *, *:disabled * {
+.disabled,
+*:disabled,
+.disabled *,
+*:disabled * {
   cursor: not-allowed !important;
 }
 
@@ -60,7 +64,7 @@ input {
   height: 35px;
   border-radius: 17.5px;
   border: none;
-  font-family: 'LilitaOne', sans-serif;
+  font-family: "LilitaOne", sans-serif;
 }
 
 .btn.stylized {
@@ -75,6 +79,35 @@ input {
   background-color: rgba(253, 128, 0, 0.7);
   border: white 4px solid;
   color: white;
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  position: absolute;
+  bottom: 50px;
+  text-align: center;
+  max-width: 300px;
+  z-index: 1000;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+}
+
+.toast-notification .danger {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+.toast-notification .success {
+  background-color: rgba(0, 128, 0, 0.5);
+}
+
+.toast-notification .info {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .background-container {
@@ -165,6 +198,35 @@ input {
 
 .login-ui-container .card a:not([href]), .signin-ui-container .card a:not([href]) {
   color: white;
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  max-width: 500px;
+  z-index: 1000;
+}
+
+.toast-notification.danger {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.toast-notification.success {
+  background-color: rgba(0, 128, 0, 0.8);
+}
+
+.toast-notification.info {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .options-overlay-container {
@@ -929,32 +991,70 @@ input {
           transform: translate(-50%, 0);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container {
-  position: relative;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container, .lobby-ui-container .container:nth-child(2) .game-time-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container #nbJoueurs {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime {
   height: 50px;
   width: 50px;
   border-radius: 100%;
   padding: 0;
+  position: relative;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container div:first-of-type {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime:after {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-right: 15px;
+  bottom: -40px;
+  content: "Durée de la Partie";
+  width: 140px;
+  left: -47.5px;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .stylized {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs:after {
+  position: absolute;
+  bottom: -40px;
+  content: "Nombre de Joueurs";
+  width: 140px;
+  left: -45px;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .stylized {
   border-color: rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-left {
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
   position: absolute;
-  top: 15px;
+  bottom: 15px;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -964,24 +1064,44 @@ input {
   border-bottom: 10px solid transparent;
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-right {
-  left: 55px;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right {
+  right: -8px;
   border-left: 17px solid rgba(255, 255, 255, 0.5);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .arrow-left {
-  right: 55px;
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
+  left: -8px;
   border-right: 17px solid rgba(255, 255, 255, 0.5);
 }
 
-.lobby-ui-container .container:nth-child(2) .btn {
+.lobby-ui-container .container:nth-child(2) .play-button-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button {
   height: 50px;
   border-radius: 25px;
   font-size: 20px;
   padding: 6px 30px;
 }
 
-.lobby-ui-container .container:nth-child(2) .btn.loading {
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button:hover {
+  color: white;
+}
+
+.lobby-ui-container .container:nth-child(2) .play-button-container .play-button.loading {
   background-size: 30px 30px;
   background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
   -webkit-animation: barberpole 0.5s linear infinite;
@@ -1004,10 +1124,6 @@ input {
   to {
     background-position: 60px 30px;
   }
-}
-
-.lobby-ui-container .container:nth-child(2) .btn:hover {
-  color: white;
 }
 
 .lobby-ui-container .container:nth-child(2) .notification-container {
@@ -1074,6 +1190,35 @@ input {
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  max-width: 500px;
+  z-index: 1000;
+}
+
+.toast-notification.danger {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.toast-notification.success {
+  background-color: rgba(0, 128, 0, 0.8);
+}
+
+.toast-notification.info {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
@@ -1327,6 +1472,86 @@ input {
   margin: 10px auto;
 }
 
+.ingame-ui-container #bid-popup-container {
+  position: absolute;
+  top: 10px;
+  width: 100vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup {
+  width: 500px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px 20px 20px;
+  border-radius: 20px;
+  -webkit-transition: -webkit-transform 0.5s ease;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+  margin: 10px auto;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .content {
+  width: 100%;
+  text-align: center;
+  color: white;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input input {
+  -webkit-box-flex: 10;
+      -ms-flex-positive: 10;
+          flex-grow: 10;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  padding-left: 10px;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input button {
+  margin-left: 10px;
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 13px;
+}
+
 .ingame-ui-container .overview-card {
   display: none;
   position: absolute;
@@ -1557,6 +1782,7 @@ input {
 .ingame-ui-container .container:first-child .player-list .player-entry .money {
   color: white;
   font-size: 13px;
+  padding-left: 25px;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .money::before {
@@ -1574,9 +1800,12 @@ input {
   font-size: 15px;
   color: white;
   vertical-align: text-top;
+  position: absolute;
+  left: 0;
+  top: -1px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .money::after {
+.ingame-ui-container .container:first-child .player-list .player-entry .odometer-inside::after {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -1654,7 +1883,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
-  background-color: #e4e441;
+  background-color: yellow;
   color: white;
 }
 
@@ -1674,7 +1903,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
-  background-color: #dfb8bf;
+  background-color: purple;
   color: white;
 }
 
@@ -1684,7 +1913,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
-  background-color: #23d4d4;
+  background-color: cyan;
   color: white;
 }
 
@@ -1911,7 +2140,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
-  background-color: #e4e441;
+  background-color: yellow;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
@@ -2018,6 +2247,7 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  font-size: 13px;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body.no-header {
@@ -2175,5 +2405,34 @@ input {
   top: 0;
   width: 100%;
   border-radius: 2px;
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  max-width: 500px;
+  z-index: 1000;
+}
+
+.toast-notification.danger {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.toast-notification.success {
+  background-color: rgba(0, 128, 0, 0.8);
+}
+
+.toast-notification.info {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 /*# sourceMappingURL=mainStyles.css.map */
