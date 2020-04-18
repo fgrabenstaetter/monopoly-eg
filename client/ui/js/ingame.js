@@ -479,18 +479,30 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
-// ! Mettre affichages à jour
+//Hypothèque
+// ! Mettre affichage de propriété à jour
 socket.on("gamePropertyMortageRes", (res) => {
     console.log("gamePropertyMortageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
 
 });
 
+//Enchères
 socket.on("gameBidRes", (res) => {
     console.log("gameBidRes");
     console.log(res);
     openAuctionPopup(res.bidID, res.playerID, res.text);
-})
+});
+
+socket.on("gameBidEndedRes", (res) => {
+    console.log("gameBidEndedRes");
+    let playerNick = idToNick(res.playerID);
+    if (res.playerID == null)
+        toast("Le terrain n'a pas été acheté", "info", 10);
+    else
+        toast("Le joueur " + playerNick + " a remporté l'enchère pour " + res.price + "€", "success", 10);
+
+});
 
 socket.on("gameRollDicesRes", (res) => {
     if (res.error === 0)
