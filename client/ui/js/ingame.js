@@ -160,7 +160,7 @@ socket.on('gameActionRes', (data) => {
             $('#timer').progressSetStateTerminer();
         }
         else {
-            $('#timer').attr({ 'data-loading': 'RELANCER LES DES' });
+            $('#timer').progressSetStateRelancer();
         }
     }
 
@@ -180,7 +180,9 @@ socket.on('gameActionRes', (data) => {
         if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
             console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
             currPlayer.cellPos = cellPos1;
+            $('#timer').progressPause();
             movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
+                $('#timer').progressResume();
                 gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
             });
         } else {

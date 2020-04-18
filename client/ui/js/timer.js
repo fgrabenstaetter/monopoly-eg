@@ -21,7 +21,7 @@ $(document).ready(() => {
 // You can put this code in a separate file if you wish to keep things tidy.
 
 (function ($) {
-
+    var isRunning = true;
     // Creating a number of jQuery plugins that you can use to
     // initialize and control the progress meters.
 
@@ -37,7 +37,7 @@ $(document).ready(() => {
         // Add the data attributes if they are missing from the element.
         // They are used by our CSS code to show the messages
         button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
-
+        button.addClass('disabled');
         // Add the needed markup for the progress bar to the button
         var bar = $('<span class="tz-bar">').appendTo(button);
 
@@ -72,11 +72,12 @@ $(document).ready(() => {
             if (finish) {
 
                 button.removeClass('in-progress').addClass('finished');
-                console.log(button);
-                bar.fadeOut(function () {
-                    setProgress(0);
-                });
-
+                console.log("bar 1");
+                console.log(bar);
+                bar.hide();
+                setProgress(0);
+                console.log("bar 2");
+                console.log(bar);
             }
 
             setProgress(progress);
@@ -117,17 +118,18 @@ $(document).ready(() => {
   		// has been incremented in the last two seconds
 
   		var interval = window.setInterval(function(){
-  			if($('.tz-bar').width() >= $('#controlButton').innerWidth())
-  			{
-  				button.trigger('progress-finish');
-  				button.trigger('progress',[0, false, true]);
-  			}
-  			else{
-  				// There has been no activity for two seconds. Increment the progress
-  				// bar a little bit to show that something is happening
-  				button.progressIncrement(100/(time/0.2));
-  			}
-
+            if (isRunning) {
+                if($('.tz-bar').width() >= $('#controlButton').innerWidth())
+      			{
+      				button.trigger('progress-finish');
+      				button.trigger('progress',[0, false, true]);
+      			}
+      			else{
+      				// There has been no activity for two seconds. Increment the progress
+      				// bar a little bit to show that something is happening
+      				button.progressIncrement(100/(time/0.2));
+      			}
+            }
   		}, 200);
 
   		button.on('progress-finish',function(){
@@ -152,6 +154,11 @@ $(document).ready(() => {
         return this;
     };
 
+    $.fn.progressSetStateRelancer = function(){
+        $(this).attr({'data-loading': 'RELANCER LES DES'});
+        return this;
+    };
+
     $.fn.progressSet = function (val) {
         val = val;
         console.log('set : ' + val);
@@ -163,5 +170,12 @@ $(document).ready(() => {
         return this.first().trigger('progress', [val, true, finish]);
     };
 
+    $.fn.progressPause =  function(){
+        isRunning = false;
+    };
+
+    $.fn.progressResume =  function(){
+        isRunning = true;
+    };
 
 })(jQuery);
