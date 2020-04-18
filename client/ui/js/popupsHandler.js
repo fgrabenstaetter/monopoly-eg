@@ -168,20 +168,25 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function validateAuction() {
-    $("#auction-input").prop('disabled', true);
+function validateBid(id) {
+    $('*[data-bidID="' + id + '"]').find('input').prop('disabled', true);
 }
 
-function openAuctionPopup() {
-    $("#auction-input").val('');
-    $("#auction-input").prop('disabled', false);
-    $("#auction-popup").fadeIn(500);
-    $("#auction-popup").css('transform', 'translateX(-50%) translateY(0)');
+function openBidPopup(id, playername, streetname) {
+    var html = 
+        `<div class="bid-popup" data-bidID="` + id + `">
+            <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
+            <div class="bid-input">
+                <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+            </div>
+        </div>`
+
+    $(html).prependTo('#bid-popup-container').fadeIn(500);
 }
 
-function closeAuctionPopup() {
-    $("#auction-popup").css('transform', 'translateX(-50%) translateY(-100px)');
-    $("#auction-popup").fadeOut(500);
+function closeBidPopup(id) {
+    $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
 }
 
 // initProperty()

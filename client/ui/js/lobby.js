@@ -507,15 +507,6 @@ $('.grouplist').on('click', '.friend-action', function () {
     socket.emit('lobbyKickReq', { userToKickID: userToKickID });
 });
 
-// Notifications Simples
-function createNotification(type, content, time) {
-    let html = `<div class="` + type + `-notification">
-                    ` + content + ` 
-                </div>`;
-
-    $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast').delay(time * 1000).fadeOut('fast');
-}
-
 /**** PARAMETRES DU PROFIL *****/
 $('#optionsModal').on('show.bs.modal', () => {
     $('#user-settings input[name="nickname"]').val(NICKNAME);
