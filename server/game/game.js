@@ -314,7 +314,8 @@ class Game {
         this.turnData.canRollDiceAgain = false;
 
         this.resetTurnActionData();
-        const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
+        //const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
+        const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [4,4];
         this.forcedDiceRes = null; // forcedDiceRes => ne pas toucher (uniquement pour TU)
 
         if (this.curPlayer.isInPrison)

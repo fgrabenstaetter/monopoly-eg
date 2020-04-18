@@ -1053,7 +1053,8 @@ input {
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
-  margin-bottom: 15px;
+  position: absolute;
+  bottom: 15px;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -1064,12 +1065,12 @@ input {
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right {
-  margin-left: 5px;
+  right: -8px;
   border-left: 17px solid rgba(255, 255, 255, 0.5);
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
-  margin-right: 5px;
+  left: -8px;
   border-right: 17px solid rgba(255, 255, 255, 0.5);
 }
 
