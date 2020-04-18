@@ -27,7 +27,12 @@ class Card {
     }
 
     loseMoney (game, player) {
-        player.loseMoney(this.effectArg1);
+        if (player.money < this.effectArg1) {
+            game.playerNotEnoughMoney(player, this.effectArg1,
+                'Le joueur ' + player.nickname + ' est en faillite (ne peux pas payer la carte de ' + this.effectArg1 + '€)',
+                'Le joueur ' + player.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la carte');
+        } else
+            player.loseMoney(this.effectArg1);
     }
 
     jailEscapeCard (game, player) {
@@ -65,7 +70,12 @@ class Card {
             }
         }
 
-        player.loseMoney(price);
+        if (player.money < price) {
+            game.playerNotEnoughMoney(player, price,
+                'Le joueur ' + player.nickname + ' est en faillite (ne peux pas payer les réparations de ' + price + '€)',
+                'Le joueur ' + player.nickname + ' doit hypothéquer des propriétés pour pouvoir les réparations');
+        } else
+            player.loseMoney(price);
     }
 
     goJail (game, player) {

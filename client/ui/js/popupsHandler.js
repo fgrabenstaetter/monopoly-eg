@@ -177,7 +177,7 @@ function createTextCard(text, disabled, type, title) {
 function openBidPopup(id, playername, streetname) {
     if (playername == "undefined") {
         var html =
-        `<div class="bid-popup" data-bidID="` + id + `">
+            `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
@@ -187,7 +187,7 @@ function openBidPopup(id, playername, streetname) {
     }
     else {
         var html =
-        `<div class="bid-popup" data-bidID="` + id + `">
+            `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">` + playername + ` lance une enchère pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>

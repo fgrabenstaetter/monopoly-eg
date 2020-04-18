@@ -514,7 +514,6 @@ class Game {
         this.curPlayer.addProperty(property);
 
         this.resetTurnActionData();
-
         return Errors.SUCCESS;
     }
 
