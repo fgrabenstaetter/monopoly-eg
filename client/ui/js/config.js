@@ -10,3 +10,4 @@ const jwt = localStorage.getItem('jwt');
 const ID = localStorage.getItem('id');
 let NICKNAME = localStorage.getItem('nickname');
 let EMAIL = localStorage.getItem('email');
+let AVATAR = localStorage.getItem('avatar');

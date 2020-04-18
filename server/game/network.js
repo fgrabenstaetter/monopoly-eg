@@ -47,31 +47,31 @@ class Network {
         // Do something when a file is saved:
         uploader.on("saved", function(event){
             (async () => {
+                let err = Errors.UPDATE_PROFILE.AVATAR_UNKNOWN;
                 try {
                     const imgType = await FileType.fromFile(event.file.pathName);
                     //=> {ext: 'png', mime: 'image/png'}
 
                     if (imgType.mime === 'image/jpeg') {
-                        console.log(`Rename ${event.file.pathName} => ${uploader.dir}/${user.id}.jpg`);
+                        err = Errors.SUCCESS;
                         fs.rename(event.file.pathName, `${uploader.dir}/${user.id}.jpg`, () => {
-                            user.avatar = `${user.id}.jpg`;
                             currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/${user.id}.jpg` });
                         });
                     } else {
-                        fs.unlink(event.file.pathName);
-                        user.avatar = `default.jpg`;
-                        currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/default.jpg` });
+                        err = Errors.UPDATE_PROFILE.AVATAR_WRONG_TYPE;
+                        fs.unlink(event.file.pathName, () => {
+                            user.socket.emit('lobbyUpdateAvatarRes', { error: err.code, status: err.status });
+                        });
                     }
-                } catch(err) {
-                    user.avatar = `default.jpg`;
-                    currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/default.jpg` });
+                } catch(catchErr) {
+                    user.socket.emit('lobbyUpdateAvatarRes', { error: err.code, status: err.status });
                 }
             })();
         });
 
-        // Error handler:
-        uploader.on("error", function(event){
-            console.log("Error from uploader", event);
+        // A conserver pour "catch" d'éventuelles erreurs
+        uploader.on('error', (event) => {
+            console.log('upload error', event);
         });
 
         uploader.listen(user.socket);
@@ -85,7 +85,6 @@ class Network {
 
         // Paramètres + Chat
         this.lobbyUpdateProfile             (user, lobby);
-        // this.lobbyUpdateAvatar              (user, lobby);
         this.lobbyChangeTargetUsersNbReq    (user, lobby);
         this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
@@ -155,8 +154,9 @@ class Network {
         let users = [];
         for (const usr of lobby.users) {
             users.push({
+                id       : usr.id,
                 nickname : usr.nickname,
-                id       : usr.id
+                avatar: usr.getAvatar()
             });
         }
 
@@ -169,8 +169,9 @@ class Network {
 
         // envoyer à tous les users du loby, sauf le nouveau
         user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
+            id       : user.id,
             nickname : user.nickname,
-            id       : user.id
+            avatar   : user.getAvatar()
         });
     }
 
@@ -312,7 +313,11 @@ class Network {
                         // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
                         for (const u of this.GLOBAL.users) {
                             if (invitedByUser._id == u.id) {
-                                u.socket.emit('lobbyFriendInvitationAcceptedRes', { id: user.id, nickname: user.nickname });
+                                u.socket.emit('lobbyFriendInvitationAcceptedRes', {
+                                    id: user.id,
+                                    nickname: user.nickname,
+                                    avatar: user.getAvatar()
+                                });
                                 break;
                             }
                         }
@@ -409,6 +414,14 @@ class Network {
 
     lobbyUpdateProfile(user, lobby) {
         user.socket.on('lobbyUpdateProfileReq', (data) => {
+            if (!data.nickname || !data.email)
+                return;
+
+            if (data.nickname == user.nickname && data.email == user.email && !data.password) {
+                user.socket.emit('lobbyUpdateProfileRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status, user: null });
+                return;
+            }
+
             UserManager.updateProfile(user.id, data.nickname, data.email, data.password, (err, userUpdated) => {
                 user.socket.emit('lobbyUpdateProfileRes', { error: err.code, status: err.status, user: userUpdated });
 
@@ -512,7 +525,8 @@ class Network {
                 for (let i = 0; i < friendsObj.length; i++) {
                     friends.push({
                         id: friendsObj[i].friend._id,
-                        nickname: friendsObj[i].friend.nickname
+                        nickname: friendsObj[i].friend.nickname,
+                        avatar: friendsObj[i].friend.getAvatar()
                     });
                 }
 

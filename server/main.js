@@ -123,8 +123,8 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
-        let token = null, id = null;
-
+        let token = null, id = null, avatar = "";
+        
         if (err.code === Errors.SUCCESS.code) {
             // si le user n'est pas déjà dans la liste, l'y ajouter
             let user = getConnectedUserById(userSchema._id);
@@ -137,6 +137,9 @@ app.post('/api/login', (req, res) => {
             token = jwt.sign({ id: userSchema._id }, JWT_SECRET, {
                 expiresIn: 86400 // expires in 24 hours
             });
+
+            // Ajouter l'avatar dans la réponse
+            avatar = userSchema.getAvatar();
         } else
             res.status(400);
 
@@ -144,7 +147,8 @@ app.post('/api/login', (req, res) => {
             error  : err.code,
             status : err.status,
             token  : token,
-            user: userSchema
+            user: userSchema,
+            avatar: avatar
         });
     });
 });

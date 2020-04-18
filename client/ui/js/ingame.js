@@ -76,6 +76,10 @@ function getCellByProperty(property) {
 /////////////////////////////
 
 socket.on('gameStartedRes', (data) => {
+    // afficher pseudo & avatar
+    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
+
     DATA.players = data.players;
     DATA.cells = data.cells;
     DATA.properties = data.properties;
@@ -160,7 +164,7 @@ socket.on('gameActionRes', (data) => {
             $('#timer').progressSetStateTerminer();
         }
         else {
-            $('#timer').attr({ 'data-loading': 'RELANCER LES DES' });
+            $('#timer').progressSetStateRelancer();
         }
     }
 
@@ -180,7 +184,9 @@ socket.on('gameActionRes', (data) => {
         if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
             console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
             currPlayer.cellPos = cellPos1;
+            $('#timer').progressPause();
             movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
+                $('#timer').progressResume();
                 gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
             });
         } else {
@@ -550,6 +556,10 @@ socket.on('gamePlayerReconnectedRes', (data) => {
 
 // Données de reconnexion
 socket.on('gameReconnectionRes', (data) => {
+    // afficher pseudo & avatar
+    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
+    
     console.log(' --- RECONNEXION DATA');
     console.log(data);
 

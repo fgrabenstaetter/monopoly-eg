@@ -1,3 +1,4 @@
+const fs = require('fs');
 const Constants = require('../lib/constants');
 const { UserSchema, UserManager } = require('../models/user');
 
@@ -46,6 +47,22 @@ class User {
         while (this.exp > this.levelUpExp) {
             this.level ++;
             this.exp = this.exp - this.levelUpExp;
+        }
+    }
+
+    /**
+     * Récupère l'avatar de ce joueur
+     */
+    getAvatar () {
+        try {
+            const avatarPath = `/avatars/${this.id}.jpg`;
+            if (fs.existsSync(`${__dirname}/../public${avatarPath}`)) {
+                return avatarPath;
+            } else {
+                return '/avatars/default.jpg';
+            }
+        } catch (err) {
+            return '/avatars/default.jpg';
         }
     }
 }

@@ -98,8 +98,9 @@
             users: [
                 // premier user = host
                 {
+                    id: int,
                     nickname: string,
-                    id: int
+                    avatar: string
                 },
                 ...
                 // dernier user = le nouveau qui a reçu cet évènnement
@@ -120,8 +121,9 @@
         * *Données:*
         ```javascript
         {
+            id: int,
             nickname: string,
-            id: int
+            avatar: string
         }
         ```
 
@@ -294,7 +296,8 @@
             friends: [
                 {
                     id: int,
-                    nickname: string
+                    nickname: string,
+                    avatar: string
                 }, ...
             ]
         }
@@ -397,7 +400,8 @@
         ```javascript
         {
             id: int,
-            nickname: string
+            nickname: string,
+            avatar: string
         }
         ```
 
@@ -443,6 +447,15 @@
             error: int,
             status: string,
             user: UserSchema // Toutes les données de l'utilisateur, uniquement si error = 0 (pas d'erreur)
+        }
+        ```
+
+    * **Réponse:** lobbyUpdateAvatarRes - Uniquement envoyé si upload d'avatar
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
         }
         ```
 
