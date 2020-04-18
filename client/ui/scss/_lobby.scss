@@ -310,7 +310,8 @@
         }
 
         .arrow-right, .arrow-left {
-          margin-bottom: 15px;
+          position: absolute;
+          bottom: 15px;
           background-color: transparent;
           border: none;
           padding: 0;
@@ -321,12 +322,12 @@
         }
 
         .arrow-right {
-          margin-left: 5px;
+          right: -8px;
           border-left:17px solid rgba($color: white, $alpha: 0.5);
         }
 
         .arrow-left {
-          margin-right: 5px;
+          left: -8px;
           border-right:17px solid rgba($color: white, $alpha: 0.5);
         }
       }
