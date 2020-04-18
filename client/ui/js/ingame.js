@@ -504,6 +504,7 @@ socket.on("gameOverbidRes", (res) => {
         console.log("gameOfferAcceptRes")
     else // hôte uniquement
         toast(`gameOverbidRes ${res.status}`, 'danger', 5);
+});
 
 socket.on("gameBidEndedRes", (res) => {
     console.log("gameBidEndedRes");
