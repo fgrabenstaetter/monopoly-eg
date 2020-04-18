@@ -175,14 +175,26 @@ function createTextCard(text, disabled, type, title) {
  * @param {string} streetname nom de la rue mise en enchères
  */
 function openBidPopup(id, playername, streetname) {
-    var html = 
-        `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
+    if (playername == "undefined") {
+        var html =
+            `<div class="bid-popup" data-bidID="` + id + `">
+            <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
                 <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
             </div>
-        </div>`
+        </div>`;
+    }
+    else {
+        var html =
+            `<div class="bid-popup" data-bidID="` + id + `">
+            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `</div>
+            <div class="bid-input">
+                <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+            </div>
+        </div>`;
+    }
 
     $(html).prependTo('#bid-popup-container').fadeIn(500);
 }
@@ -200,5 +212,5 @@ function validateBid(id) {
  * @param {int} id id de la popup d'enchère à fermer
  */
 function closeBidPopup(id) {
-    $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
+    $('*[data-bidID="' + id + '"]').fadeOut(500, function () { $(this).remove(); });
 }

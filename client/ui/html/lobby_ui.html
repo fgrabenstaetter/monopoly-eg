@@ -82,16 +82,21 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 nb-joueurs-container">
-            <div>
+        <div class="col-md-1 game-time-container">
+            <div class="game-time-selector">
+                <button class="arrow-left" id="leftGameTime"></button>
+                <button class="btn btn-primary stylized" id="gameTime" style="cursor: default;">?</button>
+                <button class="arrow-right" id="rightGameTime"></button>
+            </div>
+        </div>
+        <div class="col-md-2 play-button-container">
+            <a class="btn btn-primary stylized play-button" id="play">JOUER</a>
+        </div>
+        <div class="col-md-1 nb-joueurs-container">
+            <div class="nb-joueurs-selector">
                 <button class="arrow-left" id="leftNbJ"></button>
                 <button class="btn btn-primary stylized" id="nbJoueurs" style="cursor: default;">?</button>
                 <button class="arrow-right" id="rightNbJ"></button>
-            </div>
-        </div>
-        <div class="col-md-2 text-center" style="position: relative;">
-            <div style="position: absolute; bottom: 0; left: 0; margin-left: 15px;">
-                <a class="btn btn-primary stylized" id="play">JOUER</a>
             </div>
         </div>
         <div class="col-md-4 notification-container" id="inviteGameContainer">

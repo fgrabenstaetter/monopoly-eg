@@ -268,78 +268,108 @@
     left: 50%;
     transform: translate(-50%, 0);
 
-    .nb-joueurs-container {
-      position: relative;
+    .nb-joueurs-container, .game-time-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
 
-      #nbJoueurs {
-        height: 50px;
-        width: 50px;
-        border-radius: 100%;
-        padding: 0;
-      }
+      .nb-joueurs-selector, .game-time-selector {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-end;
 
-      div:first-of-type {
-        position: absolute; bottom: 0; right: 0; margin-right: 15px;
-      }
+        #nbJoueurs, #gameTime {
+          height: 50px;
+          width: 50px;
+          border-radius: 100%;
+          padding: 0;
+          position: relative;
+        }
 
-      .stylized {
-        border-color: rgba($color: black, $alpha: 0.5);
-        background-color: rgba($color: black, $alpha: 0.3);
-      }
+        #gameTime:after {
+          position: absolute;
+          bottom: -40px;
+          content: "Durée de la Partie";
+          width: 140px;
+          left: -47.5px;
+        }
 
-      .arrow-right, .arrow-left {
-        position: absolute;
-        top: 15px;
-        background-color: transparent;
-        border: none;
-        padding: 0;
-        width: 0;
-        height: 0;
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
-      }
+        #nbJoueurs:after {
+          position: absolute;
+          bottom: -40px;
+          content: "Nombre de Joueurs";
+          width: 140px;
+          left: -45px;
+        }
 
-      .arrow-right {
-        left: 55px;
-        border-left:17px solid rgba($color: white, $alpha: 0.5);
-      }
+        .stylized {
+          border-color: rgba($color: black, $alpha: 0.5);
+          background-color: rgba($color: black, $alpha: 0.3);
+        }
 
-      .arrow-left {
-        right: 55px;
-        border-right:17px solid rgba($color: white, $alpha: 0.5);
+        .arrow-right, .arrow-left {
+          position: absolute;
+          bottom: 15px;
+          background-color: transparent;
+          border: none;
+          padding: 0;
+          width: 0;
+          height: 0;
+          border-top: 10px solid transparent;
+          border-bottom: 10px solid transparent;
+        }
+
+        .arrow-right {
+          right: -8px;
+          border-left:17px solid rgba($color: white, $alpha: 0.5);
+        }
+
+        .arrow-left {
+          left: -8px;
+          border-right:17px solid rgba($color: white, $alpha: 0.5);
+        }
       }
     }
 
     // Bouton "JOUER"
-    .btn {
-      height: 50px;
-      border-radius: 25px;
-      font-size: 20px;
-      padding: 6px 30px;
+    .play-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
 
-      &.loading {
-        background-size: 30px 30px;
-        background-image: linear-gradient(
-          45deg, 
-          rgba(black, 0.1)  25%, 
-          transparent       25%, 
-          transparent       50%, 
-          rgba(black, 0.1)  50%, 
-          rgba(black, 0.1)  75%, 
-          transparent       75%, 
-          transparent
-        );
-        animation: barberpole 0.5s linear infinite;
+      .play-button {
+        height: 50px;
+        border-radius: 25px;
+        font-size: 20px;
+        padding: 6px 30px;
+
+        &:hover {
+          color: white;
+        }
+
+        &.loading {
+          background-size: 30px 30px;
+          background-image: linear-gradient(
+            45deg, 
+            rgba(black, 0.1)  25%, 
+            transparent       25%, 
+            transparent       50%, 
+            rgba(black, 0.1)  50%, 
+            rgba(black, 0.1)  75%, 
+            transparent       75%, 
+            transparent
+          );
+          animation: barberpole 0.5s linear infinite;
+        }
+
+        @keyframes barberpole {
+          from { background-position: 0 0; }
+          to   { background-position: 60px 30px; }
+        }
       }
-
-      @keyframes barberpole {
-        from { background-position: 0 0; }
-        to   { background-position: 60px 30px; }
-      }
-    }
-
-    .btn:hover {
-      color: white;
     }
 
     // Notifications

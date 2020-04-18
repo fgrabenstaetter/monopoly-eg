@@ -479,10 +479,35 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+//Hypothèque
+// ! Mettre affichage de propriété à jour
 socket.on("gamePropertyMortageRes", (res) => {
     console.log("gamePropertyMortageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
 
+});
+
+//Enchères
+socket.on("gameBidRes", (res) => {
+    console.log("gameBidRes");
+    console.log(res);
+    let playerNick = idToNick(res.playerID);
+    if (playerNick == null)
+        openBidPopup(res.bidID, 'undefined', res.text);
+    else
+        openBidPopup(res.bidID, playerNick, res.text);
+
+});
+
+socket.on("gameBidEndedRes", (res) => {
+    console.log("gameBidEndedRes");
+    let playerNick = idToNick(res.playerID);
+    if (res.playerID == null)
+        toast("Le terrain n'a pas été acheté", "info", 10);
+    else
+        toast("Le joueur " + playerNick + " a remporté l'enchère pour " + res.price + "€", "success", 10);
+
+    closeBidPopup(res.bidID);
 });
 
 socket.on("gameRollDicesRes", (res) => {
@@ -733,7 +758,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property, isMine, isMortgaged) {
+function populateStreetOverviewCard(property, isMine) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -765,10 +790,8 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-
     if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
     }
@@ -776,13 +799,6 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-
-        if (isMortgaged) {
-            $('.overview-card .buyback-button').css("display", "block");
-        }
-        else {
-            $('.overview-card .buyback-button').css("display", "none");
-        }
     }
 }
 

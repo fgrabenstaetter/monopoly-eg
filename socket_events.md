@@ -945,7 +945,9 @@
             bidID: int,
             playerID: int
             price: int,
-            bankMoney: int
+            bankMoney: int,
+            playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)
+            propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
 
