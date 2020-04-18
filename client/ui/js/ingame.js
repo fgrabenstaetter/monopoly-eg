@@ -479,11 +479,18 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+// ! Mettre affichages à jour
 socket.on("gamePropertyMortageRes", (res) => {
     console.log("gamePropertyMortageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
 
 });
+
+socket.on("gameBidRes", (res) => {
+    console.log("gameBidRes");
+    console.log(res);
+    openAuctionPopup(res.bidID, res.playerID, res.text);
+})
 
 socket.on("gameRollDicesRes", (res) => {
     if (res.error === 0)
