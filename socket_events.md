@@ -945,7 +945,9 @@
             bidID: int,
             playerID: int
             price: int,
-            bankMoney: int
+            bankMoney: int,
+            playerMoney: int,
+            propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
 

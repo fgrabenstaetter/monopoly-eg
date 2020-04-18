@@ -482,7 +482,7 @@ describe('Network + Game', () => {
 
             sock.on('gameBidRes', (data) => {
                 assert.strictEqual(data.playerID, null);
-                assert.strictEqual(data.price, game.cells[player.cellPos].property.value);
+                assert.strictEqual(data.price, 0);
                 assert.strictEqual(data.bidID, nextBidID);
 
                 sock.off('gameBidRes');
