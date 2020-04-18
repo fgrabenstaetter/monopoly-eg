@@ -33,14 +33,14 @@ class Bid {
         this.amountAsked          = amountAsked;
         this.game                 = game;
         this.manual               = manual;
-        this.text                 = 'Enchère en cours pour la propriété ' + this.property.name;
+        this.text                 = this.property.name;
         Bid.bids.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
 
         if (manual)
             Bid.alreadyOneManualBid = true;
 
-        const msg = 'Une enchère a démarrée pour' + this.property.name;
+        const msg = this.property.name;
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidRes', {
             bidID      : this.id,
             playerID   : null,
@@ -84,11 +84,14 @@ class Bid {
         Bid.delBid(this);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
-            bidID     : this.id,
-            propertyID: this.property.id,
-            playerID  : this.player ? this.player.id : null,
-            price     : this.amountAsked,
-            bankMoney : this.game.bank.money
+            bidID              : this.id,
+            propertyID         : this.property.id,
+            playerID           : this.player ? this.player.id : null,
+            playerMoney        : this.player ? this.player.money : null,
+            price              : this.amountAsked,
+            bankMoney          : this.game.bank.money,
+            propertyOwnerMoney : this.property.owner ? this.property.owner.money : null
+            // ajouter argent player actualisé
         });
     }
 }

@@ -175,14 +175,26 @@ function createTextCard(text, disabled, type, title) {
  * @param {string} streetname nom de la rue mise en enchères
  */
 function openBidPopup(id, playername, streetname) {
-    var html = 
-        `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
+    if (playername == "undefined") {
+        var html =
+            `<div class="bid-popup" data-bidID="` + id + `">
+            <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
                 <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
             </div>
-        </div>`
+        </div>`;
+    }
+    else {
+        var html =
+            `<div class="bid-popup" data-bidID="` + id + `">
+            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `</div>
+            <div class="bid-input">
+                <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+            </div>
+        </div>`;
+    }
 
     $(html).prependTo('#bid-popup-container').fadeIn(500);
 }
@@ -200,29 +212,5 @@ function validateBid(id) {
  * @param {int} id id de la popup d'enchère à fermer
  */
 function closeBidPopup(id) {
-    $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
+    $('*[data-bidID="' + id + '"]').fadeOut(500, function () { $(this).remove(); });
 }
-
-// initProperty()
-// createProperty('1', 'yellow', 'Avenue des Vosges', 2);
-// createProperty('1', 'yellow', 'Rue de la rue', 3);
-// createProperty('3', 'red', 'Avenue des Vosges', 4);
-// createProperty('1', 'blue', 'Avenue originale', 5);
-// createProperty('1', 'blue', 'Rue de la forêt', 1);
-// createProperty('2', 'blue', 'Rue de la ville', 8);
-// createProperty('1', 'blue', 'Rue étrange', 9);
-// createProperty('1', 'station', 'Université', 10);
-// createProperty('1', 'station', 'Homme de Fer', 12);
-// createProperty('1', 'company', 'Eau', 15);
-// createProperty('1', 'company', 'Électricité', 20);
-// createProperty('6', 'orange', 'Avenue des Vosges', 21);
-// createProperty('1', 'pink', 'Rue de la rue', 32);
-// createProperty('1', 'cyan', 'Avenue des Vosges', 23);
-// createProperty('4', 'green', 'Avenue originale', 22);
-// createProperty('4', 'green', 'Rue de la forêt', 31);
-// createProperty('4', 'brown', 'Rue de la ville', 33);
-
-//createCard(1, 'brown', 'Rue de la ville', 33000, null);
-//createTextCard('Vous êtes arrivés sur l\'Avenue des Vosges\nVous devez versé un loyer de 30 000€ à X', false, 'red', 'LOYER');
-//createTextCard('Vous devez allez en prison.', true, 'event', 'CHANCE');
-//createTextCard('qqch');
