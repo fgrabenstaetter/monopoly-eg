@@ -594,7 +594,7 @@ class Game {
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
-                const bid = new Bid(curProp, curProp.value, this);
+                const bid = new Bid(curProp, 0, this);
 
                 break;
         }

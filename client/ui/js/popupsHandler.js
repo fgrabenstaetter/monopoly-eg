@@ -169,7 +169,7 @@ function createTextCard(text, disabled, type, title) {
 }
 
 function validateAuction(id) {
-    $('*[data-auctionID="' + id + '"]');
+    $('*[data-auctionID="' + id + '"]').find('input').prop('disabled', true);
 }
 
 function openAuctionPopup(id, playername, streetname) {
