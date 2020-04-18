@@ -733,7 +733,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property, isMine) {
+function populateStreetOverviewCard(property, isMine, isMortgaged) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -765,8 +765,10 @@ function populateStreetOverviewCard(property, isMine) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
+
     if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
+        $('.overview-card .buyback-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
         $('.overview-card .mortgage-button').css("display", "block");
     }
@@ -774,6 +776,13 @@ function populateStreetOverviewCard(property, isMine) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
+
+        if (isMortgaged) {
+            $('.overview-card .buyback-button').css("display", "block");
+        }
+        else {
+            $('.overview-card .buyback-button').css("display", "none");
+        }
     }
 }
 

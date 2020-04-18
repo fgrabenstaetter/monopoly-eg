@@ -5,12 +5,20 @@ let scene, light, camera, renderer;
 var pawn, window, cases;
 
 
+/**
+ * Creation de la scene
+ * @return {scene} La scene
+ */
 function getScene () {
 	let scene = new THREE.Scene();
 	return scene;
 }
 
 
+/**
+ * Creation de la camera
+ * @return {camera} La camera
+ */
 function getCamera () {
 	const canvas = document.querySelector('#c');
 	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
@@ -24,6 +32,10 @@ function getCamera () {
 }
 
 
+/**
+ * Creation de la lumiere
+ * @return {light} La lumiere
+ */
 function getLight (scene) {
 	let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
 	light.position.set(7, 4, 3);
@@ -40,6 +52,10 @@ function getLight (scene) {
 }
 
 
+/**
+ * Creation du rendu
+ * @return {renderer} Le rendu
+ */
 function getRenderer () {
 	//Creation du render
 	const canvas = document.querySelector('#c');
@@ -62,6 +78,11 @@ light = getLight(scene);
 renderer = getRenderer();
 
 
+/**
+ * Verifie la taille de rendu et de la fenêtre
+ * @param {renderer} 
+ * @return {bool} Oui ou non
+ */
 function resizeRendererToDisplaySize (renderer) {
 	const canvas = renderer.domElement;
 	const pixelRatio = window.devicePixelRatio;
@@ -77,6 +98,10 @@ function resizeRendererToDisplaySize (renderer) {
 }
 
 
+/**
+ * Génère le rendu de la scène 
+ * @return {needSize} Booléen 
+ */
 function render () {
 	if (counter != 0)
 		movement(varPawn, varMovement, varFunction);
@@ -102,44 +127,79 @@ function render () {
 render();
 
 
+/**
+ * Supprime une maison
+ * @param {int} Numero de case
+ * @param {int} Numero de maison
+ */
 function deleteHouse (ncase, nhouse) {
 	let concatS = "";
 	deleteHouseD(concatS.concat(tabHouse[ncase],"_",nhouse));
 }
 
+/**
+ * Supprime une maison (Auxiliaire)
+ * @param {string} Numero de la maison
+ */
 function deleteHouseD (houseProperty) {
 	requestAnimationFrame(render);
 	scene.remove(window[houseProperty]);
 }
 
 
+/**
+ * Supprime un hotel
+ * @param {int} Numero de case
+ */
 function deleteHotel (ncase) {
 	let concatS = "";
 	deleteHotelD(concatS.concat(tabHotel[ncase]));
 }
 
+/**
+ * Supprime un hotel (Auxiliaire)
+ * @param {string} Numero de l'hotel
+ */
 function deleteHotelD (hotelProperty) {
 	requestAnimationFrame(render);
 	scene.remove(window[hotelProperty]);
 }
 
 
+/**
+ * Supprime un pion
+ * @param {string} nom du pion
+ */
 function deletePawn (pawn) {
 	requestAnimationFrame(render);
 	scene.remove(window[pawn]);
 }
 
 
+/**
+ * Modifie la couleur du drapeau
+ * @param {string} Nom du drapeau
+ * @param {string} Nom de la couleur
+ */
 function changeColorFlag (flag, colore) {
 	deleteFlag(flag);
 	loaderFlag(flag, colore);
 }
 
+/**
+ * Supprime un drapeau
+ * @param {string} Nom du drapeau
+ */
 function deleteFlag (flag) {
 	requestAnimationFrame(render);
 	scene.remove(window[flag]);
 }
 
+/**
+ * Ajoute un drapeau de la couleur du joueur sur la propriété
+ * @param {string} Nom du drapeau
+ * @param {string} Nom de la couleur
+ */
 function loaderFlag (flag, colore) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/drapeaux/'+flag+'.gltf', (gltf) => {
@@ -156,6 +216,10 @@ function loaderFlag (flag, colore) {
 	});
 }
 
+/**
+  * Tableau de nom des drapeaux
+  * @type {array} 
+  */
 var plateauDrapeaux = [
 			'd1', 'd3', 'd5', 'd6', 'd8', 'd9',
 			'd11', 'd12', 'd13', 'd14', 'd15', 'd16', 'd18',
@@ -165,6 +229,11 @@ var plateauDrapeaux = [
 ];
 
 
+/**
+ * Charge le plateau
+ * @param {function} Loader
+ * @param {string} Nom de l'élément du plateau
+ */
 function loaderPlateau (load, test) {
 	load.load('models/plateau/'+test+'.gltf', (gltf) => {
 	  requestAnimationFrame(render);
@@ -173,6 +242,10 @@ function loaderPlateau (load, test) {
 	});
 }
 
+/**
+ * Tableau de nom éléments du décor
+ * @type {array} 
+ */
 var plateauObjects = [
 			'collections', 'eau', 'egout', 'egout',
 			'orangerie', 'parlement', 'pont', 'rail',
@@ -186,38 +259,11 @@ for (let i = 0; i < 13; i++) {
 }
 
 
-function loaderCases (cases, colorCase) {
-    let load = new THREE.GLTFLoader();
-    load.load('models/plateau/'+cases+'.gltf', (gltf) => {
-        requestAnimationFrame(render);
-        const root = gltf.scene;
-        window[cases] = gltf.scene;
-		scene.add(root);
-	
-        window[cases].traverse((o) => {
-            if (o.isMesh)
-                o.material.color = new THREE.Color( colorCase );
-        });
-    });
-}
-
-
-var plateauCases = [
-			'case0', 'case1', 'case2', 'case3', 'case4', 'case5',
-			'case6', 'case7', 'case8', 'case9', 'case10', 'case11',
-			'case12', 'case13', 'case14', 'case15', 'case16', 'case17',
-			'case18', 'case19', 'case20', 'case21', 'case22', 'case23',
-			'case24', 'case25', 'case26', 'case27', 'case28', 'case29',
-			'case30', 'case31', 'case32', 'case33', 'case34', 'case35',
-			'case36', 'case37', 'case38', 'case39'
-];
-
-for(let i = 0; i < 40; i++){
-  let objVar = plateauCases[i];
-  loaderCases(objVar, 0xFFFFFF);
-};
-
-
+/**
+ * Ajoute un pion à la case qu'on veut
+ * @param {string} pawn Le nom du pion (Ex: 'moto')
+ * @param {int} vdp Un entier entre [0-39]
+ */
 function loaderPawn (pawn, vdp) {
 	load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
@@ -254,11 +300,24 @@ function loaderPawn (pawn, vdp) {
 }
 
 
+/**
+ * Fonction auxiliaire - Charge une maison à la case spécifiée
+ * @param {int} ncase Chiffre de la case
+ * @param {int} nhouse Entier entre [1-4]. 1 -> met la case en bas à droite de la case
+ * 					 					 2 -> met la case en bas à gauche de la case
+ * 										 3 -> met la case en haut à droite de la case
+ * 										 4 -> met la case en haut à gauche de la case
+ */
 function loaderHouseProperty (ncase, nhouse) {
 	let concatS = "";
 	housePropertyL(concatS.concat(tabHouse[ncase],"_",nhouse));
 }
 
+
+/**
+ * Fonction prinicpale - Charge une maison à la case spécifiée
+ * @param {string} houseProperty  Nom de la maison (Ex: M3_1_2)
+ */
 function housePropertyL (houseProperty) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+houseProperty+'.gltf', (gltf) => {
@@ -270,12 +329,20 @@ function housePropertyL (houseProperty) {
 }
 
 
+/**
+ * Fonction auxiliaire - Charge un hôtel à la case spécifiée
+ * @param {int} ncase Chiffre de la case 
+ */
 function loaderHotelProperty (ncase) {
 	let concatS = "";
 	hotelPropertyL(concatS.concat(tabHotel[ncase]));
 }
 
 
+/**
+ * Fonction principale - Charge un hôtel à la case spécifiée
+ * @param {string} hotelPropriete Nom de l'hôtel (Ex: H1_2)
+ */
 function hotelPropertyL (hotelPropriete) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
@@ -287,11 +354,21 @@ function hotelPropertyL (hotelPropriete) {
 }
 
 
+/**
+ * Active ou désactive le zoom sur le plateau
+ * @param {int} number Entier entre [0-1]. 0 pour désactiver le zoom et 1 pour l'activer
+ */
 function zoomOnOff(number) {
 	zoomOn = number;
 }
 
 
+/**
+ * Déplace le pion sur le plateau
+ * @param {string} pawn Le nom du pion (Ex: 'moto')
+ * @param {int} vdp Un entier entre [0-39] 
+ * @callback callback Appel d'un callback()
+ */
 function movement (pawn, vdp, callback) {
 
 	varFunction = callback;

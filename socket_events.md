@@ -422,6 +422,44 @@
         }
         ```
 
+### --- Créer / Inviter / Rejoindre / Quitter
+- **Mettre à jour son profil**
+    > Mettre à jour pseudo, adresse email et mot de passe (optionnel)
+
+    * **Requête:** lobbyUpdateProfileReq
+        * *Données:*
+        ```javascript
+        {
+            nickname: string,
+            email: string,
+            password: string // peut être vide
+        }
+        ```
+
+    * **Réponse:** lobbyUpdateProfileRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string,
+            user: UserSchema // Toutes les données de l'utilisateur, uniquement si error = 0 (pas d'erreur)
+        }
+        ```
+
+- **Mettre à jour le pseudo d'un joueur**
+    > Si un joueur met son profil à jour et change son pseudo, il doit être mis à jour chez tout le monde
+
+    * **Réponse:** lobbyUserNicknameUpdatedRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string,
+            user: UserSchema // Toutes les données de l'utilisateur, uniquement si error = 0 (pas d'erreur)
+        }
+        ```
+
+
 ## Game
 
 ### --- Début, fin, déconnexion et reconnexion
