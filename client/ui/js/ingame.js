@@ -379,7 +379,6 @@ socket.on("gamePropertyBuyRes", (data) => {
 
         }
         setPlayerMoney(player.id, data.playerMoney);
-        changeColorCase('case' + cell.id.toString(), property.color);
 
         // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
         $('.notification-container')
@@ -996,4 +995,25 @@ $('.quit-game').click((e) => {
     e.preventDefault();
     alert('Event quit game à implémenter côté serveur !');
     return false;
+});
+
+
+// Player failure
+socket.on('gamePlayerFailureRes', (res) => {
+    console.log('gamePlayerFailureRes');
+    console.log(res);
+
+    const player = getPlayerById(res.playerID);
+
+    // Toutes les propriétés sont à nouveau à vendre
+    DATA.properties.forEach((property) => {
+        if (property.ownerID == player.id)
+            property.ownerID = null;
+    });
+
+    // Enlever les propriétés du HUD pour ce joueur
+    $(`.player-entry[data-id="${res.playerID}"] .properties-container`).empty();
+
+    // Simple texte d'annonce
+    $(`.player-entry[data-id="${res.playerID}"] .name`).append(' (failure)');
 });
