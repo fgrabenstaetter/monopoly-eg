@@ -12,6 +12,10 @@
   ::-webkit-scrollbar {
     display: none;
   }
+
+  &:focus {
+    outline: none !important;
+  }
 }
 
 body {
@@ -77,11 +81,11 @@ input {
   .danger {
     background-color: rgba($color: red, $alpha: 0.5);
   }
-  
+
   .success {
     background-color: rgba($color: green, $alpha: 0.5);
   }
-  
+
   .info {
     background-color: rgba($color: black, $alpha: 0.3);
   }

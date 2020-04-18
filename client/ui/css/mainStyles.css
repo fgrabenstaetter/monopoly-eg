@@ -30,6 +30,10 @@
   display: none;
 }
 
+*:focus {
+  outline: none !important;
+}
+
 body {
   overflow: hidden;
 }
@@ -1492,17 +1496,20 @@ input {
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup {
-  width: 500px;
+  max-width: 990px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   z-index: 10;
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px 20px 20px 20px;
+  padding: 10px 20px;
   border-radius: 20px;
   -webkit-transition: -webkit-transform 0.5s ease;
   transition: -webkit-transform 0.5s ease;
@@ -1515,8 +1522,12 @@ input {
   width: 100%;
   text-align: center;
   color: white;
-  margin-bottom: 10px;
   font-size: 13px;
+  font-weight: bold;
+  margin: 0 20px 0 5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-input {
@@ -1527,21 +1538,22 @@ input {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  color: white;
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-input input {
   -webkit-box-flex: 10;
       -ms-flex-positive: 10;
           flex-grow: 10;
-  margin-right: 10px;
   border: none;
   border-radius: 5px;
   font-size: 12px;
   padding-left: 10px;
+  width: 70px;
+  margin: 0 5px;
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-input button {
-  margin-left: 10px;
   -webkit-box-flex: 2;
       -ms-flex-positive: 2;
           flex-grow: 2;
@@ -1549,7 +1561,8 @@ input {
   border: none;
   border-radius: 5px;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
+  margin: 0 5px 0 20px;
 }
 
 .ingame-ui-container .overview-card {

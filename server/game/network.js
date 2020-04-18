@@ -416,7 +416,7 @@ class Network {
         user.socket.on('lobbyUpdateProfileReq', (data) => {
             if (!data.nickname || !data.email)
                 return;
-            
+
             if (data.nickname == user.nickname && data.email == user.email && !data.password) {
                 user.socket.emit('lobbyUpdateProfileRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status, user: null });
                 return;
@@ -1092,7 +1092,7 @@ class Network {
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 4 - this.curPlayer.remainingTurnsInJail : false
+                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false
             });
 
             if (game.startedTime) { // partie commencée
