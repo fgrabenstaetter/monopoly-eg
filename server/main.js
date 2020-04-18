@@ -10,6 +10,7 @@ const express     = require('express');
 const jwt         = require('jsonwebtoken');
 const expressJwt  = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
+const SocketIOFileUpload = require("socketio-file-upload");
 const mongoose    = require('mongoose');
 
 const Constants   = require('./lib/constants');
@@ -18,7 +19,6 @@ const User        = require('./game/user');
 const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
-const ObjectId    = require('mongoose').Types.ObjectId;
 const { UserSchema, UserManager } = require('./models/user');
 
 let server;
@@ -71,6 +71,7 @@ if (production) {
 }
 
 const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
+SocketIOFileUpload.listen(app);
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
@@ -144,7 +145,7 @@ app.post('/api/login', (req, res) => {
             error  : err.code,
             status : err.status,
             token  : token,
-            id     : id
+            user: userSchema
         });
     });
 });

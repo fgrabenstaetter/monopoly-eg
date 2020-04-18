@@ -69,6 +69,14 @@ module.exports = Object.freeze({
         },
     },
 
+    // UPDATE PROFILE
+    UPDATE_PROFILE: {
+      NOT_EXISTS: {
+          code: 1,
+          status: 'Compte utilisateur non trouvé'
+      }
+    },
+
     // FRIENDS
     FRIENDS: {
         NOT_CONNECTED: {

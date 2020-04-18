@@ -23,8 +23,9 @@ $(document).ready( () => {
             success:  (res) => {
                 // Forcément status 200 (donc pas d'erreur)
                 localStorage.setItem('jwt', res.token);
-                localStorage.setItem('nickname', nickname);
-                localStorage.setItem('id', res.id);
+                localStorage.setItem('id', res.user._id);
+                localStorage.setItem('nickname', res.user.nickname);
+                localStorage.setItem('email', res.user.email);
                 location.replace('/lobby');
             },
 

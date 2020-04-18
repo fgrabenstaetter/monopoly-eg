@@ -51,6 +51,7 @@ class UserManager { // abstract
     }
 
     /**
+     * Enregistre un nouvel utilisateur dans la base de données
      * @param nickname Le pseudo de l'utilisateur
      * @param email Son email
      * @param rawPassword Le mot de passe en clair
@@ -104,7 +105,88 @@ class UserManager { // abstract
         });
     }
 
+
+
     /**
+     * Met à jour le profil d'un utilisateur dans la base de données
+     * @param id L'id de l'utilisateur
+     * @param nickname Le pseudo de l'utilisateur
+     * @param email L'email de l'utilisateur
+     * @param rawPassword Le mot de passe en clair
+     * @param cb La fonction de callback
+     * @callback-return code d'erreur (Errors.REGISTER, voir errors.js)
+     */
+    static updateProfile (id, nickname, email, rawPassword, cb) {
+        if (!nickname || !email)
+            return cb(Errors.MISSING_FIELD, null);
+
+        if (nickname.length < 4)
+            return cb(Errors.REGISTER.ERR_NICKNAME_LEN, null);
+
+        if (rawPassword && rawPassword.length < 4)
+            return cb(Errors.REGISTER.ERR_PASSWORD_LEN, null);
+
+        if (!UserManager.isEmail(email))
+            return cb(Errors.REGISTER.ERR_EMAIL_FORMAT, null);
+
+        UserSchema.findById(id, (errDb, userDb) => {
+            // console.log('=== updateProfile ===');
+            // console.log(errDb);
+            // console.log('---');
+            // console.log(userDb);
+            if (errDb || !userDb) {
+                return cb(Errors.UPDATE_PROFILE.NOT_EXISTS, null);
+            }
+
+            UserSchema.findOne({ _id: { $nin: [id] }, email: email }, (err, user) => {
+                if (err)
+                    return cb(Errors.INTERNAL_ERROR, null);
+
+                if (user)
+                    return cb(Errors.REGISTER.EMAIL_TAKEN, null);
+
+                UserSchema.findOne({ _id: { $nin: [id] }, nickname: nickname }, (err, user) => {
+                    if (err)
+                        return cb(Errors.INTERNAL_ERROR, null);
+
+                    if (user)
+                        return cb(Errors.REGISTER.NICKNAME_TAKEN, null);
+
+                    
+                    if (rawPassword) {
+                        UserManager.encryptPassword(rawPassword, (hash) => {
+                            if (!hash)
+                                return cb(Errors.INTERNAL_ERROR, null);
+
+                            userDb.nickname = nickname;
+                            userDb.email = email;
+                            userDb.password = hash;
+
+                            userDb.save((err) => {
+                                if (err)
+                                    return cb(Errors.INTERNAL_ERROR, null);
+                                else
+                                    return cb(Errors.SUCCESS, userDb);
+                            });
+                        });
+                    } else {
+                        userDb.nickname = nickname;
+                        userDb.email = email;
+
+                        userDb.save((err) => {
+                            if (err)
+                                return cb(Errors.INTERNAL_ERROR, null);
+                            else
+                                return cb(Errors.SUCCESS, userDb);
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    /**
+     * Encrypte un mot de passe
      * @param rawPassword Le mot de passe en clair
      * @param cb La fonction de callback
      * @callback-return null si erreur, le hash sinon

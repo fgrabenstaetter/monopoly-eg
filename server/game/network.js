@@ -31,6 +31,8 @@ class Network {
         this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
+        this.lobbyUpdateProfile             (user, lobby);
+        // this.lobbyUpdateAvatar              (user, lobby);
         this.lobbyChangeTargetUsersNbReq    (user, lobby);
         this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
@@ -349,6 +351,20 @@ class Network {
                 lobby.delUser(userToKick, false); // lui envoie l'event socket lobbyUserLeftRes
 
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
+        });
+    }
+
+    lobbyUpdateProfile(user, lobby) {
+        user.socket.on('lobbyUpdateProfileReq', (data) => {
+            UserManager.updateProfile(user.id, data.nickname, data.email, data.password, (err, userUpdated) => {
+                user.socket.emit('lobbyUpdateProfileRes', { error: err.code, status: err.status, user: userUpdated });
+                
+                if (err == Errors.SUCCESS) {
+                    user.nickname = userUpdated.nickname;
+                    user.email = userUpdated.email;
+                    this.io.emit('lobbyUserNicknameUpdatedRes', { id: userUpdated._id, nickname: userUpdated.nickname });
+                }
+            });
         });
     }
 
