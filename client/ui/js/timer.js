@@ -74,7 +74,6 @@ $(document).ready(() => {
                 button.removeClass('in-progress').addClass('finished');
                 console.log(button);
                 bar.fadeOut(function () {
-                    // Trigger the custom progress-finish event
                     setProgress(0);
                 });
 
@@ -88,7 +87,7 @@ $(document).ready(() => {
         }
     };
 
-    $.fn.progressReset = function (hard =true) {
+    $.fn.progressReset = function (hard = true) {
         var button = $(this);
         if (button.hasClass('disabled')) {
             button.removeClass('disabled');
