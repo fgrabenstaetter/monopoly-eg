@@ -480,7 +480,6 @@ socket.on('gamePlayerReconnectedRes', (data) => {
     console.log(' --- PLAYER RECONNECTED: ' + data.playerID);
     console.log(data);
     reconnectPlayerEntry(data.playerID);
-    $('#timer').progressInitialize();
 });
 
 // Données de reconnexion
@@ -529,6 +528,8 @@ socket.on('gameReconnectionRes', (data) => {
 
     initProperty();
     hideLoaderOverlay();
+
+    $('#timer').progressInitialize();
 });
 
 // AUCUN EVENT SOCKET (ON) APRES CECI
