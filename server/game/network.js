@@ -4,6 +4,10 @@ const { UserSchema, UserManager } = require('../models/user');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
 
+const SocketIOFileUpload = require("socketio-file-upload");
+const FileType = require('file-type');
+const fs          = require('fs');
+
 /**
  * Simplifie et centralise toutes les communications socket
  */
@@ -24,6 +28,55 @@ class Network {
 
     lobbyUserListen(user, lobby) {
         user.socket.join(lobby.name);
+
+        // -- GESTION UPLOAD AVATAR
+        var uploader = new SocketIOFileUpload();
+        uploader.dir = __dirname + '/../public/avatars';
+        uploader.maxFileSize = 1 * 1000000; // 1Mo (taille en bytes)
+        uploader.uploadValidator = (event, callback) => {
+            if (event.file) {
+                event.file.name = `${user.id}.jpg`;
+                callback(true);
+            } else {
+                callback(false);
+            }
+        };
+
+        const currObj = this;
+
+        // Do something when a file is saved:
+        uploader.on("saved", function(event){
+            (async () => {
+                try {
+                    const imgType = await FileType.fromFile(event.file.pathName);
+                    //=> {ext: 'png', mime: 'image/png'}
+
+                    if (imgType.mime === 'image/jpeg') {
+                        console.log(`Rename ${event.file.pathName} => ${uploader.dir}/${user.id}.jpg`);
+                        fs.rename(event.file.pathName, `${uploader.dir}/${user.id}.jpg`, () => {
+                            user.avatar = `${user.id}.jpg`;
+                            currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/${user.id}.jpg` });
+                        });
+                    } else {
+                        fs.unlink(event.file.pathName);
+                        user.avatar = `default.jpg`;
+                        currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/default.jpg` });
+                    }
+                } catch(err) {
+                    user.avatar = `default.jpg`;
+                    currObj.io.emit('lobbyUserAvatarUpdatedRes', { id: user.id, path: `/avatars/default.jpg` });
+                }
+            })();
+        });
+    
+        // Error handler:
+        uploader.on("error", function(event){
+            console.log("Error from uploader", event);
+        });
+
+        uploader.listen(user.socket);
+        // -- FIN GESTION UPLOAD AVATAR
+
 
         // Inviter / Rejoindre / Quitter
         this.lobbyInvitationReq             (user, lobby);
@@ -457,7 +510,10 @@ class Network {
                 }
 
                 for (let i = 0; i < friendsObj.length; i++) {
-                    friends.push({ id: friendsObj[i].friend._id, nickname: friendsObj[i].friend.nickname });
+                    friends.push({
+                        id: friendsObj[i].friend._id,
+                        nickname: friendsObj[i].friend.nickname
+                    });
                 }
 
                 user.socket.emit('lobbyFriendListRes', { friends: friends });

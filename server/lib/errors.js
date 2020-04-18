@@ -74,6 +74,18 @@ module.exports = Object.freeze({
       NOT_EXISTS: {
           code: 1,
           status: 'Compte utilisateur non trouvé'
+      },
+      AVATAR_TOO_BIG: {
+          code: 2,
+          status: 'Votre avatar est trop grand (taille max 1Mo)'
+      },
+      AVATAR_WRONG_TYPE: {
+          code: 3,
+          status: 'Votre avatar doit être au format JPG'
+      },
+      AVATAR_UNKNOWN: {
+          code: 4,
+          status: 'Error lors de la mise à jour de votre avatar'
       }
     },
 
