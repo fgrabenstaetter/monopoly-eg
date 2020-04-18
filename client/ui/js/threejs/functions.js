@@ -403,6 +403,7 @@ function movement (pawn, vdp, callback) {
 	counter = 1;
 
 	if (ppx == vdpx && ppz == vdpz) {
+		camera.zoom = 0;
 		counter = 0;
 		counter2 = 0;
 
@@ -441,6 +442,8 @@ function movement (pawn, vdp, callback) {
 
 			if (zoomOn === 1) {
 				requestAnimationFrame(render);
+				console.log("Counter1: " + counter);
+				console.log("Counter2: " + counter2);
 				camera.zoom = 1.5;
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
 					camera.position.y -= 0.01;
