@@ -68,7 +68,7 @@ class Network {
                 }
             })();
         });
-    
+
         // Error handler:
         uploader.on("error", function(event){
             console.log("Error from uploader", event);
@@ -1078,7 +1078,7 @@ class Network {
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 4 - this.curPlayer.remainingTurnsInJail : false
+                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false
             });
 
             if (game.startedTime) { // partie commencée
