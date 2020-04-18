@@ -168,25 +168,25 @@ function createTextCard(text, disabled, type, title) {
     $(html).appendTo('.notification-container > .col-md-12').fadeIn('fast');
 }
 
-function validateAuction(id) {
-    $('*[data-auctionID="' + id + '"]').find('input').prop('disabled', true);
+function validateBid(id) {
+    $('*[data-bidID="' + id + '"]').find('input').prop('disabled', true);
 }
 
-function openAuctionPopup(id, playername, streetname) {
+function openBidPopup(id, playername, streetname) {
     var html = 
-        `<div class="auction-popup" data-auctionID="` + id + `">
+        `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
-            <div class="auction-input">
-                <input class="auction-input" type="text" placeholder="Entrez votre prix ici..."></input>
-                <button class="auction-validation" onclick="validateAuction(` + id + `)">Valider</button>
+            <div class="bid-input">
+                <input class="bid-input" type="text" placeholder="Entrez votre prix ici..."></input>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
             </div>
         </div>`
 
-    $(html).prependTo('#auction-popup-container').fadeIn(500);
+    $(html).prependTo('#bid-popup-container').fadeIn(500);
 }
 
-function closeAuctionPopup(id) {
-    $('*[data-auctionID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
+function closeBidPopup(id) {
+    $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
 }
 
 // initProperty()
