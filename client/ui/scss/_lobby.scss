@@ -285,6 +285,23 @@
           width: 50px;
           border-radius: 100%;
           padding: 0;
+          position: relative;
+        }
+
+        #gameTime:after {
+          position: absolute;
+          bottom: -40px;
+          content: "Durée de la Partie";
+          width: 140px;
+          left: -47.5px;
+        }
+
+        #nbJoueurs:after {
+          position: absolute;
+          bottom: -40px;
+          content: "Nombre de Joueurs";
+          width: 140px;
+          left: -45px;
         }
 
         .stylized {

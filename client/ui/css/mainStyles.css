@@ -1028,6 +1028,23 @@ input {
   width: 50px;
   border-radius: 100%;
   padding: 0;
+  position: relative;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime:after {
+  position: absolute;
+  bottom: -40px;
+  content: "Durée de la Partie";
+  width: 140px;
+  left: -47.5px;
+}
+
+.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs:after {
+  position: absolute;
+  bottom: -40px;
+  content: "Nombre de Joueurs";
+  width: 140px;
+  left: -45px;
 }
 
 .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .stylized {
