@@ -1896,7 +1896,7 @@ input {
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
-  background-color: yellow;
+  background-color: #C0B90D;
   color: white;
 }
 
@@ -2153,7 +2153,7 @@ input {
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
-  background-color: yellow;
+  background-color: #C0B90D;
 }
 
 .ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
