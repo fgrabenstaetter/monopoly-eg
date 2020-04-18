@@ -175,7 +175,7 @@ function createTextCard(text, disabled, type, title) {
  * @param {string} streetname nom de la rue mise en enchères
  */
 function openBidPopup(id, playername, streetname) {
-    var html = 
+    var html =
         `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">` + playername + ` lance une enchère pour la rue ` + streetname + `</div>
             <div class="bid-input">
@@ -200,5 +200,5 @@ function validateBid(id) {
  * @param {int} id id de la popup d'enchère à fermer
  */
 function closeBidPopup(id) {
-    $('*[data-bidID="' + id + '"]').fadeOut(500, function() { $(this).remove(); });
+    $('*[data-bidID="' + id + '"]').fadeOut(500, function () { $(this).remove(); });
 }
