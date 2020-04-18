@@ -1418,7 +1418,7 @@ input {
   margin: 10px auto;
 }
 
-.ingame-ui-container #auction-popup-container {
+.ingame-ui-container #bid-popup-container {
   position: absolute;
   top: 10px;
   width: 100vw;
@@ -1437,7 +1437,7 @@ input {
           align-items: center;
 }
 
-.ingame-ui-container #auction-popup-container .auction-popup {
+.ingame-ui-container #bid-popup-container .bid-popup {
   width: 500px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1457,7 +1457,7 @@ input {
   margin: 10px auto;
 }
 
-.ingame-ui-container #auction-popup-container .auction-popup .content {
+.ingame-ui-container #bid-popup-container .bid-popup .content {
   width: 100%;
   text-align: center;
   color: white;
@@ -1465,7 +1465,7 @@ input {
   font-size: 13px;
 }
 
-.ingame-ui-container #auction-popup-container .auction-popup .auction-input {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1475,7 +1475,7 @@ input {
           flex-direction: row;
 }
 
-.ingame-ui-container #auction-popup-container .auction-popup .auction-input input {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input input {
   -webkit-box-flex: 10;
       -ms-flex-positive: 10;
           flex-grow: 10;
@@ -1486,7 +1486,7 @@ input {
   padding-left: 10px;
 }
 
-.ingame-ui-container #auction-popup-container .auction-popup .auction-input button {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-input button {
   margin-left: 10px;
   -webkit-box-flex: 2;
       -ms-flex-positive: 2;

@@ -190,8 +190,8 @@
     }
   }
 
-  // Auction Popup
-  #auction-popup-container {
+  // bid Popup
+  #bid-popup-container {
     position: absolute;
     top: 10px;
     width: 100vw;
@@ -200,7 +200,7 @@
     justify-content: flex-start;
     align-items: center;
 
-    .auction-popup {
+    .bid-popup {
       width: 500px;
       display: flex;
       flex-direction: column;
@@ -219,7 +219,7 @@
         font-size: 13px;
       }
   
-      .auction-input {
+      .bid-input {
         display: flex;
         flex-direction: row;
   

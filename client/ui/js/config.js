@@ -7,5 +7,6 @@ const socketUrl = 'http://localhost:3000';
 // const socketUrl = 'https://monopolyegdev.singlequote.net';
 
 const jwt = localStorage.getItem('jwt');
-const NICKNAME = localStorage.getItem('nickname');
 const ID = localStorage.getItem('id');
+let NICKNAME = localStorage.getItem('nickname');
+let EMAIL = localStorage.getItem('email');
