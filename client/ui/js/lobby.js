@@ -38,7 +38,7 @@ socket.on('lobbyCreatedRes', (res) => {
     users.push({ nickname: NICKNAME, id: ID });
     addPlayerInGroup(ID);
 
-    $('.profile-row > .username').text(NICKNAME);
+    $('.profile-row > .username').text(NICKNAME).attr('data-id', ID);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -177,18 +177,16 @@ socket.on('lobbyGameFoundRes', () => {
 /**Vérifications des Res asynchrones
 */
 socket.on('lobbyFriendInvitationSendRes', (res) => {
-    if (res.error === 0) {
-        console.log("lobbyFriendInvitationSendRes")
+    if (res.error === 0)
         toast('Invitation envoyée', 'success', 3);
-    }
     else // hôte uniquement
         toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
 socket.on("lobbyInvitationRes", (res) => {
     if (res.error === 0)
-        console.log("lobbyInvitationRes")
-    else // hôte uniquemen
+        toast('Invitation envoyée', 'success', 3);
+    else // hôte uniquement
         toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
@@ -507,4 +505,57 @@ $('.notification-container').on('click', '.lobby-invitation .btn-secondary', fun
 $('.grouplist').on('click', '.friend-action', function () {
     let userToKickID = $(this).prev('.friends-name').attr('data-id');
     socket.emit('lobbyKickReq', { userToKickID: userToKickID });
+});
+
+/**** PARAMETRES DU PROFIL *****/
+$('#optionsModal').on('show.bs.modal', () => {
+    $('#user-settings input[name="nickname"]').val(NICKNAME);
+    $('#user-settings input[name="email"]').val(EMAIL);
+    $('#user-settings input[name="password"]').val('');
+});
+
+$('#optionsModal').on('shown.bs.modal', () => {
+    $('#user-settings input:first').focus();
+});
+
+$('#user-settings').submit((e) => {
+    e.preventDefault();
+
+    $('#user-settings button[type="submit"]')
+        .prop('disabled', true)
+        .text('Chargement...');
+    
+    socket.emit('lobbyUpdateProfileReq', {
+        nickname: $('#user-settings input[name="nickname"]').val(),
+        email: $('#user-settings input[name="email"]').val(),
+        password: $('#user-settings input[name="password"]').val()
+    });
+
+    return false;
+});
+
+socket.on('lobbyUpdateProfileRes', (res) => {
+    if (res.error !== 0) {
+        toast(res.status, 'danger', 5);
+    } else {
+        NICKNAME = res.user.nickname;
+        EMAIL = res.user.email;
+
+        localStorage.setItem('nickname', NICKNAME);
+        localStorage.setItem('email', EMAIL);
+        
+        $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
+        toast('Profil mis à jour', 'success', 3);
+        $('#optionsModal').modal('hide');
+    }
+
+    $('#user-settings button[type="submit"]')
+        .text('Enregistrer')
+        .prop('disabled', false);
+});
+
+socket.on('lobbyUserNicknameUpdatedRes', (res) => {
+    console.log('lobbyUserNicknameUpdatedRes');
+    console.log(res);
+    $(`[data-id="${res.id}"]`).text(res.nickname);
 });

@@ -34,7 +34,9 @@
         </div>
         <div class="col-md-6 avatar-container">
             <div class="avatar">
-                <div class="avatar-model" style="background-color:#d4faff; text-align:center; line-height:250px; width:250px; height:250px; color:white;">AVATAR</div>
+                <div class="avatar-model"
+                    style="background-color:#d4faff; text-align:center; line-height:250px; width:250px; height:250px; color:white;">
+                    AVATAR</div>
                 <div class="avatar-ui">
                     <div class="avatar-bubble">CHANGER DE PION</div>
                     <i class="fas fa-sync-alt"></i>
@@ -107,6 +109,46 @@
     </div>
 </div>
 
+<!-- settings -->
+<div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Mon profil</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                    <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="user-settings">
+                    <div class="form-group">
+                        <label>Pseudo</label>
+                        <input type="text" class="form-control" name="nickname" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse email</label>
+                        <input type="email" class="form-control" name="email" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nouveau mot de passe</label>
+                        <input type="password" class="form-control" name="password" autocomplete="off">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="avatar">Nouvel avatar</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01"
+                                aria-describedby="avatar">
+                            <label class="custom-file-label" for="inputGroupFile01">Choisir un fichier...</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal -->
 <div class="modal-container" id="modal">
     <!--<div class="modal fade" id="Unknown67Modal" tabindex="-1" role="dialog" aria-labelledby="Unknown67ModalLabel" aria-hidden="true" data-id="1">
@@ -132,4 +174,3 @@
 
 <script src="js/chat.js"></script>
 <script src="js/lobby.js"></script>
-
