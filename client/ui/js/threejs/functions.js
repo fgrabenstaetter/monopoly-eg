@@ -21,9 +21,12 @@ function getScene () {
  */
 function getCamera () {
 	const canvas = document.querySelector('#c');
-	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
-	let d = 2;
-	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
+	const WIDTH = canvas.clientWidth;
+	const HEIGHT = canvas.clientHeight;
+	const aspectRatio = WIDTH / HEIGHT;
+
+	const d = 2;
+	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000);
 
 	camera.position.set(20, 20, 20);
 	camera.lookAt(scene.position);
@@ -57,20 +60,38 @@ function getLight (scene) {
  * @return {renderer} Le rendu
  */
 function getRenderer () {
-	//Creation du render
 	const canvas = document.querySelector('#c');
-	renderer = new THREE.WebGLRenderer({antialias: false, alpha: true, canvas});
+	const HEIGHT = canvas.clientHeight;
+	const WIDTH = canvas.clientWidth;
+	const pixelRatio = window.devicePixelRatio;
+
+	//Creation du render
+	renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas});
 	renderer.setClearColor(0x000000, 0);
-	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setPixelRatio(pixelRatio);
+	renderer.setSize(WIDTH, HEIGHT);
+
 
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
 	renderer.gammaFactor = 2.2;
 	renderer.autoClear = false;
+	renderer.shadowMap.enabled = true;
+
+	window.addEventListener('resize', handleWindowResize, false);
 	
 	return renderer;
 }
 
+function handleWindowResize() {
+	const canvas = renderer.domElement;
+	const pixelRatio = window.devicePixelRatio;
+	const width  = canvas.clientWidth;
+	const height = canvas.clientHeight;
+	renderer.setSize(width, height);
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+}
 
 scene = getScene();
 camera = getCamera();
@@ -78,53 +99,43 @@ light = getLight(scene);
 renderer = getRenderer();
 
 
-/**
- * Verifie la taille de rendu et de la fenêtre
- * @param {renderer} 
- * @return {bool} Oui ou non
- */
-function resizeRendererToDisplaySize (renderer) {
-	const canvas = renderer.domElement;
-	const pixelRatio = window.devicePixelRatio;
-    const width  = canvas.clientWidth  * pixelRatio | 0;
-    const height = canvas.clientHeight * pixelRatio | 0;
-	const needResize = canvas.width !== width || canvas.height !== height;
-
-	if (needResize) {
-		renderer.setSize(width, height, false);
-	}
-
-	return needResize;
-}
-
+const stats = new Stats()
+document.body.appendChild(stats.dom)
 
 /**
  * Génère le rendu de la scène 
  * @return {needSize} Booléen 
  */
-function render () {
-	if (counter != 0)
-		movement(varPawn, varMovement, varFunction);
-
-	if (resizeRendererToDisplaySize(renderer)) {
-		const canvas = renderer.domElement;
-		camera.aspect = canvas.clientWidth / canvas.clientHeight;
-		camera.updateProjectionMatrix();
-	}
-
-	if (counter == 0) {
-		const canvas = document.querySelector('#c');
-		let aspectRatio = canvas.clientWidth / canvas.clientHeight;
-		let d = 2;
-		camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
-	
-		camera.position.set(20, 20, 20);
-		camera.lookAt(scene.position);
-	}
-
+function render (time) {
+	requestAnimationFrame(render);
 	renderer.render(scene, camera);
+
+	// TWEEN.update();
+	
+	// if (counter != 0)
+	// 	movement(varPawn, varMovement, varFunction);
+
+	// if (resizeRendererToDisplaySize(renderer)) {
+	// 	const canvas = renderer.domElement;
+	// 	camera.aspect = canvas.clientWidth / canvas.clientHeight;
+	// 	camera.updateProjectionMatrix();
+	// }
+
+	// if (counter == 0) {
+	// 	const canvas = document.querySelector('#c');
+	// 	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
+	// 	let d = 2;
+	// 	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
+	
+	// 	camera.position.set(20, 20, 20);
+	// 	camera.lookAt(scene.position);
+	// }
+
+	stats.update();
+	TWEEN.update(time);
 }
-render();
+// render();
+requestAnimationFrame(render);
 
 
 /**
@@ -142,7 +153,7 @@ function deleteHouse (ncase, nhouse) {
  * @param {string} Numero de la maison
  */
 function deleteHouseD (houseProperty) {
-	requestAnimationFrame(render);
+	// requestAnimationFrame(render);
 	scene.remove(window[houseProperty]);
 }
 
@@ -161,7 +172,7 @@ function deleteHotel (ncase) {
  * @param {string} Numero de l'hotel
  */
 function deleteHotelD (hotelProperty) {
-	requestAnimationFrame(render);
+	// requestAnimationFrame(render);
 	scene.remove(window[hotelProperty]);
 }
 
@@ -171,7 +182,7 @@ function deleteHotelD (hotelProperty) {
  * @param {string} nom du pion
  */
 function deletePawn (pawn) {
-	requestAnimationFrame(render);
+	// requestAnimationFrame(render);
 	scene.remove(window[pawn]);
 }
 
@@ -191,7 +202,7 @@ function changeColorFlag (flag, colore) {
  * @param {string} Nom du drapeau
  */
 function deleteFlag (flag) {
-	requestAnimationFrame(render);
+	// requestAnimationFrame(render);
 	scene.remove(window[flag]);
 }
 
@@ -203,7 +214,7 @@ function deleteFlag (flag) {
 function loaderFlag (flag, colore) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/drapeaux/'+flag+'.gltf', (gltf) => {
-		requestAnimationFrame(render);
+		// requestAnimationFrame(render);
 		const root = gltf.scene;
 	  	window[flag] = gltf.scene;
 		window[flag].traverse((o) => {
@@ -236,7 +247,7 @@ var plateauDrapeaux = [
  */
 function loaderPlateau (load, test) {
 	load.load('models/plateau/'+test+'.gltf', (gltf) => {
-	  requestAnimationFrame(render);
+	  // requestAnimationFrame(render);
 	  const root = gltf.scene;
 	  scene.add(root);
 	});
@@ -267,7 +278,7 @@ for (let i = 0; i < 13; i++) {
 function loaderPawn (pawn, vdp) {
 	load = new THREE.GLTFLoader();
 	load.load('models/pions/'+pawn+'.gltf', (gltf) => {
-		requestAnimationFrame(render);
+		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
 
@@ -321,7 +332,7 @@ function loaderHouseProperty (ncase, nhouse) {
 function housePropertyL (houseProperty) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+houseProperty+'.gltf', (gltf) => {
-		requestAnimationFrame(render);
+		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[houseProperty] = gltf.scene;
 		scene.add(root);
@@ -346,7 +357,7 @@ function loaderHotelProperty (ncase) {
 function hotelPropertyL (hotelPropriete) {
 	let load = new THREE.GLTFLoader();
 	load.load('models/maisonPro/'+hotelPropriete+'.gltf', (gltf) => {
-		requestAnimationFrame(render);
+		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[hotelPropriete] = gltf.scene;
 		scene.add(root);
@@ -362,6 +373,31 @@ function zoomOnOff(number) {
 	zoomOn = number;
 }
 
+/* Animates a Vector3 to the target */
+function animateVector3(vectorToAnimate, target, options){
+	options = options || {};
+	// get targets from options or set to defaults
+	var to = target || THREE.Vector3(),
+		easing = options.easing || TWEEN.Easing.Quadratic.In,
+		duration = options.duration || 2000;
+	// create the tween
+	var tweenVector3 = new TWEEN.Tween(vectorToAnimate)
+		.to({ x: to.x, y: to.y, z: to.z, }, duration)
+		.easing(easing)
+		.onUpdate(function(d) {
+			if(options.update){ 
+				options.update(d);
+			}
+		})
+		.onComplete(function(){
+		if(options.callback) options.callback();
+		});
+	// start the tween
+	tweenVector3.start();
+	// return the tween in case we want to manipulate it later on
+	return tweenVector3;
+}
+
 
 /**
  * Déplace le pion sur le plateau
@@ -370,6 +406,21 @@ function zoomOnOff(number) {
  * @callback callback Appel d'un callback()
  */
 function movement (pawn, vdp, callback) {
+
+	// const target = new THREE.Vector3(3.5, 2, 3.85);
+	const target = tabCases[vdp];
+	animateVector3(window[pawn].position, target, {
+		duration: 3000,
+		easing : TWEEN.Easing.Quadratic.InOut,
+		update: function(d) {
+			// console.log("Updating: " + d);
+		},
+		callback : function(){
+			callback();
+		}
+	});
+
+	return;
 
 	varFunction = callback;
 	varMovement = vdp;
@@ -432,16 +483,16 @@ function movement (pawn, vdp, callback) {
 	if (ppx != vdpx && ((ppz == vdpz) || (ppz != vdpz)) && ppz == zmax && vdpz == zmax) {
 		// Pour revenir sur la même route (un tour du plateau)
 		if (ppx == xmin && ppz == zmax){
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		} else {
 			if (zoomOn === 0) {
-				requestAnimationFrame(render);	
+				// requestAnimationFrame(render);	
 				window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 			}
 
 			if (zoomOn === 1) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				console.log("Counter1: " + counter);
 				console.log("Counter2: " + counter2);
 				camera.zoom = 1.5;
@@ -461,12 +512,12 @@ function movement (pawn, vdp, callback) {
 	// La route d'en bas vers une case de la route à gauche
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmin && ppz == zmax){
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -485,16 +536,16 @@ function movement (pawn, vdp, callback) {
 	} else if (ppx == xmin && vdpx == xmin && ppx == vdpx && ppz != vdpz) {
 		// Pour revenir sur la même route (un tour du plateau)
 		if (ppx == xmin && ppz == zmin){
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		} else {
 			if (zoomOn === 0) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 			}
 			
 			if (zoomOn === 1) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				camera.zoom = 1.5;		
 
 				if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -513,12 +564,12 @@ function movement (pawn, vdp, callback) {
 	// La route gauche vers une case de la route en haut
 	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmin) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -537,16 +588,16 @@ function movement (pawn, vdp, callback) {
 	} else if (ppx != vdpx && ppz == vdpz && ppz == zmin && vdpz == zmin) {
 		// Pour revenir sur la même route (un tour du plateau)
 		if (ppx == xmax && ppz == zmin) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		} else {
 			if (zoomOn === 0) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 			}
 			
 			if (zoomOn === 1) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				camera.zoom = 1.5;
 
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -567,12 +618,12 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route d'en bas ->  haut (case 9 -> case 21)
 	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpx && ppz == zmax && vdpz == zmin) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -591,16 +642,16 @@ function movement (pawn, vdp, callback) {
 	} else if (ppx == xmax && vdpx == xmax && ppx == vdpx && ppz != vdpz) {
 		// Pour revenir sur la même route (un tour du plateau)
 		if (ppx == xmax && ppz == zmax) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		} else {
 			if (zoomOn === 0) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 			}
 			
 			if (zoomOn === 1) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				camera.zoom = 1.5;		
 
 				if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -621,16 +672,16 @@ function movement (pawn, vdp, callback) {
 	// La route d'en haut vers une case de la route à droite
 	} else if (ppx != vdpx && ppz != vdpz && vdpx == xmax && ppz == zmin) {
 		if (ppx == xmax && ppz == zmin) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		} else {
 			if (zoomOn === 0) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 			}
 			
 			if (zoomOn === 1) {
-				requestAnimationFrame(render);
+				// requestAnimationFrame(render);
 				camera.zoom = 1.5;
 
 				if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -651,12 +702,12 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route de gauche ->  droit (case 19 -> case 31)
 	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmin && vdpx == xmax) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -674,12 +725,12 @@ function movement (pawn, vdp, callback) {
 	// La route de droite vers une case de la route en bas
 	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmax) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -699,12 +750,12 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route du haut ->  bas (case 29 -> case 1)
 	} else if (((ppx == vdpx) || (ppx != vdpx)) && ppz != vdpz && ppz == zmin && vdpz == xmax) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -724,12 +775,12 @@ function movement (pawn, vdp, callback) {
 	// L'opposer de la route de droite ->  gauche (case 39 -> case 11)
 	} else if (ppx != vdpx && ((ppz != vdpz) || (ppz == vdpz)) && ppx == xmax && vdpx == xmin) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -749,12 +800,12 @@ function movement (pawn, vdp, callback) {
 	// La route de gauche vers une case de la route en bas
 	} else if (ppx != vdpx && ppz != vdpz && ppx == xmin && vdpz == zmax) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 1.67 && window[pawn].position.z < 3.85))
@@ -772,12 +823,12 @@ function movement (pawn, vdp, callback) {
 	// La route d'en haut vers une case de la route de gauche
 	} else if((ppx != vdpx) && (ppz != vdpz) && (ppz == zmin) && (vdpx == xmin)) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
@@ -797,12 +848,12 @@ function movement (pawn, vdp, callback) {
 	// La route de droite vers une case de la route d'en haut
 	} else if(ppx != vdpx && ppz != vdpz && ppx == xmax && vdpz == zmin) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;		
 
 			if (counter2 <= 50 && (window[pawn].position.z > 0.33 && window[pawn].position.z < 1.67))
@@ -822,12 +873,12 @@ function movement (pawn, vdp, callback) {
 	// La route d'en bas vers une case de la route de droite
 	} else if(ppx != vdpx && ppz != vdpz && ppz == vdpx) {
 		if (zoomOn === 0) {
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
 		}
 		
 		if (zoomOn === 1) {	
-			requestAnimationFrame(render);
+			// requestAnimationFrame(render);
 			camera.zoom = 1.5;
 
 			if (counter2 <= 50 && (window[pawn].position.x > 1.67 && window[pawn].position.x < 3.85))
