@@ -9,5 +9,5 @@ function toast(content, type, time) {
                     ` + content + ` 
                 </div>`;
 
-    $(html).appendTo('#content').fadeIn('fast').delay(time * 1000).fadeOut('fast');
+    $(html).appendTo('#content').fadeIn('fast').delay(time * 1000).fadeOut('fast', function() { $(".toast-notification").remove(); });
 }
