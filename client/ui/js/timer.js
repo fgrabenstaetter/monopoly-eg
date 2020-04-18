@@ -72,12 +72,8 @@ $(document).ready(() => {
             if (finish) {
 
                 button.removeClass('in-progress').addClass('finished');
-                console.log("bar 1");
-                console.log(bar);
                 bar.hide();
                 setProgress(0);
-                console.log("bar 2");
-                console.log(bar);
             }
 
             setProgress(progress);
@@ -121,7 +117,7 @@ $(document).ready(() => {
             if (isRunning) {
                 if($('.tz-bar').width() >= $('#controlButton').innerWidth())
       			{
-      				button.trigger('progress-finish');
+                    button.trigger('progress-finish');
       				button.trigger('progress',[0, false, true]);
       			}
       			else{
@@ -133,7 +129,7 @@ $(document).ready(() => {
   		}, 200);
 
   		button.on('progress-finish',function(){
-  			window.clearInterval(interval);
+            window.clearInterval(interval);
   		});
   	};
 
@@ -141,7 +137,8 @@ $(document).ready(() => {
         $(this).addClass('disabled');
         $(this).attr({'data-loading': 'LANCER LES DES'});
         console.log('finish');
-        return this.first().progressIncrement(100);
+        $(this).trigger('progress-finish');
+        $(this).trigger('progress',[0, false, true]);
     };
 
     $.fn.progressIncrement = function(val){
