@@ -280,18 +280,19 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
     if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
         movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
             currPlayer.cellPos = cellPos2;
-            gameActionResAfterSecondMovement(data);
+            gameActionResAfterSecondMovement(data, currPlayer);
         });
     } else {
-        gameActionResAfterSecondMovement(data);
+        gameActionResAfterSecondMovement(data, currPlayer);
     }
 }
 
 /**
  * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
  * @param data Données de gameActionRes
+ * @param currPlayer Joueur actuel
  */
-function gameActionResAfterSecondMovement(data) {
+function gameActionResAfterSecondMovement(data, currPlayer) {
     if (data.playerID === ID) {
         $('#timer').progressReset(false);
     }
@@ -499,6 +500,13 @@ socket.on("gameBidRes", (res) => {
     else
         openBidPopup(res.bidID, playerNick, res.text);
 
+});
+
+socket.on("gameOverbidRes", (res) => {
+    if (res.error === 0)
+        console.log("gameOfferAcceptRes")
+    else // hôte uniquement
+        toast(`gameOverbidRes ${res.status}`, 'danger', 5);
 });
 
 socket.on("gameBidEndedRes", (res) => {
@@ -937,6 +945,7 @@ $('.overview-card .buy-button').click(function (e) {
 $('.overview-card .mortgage-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    console.log(propertyID);
     socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
     console.log("gamepropertymortageReq");
 
@@ -961,6 +970,16 @@ $('#overviewCardBuyForm .send').click(function (e) {
     console.log(propertyID);
 
     $('#overviewCardModal').modal('hide');
+
+    return false;
+});
+
+$('body').on('click', '.bid-popup .bid-validation', function (e) {
+    e.preventDefault();
+    const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
+    const price = parseInt($('input.bid-input').val());
+    socket.emit('gameOverbidReq', { bidID: bidID, price : price });
+    console.log("gameOverbidReq");
 
     return false;
 });

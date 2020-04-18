@@ -446,7 +446,7 @@
         }
         ```
 
-- **Mettre à jour le pseudo d'un joueur**
+- **Mise à jour du pseudo d'un joueur**
     > Si un joueur met son profil à jour et change son pseudo, il doit être mis à jour chez tout le monde
 
     * **Réponse:** lobbyUserNicknameUpdatedRes
@@ -459,6 +459,17 @@
         }
         ```
 
+- **Mise à jour de l'avatar d'un joueur**
+    > Si un joueur met à jour son avatar, il doit être mis à jour chez tout le monde
+
+    * **Réponse:** lobbyUserAvatarUpdatedRes
+        * *Données:*
+        ```javascript
+        {
+            id: string, // id de l'utilisateur qui a mis à jour son avatar
+            path: string // nouveau path de l'image à partir de la racine du serveur
+        }
+        ```
 
 ## Game
 

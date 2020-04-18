@@ -10,7 +10,6 @@ const express     = require('express');
 const jwt         = require('jsonwebtoken');
 const expressJwt  = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
-const SocketIOFileUpload = require("socketio-file-upload");
 const mongoose    = require('mongoose');
 
 const Constants   = require('./lib/constants');
@@ -71,7 +70,6 @@ if (production) {
 }
 
 const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
-SocketIOFileUpload.listen(app);
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
@@ -107,7 +105,8 @@ function getConnectedUserById (id) {
 // API ENDPOINTS //
 ///////////////////
 
-app.use(expressJwt({ secret: JWT_SECRET }).unless({ path: ['/api/register', '/api/login', /\/test*/] }));
+app.use(expressJwt({ secret: JWT_SECRET }).unless({ path: ['/api/register', '/api/login', /\/avatars\/*/, /\/test*/] }));
+app.use(express.static(__dirname + "/public"));
 
 app.use( (err, req, res, next) => {
     if (err.name === 'UnauthorizedError')
@@ -161,8 +160,6 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
-
-    // ------------------------------------------------
 
     let user = getConnectedUserById(decodedToken.id);
     if (!user) {

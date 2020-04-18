@@ -39,6 +39,7 @@ socket.on('lobbyCreatedRes', (res) => {
     addPlayerInGroup(ID);
 
     $('.profile-row > .username').text(NICKNAME).attr('data-id', ID);
+    $('.profile-row > .user-avatar').attr('data-id', ID);
 });
 
 socket.on('lobbyJoinedRes', (res) => {
@@ -392,7 +393,7 @@ function friendRequest(id, name) {
 function addFriend(id, name, avatar) {
     $("#friendList").append(`
         <div class="friend-entry">
-            <img class="friends-avatar" src="` + avatar + `" data-toggle="modal" data-target="#` + name + `Modal" />
+            <img class="friends-avatar" data-id="${id}" src="` + avatar + `" data-toggle="modal" data-target="#` + name + `Modal" />
             <div class="friends-name" data-id="` + id + `">` + name + `</div>
             <div class="friend-action">inviter</div>
         </div>`);
@@ -557,5 +558,14 @@ socket.on('lobbyUpdateProfileRes', (res) => {
 socket.on('lobbyUserNicknameUpdatedRes', (res) => {
     console.log('lobbyUserNicknameUpdatedRes');
     console.log(res);
-    $(`[data-id="${res.id}"]`).text(res.nickname);
+    $(`[data-id="${res.id}"]`).not('img').text(res.nickname);
 });
+
+socket.on('lobbyUserAvatarUpdatedRes', (res) => {
+    console.log('lobbyUserAvatarUpdatedRes');
+    console.log(res);
+    $(`img[data-id="${res.id}"]`).attr('src', socketUrl + res.path);
+});
+
+let siofu = new SocketIOFileUpload(socket);
+siofu.listenOnSubmit(document.getElementById("user-settings"), document.getElementById("avatar"));
