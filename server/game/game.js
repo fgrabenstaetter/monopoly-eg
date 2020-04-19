@@ -538,10 +538,10 @@ class Game {
     }
 
     /**
-     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée (cause: loyer ou taxe ou carte) ou NON, voir playerAutoMortage)
+     * Attention: méthode apellée lorsque le joueur fait un choix manuel (pour hypothèque forcée (cause: loyer ou taxe ou carte) ou NON, voir playerAutoMortgage)
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
-    asyncActionManualMortage(propertiesList) {
+    asyncActionManualMortgage(propertiesList) {
         const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si pas hypothèque forcée (= manuel)
         let sum = this.curPlayer.money;
         let properties = [];
@@ -549,7 +549,7 @@ class Game {
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
             if (prop) {
-                sum += prop.mortagePrice;
+                sum += prop.mortgagePrice;
                 properties.push(prop);
             }
         }
@@ -558,8 +558,8 @@ class Game {
             return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
 
-        this.playerAutoMortage(this.curPlayer, properties);
-        if (this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE)
+        this.playerAutoMortgage(this.curPlayer, properties);
+        if (this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE)
             this.resetTurnActionData();
         return true;
     }
@@ -588,8 +588,8 @@ class Game {
      */
     asyncActionExpired() {
         switch (this.turnData.asyncRequestType) {
-            case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
-                this.playerAutoMortage(this.curPlayer);
+            case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
+                this.playerAutoMortgage(this.curPlayer);
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
@@ -619,9 +619,9 @@ class Game {
     /**
      * Attention: peut être appelée pour une hypothèque volontaire ou forcée !
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
-     * @param properties si null et hypothèque forcée => vente automatique dans l'ordre croissant, sinon liste des propriétés obtenues via asyncActionManualMortage UNIQUEMENT (la somme des hypothèques + argent joueur doit être suffisante dans ce cas !)
+     * @param properties si null et hypothèque forcée => vente automatique dans l'ordre croissant, sinon liste des propriétés obtenues via asyncActionManualMortgage UNIQUEMENT (la somme des hypothèques + argent joueur doit être suffisante dans ce cas !)
      */
-    playerAutoMortage(player, properties = null) {
+    playerAutoMortgage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
         const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
@@ -632,14 +632,14 @@ class Game {
         if (!properties) { // vente automatique forcée (dans l'ordre)
             properties = [];
             for (const prop of properties) {
-                sum += prop.mortagePrice;
+                sum += prop.mortgagePrice;
                 properties.push(prop);
                 if (sum >= moneyToObtain)
                     break;
             }
         } else { // liste donnée en paramètre: hyp forcée manuel ou non forcée
             for (const prop of properties)
-                sum += prop.mortagePrice;
+                sum += prop.mortgagePrice;
         }
 
         if (moneyToObtain && sum < moneyToObtain) // failure
@@ -681,7 +681,7 @@ class Game {
                 mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€';
             }
 
-            this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortageRes', {
+            this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgageRes', {
                 properties  : propertiesID,
                 playerID    : player.id,
                 playerMoney : player.money,
@@ -697,13 +697,13 @@ class Game {
      * @param player Le joueur qui n'a pas assez d'argent pour payer quelque chose
      * @param moneyToObtain L'argent qu'il doit réussir à avoir en hypothéquant, sinon faillite (vérifications ICI)
      * @param msgIfFailure Le message a mettre dans turnData.actionMessage si le joueur est en faillite
-     * @param msgIfShouldMortage Le message a mettre dans turnData.actionMessage si le joueur doit hypothéquer (pas de faillite)
+     * @param msgIfShouldMortgage Le message a mettre dans turnData.actionMessage si le joueur doit hypothéquer (pas de faillite)
      */
-    playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortage) {
+    playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
         // regarder si ses propriétés valent assez pour combler ce montant
         let sum = player.money;
         for (const prop of player.properties)
-            sum += prop.mortagePrice;
+            sum += prop.mortgagePrice;
 
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
@@ -712,7 +712,7 @@ class Game {
         } else {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTAGE, [moneyToObtain], msgIfShouldMortage);
+            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
         }
     }
 }

@@ -77,7 +77,7 @@ class Street extends Property {
     /**
      * @return Le prix d'hypothèque de la rue
      */
-    get mortagePrice () {
+    get mortgagePrice () {
         return this.value / 2;
     }
 

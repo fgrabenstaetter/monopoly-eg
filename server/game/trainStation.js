@@ -38,7 +38,7 @@ class TrainStation extends Property {
     /**
      * @return Le prix d'hypothèque de la gare
      */
-    get mortagePrice () {
+    get mortgagePrice () {
         return this.value / 2;
     }
 }

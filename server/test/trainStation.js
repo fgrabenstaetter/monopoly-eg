@@ -46,7 +46,7 @@ describe("TrainStation", function() {
     it("Le prix d'hypothèque pour une gare est de 100", function() {
         const tStation = new TrainStation(Properties.TRAIN_STATION[0]);
         const tStation2 = new TrainStation(Properties.TRAIN_STATION[1]);
-        assert.equal(100, tStation.mortagePrice);
-        assert.equal(100, tStation2.mortagePrice);
+        assert.equal(100, tStation.mortgagePrice);
+        assert.equal(100, tStation2.mortgagePrice);
     });
 });

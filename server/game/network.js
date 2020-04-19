@@ -115,7 +115,7 @@ class Network {
         // Actions de tour asynchrones
         this.gamePropertyBuyReq           (player, game);
         this.gamePropertyUpgradeReq       (player, game);
-        this.gamePropertyMortageReq (player, game);
+        this.gamePropertyMortgageReq      (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
@@ -832,8 +832,8 @@ class Network {
         });
     }
 
-    gamePropertyMortageReq(player, game) {
-        player.socket.on('gamePropertyMortageReq', (data) => {
+    gamePropertyMortgageReq(player, game) {
+        player.socket.on('gamePropertyMortgageReq', (data) => {
             let err = Errors.SUCCESS;
             let propertyID;
 
@@ -841,12 +841,12 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if (!game.asyncActionManualMortage(data.properties)) // hypothécation ici
-                err = Errors.GAME.NOT_ENOUGH_FOR_MORTAGE;
+            else if (!game.asyncActionManualMortgage(data.properties)) // hypothécation ici
+                err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
 
             if (err !== Errors.SUCCESS)
-                player.socket.emit('gamePropertyMortageRes', { error: err.code, status: err.status });
-            // else => envoyé par game.playerAutoMortage()
+                player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
+            // else => envoyé par game.playerAutoMortgage()
         });
     }
 
