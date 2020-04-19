@@ -1874,6 +1874,21 @@ input {
   height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
+  display: none;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .blank-property {
+  text-align: center;
+  width: 120px;
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 5px;
+  font-size: 10px;
+  margin: 5px;
+  background-color: transparent;
+  border-width: 4px;
+  border-style: solid;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
@@ -1901,9 +1916,17 @@ input {
   color: white;
 }
 
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .blank-property {
+  border-color: #C0B90D;
+}
+
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
   background-color: blue;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .blank-property {
+  border-color: blue;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
@@ -1911,9 +1934,17 @@ input {
   color: white;
 }
 
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .blank-property {
+  border-color: red;
+}
+
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property {
   background-color: orange;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .blank-property {
+  border-color: orange;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
@@ -1921,9 +1952,17 @@ input {
   color: white;
 }
 
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .blank-property {
+  border-color: purple;
+}
+
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property {
   background-color: brown;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .blank-property {
+  border-color: brown;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
@@ -1931,9 +1970,17 @@ input {
   color: white;
 }
 
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .blank-property {
+  border-color: cyan;
+}
+
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
   background-color: green;
   color: white;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .blank-property {
+  border-color: green;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property {
@@ -1943,7 +1990,7 @@ input {
   padding-left: 12px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station :before {
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -1955,9 +2002,13 @@ input {
   font-weight: 900;
   content: "\f239";
   margin-right: 10px;
-  font-size: 15px;
+  font-size: 14px;
   color: black;
   vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .blank-property {
+  border-color: white;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
@@ -1979,7 +2030,7 @@ input {
   font-weight: 900;
   content: "\f043";
   margin-right: 10px;
-  font-size: 15px;
+  font-size: 14px;
   color: white;
   vertical-align: text-top;
 }
@@ -1996,9 +2047,13 @@ input {
   font-weight: 900;
   content: "\f0eb";
   margin-right: 10px;
-  font-size: 15px;
+  font-size: 14px;
   color: white;
   vertical-align: text-top;
+}
+
+.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .blank-property {
+  border-color: black;
 }
 
 .ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
