@@ -685,7 +685,7 @@
             cellPos: int,
             turnEndTime: timestamp, // timestamp de fin de tour (ms)
             actionMessage: string, // message lié à l'action de tour
-            asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortage'
+            asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortgage'
             asyncRequestArgs: array ou null, // selon asyncRequestType (voir plus bas)
             updateMoney:
             [
@@ -711,7 +711,7 @@
             [price]
         // Si asyncRequestType = canUpgrade
             [level1Price, level2Price, level3Price, level4price, level5price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
-        // Si asyncRequestType = shouldMortage
+        // Si asyncRequestType = shouldMortgage
             [totalMoneyToHave] // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
         ```
 
@@ -795,9 +795,9 @@
         ```
 
 * **Hypothéquer une/des propriété(s)**
-    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple (si forcé) ou par simple volonté, Dans le cas ou l'hypothèque est forcée (recevoir 'shouldMortage' en asyncRequestType de 'gameActionRes'), ignorer cet événement enclenche une vente automatique.
+    > Choisir quelles propriétés hypothéquer pour pouvoir payer un loyer par exemple (si forcé) ou par simple volonté, Dans le cas ou l'hypothèque est forcée (recevoir 'shouldMortgage' en asyncRequestType de 'gameActionRes'), ignorer cet événement enclenche une vente automatique.
 
-    * **Requête:** gamePropertyMortageReq
+    * **Requête:** gamePropertyMortgageReq
         * *Données:*
         ```javascript
         {
@@ -805,7 +805,7 @@
         }
         ```
 
-    * **Réponse:** gamePropertyMortageRes
+    * **Réponse:** gamePropertyMortgageRes
         * *Données:*
         ```javascript
         {
@@ -977,7 +977,7 @@
 
 - **Hypothéquer une propriété**
 
-    * **Requête:** gameMortageReq
+    * **Requête:** gameMortgageReq
         * *Données:*
         ```javascript
         {
@@ -985,7 +985,7 @@
         }
         ```
 
-    * **Réponse:** gameMortageRes
+    * **Réponse:** gameMortgageRes
         * *Données:*
         ```javascript
         null

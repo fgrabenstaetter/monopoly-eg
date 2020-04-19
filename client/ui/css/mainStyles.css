@@ -1538,7 +1538,7 @@ input {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  color: white;
+  color: black;
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-input input {

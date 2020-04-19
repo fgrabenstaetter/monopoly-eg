@@ -29,7 +29,7 @@ class PublicCompany extends Property {
     /**
      * @return Le prix d'hypothéque de la compagnie
      */
-    get mortagePrice () {
+    get mortgagePrice () {
         return this.value / 2;
     }
 
