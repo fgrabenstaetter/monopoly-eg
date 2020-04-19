@@ -55,8 +55,6 @@ class Bid {
         this.amountAsked = amount;
         this.player = player;
 
-        console.log('SURENCHERISSEMENT PAR LE JOUEUR ' + player.nickname + ' | AMOUNT = ' + amount);
-
         if (this.property.owner !== this.initialPropertyOwner) {
             this.expired();
             return false;
@@ -67,32 +65,23 @@ class Bid {
 
     expired () {
         const curBid = Bid.bidByID(this.id);
-        if (!curBid) {
-            console.log('BUG BUG #1');
+        if (!curBid)
             return;
-        }
 
         // si le joueur n'a plus l'argent qu'il a souhaité pour enchérir, ou que le propriétaire de la propriété a changé entre temps, mettre this.player null => enchère échouée
-        if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner) {
-            console.log('BUG BUG #2');
+        if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner)
             this.player = null;
-        }
+
+        const oldOwner = this.property.owner ? this.property.owner : this.game.bank;
 
         if (this.player) {
-            console.log('BUG BUG #3');
             this.player.loseMoney(this.amountAsked);
             this.player.addProperty(this.property);
-
-            const pOwner = this.property.owner ? this.property.owner : this.game.bank;
             pOwner.addMoney(this.amountAsked);
             pOwner.delProperty(this.property);
         }
 
         Bid.delBid(this);
-
-        console.log('BID SUCCESS PAS DE BUG');
-        console.log('params du bid lors de expired:');
-        console.log(this);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID              : this.id,
@@ -101,8 +90,7 @@ class Bid {
             playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,
             bankMoney          : this.game.bank.money,
-            propertyOwnerMoney : this.property.owner ? this.property.owner.money : null
-            // ajouter argent player actualisé
+            propertyOwnerMoney : oldOwner ? oldOwner.money : null
         });
     }
 }
