@@ -967,7 +967,7 @@
         ```javascript
         {
             bidID: int,
-            playerID: int
+            playerID: int // null si expiré sans surenchérisseur
             price: int,
             bankMoney: int,
             playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)

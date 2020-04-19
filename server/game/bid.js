@@ -72,11 +72,11 @@ class Bid {
         if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner)
             this.player = null;
 
+        const oldOwner = this.property.owner ? this.property.owner : this.game.bank;
+
         if (this.player) {
             this.player.loseMoney(this.amountAsked);
             this.player.addProperty(this.property);
-
-            const pOwner = this.property.owner ? this.property.owner : this.game.bank;
             pOwner.addMoney(this.amountAsked);
             pOwner.delProperty(this.property);
         }
@@ -90,8 +90,7 @@ class Bid {
             playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,
             bankMoney          : this.game.bank.money,
-            propertyOwnerMoney : this.property.owner ? this.property.owner.money : null
-            // ajouter argent player actualisé
+            propertyOwnerMoney : oldOwner ? oldOwner.money : null
         });
     }
 }
