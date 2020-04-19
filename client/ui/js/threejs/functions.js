@@ -140,7 +140,7 @@ function render (time) {
 	TWEEN.update(time);
 }
 // render();
-requestAnimationFrame(render);
+//requestAnimationFrame(render);
 
 
 /**

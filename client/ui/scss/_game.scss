@@ -513,6 +513,21 @@
             flex-direction: column;
             margin: 0;
             height: max-content;
+            display: none;
+
+            .blank-property {
+              text-align: center;
+              width: 120px;
+              height: 35px;
+              border: none;
+              border-radius: 5px;
+              padding: 10px 5px;
+              font-size: 10px;
+              margin: 5px;
+              background-color: transparent;
+              border-width: 4px;
+              border-style: solid;
+            }
 
             .property {
               text-align: center;
@@ -551,12 +566,18 @@
                 background-color: $property-yellow;
                 color: white;
               }
+              .blank-property {
+                border-color: $property-yellow;
+              }
             }
 
             &.blue {
               .property {
                 background-color: $property-blue;
                 color: white;
+              }
+              .blank-property {
+                border-color: $property-blue;
               }
             }
 
@@ -565,12 +586,18 @@
                 background-color: $property-red;
                 color: white;
               }
+              .blank-property {
+                border-color: $property-red;
+              }
             }
 
             &.orange {
               .property {
                 background-color: $property-orange;
                 color: white;
+              }
+              .blank-property {
+                border-color: $property-orange;
               }
             }
 
@@ -579,12 +606,18 @@
                 background-color: $property-purple;
                 color: white;
               }
+              .blank-property {
+                border-color: $property-purple;
+              }
             }
 
             &.brown {
               .property {
                 background-color: $property-brown;
                 color: white;
+              }
+              .blank-property {
+                border-color: $property-brown;
               }
             }
 
@@ -593,12 +626,18 @@
                 background-color: $property-cyan;
                 color: white;
               }
+              .blank-property {
+                border-color: $property-cyan;
+              }
             }
 
             &.green {
               .property {
                 background-color: $property-green;
                 color: white;
+              }
+              .blank-property {
+                border-color: $property-green;
               }
             }
 
@@ -608,23 +647,27 @@
                 color: black;
                 text-align: left;
                 padding-left: 12px;
+
+                &:before {
+                  font-family: "Font Awesome 5 Free";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f239";
+                  margin-right: 10px;
+                  font-size: 15px;
+                  color: black;
+                  vertical-align: text-top;
+                }
               }
 
-              :before {
-                font-family: "Font Awesome 5 Free";
-                -moz-osx-font-smoothing: grayscale;
-                -webkit-font-smoothing: antialiased;
-                display: inline-block;
-                font-style: normal;
-                font-variant: normal;
-                text-rendering: auto;
-                line-height: 1;
-                font-weight: 900;
-                content: "\f239";
-                margin-right: 10px;
-                font-size: 15px;
-                color: black;
-                vertical-align: text-top;
+              .blank-property {
+                border-color: white;
               }
             }
 
@@ -668,6 +711,9 @@
                   color: white;
                   vertical-align: text-top;
                 }
+              }
+              .blank-property {
+                border-color: black;
               }
             }
           }
