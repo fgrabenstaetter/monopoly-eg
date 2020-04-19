@@ -334,7 +334,7 @@ class Game {
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
                     this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
-                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // fin de tour
+                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
                 }
             }
         }
@@ -663,7 +663,7 @@ class Game {
                 player.loseMoney(moneyToObtain);
                 if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
                     // LOYER
-                    const owner = this.cells[player.cellPos].property.owner;
+                    const owner = this.curCell.property.owner;
                     owner.addMoney(moneyToObtain);
                     rentalOwner = { id: owner.id, money: owner.money };
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
