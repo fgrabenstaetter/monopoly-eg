@@ -26,24 +26,52 @@ $(document).on('click', function (e) {
 function initProperty() {
     const html = `
         <div class="properties-container yellow">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container red">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container blue">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container orange">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container purple">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container brown">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container cyan">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container green">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container station">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container company">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
     `;
     $('.popup').each(function () {
@@ -67,12 +95,21 @@ function createProperty(playerID, type, roadName, roadID) {
             + roadName +
             `</div>`;
     }
-    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).append(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).find('.blank-property').first().remove();;
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).prepend(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).show();
 }
 
-
 function delProperty(roadID) {
+    html = '<div class="blank-property"></div>';
+    $('.property[data-id="' + roadID + '"]').parent().append(html);
     $('.property[data-id="' + roadID + '"]').remove();
+
+    $('.properties-container').each(function () {
+        if (!($('.property', this).length > 0)) {
+            $(this).hide();
+        }
+    });
 }
 
 function createSaleCard(propertyID, type, roadName, price, disabled) {
