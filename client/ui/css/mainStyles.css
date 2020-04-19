@@ -1551,6 +1551,7 @@ input {
   padding-left: 10px;
   width: 70px;
   margin: 0 5px;
+  color: black;
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-input button {
