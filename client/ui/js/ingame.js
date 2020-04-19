@@ -519,11 +519,29 @@ socket.on("gameOverbidRes", (res) => {
 
 socket.on("gameBidEndedRes", (res) => {
     console.log("gameBidEndedRes");
+    //console.log(res);
     let playerNick = idToNick(res.playerID);
     if (res.playerID == null)
         toast("Le terrain n'a pas été acheté", "info", 10);
-    else
+    else {
         toast("Le joueur " + playerNick + " a remporté l'enchère pour " + res.price + "€", "success", 10);
+        let property = getPropertyById(res.propertyID);
+        property.ownerID = res.playerID;
+        let owner = getPlayerById(res.playerID);
+        let cell = getCellByProperty(property)
+        loaderFlag("d" + cell.id, owner.color);
+        if (property.type == "publicCompany") {
+            createProperty(res.playerID, 'company', property.name, property.id);
+        }
+        else if (property.type == "trainStation") {
+            createProperty(res.playerID, 'station', property.name, property.id);
+        }
+        else {
+            createProperty(res.playerID, property.color, property.name, property.id);
+
+        }
+        setPlayerMoney(res.playerID, res.playerMoney);
+    }
 
     closeBidPopup(res.bidID);
 });
