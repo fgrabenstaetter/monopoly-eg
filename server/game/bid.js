@@ -55,6 +55,8 @@ class Bid {
         this.amountAsked = amount;
         this.player = player;
 
+        console.log('SURENCHERISSEMENT PAR LE JOUEUR ' + player.nickname + ' | AMOUNT = ' + amount);
+
         if (this.property.owner !== this.initialPropertyOwner) {
             this.expired();
             return false;
@@ -77,6 +79,7 @@ class Bid {
         }
 
         if (this.player) {
+            console.log('BUG BUG #3');
             this.player.loseMoney(this.amountAsked);
             this.player.addProperty(this.property);
 
