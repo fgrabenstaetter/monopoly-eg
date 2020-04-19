@@ -49,7 +49,7 @@ describe("Street", function() {
 
     it("Le prix d'hypothèque de la rue sans maison(s) ni hôtel est de 70", function() {
         const street = new Street(Properties.STREET[5]);
-        assert.equal(70, street.mortagePrice);
+        assert.equal(70, street.mortgagePrice);
     });
 
     it("Le prix d'un loyer doit varier selon le nombre de maison avec 50, 150, 450 et 625 respectivement pour 1, 2, 3 et 4 maisons", function() {

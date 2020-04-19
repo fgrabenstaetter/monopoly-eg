@@ -39,7 +39,7 @@ const Constants = {
     GAME_ASYNC_REQUEST_TYPE: {
         CAN_BUY: 'canBuy',
         CAN_UPGRADE: 'canUpgrade',
-        SHOULD_MORTAGE: 'shouldMortage'
+        SHOULD_MORTGAGE: 'shouldMortgage'
     }
 }
 

@@ -238,7 +238,7 @@ function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
 
             createUpgradeCard(property.id, property.color, property.name, (currPlayer.id != ID));
 
-        } else if (data.asyncRequestType == "shouldMortage") {
+        } else if (data.asyncRequestType == "shouldMortgage") {
             // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
             let totalMoneyToHave = data.asyncRequestArgs[0];
         } else {
@@ -486,8 +486,8 @@ socket.on("gameOfferAcceptRes", (res) => {
 });
 
 //Hypothèque
-socket.on("gamePropertyMortageRes", (res) => {
-    console.log("gamePropertyMortageRes");
+socket.on("gamePropertyMortgageRes", (res) => {
+    console.log("gamePropertyMortgageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
     $('.overview-card').fadeOut();
     // Ne pas supprimer les cartes mais afficher (avec une classe ?) le fait qu'elles soient hypothéquées !
@@ -563,7 +563,7 @@ socket.on('gameReconnectionRes', (data) => {
     // afficher pseudo & avatar
     $('.profile-row > .username').text(NICKNAME);
     $('.profile-row > .user-avatar').attr('data-id', ID).attr('src', socketUrl + AVATAR);
-    
+
     console.log(' --- RECONNEXION DATA');
     console.log(data);
 
@@ -957,8 +957,8 @@ $('.overview-card .mortgage-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
     console.log(propertyID);
-    socket.emit('gamePropertyMortageReq', { properties: [propertyID] });
-    console.log("gamepropertymortageReq");
+    socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
+    console.log("gamepropertyMortgageReq");
 
     return false;
 });

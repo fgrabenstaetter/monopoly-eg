@@ -192,7 +192,7 @@ describe('Network + Game', () => {
             assert.strictEqual(data.playerID, id);
             assert.strictEqual(data.cellPos, game.playerByID(id).cellPos);
             assert.notStrictEqual(data.actionMessage, undefined);
-            assert.notStrictEqual([null, 'canBuy', 'canUpgrade', 'shouldMortage'].indexOf(data.asyncRequestType), -1);
+            assert.notStrictEqual([null, 'canBuy', 'canUpgrade', 'shouldMortgage'].indexOf(data.asyncRequestType), -1);
             assert.notStrictEqual(data.asyncRequestArgs, undefined);
             assert.ok(data.updateMoney);
             assert.ok(data.extra);
@@ -341,7 +341,7 @@ describe('Network + Game', () => {
         const prop = game.cells[6].property;
         game.bank.delProperty(prop);
         player.addProperty(prop);
-        prop.housesNb = 1; // mortage price = 80
+        prop.housesNb = 1; // mortgage price = 80
         player.money = 22; // avec l'hypothèque il aura 302 => il devra lui rester 2$ après hypothèque forcée
 
         let sock;
@@ -354,10 +354,10 @@ describe('Network + Game', () => {
             assert.deepEqual(data.dicesRes, [1, 2]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 3);
-            assert.strictEqual(data.asyncRequestType, 'shouldMortage');
+            assert.strictEqual(data.asyncRequestType, 'shouldMortgage');
             assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
 
-            sock.on('gamePropertyMortageRes', (data) => {
+            sock.on('gamePropertyMortgageRes', (data) => {
                 assert.strictEqual(data.error, undefined);
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
@@ -366,7 +366,7 @@ describe('Network + Game', () => {
                 assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
                 done();
             });
-            sock.emit('gamePropertyMortageReq', { properties: [prop.id] });
+            sock.emit('gamePropertyMortgageReq', { properties: [prop.id] });
         });
 
         sock.on('gameRollDiceRes', (data) => {
