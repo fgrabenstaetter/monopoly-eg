@@ -28,7 +28,7 @@ class Game {
         this.GLOBAL             = GLOBAL;
         this.players            = [];
         this.id                 = Game.gameIDCounter++;
-        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes      = null; // forcer un [int, int] pour tous les prochains rollDice => TEST UNITAIRE / DEBUG UNIQUEMENT
         this.cells              = Cells.new;
         this.chanceDeck         = new Deck(chanceCardsMeta);
         this.communityChestDeck = new Deck(communityChestCardsMeta);
@@ -298,7 +298,8 @@ class Game {
 
         if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
+            if (this.turnData.endTime < Date.now()) // si expiré uniquement !
+                this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
     }
@@ -315,7 +316,6 @@ class Game {
 
         this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-        this.forcedDiceRes = null; // forcedDiceRes => ne pas toucher (uniquement pour TU)
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
@@ -334,7 +334,8 @@ class Game {
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
                     this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
-                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // fin de tour
+                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
+                    this.turnData.endTime = Date.now() + newDuration;
                 }
             }
         }
@@ -663,7 +664,7 @@ class Game {
                 player.loseMoney(moneyToObtain);
                 if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
                     // LOYER
-                    const owner = this.cells[player.cellPos].property.owner;
+                    const owner = this.curCell.property.owner;
                     owner.addMoney(moneyToObtain);
                     rentalOwner = { id: owner.id, money: owner.money };
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
