@@ -65,12 +65,14 @@ class Bid {
 
     expired () {
         const curBid = Bid.bidByID(this.id);
-        if (!curBid)
+        if (!curBid) {
+            console.log('BUG BUG #1');
             return;
+        }
 
         // si le joueur n'a plus l'argent qu'il a souhaité pour enchérir, ou que le propriétaire de la propriété a changé entre temps, mettre this.player null => enchère échouée
         if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner) {
-            console.log('BUG BUG BUG');
+            console.log('BUG BUG #2');
             this.player = null;
         }
 
@@ -84,6 +86,10 @@ class Bid {
         }
 
         Bid.delBid(this);
+
+        console.log('BID SUCCESS PAS DE BUG');
+        console.log('params du bid lors de expired:');
+        console.log(this);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID              : this.id,
