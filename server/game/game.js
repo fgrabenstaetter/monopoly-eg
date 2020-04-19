@@ -298,7 +298,8 @@ class Game {
 
         if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
+            if (this.turnData.endTime < Date.now()) // si expiré uniquement !
+                this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
     }
@@ -334,6 +335,7 @@ class Game {
                     clearTimeout(this.turnData.midTimeout);
                     this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
                     this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
+                    this.turnData.endTime = Date.now() + newDuration;
                 }
             }
         }
