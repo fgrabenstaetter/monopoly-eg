@@ -66,7 +66,7 @@ function getRenderer () {
 	const pixelRatio = window.devicePixelRatio;
 
 	//Creation du render
-	renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas});
+	renderer = new THREE.WebGLRenderer({antialias: false, alpha: true, canvas});
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(pixelRatio);
 	renderer.setSize(WIDTH, HEIGHT);
@@ -76,7 +76,7 @@ function getRenderer () {
 	renderer.gammaOutput = true;
 	renderer.gammaFactor = 2.2;
 	renderer.autoClear = false;
-	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.enabled = false;
 
 	window.addEventListener('resize', handleWindowResize, false);
 	
@@ -85,7 +85,6 @@ function getRenderer () {
 
 function handleWindowResize() {
 	const canvas = renderer.domElement;
-	const pixelRatio = window.devicePixelRatio;
 	const width  = canvas.clientWidth;
 	const height = canvas.clientHeight;
 	renderer.setSize(width, height);
