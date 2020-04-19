@@ -227,7 +227,7 @@
       .bid-input {
         display: flex;
         flex-direction: row;
-        color: black;
+        color: white;
   
         input {
           flex-grow: 10;
@@ -237,6 +237,7 @@
           padding-left: 10px;
           width: 70px;
           margin: 0 5px;
+          color: black;
         }
     
         button {
