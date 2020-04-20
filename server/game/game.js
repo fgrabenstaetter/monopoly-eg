@@ -552,7 +552,7 @@ class Game {
 
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
-            if (prop) {
+            if (prop && !prop.isMortgaged) {
                 sum += prop.mortgagePrice;
                 properties.push(prop);
             }
@@ -637,14 +637,18 @@ class Game {
         if (!properties) { // vente automatique forcée (dans l'ordre)
             properties = [];
             for (const prop of properties) {
+                if (prop.isMortgaged)
+                    continue;
                 sum += prop.mortgagePrice;
                 properties.push(prop);
                 if (sum >= moneyToObtain)
                     break;
             }
         } else { // liste donnée en paramètre: hyp forcée manuel ou non forcée
-            for (const prop of properties)
-                sum += prop.mortgagePrice;
+            for (const prop of properties) {
+                if (!prop.isMortgaged)
+                    sum += prop.mortgagePrice;
+            }
         }
 
         if (moneyToObtain && sum < moneyToObtain) // failure
@@ -701,8 +705,10 @@ class Game {
     playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
         // regarder si ses propriétés valent assez pour combler ce montant
         let sum = player.money;
-        for (const prop of player.properties)
-            sum += prop.mortgagePrice;
+        for (const prop of player.properties) {
+            if (!prop.isMortgaged)
+                sum += prop.mortgagePrice;
+        }
 
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
