@@ -59,6 +59,7 @@
       &.friendlist, &.grouplist {
         display: flex;
         justify-content: space-between;
+        width: 100% !important;
 
         .friend-request {
           background: $notification-body;
@@ -106,6 +107,8 @@
         }
 
         .group-entries-container {
+          display: flex;
+          flex-wrap: wrap;
           overflow-y: scroll;
           max-height: 361px;
           padding: 0;
@@ -133,7 +136,6 @@
             border-radius: 3px;
             border: 3px solid rgba($color: white, $alpha: 0.7);
             box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
-            cursor: pointer;
           }
 
           .friends-name {
@@ -141,7 +143,6 @@
             font-size: 13px;
             overflow: hidden;
             overflow-wrap: normal;
-            cursor: pointer;
           }
 
           .friend-action {
@@ -161,15 +162,44 @@
         }
 
         .group-entry {
+          display: block;
+          position: relative;
+          text-align: center;
+
           &.leader {
             .friend-action {
               display: none;
             }
           }
+          
+          .friends-avatar {
+            max-height: 80px;
+            max-width: 80px;
+            height: 80px;
+            width: 80px;
+            vertical-align: baseline;
+            display: inline-block;
+          }
+
+          .friends-name {
+            margin-left: 0;
+          }
 
           .friend-action {
+            cursor: pointer;
             color: white;
-            background-color: rgba($color: red, $alpha: 0.7);
+            border: 0;
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: rgba(255, 0, 0, 1);
+            font-size: 18px;
+            padding: 2px 6px;
+            margin: 0;
+            line-height: 1;
+            border-radius: 100%;
+            text-align: center;
+            display: none;
           }
 
           &.leader::after {
@@ -183,9 +213,11 @@
             line-height: 1;
             font-weight: 900;
             content: "\f521";
-            margin-left: 10px;
-            font-size: 12px;
+            font-size: 18px;
             color: yellow;
+            position: absolute;
+            top: -9px;
+            right: -9px;
           }
         }
 
@@ -197,6 +229,12 @@
           color: rgba($color: white, $alpha: 0.6);
           cursor: pointer;
           max-width: 160px;
+        }
+
+        .group-entry:hover {
+          .friend-action {
+            display: block;
+          }
         }
       }
     }

@@ -776,6 +776,7 @@ input {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  width: 100% !important;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-request, .lobby-ui-container .container:first-child .box.grouplist .friend-request {
@@ -824,6 +825,11 @@ input {
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .group-entries-container, .lobby-ui-container .container:first-child .box.grouplist .group-entries-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   overflow-y: scroll;
   max-height: 361px;
   padding: 0;
@@ -856,7 +862,6 @@ input {
   border: 3px solid rgba(255, 255, 255, 0.7);
   -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-name {
@@ -864,7 +869,6 @@ input {
   font-size: 13px;
   overflow: hidden;
   overflow-wrap: normal;
-  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
@@ -882,13 +886,44 @@ input {
   border-color: white;
 }
 
+.lobby-ui-container .container:first-child .box.friendlist .group-entry, .lobby-ui-container .container:first-child .box.grouplist .group-entry {
+  display: block;
+  position: relative;
+  text-align: center;
+}
+
 .lobby-ui-container .container:first-child .box.friendlist .group-entry.leader .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader .friend-action {
   display: none;
 }
 
+.lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-avatar, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-avatar {
+  max-height: 80px;
+  max-width: 80px;
+  height: 80px;
+  width: 80px;
+  vertical-align: baseline;
+  display: inline-block;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .group-entry .friends-name, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friends-name {
+  margin-left: 0;
+}
+
 .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action {
+  cursor: pointer;
   color: white;
-  background-color: rgba(255, 0, 0, 0.7);
+  border: 0;
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  font-size: 18px;
+  padding: 2px 6px;
+  margin: 0;
+  line-height: 1;
+  border-radius: 100%;
+  text-align: center;
+  display: none;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .group-entry.leader::after, .lobby-ui-container .container:first-child .box.grouplist .group-entry.leader::after {
@@ -902,9 +937,11 @@ input {
   line-height: 1;
   font-weight: 900;
   content: "\f521";
-  margin-left: 10px;
-  font-size: 12px;
+  font-size: 18px;
   color: yellow;
+  position: absolute;
+  top: -9px;
+  right: -9px;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .add-new-friend, .lobby-ui-container .container:first-child .box.grouplist .add-new-friend {
@@ -915,6 +952,10 @@ input {
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   max-width: 160px;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .group-entry:hover .friend-action, .lobby-ui-container .container:first-child .box.grouplist .group-entry:hover .friend-action {
+  display: block;
 }
 
 .lobby-ui-container .container:first-child .avatar-container {
