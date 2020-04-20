@@ -334,8 +334,12 @@ var plateauObjects = [
 const geometry = new THREE.BoxGeometry( 4, 0.3, 4 );
 // var material = new THREE.MeshBasicMaterial( {color: 0x000000} );
 const textureLoader = new THREE.TextureLoader();
-const material = new THREE.MeshBasicMaterial({
-    map: textureLoader.load('/img/texture_screenshoted.png'),
+// const material = new THREE.MeshBasicMaterial({
+	const material = new THREE.MeshStandardMaterial({
+// const material = new THREE.MeshDepthMaterial({
+	map: textureLoader.load('/img/texture_screenshoted.png'),
+	roughness: 0.2,
+	metalness: 0
   });
 
 // CubeTextureLoader
