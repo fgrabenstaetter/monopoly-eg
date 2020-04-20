@@ -81,27 +81,29 @@ class Matchmaking {
 
                 for (let k = 0; k < Matchmaking.queue[i].length; k++) {
                     if (k !== j) {
-                        sum += Matchmaking.queue[i][k].users.length;
-                        if (sum < nbMax) {
-                            if (fusion.indexOf(j) === -1)
+                        if (Matchmaking.queue[i][j].gameDuration === Matchmaking.queue[i][k].gameDuration) {
+                            sum += Matchmaking.queue[i][k].users.length;
+                            if (sum < nbMax) {
+                                if (fusion.indexOf(j) === -1)
                                 fusion.push(i);
-                            if (fusion.indexOf(k) === -1)
+                                if (fusion.indexOf(k) === -1)
                                 fusion.push(j);
-                        }
-                        else if (sum > nbMax) {
-                            sum -= Matchmaking.queue[i][k].users.length;
-                        }
-                        else {
-                            if (fusion.indexOf(j) === -1)
+                            }
+                            else if (sum > nbMax) {
+                                sum -= Matchmaking.queue[i][k].users.length;
+                            }
+                            else {
+                                if (fusion.indexOf(j) === -1)
                                 fusion.push(j);
-                            if (fusion.indexOf(k) === -1)
+                                if (fusion.indexOf(k) === -1)
                                 fusion.push(k);
 
-                            let mergedLobby = [];
-                            for (let f of fusion)
+                                let mergedLobby = [];
+                                for (let f of fusion)
                                 mergedLobby.push(Matchmaking.queue[i][f]);
 
-                            this.createGame(mergedLobby);
+                                this.createGame(mergedLobby);
+                            }
                         }
                     }
                 }
