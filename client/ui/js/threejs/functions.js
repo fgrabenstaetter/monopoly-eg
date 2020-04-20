@@ -294,9 +294,7 @@ var plateauDrapeaux = [
  * @param {string} Nom de l'élément du plateau
  */
 function loaderPlateau(load, test) {
-	// const plateauObjects = [
-	// 	'plateau2'
-	// ];
+	const plateauObjects = [];
 
 	const loader = new THREE.GLTFLoader();
 	// let dracoLoader = new THREE.DRACOLoader();
@@ -312,12 +310,12 @@ function loaderPlateau(load, test) {
 
 	// Chargement du plateau par "cube Three JS"
 	const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);
-	const loader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 	const materials = [
 		new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
 		null,
 		new THREE.MeshBasicMaterial({
-			map: loader.load('/img/texture_plateau.png', (texture) => {
+			map: textureLoader.load('/img/texture_plateau.png', (texture) => {
 				texture.outputEncoding = THREE.LinearEncoding
 			}),
 			needsUpdate: true,
