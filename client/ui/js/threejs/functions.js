@@ -65,10 +65,15 @@ camera.lookAt(scene.position);
 {
 	// const plateauObjects = ['plateau2']; // Plateau texture UV
 	// const plateauObjects = [];
+	// const plateauObjects = [
+	// 	'collections', 'eau', 'egout', 'egout',
+	// 	'orangerie', 'parlement', 'pont', 'rail',
+	// 	'route', 'tram', 'campus', 'cascade', 'maison'
+	// ];
 	const plateauObjects = [
-			'collections', 'eau', 'egout', 'egout',
-			'orangerie', 'parlement', 'pont', 'rail',
-			'route', 'tram', 'campus', 'cascade', 'maison'
+		'plateau2', 'egout',
+		'orangerie', 'parlement', 'pont',
+		'tram', 'campus', 'cascade', 'maison'
 	];
 	
 	for (const i in plateauObjects) {
@@ -104,23 +109,23 @@ camera.lookAt(scene.position);
   * LUMIERE
   */
  {
-	let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	light.position.set(7, 4, 3);
-	scene.add(light);
+	// let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	// light.position.set(7, 4, 3);
+	// scene.add(light);
 
-	let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	light2.position.set(3, 3, 4);
-	scene.add(light2);
+	// let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	// light2.position.set(3, 3, 4);
+	// scene.add(light2);
 
-	let ambientLight = new THREE.AmbientLight(0x111111);
-	scene.add(ambientLight);
+	// let ambientLight = new THREE.AmbientLight(0x111111);
+	// scene.add(ambientLight);
 
-	// const color = 0xFFFFFF;
-    // const intensity = 1;
-    // const light = new THREE.DirectionalLight(color, intensity);
-    // light.position.set(5, 10, 2);
-    // scene.add(light);
-    // scene.add(light.target);
+	const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(5, 10, 2);
+    scene.add(light);
+    scene.add(light.target);
 }
 
 function handleWindowResize() {
