@@ -27,8 +27,8 @@ function getCamera () {
 
 	const d = 2;
 	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000);
-
 	camera.position.set(20, 20, 20);
+
 	camera.lookAt(scene.position);
 
 	return camera;
@@ -63,6 +63,8 @@ function getRenderer () {
 	const canvas = document.querySelector('#c');
 	const HEIGHT = canvas.clientHeight;
 	const WIDTH = canvas.clientWidth;
+	// const HEIGHT = window.innerHeight;
+	// const WIDTH = window.innerWidth;
 	const pixelRatio = window.devicePixelRatio;
 
 	//Creation du render
@@ -70,12 +72,13 @@ function getRenderer () {
 	renderer.setClearColor(0x000000, 0);
 	renderer.setPixelRatio(pixelRatio);
 	renderer.setSize(WIDTH, HEIGHT);
+	// document.body.appendChild(renderer.domElement);
 
 
 	renderer.outputEncoding = THREE.sRGBEncoding;
 	renderer.gammaOutput = true;
 	renderer.gammaFactor = 2.2;
-	renderer.autoClear = false;
+	// renderer.autoClear = false;
 	renderer.shadowMap.enabled = false;
 
 	window.addEventListener('resize', handleWindowResize, false);
@@ -103,16 +106,44 @@ rendererStats.domElement.style.left	= '0px'
 rendererStats.domElement.style.bottom	= '0px'
 document.body.appendChild( rendererStats.domElement )
 
-const stats = new Stats()
+let stats = new Stats();
 document.body.appendChild(stats.dom)
+
+// let glS = new glStats();
+// let tS = new threeStats( renderer ); // init after WebGLRenderer is created
+// let rS = new rStats( {
+//     values: {
+//         frame: { caption: 'Total frame time (ms)', over: 16 },
+//         fps: { caption: 'Framerate (FPS)', below: 30 },
+//         calls: { caption: 'Calls (three.js)', over: 3000 },
+//         raf: { caption: 'Time since last rAF (ms)' },
+//         rstats: { caption: 'rStats update (ms)' }
+//     },
+//     groups: [
+//         { caption: 'Framerate', values: [ 'fps', 'raf' ] },
+//         { caption: 'Frame Budget', values: [ 'frame', 'texture', 'setup', 'render' ] }
+//     ],
+//     fractions: [
+//         { base: 'frame', steps: [ 'render' ] }
+//     ],
+//     plugins: [
+//         tS,
+//         glS
+//     ]
+// } );
+
 
 /**
  * Génère le rendu de la scène 
  * @return {needSize} Booléen 
  */
 function render (time) {
-	requestAnimationFrame(render);
-	renderer.render(scene, camera);
+    // glS.start();
+
+    // rS( 'frame' ).start();
+    // rS( 'rAF' ).tick();
+    // rS( 'FPS' ).frame();
+    
 
 	// TWEEN.update();
 	
@@ -138,8 +169,19 @@ function render (time) {
 	stats.update();
 	rendererStats.update(renderer);
 	TWEEN.update(time);
+	
+    // rS( 'render' ).start();
+	renderer.render(scene, camera);
+    // rS( 'render' ).end();
+
+	// rS( 'frame' ).end();
+
+	// rS( 'rStats ' ).start();
+	// rS().update();
+	// rS( 'rStats' ).end();
+	
+	requestAnimationFrame(render);
 }
-// render();
 requestAnimationFrame(render);
 
 
@@ -255,6 +297,8 @@ function loaderPlateau (load, test) {
 	  // requestAnimationFrame(render);
 	  const root = gltf.scene;
 	  scene.add(root);
+
+	  root.updateMatrixWorld();
 	});
 }
 
