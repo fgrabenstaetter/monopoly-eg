@@ -256,7 +256,7 @@ class Game {
         this.successManager.check(this);
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
-            this.turnPlayerTimeoutAction();
+            this.turnPlayerTimeoutAction(false);
             return;
         }
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
@@ -290,15 +290,16 @@ class Game {
 
     /**
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
+     * @param expired true si le tour a expiré, false sinon (cette méthode n'est pas apellé uniquement lors du timeout de tour, mais aussi lorsqu'on veut relancer les dés)
      */
-    turnPlayerTimeoutAction () {
+    turnPlayerTimeoutAction (expired = true) {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
 
         if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            if (this.turnData.endTime < Date.now()) // si expiré uniquement !
+            if (expired) // si expiré uniquement !
                 this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
