@@ -83,7 +83,8 @@
 	aria-hidden="true" data-id="1">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<div class="modal-header">Options</h5>
+			<div class="modal-header">
+				<h5 class="modal-title" id="optionsModalLabel">Options</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
 					<span aria-hidden="true" style="cursor: pointer;">&times;</span>
 				</button>
@@ -204,10 +205,14 @@
 <script src='js/extern/three.js'></script>
 <script src="js/threejs/tween.umd.js"></script>
 <script src="js/threejs/stats.js"></script>
-<script src="js/threejs/renderStats.js"></script>
+<script src="js/threejs/renderstats.js"></script>
+<script src="js/threejs/rstats.js"></script>
+<script src="js/threejs/rstats.extra.js"></script>
 <script src='https://threejs.org/examples/js/controls/TrackballControls.js'></script> <!-- Vérifier utilité-->
 <!-- Fonctions chargement modèles -->
 <script src='js/threejs/GLTFLoader.js'></script>
+<script src='js/threejs/draco/DRACOLoader.js'></script>
+<script src='js/threejs/basis/BasisTextureLoader.js'></script>
 <!-- Coordonnées cases + pions -->
 <script src="js/threejs/macro.js"></script>
 <!-- API -->
@@ -225,6 +230,7 @@
 	initProperty();
 	createProperty("1", "red", "Avenue", "1");
 	createProperty("1", "red", "Avenue2", "2");
+	createProperty("1", "station", "Université", "2");
 	hideLoaderOverlay();
 	displayPropertyInfos(JSON.parse('{"id":0,"type":"company","name":"Eau","description":"Quelle magnifique rue !","color":"brown","prices":{"empty":60,"house":50,"hostel":250},"rentalPrices":{"empty":2,"house":[10,30,90,160],"hostel":250},"housesNb":0}'));
 	openBidPopup(1, "Nombeaucoupbeaucoupbeaucoupbeaucoupbeaucouptroplongcanerentrepas", "caaussic'estbeaucouptroplongmaisvraimentvraimenttroplongattentioncavadepasserjelesenscavadepassercavadepasserauttention");

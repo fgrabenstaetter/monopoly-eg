@@ -302,6 +302,30 @@ function imHost() {
             socket.emit('lobbyChangeTargetUsersNbReq', { nb: nb + 1 });
     });
 
+    $('#leftGameTime').click(() => {
+        var duree = document.getElementById('gameTime').textContent;
+        console.log('duree 1 :' + duree);
+        if (duree == '1 h')
+            duree = '30 min'
+        else if (duree == '∞')
+            duree = '1 h'
+        console.log('duree 2 :' + duree);
+        console.log('socket gametime : 313');
+        document.getElementById('gameTime').textContent = duree;
+    });
+
+    $('#rightGameTime').click(() => {
+        var duree = document.getElementById('gameTime').textContent;
+        console.log('duree 1 :' + duree);
+        if (duree == '1 h')
+            duree = '∞';
+        else if (duree == '30 min')
+            duree = '1 h'
+        console.log('duree 2 :' + duree);
+        console.log('socket gametime : 324');
+        document.getElementById('gameTime').textContent = duree;
+    });
+
     // maj l'icone leader et les boutons exclure du groupe de lobby
     $('.grouplist .friend-action').css('display', '');
     const els = document.querySelectorAll('.grouplist .friends-name');
@@ -345,14 +369,19 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 function addPlayerInGroup(id, nickname, avatar) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
+    
+    let kickButton = '';
+    if (shouldDisplayKickButton) 
+        kickButton = '<div class="friend-action"><i class="fas fa-times"></i></div>';
+    
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
             <img class="friends-avatar" data-id="${id}" src="${avatar}" data-toggle="modal" data-target="#` + nickname + `" />
             <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + nickname + `">` + nickname + `</div>
-            <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
+            ${kickButton}
         </div>`;
 
-    $('.grouplist .group-entries-container > div').append(html);
+    $('.grouplist .group-entries-container').append(html);
 }
 
 /**
@@ -532,7 +561,7 @@ $('#user-settings').submit((e) => {
     $('#user-settings button[type="submit"]')
         .prop('disabled', true)
         .text('Chargement...');
-    
+
     socket.emit('lobbyUpdateProfileReq', {
         nickname: $('#user-settings input[name="nickname"]').val(),
         email: $('#user-settings input[name="email"]').val(),
@@ -554,7 +583,7 @@ socket.on('lobbyUpdateProfileRes', (res) => {
             localStorage.setItem('email', EMAIL);
             $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
         }
-            
+
         toast('Profil mis à jour', 'success', 3);
         $('#optionsModal').modal('hide');
     }
@@ -594,3 +623,17 @@ socket.on('lobbyUpdateAvatarRes', (res) => {
     if (res.error !== 0)
         toast(res.status, 'danger', 3);
 });
+
+
+/**
+ * Maj des flèches de changement de la duree desire de la partie
+ */
+/*function updateTimeGameArrows() {
+    $('#leftGameTime').css('display', '');
+    $('#rightGameTime').css('display', '');
+    const duree = document.getElementById('gameTime').textContent;
+    if (duree == '30 min')
+        $('#leftNbJ').css('display', 'none');
+    else if (duree === &infin;)
+        $('#rightNbJ').css('display', 'none');
+}*/

@@ -10,6 +10,8 @@ const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
 const Bid                     = require('./bid');
 const SuccessManager          = require('./successManager');
+const activeGameSchema              = require('./../models/activeGame');
+
 
 /**
  * Représente une partie de jeu (superviseur de jeu)
@@ -24,10 +26,10 @@ class Game {
      * @param duration La durée souhaitée de temps de jeu en ms ou null si illimité
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (users, duration, GLOBAL) {
+    constructor (id, users, duration, GLOBAL) {
+        this.id                 = id;
         this.GLOBAL             = GLOBAL;
         this.players            = [];
-        this.id                 = Game.gameIDCounter++;
         this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells              = Cells.new;
         this.chanceDeck         = new Deck(chanceCardsMeta);
@@ -35,10 +37,13 @@ class Game {
         this.chat               = new Chat();
         this.bank               = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
+        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
 
         this.startedTime = null; // timestamp de démarrage en ms
         this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
+
+
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
         for (let i = 0, l = users.length; i < l; i++) {
@@ -70,9 +75,23 @@ class Game {
             timeout              : null,
             midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
             timeoutActionTimeout : null,
-            playerInd            : Math.floor(Math.random() * this.players.length) // le premier sera l'indice cette valeur + 1 % nb joueurs
+            playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
+            persistInterval      : null  // id de interval pour fairie clearInterval apres
         };
         this.successManager = new SuccessManager(this);
+
+        if (this.shouldPersist) {
+            let gameState = activeGameSchema(this.currentGameState());
+            gameState.save();
+        }
+    }
+
+    deleteGameState () {
+        let id = this.id;
+        if (this.shouldPersist)
+            activeGameSchema.deleteOne({ '_id': this.id }, function (err) {
+                console.log('Game state removed for game #', id);
+            });
     }
 
     delete() {
@@ -83,6 +102,8 @@ class Game {
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
+
+        this.deleteGameState();
     }
 
     get active () {
@@ -167,6 +188,44 @@ class Game {
         return this.cells[this.curPlayer.cellPos];
     }
 
+    /**
+     * Cette fonction doit etre utilisee pour obtenir l'etat courant du jeu sous forme de dictionaire
+     */
+    currentGameState () {
+        let players = [];
+        let cells = [];
+        let properties = [];
+
+        for (let player of this.players)
+            players.push(player.toJSON());
+
+        for (let cell of this.cells) {
+            cells.push(cell.toJSON());
+            if (cell.property)
+                properties.push(cell.property.toJSON());
+        }
+
+        return {
+            _id: this.id,
+            endTime: this.endTime,
+            players: players,
+            bank: this.bank.toJSON(),
+            properties: properties
+        }
+    }
+
+    persistGameState () {
+        let gameId = this.id;
+        let gameState = activeGameSchema(this.currentGameState());
+        activeGameSchema.findOneAndUpdate({_id: this.id}, gameState, {upsert: true}, function(err, doc) {
+            /*
+            if (err)
+                console.log('Error at saving gamestate for game #', gameId);
+            else
+                console.log('Succesfully saved gamestate for game #', gameId);
+            */
+        });
+    }
 
     /**
      * @param immediate false pour attendre le timeout de lancement, true sinon (utile pour tests unitaires)
@@ -181,6 +240,9 @@ class Game {
             setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.WAITING_TIME_AFTER_READY);
 
         this.endTime = this.duration ? this.startedTime + this.duration * 60 * 1e3 : null;
+
+        if (this.shouldPersist)
+            this.turnData.persistInterval = setInterval(this.persistGameState.bind(this), Constants.GAME_PARAM.PERSIST_GAMESTATE_INTERVAL);
     }
 
     /**
@@ -256,7 +318,7 @@ class Game {
         this.successManager.check(this);
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
-            this.turnPlayerTimeoutAction();
+            this.turnPlayerTimeoutAction(false);
             return;
         }
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
@@ -290,15 +352,17 @@ class Game {
 
     /**
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
+     * @param expired true si le tour a expiré, false sinon (cette méthode n'est pas apellé uniquement lors du timeout de tour, mais aussi lorsqu'on veut relancer les dés)
      */
-    turnPlayerTimeoutAction () {
+    turnPlayerTimeoutAction (expired = true) {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
 
         if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
-            this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
+            if (expired) // si expiré uniquement !
+                this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
         } else
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
     }
@@ -311,11 +375,10 @@ class Game {
     rollDice (useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
-        this.turnData.canRollDiceAgain = false;
 
+        this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-        this.forcedDiceRes = null; // forcedDiceRes => ne pas toucher (uniquement pour TU)
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
@@ -334,7 +397,8 @@ class Game {
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
                     this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
-                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // fin de tour
+                    this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
+                    this.turnData.endTime = Date.now() + newDuration;
                 }
             }
         }
@@ -373,6 +437,7 @@ class Game {
                 break;
 
             case Constants.CELL_TYPE.OTHER:
+                break;
                 if (this.curPlayer.cellPos === 30) {
                     this.curPlayer.moveAbsolute(10);
                     //Perdre l'argent gagné au passage de la case départ
@@ -419,6 +484,9 @@ class Game {
     turnPlayerPropertyCell(diceRes) {
         const total = diceRes[0] + diceRes[1];
         const property = this.curCell.property;
+
+        if (property.isMortgaged)
+            return; // rien à faire
 
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
@@ -500,8 +568,7 @@ class Game {
         const property = this.curCell.property;
         if (!property)
             return Errors.BUY_PROPERTY.NOT_EXISTS;
-
-        if (property.owner)
+        else if (property.owner)
             return Errors.BUY_PROPERTY.ALREADY_SOLD;
 
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
@@ -548,7 +615,7 @@ class Game {
 
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
-            if (prop) {
+            if (prop && !prop.isMortgaged) {
                 sum += prop.mortgagePrice;
                 properties.push(prop);
             }
@@ -557,10 +624,10 @@ class Game {
         if (moneyToObtain && sum < moneyToObtain) // seulement si hypothèque forcée (cause: loyer ou taxe)
             return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
-
         this.playerAutoMortgage(this.curPlayer, properties);
         if (this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE)
             this.resetTurnActionData();
+
         return true;
     }
 
@@ -623,7 +690,8 @@ class Game {
      */
     playerAutoMortgage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
-        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
+        const isForced = player === this.curPlayer && this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE;
+        const moneyToObtain = isForced ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
 
         if (!moneyToObtain && !properties)
@@ -632,30 +700,28 @@ class Game {
         if (!properties) { // vente automatique forcée (dans l'ordre)
             properties = [];
             for (const prop of properties) {
+                if (prop.isMortgaged)
+                    continue;
                 sum += prop.mortgagePrice;
                 properties.push(prop);
                 if (sum >= moneyToObtain)
                     break;
             }
         } else { // liste donnée en paramètre: hyp forcée manuel ou non forcée
-            for (const prop of properties)
-                sum += prop.mortgagePrice;
+            for (const prop of properties) {
+                if (!prop.isMortgaged)
+                    sum += prop.mortgagePrice;
+            }
         }
 
         if (moneyToObtain && sum < moneyToObtain) // failure
             this.playerFailure(player);
         else {
-            // succès
-            player.addMoney(sum - player.money);
-
-            // toutes les propriétés hypothéquées => à la banque
             let propertiesID = [];
             for (const prop of properties) {
-                player.delProperty(prop);
-                this.bank.addProperty(prop);
                 propertiesID.push(prop.id);
+                prop.mortgage(this);
             }
-
 
             let rentalOwner, mess;
             if (moneyToObtain) { // hypothèque forcée
@@ -663,7 +729,7 @@ class Game {
                 player.loseMoney(moneyToObtain);
                 if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
                     // LOYER
-                    const owner = this.cells[player.cellPos].property.owner;
+                    const owner = this.curCell.property.owner;
                     owner.addMoney(moneyToObtain);
                     rentalOwner = { id: owner.id, money: owner.money };
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
@@ -673,7 +739,7 @@ class Game {
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de taxes';
                 } else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
                     // CARTE CHANCE | COMMUNAUTEE
-                    bank.addMoney(moneyToObtain);
+                    this.bank.addMoney(moneyToObtain);
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer la carte chance/communautée';
                 }
             } else { // non forcée
@@ -702,8 +768,10 @@ class Game {
     playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
         // regarder si ses propriétés valent assez pour combler ce montant
         let sum = player.money;
-        for (const prop of player.properties)
-            sum += prop.mortgagePrice;
+        for (const prop of player.properties) {
+            if (!prop.isMortgaged)
+                sum += prop.mortgagePrice;
+        }
 
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite

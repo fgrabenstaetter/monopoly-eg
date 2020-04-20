@@ -42,16 +42,21 @@ class Bid {
 
         const msg = this.property.name;
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidRes', {
-            bidID      : this.id,
-            playerID   : null,
-            text       : msg,
-            propertyID : this.property.id,
-            price      : this.amountAsked
+            bidID           : this.id,
+            playerID        : null,
+            text            : msg,
+            propertyID      : this.property.id,
+            propertyOwnerID : this.property.owner ? this.property.owner.id : null,
+            price           : this.amountAsked
         });
     }
 
     //Test réalisé dans network
     updateBid (player, amount) {
+        if (amount <= this.amountAsked)
+            // return false;
+            return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
+
         this.amountAsked = amount;
         this.player = player;
 
@@ -72,13 +77,13 @@ class Bid {
         if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner)
             this.player = null;
 
+        const oldOwner = this.property.owner ? this.property.owner : this.game.bank;
+
         if (this.player) {
             this.player.loseMoney(this.amountAsked);
             this.player.addProperty(this.property);
-
-            const pOwner = this.property.owner ? this.property.owner : this.game.bank;
-            pOwner.addMoney(this.amountAsked);
-            pOwner.delProperty(this.property);
+            oldOwner.addMoney(this.amountAsked);
+            oldOwner.delProperty(this.property);
         }
 
         Bid.delBid(this);
@@ -86,12 +91,12 @@ class Bid {
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID              : this.id,
             propertyID         : this.property.id,
+            propertyOldOwnerID : oldOwner === this.game.bank ? null : oldOwner.id,
             playerID           : this.player ? this.player.id : null,
             playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,
             bankMoney          : this.game.bank.money,
-            propertyOwnerMoney : this.property.owner ? this.property.owner.money : null
-            // ajouter argent player actualisé
+            propertyOwnerMoney : oldOwner ? oldOwner.money : null
         });
     }
 }

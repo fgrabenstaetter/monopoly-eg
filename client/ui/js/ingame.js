@@ -502,12 +502,14 @@ socket.on("gamePropertyMortgageRes", (res) => {
 socket.on("gameBidRes", (res) => {
     console.log("gameBidRes");
     console.log(res);
-    let playerNick = idToNick(res.playerID);
-    if (playerNick == null)
-        openBidPopup(res.bidID, 'undefined', res.text);
-    else
-        openBidPopup(res.bidID, playerNick, res.text);
-
+    let first_message = idToNick(res.playerID);
+    if (first_message == null) {
+        let ownerNick = idToNick(res.propertyOwnerId)
+        if (ownerNick == null)
+            openBidPopup(res.bidID, 'undefined', res.text, 0);
+        else
+            openBidPopup(res.bidID, playerNick, res.text, res.price);
+    }
 });
 
 socket.on("gameOverbidRes", (res) => {
@@ -519,11 +521,29 @@ socket.on("gameOverbidRes", (res) => {
 
 socket.on("gameBidEndedRes", (res) => {
     console.log("gameBidEndedRes");
+    //console.log(res);
     let playerNick = idToNick(res.playerID);
     if (res.playerID == null)
         toast("Le terrain n'a pas été acheté", "info", 10);
-    else
+    else {
         toast("Le joueur " + playerNick + " a remporté l'enchère pour " + res.price + "€", "success", 10);
+        let property = getPropertyById(res.propertyID);
+        property.ownerID = res.playerID;
+        let owner = getPlayerById(res.playerID);
+        let cell = getCellByProperty(property)
+        loaderFlag("d" + cell.id, owner.color);
+        if (property.type == "publicCompany") {
+            createProperty(res.playerID, 'company', property.name, property.id);
+        }
+        else if (property.type == "trainStation") {
+            createProperty(res.playerID, 'station', property.name, property.id);
+        }
+        else {
+            createProperty(res.playerID, property.color, property.name, property.id);
+
+        }
+        setPlayerMoney(res.playerID, res.playerMoney);
+    }
 
     closeBidPopup(res.bidID);
 });
@@ -780,7 +800,7 @@ function hideLoaderOverlay() {
 }
 
 // Overview card
-function populateStreetOverviewCard(property, isMine) {
+function populateStreetOverviewCard(property, isMine, isMortgaged) {
     $('.overview-card .header').html(property.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -810,21 +830,29 @@ function populateStreetOverviewCard(property, isMine) {
                             <div>`+ property.rentalPrices.hostel + `</div>
                         </div>
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
-                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.hostel + `€ plus 4 maisons</div>`
+                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.house + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
     if (isMine) {
+        if (isMortgaged) {
+            $('.overview-card .buyback-button').css("display", "block");
+            $('.overview-card .mortgage-button').css("display", "none");
+        }
+        else {
+            $('.overview-card .mortgage-button').css("display", "block");
+            $('.overview-card .buyback-button').css("display", "none");
+        }
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
-        $('.overview-card .mortgage-button').css("display", "block");
     }
     else {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
+        $('.overview-card .buyback-button').css("display", "block");
     }
 }
 
-function populateStationOverviewCard(station, isMine) {
+function populateStationOverviewCard(station, isMine, isMortgaged) {
     $('.overview-card .header').html(station.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -850,16 +878,24 @@ function populateStationOverviewCard(station, isMine) {
     if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
-        $('.overview-card .mortgage-button').css("display", "block");
+        if (isMortgaged) {
+            $('.overview-card .buyback-button').css("display", "block");
+            $('.overview-card .mortgage-button').css("display", "none");
+        }
+        else {
+            $('.overview-card .mortgage-button').css("display", "block");
+            $('.overview-card .buyback-button').css("display", "none");
+        }
     }
     else {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
+        $('.overview-card .buyback-button').css("display", "block");
     }
 }
 
-function populateCompanyOverviewCard(publicCompany, isMine) {
+function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
     $('.overview-card .header').html(publicCompany.name);
     $('.overview-card .header').removeClass('station');
     $('.overview-card .header').removeClass('company');
@@ -881,12 +917,20 @@ function populateCompanyOverviewCard(publicCompany, isMine) {
     if (isMine) {
         $('.overview-card .buy-button').css("display", "none");
         $('.overview-card .sell-button').css("display", "block");
-        $('.overview-card .mortgage-button').css("display", "block");
+        if (isMortgaged) {
+            $('.overview-card .buyback-button').css("display", "block");
+            $('.overview-card .mortgage-button').css("display", "none");
+        }
+        else {
+            $('.overview-card .mortgage-button').css("display", "block");
+            $('.overview-card .buyback-button').css("display", "none");
+        }
     }
     else {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
+        $('.overview-card .buyback-button').css("display", "block");
     }
 }
 
@@ -906,6 +950,7 @@ function emptyOverviewCard() {
     $('.overview-card .buy-button').css("display", "none");
     $('.overview-card .sell-button').css("display", "none");
     $('.overview-card .mortgage-button').css("display", "none");
+    $('.overview-card .buyback-button').css("display", "none");
 }
 
 /**
@@ -926,7 +971,7 @@ function displayPropertyInfos(property) {
     $('.overview-card').fadeIn();
 }
 
-$('.player-list').on('click', '.property', function () {
+$('.player-list').on('click', '.property', function (e) {
 
     let propertyId = $(this).attr('data-id');
     if (!propertyId) {
@@ -938,6 +983,8 @@ $('.player-list').on('click', '.property', function () {
         return;
 
     displayPropertyInfos(property);
+
+    e.stopPropagation();
 });
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
@@ -985,11 +1032,19 @@ $('#overviewCardBuyForm .send').click(function (e) {
     return false;
 });
 
+function mortgageProperty(id) {
+    $('.property[data-id="' + id + '"]').addClass('disabled');
+}
+
+function unMortgageProperty(id) {
+    $('.property[data-id="' + id + '"]').removeClass('disabled');
+}
+
 $('body').on('click', '.bid-popup .bid-validation', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
     const price = parseInt($('input.bid-input').val());
-    socket.emit('gameOverbidReq', { bidID: bidID, price : price });
+    socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
 
     return false;

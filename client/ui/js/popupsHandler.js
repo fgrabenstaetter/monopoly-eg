@@ -14,6 +14,45 @@ $('.player-list').on('click', '.player-entry', function (e) {
     e.stopPropagation();
 });
 
+$('.player-list').on('mouseenter', '.property', function (e) {
+    $(this).children().hide();
+    const html = `<div id="houseOption">
+                    <button class="minus">-</button>
+                    <i class="fas fa-home">1</i>
+                    <button class="plus">+</button>
+                    <i class="fas fa-info-circle"></i>
+                </div>`
+    $(this).append(html);
+});
+
+$('.player-list').on('mouseleave', '.property', function (e) {
+    $(this).find('#houseOption').remove();
+    $(this).children().show();
+});
+
+$('.player-list').on('click', '.minus', function (e) {
+    const nbHouse = parseInt($(this).parent().find('.fa-home').text());
+    if (nbHouse > 1) {
+        $(this).parent().find('.fa-home').text(nbHouse-1);
+    }
+
+    e.stopPropagation();
+});
+
+$('.player-list').on('click', '.plus', function (e) {
+    const nbHouse = parseInt($(this).parent().find('.fa-home').text());
+    if (nbHouse < 4) {
+        $(this).parent().find('.fa-home').text(nbHouse+1);
+    }
+
+    e.stopPropagation();
+});
+
+$('.player-list').on('click', '.popup', function (e) {
+    e.stopPropagation();
+});
+
+
 $(document).on('click', function (e) {
     var container = $(".popup");
     var oc = $(".overview-card");
@@ -26,24 +65,52 @@ $(document).on('click', function (e) {
 function initProperty() {
     const html = `
         <div class="properties-container yellow">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container red">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container blue">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container orange">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container purple">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container brown">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container cyan">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container green">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container station">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
         <div class="properties-container company">
+            <div class="blank-property"></div>
+            <div class="blank-property"></div>
         </div>
     `;
     $('.popup').each(function () {
@@ -52,27 +119,37 @@ function initProperty() {
 }
 
 function createProperty(playerID, type, roadName, roadID) {
+    const roadHtml = `<div>` + roadName + `</div>`
     if (roadName == "Syndicat Des Eaux et de l'Assainissement") {
         html = `<div class="property eau" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
     else if (roadName == 'Eléctricité de Strasbourg') {
         html = `<div class="property electricite" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
     else {
         html = `<div class="property" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
-    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).append(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).find('.blank-property').first().remove();;
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).prepend(html);
+    $('.player-entry[data-id="' + playerID + '"]').find('.' + type).show();
 }
 
-
 function delProperty(roadID) {
+    html = '<div class="blank-property"></div>';
+    $('.property[data-id="' + roadID + '"]').parent().append(html);
     $('.property[data-id="' + roadID + '"]').remove();
+
+    $('.properties-container').each(function () {
+        if (!($('.property', this).length > 0)) {
+            $(this).hide();
+        }
+    });
 }
 
 function createSaleCard(propertyID, type, roadName, price, disabled) {
@@ -173,22 +250,23 @@ function createTextCard(text, disabled, type, title) {
  * @param {int} id id de la popup d'enchère !DOIT ÊTRE UNIQUE!
  * @param {string} playername nom du vendeur
  * @param {string} streetname nom de la rue mise en enchères
+ * @param {int} startingprice prix minimal de l'enchère si déclenchée par un eutre joueur
  */
-function openBidPopup(id, playername, streetname) {
+function openBidPopup(id, playername, streetname, startingprice) {
     if (playername == "undefined") {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Prix"></input>€
-                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
             </div>
         </div>`;
     }
     else {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `</div>
+            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `. Prix de départ :` + startingprice + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Prix"></input>€
                 <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>

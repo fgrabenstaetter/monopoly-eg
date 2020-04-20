@@ -178,6 +178,18 @@ module.exports = Object.freeze({
         NOT_ENOUGH_FOR_OFFER: {
             code: 4,
             status: 'Vous n\'avez pas assez d\'argent pour accepter cette offre'
+        },
+        NOT_ENOUGH_FOR_UNMORTGAGE: {
+            code: 5,
+            status: 'Vous n\'avez pas assez d\'argent pour annuler l\'hypothèque'
+        },
+        NOT_MORTGAGED: {
+            code: 6,
+            status: 'Vous n\'avez pas hypothéqué cette propriété'
+        },
+        PROPERTY_IS_MORTGAGED: {
+            code: 7,
+            status: 'Cette propriété est hypothéquée'
         }
     },
 

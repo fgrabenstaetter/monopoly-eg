@@ -27,13 +27,6 @@ class PublicCompany extends Property {
     }
 
     /**
-     * @return Le prix d'hypothéque de la compagnie
-     */
-    get mortgagePrice () {
-        return this.value / 2;
-    }
-
-    /**
      * @param diceRes [int, int] résultats des dés
      * @return le prix de loyer
      */
