@@ -20,6 +20,38 @@ class Property { // classe abstraite
         // implémenté chez les classes filles uniquement
         this.load(data);
     }
+
+    /**
+     * @return Le prix d'hypothéque de la compagnie
+     */
+    get mortgagePrice () {
+        return this.value / 2;
+    }
+
+    get unmortgagePrice () {
+        return this.mortgagePrice * 1.1;
+    }
+
+    mortgage (game) {
+        if (this.isMortgaged)
+            return false;
+
+        game.bank.loseMoney(this.mortgagePrice);
+        this.owner.addMoney(this.mortgagePrice);
+        this.isMortgaged = true;
+
+        return true;
+    }
+
+    unmortage (game) {
+        if (!this.owner || this.unmortgagePrice > this.owner.money)
+            return false;
+
+        game.bank.addMoney(this.unmortgagePrice);
+        this.owner.loseMoney(this.unmortgagePrice);
+        this.isMortgaged = false;
+        return true;
+    }
 }
 
 module.exports = Property;
