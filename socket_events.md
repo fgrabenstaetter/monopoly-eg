@@ -935,6 +935,8 @@
         ```javascript
         {
             bidID: int,
+            propertyID: int,
+            propertyOwnerID: int, // null si le terrain n'a pas de propriétaire (= banque, enchère auto)
             playerID: int, // null la première fois
             text: string,
             price: int
@@ -967,7 +969,9 @@
         ```javascript
         {
             bidID: int,
-            playerID: int // null si expiré sans surenchérisseur
+            playerID: int // null si expiré sans surenchérisseur (sinon ID du vainqueur)
+            propertyID: int // null si expiré sans surenchérisseur (s
+            propertyOldOwnerID: int, // ou null si pas d'ancien propriétaire (= banque, enchère auto)
             price: int,
             bankMoney: int,
             playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)

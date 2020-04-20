@@ -52,6 +52,10 @@ class Bid {
 
     //Test réalisé dans network
     updateBid (player, amount) {
+        if (amount <= this.amountAsked)
+            // return false;
+            return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
+
         this.amountAsked = amount;
         this.player = player;
 
@@ -86,6 +90,7 @@ class Bid {
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID              : this.id,
             propertyID         : this.property.id,
+            propertyOldOwnerID : oldOwner === this.game.bank ? null : oldOwner.id,
             playerID           : this.player ? this.player.id : null,
             playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,
