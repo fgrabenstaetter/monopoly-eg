@@ -52,6 +52,10 @@ class Bid {
 
     //Test réalisé dans network
     updateBid (player, amount) {
+        if (amount <= this.amountAsked)
+            // return false;
+            return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
+
         this.amountAsked = amount;
         this.player = player;
 
