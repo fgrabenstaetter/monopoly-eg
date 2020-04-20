@@ -506,9 +506,9 @@ socket.on("gameBidRes", (res) => {
     if (first_message == null) {
         let ownerNick = idToNick(res.propertyOwnerId)
         if (ownerNick == null)
-            openBidPopup(res.bidID, 'undefined', res.text);
+            openBidPopup(res.bidID, 'undefined', res.text, 0);
         else
-            openBidPopup(res.bidID, playerNick, res.text);
+            openBidPopup(res.bidID, playerNick, res.text, res.price);
     }
 });
 
@@ -1030,11 +1030,11 @@ $('#overviewCardBuyForm .send').click(function (e) {
     return false;
 });
 
-function mortgageProperty (id) {
+function mortgageProperty(id) {
     $('.property[data-id="' + id + '"]').addClass('disabled');
 }
 
-function unMortgageProperty (id) {
+function unMortgageProperty(id) {
     $('.property[data-id="' + id + '"]').removeClass('disabled');
 }
 
