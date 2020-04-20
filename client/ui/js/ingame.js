@@ -485,6 +485,42 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+socket.on("gameOfferFinishedRes", (res) => {
+    console.log("gameOfferFinishedRes")
+    let buyer = getPlayerById(res.makerID);
+    let owner = getPlayerById(res.receiverID);
+    if (res.receiverID == null) {
+        if (res.propertyID == -1)
+            toast("La proposition de " + buyer.nickname + " d'achat d'une carte sortie de prison à " + owner.nickname + " a été refusée", "neutral", 10);
+        else {
+            let propertyNick = getPropertyById(res.propertyID)
+            toast("La propositoin d'achat de " + propertyNick + "a été refusée", "neutral", 10);
+        }
+    }
+    else {
+        let property = getPropertyById(res.propertyID);
+        toast("Le joueur " + buyer.nickname + " a acheté " + property.name + " à " + owner.nickname + " pour " + res.price + "€", "success", 10);
+        property.ownerID = res.makerID;
+        let cell = getCellByProperty(res.propertyID);
+        delProperty(res.propertyID);
+        loaderFlag("d" + cell.id, owner.color);
+        if (property.type == "publicCompany") {
+            createProperty(res.makerID, 'company', property.name, property.id);
+        }
+        else if (property.type == "trainStation") {
+            createProperty(res.makerID, 'station', property.name, property.id);
+        }
+        else {
+            createProperty(res.makerID, property.color, property.name, property.id);
+
+        }
+        setPlayerMoney(res.receiverID, owner.money + res.price);
+        setPlayerMoney(res.makerID, buyer.money - res.price);
+
+    }
+
+});
+
 //Hypothèque
 socket.on("gamePropertyMortgageRes", (res) => {
     console.log("gamePropertyMortgageRes");
