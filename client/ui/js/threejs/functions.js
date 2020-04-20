@@ -100,11 +100,11 @@ camera = getCamera();
 light = getLight(scene);
 renderer = getRenderer();
 
-let rendererStats	= new THREEx.RendererStats();
-rendererStats.domElement.style.position	= 'absolute'
-rendererStats.domElement.style.left	= '0px'
-rendererStats.domElement.style.bottom	= '0px'
-document.body.appendChild( rendererStats.domElement )
+// let rendererStats	= new THREEx.RendererStats();
+// rendererStats.domElement.style.position	= 'absolute'
+// rendererStats.domElement.style.left	= '0px'
+// rendererStats.domElement.style.bottom	= '0px'
+// document.body.appendChild( rendererStats.domElement )
 
 let stats = new Stats();
 document.body.appendChild(stats.dom)
@@ -167,7 +167,7 @@ function render (time) {
 	// }
 
 	stats.update();
-	rendererStats.update(renderer);
+	// rendererStats.update(renderer);
 	TWEEN.update(time);
 	
     // rS( 'render' ).start();
