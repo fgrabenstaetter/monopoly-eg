@@ -312,8 +312,8 @@ class Game {
     rollDice (useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
-        this.turnData.canRollDiceAgain = false;
 
+        this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
 
@@ -558,10 +558,10 @@ class Game {
         if (moneyToObtain && sum < moneyToObtain) // seulement si hypothèque forcée (cause: loyer ou taxe)
             return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
-
         this.playerAutoMortgage(this.curPlayer, properties);
         if (this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE)
             this.resetTurnActionData();
+
         return true;
     }
 
@@ -624,7 +624,8 @@ class Game {
      */
     playerAutoMortgage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
-        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
+        const isForced = player === this.curPlayer && this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE;
+        const moneyToObtain =  isForced ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
 
         if (!moneyToObtain && !properties)
