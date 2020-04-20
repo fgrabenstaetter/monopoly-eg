@@ -218,7 +218,7 @@ function openBidPopup(id, playername, streetname) {
             <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Prix"></input>€
-                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
             </div>
         </div>`;
     }
