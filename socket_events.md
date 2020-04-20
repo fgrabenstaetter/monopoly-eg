@@ -821,6 +821,38 @@
         }
         ```
 
+* **Annuler l'hypothécation d'une propriété**
+
+    * **Requête:** gamePropertyUnmortgageReq
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int
+        }
+        ```
+
+    * **Réponse:** gamePropertyUnmortgageRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Un joueur a annuler une de ses hypothèques**
+
+    * **Réponse:** gamePropertyUnmortgagedRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int,
+            propertyID: int,
+            playerMoney: int,
+            bankMoney: int
+        }
+        ```
+
 ### --- Chat et offres
 
 - **Envoyer un message dans le chat du jeu**
@@ -935,6 +967,8 @@
         ```javascript
         {
             bidID: int,
+            propertyID: int,
+            propertyOwnerID: int, // null si le terrain n'a pas de propriétaire (= banque, enchère auto)
             playerID: int, // null la première fois
             text: string,
             price: int
@@ -967,7 +1001,9 @@
         ```javascript
         {
             bidID: int,
-            playerID: int // null si expiré sans surenchérisseur
+            playerID: int // null si expiré sans surenchérisseur (sinon ID du vainqueur)
+            propertyID: int // null si expiré sans surenchérisseur (s
+            propertyOldOwnerID: int, // ou null si pas d'ancien propriétaire (= banque, enchère auto)
             price: int,
             bankMoney: int,
             playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)

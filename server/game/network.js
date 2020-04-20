@@ -817,6 +817,8 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
+            else if (game.curCell.isMortgaged)
+                err = Errors.GAME.PROPERTY_IS_MORTGAGED;
             else if (!game.asyncActionUpgradeProperty(data.level)) // upgrade ici
                 err = Errors.UNKNOW;
 
@@ -841,12 +843,57 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if (!game.asyncActionManualMortgage(data.properties)) // hypothécation ici
-                err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
+            else {
+                let valid = true;
+                for (const id of data.properties) {
+                    const prop = player.propertyByID(id);
+                    if (!prop) {
+                        err = Errors.UNKNOW;
+                        valid = false;
+                        break;
+                    } else if (prop.isMortgaged) {
+                        err = Errors.GAME.PROPERTY_IS_MORTGAGED;
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid && !game.asyncActionManualMortgage(data.properties)) // hypothécation ici
+                    err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
+            }
 
             if (err !== Errors.SUCCESS)
                 player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
             // else => envoyé par game.playerAutoMortgage()
+        });
+    }
+
+    gamePropertyUnmortgageReq(player, game) {
+        player.socket.on('gamePropertyUnmortgageReq', (data) => {
+            let err = Errors.SUCCESS;
+
+            if (!data.propertyID)
+                err = Errors.MISSING_FIELD;
+            else if (player !== game.curPlayer)
+                err = Errors.GAME.NOT_MY_TURN;
+            else if (!(prop = player.propertyByID(data.propertyID))) // hypothécation ici
+                err = Errors.UNKNOW;
+            else if (!prop.isMortgaged)
+                err = Errors.GAME.NOT_MORTGAGED;
+            else if (player.money < prop.unmortgagePrice)
+                err = Errors.GAME.NOT_ENOUGH_FOR_UNMORTGAGE;
+            else if (!prop.unmortage(game))
+                err = Errors.UNKNOW;
+            else { // succès
+                this.io.to(game.name).emit('gamePropertyUnmortgagedRes', {
+                    playerID: player.id,
+                    propertyID: data.propertyID,
+                    playerMoney: player.money,
+                    bankMoney: game.bank.money
+                });
+            }
+
+            player.socket.emit('gamePropertyUnmortgageRes', { error: err.code, status: err.status });
         });
     }
 
@@ -936,20 +983,22 @@ class Network {
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
-                    if (boundary >= 10) {
+
+                    // if (boundary >= 10) { COMMENTÉ POUR ENCHERES ONESHOT TMP !
                         if (!bid.updateBid(player, data.price))
                             err = Errors.UNKNOW;
                         else {
                             this.io.to(game.name).emit('gameBidRes', {
-                                bidID      : bid.id,
-                                propertyID : bid.property.id,
-                                playerID   : player.id,
-                                text       : bid.text,
-                                price      : data.price
+                                bidID           : bid.id,
+                                propertyID      : bid.property.id,
+                                propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
+                                playerID        : player.id,
+                                text            : bid.text,
+                                price           : data.price
                             });
                         }
-                    } else
-                        err = Errors.BID.DIFF_LOWER_THAN_MIN;
+                    // } else
+                    //     err = Errors.BID.DIFF_LOWER_THAN_MIN;
                 }
             }
 

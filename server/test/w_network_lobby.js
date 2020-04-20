@@ -11,6 +11,10 @@ const Matchmaking = require('../game/matchmaking');
 const Network     = require('../game/network');
 const Properties  = require('../lib/properties');
 
+
+Constants.ENVIRONMENT = 'test';
+
+
 describe('Network + Lobby', () => {
     const port = 3003;
     const server = http.createServer(app).listen(port);
@@ -211,6 +215,72 @@ describe('Network + Lobby', () => {
             });
 
             sock.on('lobbyGameFoundRes', (data) => {
+                assert.strictEqual(false, lobby.open);
+                assert.strictEqual(false, lobby2.open);
+                assert.strictEqual(GLOBAL.games.length, 1);
+                const game = GLOBAL.games[0];
+                assert.strictEqual(game.players.length, 2);
+                assert.notStrictEqual(game.playerByID(user.id), null);
+                assert.notStrictEqual(game.playerByID(user2.id), null);
+
+                if (++ nb === 4)
+                    done();
+            });
+
+            sock.emit('lobbyPlayReq');
+        }
+    });
+
+    it('Lancement d\'une game avec 2 utilisateurs chacun lobby séparé pour une partie à 2 joueurs avec une durée de 30 mins', (done) => {
+        const lobby = new Lobby(user, GLOBAL);
+        const lobby2 = new Lobby(user2, GLOBAL);
+        GLOBAL.lobbies.push(lobby);
+        GLOBAL.lobbies.push(lobby2);
+        assert.strictEqual(true, lobby.open);
+        assert.strictEqual(true, lobby2.open);
+        lobby.changeTargetUsersNb(2);
+        lobby2.changeTargetUsersNb(2);
+        let nb = 0;
+
+        clientSocket.on('lobbyChangeDurationRes', (data) => {
+            assert.strictEqual(data.error, 0);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket.on('lobbyDurationChangedRes', (data) => {
+            assert.strictEqual(data.newDuration, 30);
+            assert.strictEqual(lobby2.gameDuration, 30);
+            console.log('TOTO');
+            console.log(lobby);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket.emit('lobbyChangeDurationReq', { newDuration: 30 });
+
+        clientSocket2.on('lobbyChangeDurationRes', (data) => {
+            assert.strictEqual(data.error, 0);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket2.on('lobbyDurationChangedRes', (data) => {
+            assert.strictEqual(data.newDuration, 60);
+            assert.strictEqual(lobby2.gameDuration, 60);
+            if (++ nb === 2) done();
+        });
+
+        clientSocket2.emit('lobbyChangeDurationReq', { newDuration: 60 });
+
+
+        for (const sock of [clientSocket, clientSocket2]) {
+            sock.on('lobbyPlayRes', (data) => {
+                assert.strictEqual(data.error, 0);
+                GLOBAL.matchmaking.checkLaunch();
+                if (++ nb === 4) done();
+            });
+            //console.log(GLOBAL.lobbies);
+
+            sock.on('lobbyGameFoundRes', (data) => {
+                //console.log("tata");
                 assert.strictEqual(false, lobby.open);
                 assert.strictEqual(false, lobby2.open);
                 assert.strictEqual(GLOBAL.games.length, 1);
