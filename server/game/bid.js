@@ -90,6 +90,7 @@ class Bid {
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
             bidID              : this.id,
             propertyID         : this.property.id,
+            propertyOldOwnerID : oldOwner === this.game.bank ? null : oldOwner.id,
             playerID           : this.player ? this.player.id : null,
             playerMoney        : this.player ? this.player.money : null,
             price              : this.amountAsked,

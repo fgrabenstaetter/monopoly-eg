@@ -942,11 +942,12 @@ class Network {
                             err = Errors.UNKNOW;
                         else {
                             this.io.to(game.name).emit('gameBidRes', {
-                                bidID      : bid.id,
-                                propertyID : bid.property.id,
-                                playerID   : player.id,
-                                text       : bid.text,
-                                price      : data.price
+                                bidID           : bid.id,
+                                propertyID      : bid.property.id,
+                                propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
+                                playerID        : player.id,
+                                text            : bid.text,
+                                price           : data.price
                             });
                         }
                     // } else
