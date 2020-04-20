@@ -24,6 +24,27 @@ class Player {
     }
 
     /**
+     * @return un dictionaire JSON avec les donnees du joeur
+     */
+    toJSON () {
+        let properties = [];
+        for (let property of this.properties)
+            properties.push(property.toJSON());
+
+        return {
+            nickname: this.nickname,
+            id: this.id,
+            pawn: this.pawn,
+            money: this.money,
+            cellPos: this.cellPos,
+            nbJailEscapeCards: this.nbJailEscapeCards,
+            remainingTurnsInJail: this.remainingTurnsInJail,
+            properties: properties
+        }
+    }
+
+
+    /**
      * @return true si le joueur est en prison, false sinon
      */
     get isInPrison () {
@@ -157,6 +178,7 @@ class Player {
 
     /*
      * @param pos La case où aller (0 <= pos < 40)
+     * @param passGoReward - bool, gagner ou pas de l'argent quand on passe par la cellule Go
      */
     moveAbsolute (pos) {
         this.cellPos = pos;

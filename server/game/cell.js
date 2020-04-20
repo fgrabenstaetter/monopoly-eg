@@ -13,6 +13,18 @@ class Cell {
         this.property = this.type === Constants.CELL_TYPE.PROPERTY ? obj : null;
         this.tax      = this.type === Constants.CELL_TYPE.TAX ? obj : null;
     }
+
+    toJSON () {
+        let property = null;
+        if(this.property)
+            property = this.property.toJSON();
+
+        return {
+            type: this.type,
+            property: property,
+            tax: this.tax
+        }
+    }
 }
 
 module.exports = Cell;

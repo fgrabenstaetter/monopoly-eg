@@ -18,6 +18,18 @@ class Bank {
                 this.addProperty(cell.property);
     }
 
+    toJSON () {
+        let properties = [];
+        for (let property of this.properties)
+            properties.push(property.toJSON());
+
+        return {
+            money: this.money,
+            debts: this.debts,
+            properties: properties
+        }
+    }
+
     /**
      * @param money Argent à encaisser
      */

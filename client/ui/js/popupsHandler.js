@@ -14,6 +14,45 @@ $('.player-list').on('click', '.player-entry', function (e) {
     e.stopPropagation();
 });
 
+$('.player-list').on('mouseenter', '.property', function (e) {
+    $(this).children().hide();
+    const html = `<div id="houseOption">
+                    <button class="minus">-</button>
+                    <i class="fas fa-home">1</i>
+                    <button class="plus">+</button>
+                    <i class="fas fa-info-circle"></i>
+                </div>`
+    $(this).append(html);
+});
+
+$('.player-list').on('mouseleave', '.property', function (e) {
+    $(this).find('#houseOption').remove();
+    $(this).children().show();
+});
+
+$('.player-list').on('click', '.minus', function (e) {
+    const nbHouse = parseInt($(this).parent().find('.fa-home').text());
+    if (nbHouse > 1) {
+        $(this).parent().find('.fa-home').text(nbHouse-1);
+    }
+
+    e.stopPropagation();
+});
+
+$('.player-list').on('click', '.plus', function (e) {
+    const nbHouse = parseInt($(this).parent().find('.fa-home').text());
+    if (nbHouse < 4) {
+        $(this).parent().find('.fa-home').text(nbHouse+1);
+    }
+
+    e.stopPropagation();
+});
+
+$('.player-list').on('click', '.popup', function (e) {
+    e.stopPropagation();
+});
+
+
 $(document).on('click', function (e) {
     var container = $(".popup");
     var oc = $(".overview-card");
@@ -80,19 +119,20 @@ function initProperty() {
 }
 
 function createProperty(playerID, type, roadName, roadID) {
+    const roadHtml = `<div>` + roadName + `</div>`
     if (roadName == "Syndicat Des Eaux et de l'Assainissement") {
         html = `<div class="property eau" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
     else if (roadName == 'Eléctricité de Strasbourg') {
         html = `<div class="property electricite" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
     else {
         html = `<div class="property" data-id="` + roadID + `">`
-            + roadName +
+            + roadHtml +
             `</div>`;
     }
     $('.player-entry[data-id="' + playerID + '"]').find('.' + type).find('.blank-property').first().remove();;
