@@ -118,11 +118,11 @@ async function triggerDices(d1, d2, _callback){
 	await sleep(rotations*400 + 800);
 	$('.dice-container').css('top', '50px');
 	$('.dice-container').css('transform', 'translate(200px, 0) scale(0.5)');
+	if (typeof _callback !== "undefined")
+		_callback();
 	await sleep(10000);
 	hideDices();
 	await sleep(200);
 	$('.dice-container').css('top', '50%');
 	$('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
-	if (typeof _callback !== "undefined")
-		_callback();
 }
