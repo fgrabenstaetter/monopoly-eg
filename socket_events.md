@@ -821,6 +821,38 @@
         }
         ```
 
+* **Annuler l'hypothécation d'une propriété**
+
+    * **Requête:** gamePropertyUnmortgageReq
+        * *Données:*
+        ```javascript
+        {
+            propertyID: int
+        }
+        ```
+
+    * **Réponse:** gamePropertyUnmortgageRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Un joueur a annuler une de ses hypothèques**
+
+    * **Réponse:** gamePropertyUnmortgagedRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int,
+            propertyID: int,
+            playerMoney: int,
+            bankMoney: int
+        }
+        ```
+
 ### --- Chat et offres
 
 - **Envoyer un message dans le chat du jeu**

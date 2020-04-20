@@ -75,13 +75,6 @@ class Street extends Property {
     }
 
     /**
-     * @return Le prix d'hypothèque de la rue
-     */
-    get mortgagePrice () {
-        return this.value / 2;
-    }
-
-    /**
      * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
      */
     upgrade (level) {

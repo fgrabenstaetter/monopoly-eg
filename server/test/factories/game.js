@@ -20,7 +20,7 @@ function createGame(playersCount=4, userSchemas=null, inputPawns=null, inputGlob
         for (let i of Array(playersCount).keys())
             users.push(createUser());
 
-    game = new Game(users, null,  _global);
+    game = new Game(1, users, null,  _global);
     return game;
 }
 

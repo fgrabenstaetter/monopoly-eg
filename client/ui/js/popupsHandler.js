@@ -250,22 +250,23 @@ function createTextCard(text, disabled, type, title) {
  * @param {int} id id de la popup d'enchère !DOIT ÊTRE UNIQUE!
  * @param {string} playername nom du vendeur
  * @param {string} streetname nom de la rue mise en enchères
+ * @param {int} startingprice prix minimal de l'enchère si déclenchée par un eutre joueur
  */
-function openBidPopup(id, playername, streetname) {
+function openBidPopup(id, playername, streetname, startingprice) {
     if (playername == "undefined") {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
             <div class="content">Une enchère est lancée pour ` + streetname + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Prix"></input>€
-                <button class="bid-validation" onclick="validateBid(` + id + `)">Valider</button>
+                <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
             </div>
         </div>`;
     }
     else {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `</div>
+            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `. Prix de départ :` + startingprice + `</div>
             <div class="bid-input">
                 <input class="bid-input" type="text" placeholder="Prix"></input>€
                 <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
