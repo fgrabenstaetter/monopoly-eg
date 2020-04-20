@@ -422,6 +422,9 @@ class Game {
         const total = diceRes[0] + diceRes[1];
         const property = this.curCell.property;
 
+        if (property.isMortgaged)
+            return; // rien à faire
+
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             if (property.type === Constants.PROPERTY_TYPE.STREET) {
@@ -502,8 +505,7 @@ class Game {
         const property = this.curCell.property;
         if (!property)
             return Errors.BUY_PROPERTY.NOT_EXISTS;
-
-        if (property.owner)
+        else if (property.owner)
             return Errors.BUY_PROPERTY.ALREADY_SOLD;
 
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
@@ -626,7 +628,7 @@ class Game {
     playerAutoMortgage(player, properties = null) {
         // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
         const isForced = player === this.curPlayer && this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE;
-        const moneyToObtain =  isForced ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
+        const moneyToObtain = isForced ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
         let sum = player.money;
 
         if (!moneyToObtain && !properties)
@@ -648,17 +650,11 @@ class Game {
         if (moneyToObtain && sum < moneyToObtain) // failure
             this.playerFailure(player);
         else {
-            // succès
-            player.addMoney(sum - player.money);
-
-            // toutes les propriétés hypothéquées => à la banque
             let propertiesID = [];
             for (const prop of properties) {
-                player.delProperty(prop);
-                this.bank.addProperty(prop);
                 propertiesID.push(prop.id);
+                prop.mortgage(this);
             }
-
 
             let rentalOwner, mess;
             if (moneyToObtain) { // hypothèque forcée
@@ -676,7 +672,7 @@ class Game {
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de taxes';
                 } else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
                     // CARTE CHANCE | COMMUNAUTEE
-                    bank.addMoney(moneyToObtain);
+                    this.bank.addMoney(moneyToObtain);
                     mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer la carte chance/communautée';
                 }
             } else { // non forcée

@@ -34,13 +34,6 @@ class TrainStation extends Property {
     get value () {
         return this.price;
     }
-
-    /**
-     * @return Le prix d'hypothèque de la gare
-     */
-    get mortgagePrice () {
-        return this.value / 2;
-    }
 }
 
 module.exports = TrainStation;
