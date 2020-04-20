@@ -1,1 +1,159 @@
-{"buffers":[{"uri":"egout.bin","byteLength":2128}],"asset":{"version":"2.0","generator":"gltfpack 0.14"},"extensionsUsed":["KHR_mesh_quantization","KHR_texture_transform"],"extensionsRequired":["KHR_mesh_quantization"],"bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":896,"byteStride":8,"target":34962},{"buffer":0,"byteOffset":896,"byteLength":448,"byteStride":4,"target":34962},{"buffer":0,"byteOffset":1344,"byteLength":448,"byteStride":4,"target":34962},{"buffer":0,"byteOffset":1792,"byteLength":336,"target":34963}],"accessors":[{"bufferView":0,"byteOffset":0,"componentType":5123,"count":112,"type":"VEC3","min":[0,0,0],"max":[15623,664,16383]},{"bufferView":1,"byteOffset":0,"componentType":5120,"count":112,"type":"VEC3","normalized":true},{"bufferView":2,"byteOffset":0,"componentType":5123,"count":112,"type":"VEC2"},{"bufferView":3,"byteOffset":0,"componentType":5123,"count":168,"type":"SCALAR"}],"images":[{"uri":"gris.png"}],"textures":[{"source":0}],"materials":[{"name":"Material.016","pbrMetallicRoughness":{"baseColorTexture":{"index":0,"texCoord":0,"extensions":{"KHR_texture_transform":{"offset":[0.125,0],"scale":[0.000183150187,0.000244200259]}}},"metallicFactor":0,"roughnessFactor":0.5},"doubleSided":true}],"meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"mode":4,"indices":3,"material":0}]}],"nodes":[{"mesh":0,"translation":[0.243158564,-0.14157778,0.156642482],"scale":[0.000113860697,0.000113860697,0.000113860697]}],"scenes":[{"nodes":[0]}],"scene":0}
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v1.1.45",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "egout",
+      "scale": [
+        0.09737233072519302,
+        0.037779271602630615,
+        0.037779271602630615
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "Material.016",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5,
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "alphaMode": "OPAQUE"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.062",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "NORMAL": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 0,
+              "attributes": {
+                "POSITION": 0,
+                "NORMAL": 1,
+                "TEXCOORD_0": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/png",
+      "name": "gris",
+      "bufferView": 1
+    }
+  ],
+  "accessors": [
+    {
+      "componentType": 5123,
+      "count": 168,
+      "type": "SCALAR"
+    },
+    {
+      "componentType": 5126,
+      "count": 112,
+      "max": [
+        20.765880584716797,
+        -1.747498631477356,
+        53.522003173828125
+      ],
+      "min": [
+        2.497203826904297,
+        -3.7474989891052246,
+        4.146254539489746
+      ],
+      "type": "VEC3"
+    },
+    {
+      "componentType": 5126,
+      "count": 112,
+      "type": "VEC3"
+    },
+    {
+      "componentType": 5126,
+      "count": 112,
+      "type": "VEC2"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 461
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 464,
+      "byteLength": 1047
+    }
+  ],
+  "buffers": [
+    {
+      "name": "egout",
+      "byteLength": 1512,
+      "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAAIDgCNgIADl9b+qYoWoq3qvqmlKoCAQEgVQwITQo+BEwUq2UcOoK9Cwiq0VENp/0RejeDA/8AAAABAAEBAAEACQMAAAIBAQkDAAEDAQMJAgACAgEBAQAPAwEKFwEEAQoBDgEIAQ4DAQQNAIu1QvhWzvOjjOI/imQuHmEdABA8APgAAABgC7AJfBAe2MSH4HnNe+ixOgDaAgAAANYBQI8KF0BbAANyC4ULgJcCAAAAgKsBAKa2+hvNI7YfAIQHIHgAAAAgeD8RfPB+Bm9Ln6jFBXALAACAtgDaAgAAAFu8FC996UsBAAAAAP8/AAAw0h9ABtdvwB6uhEDEgEVCDgYDAQEBAQFAAQD/AwAA/wEAAP8CE0kKBQEBAA0DARA9ARPtBFEMKQZ1Eu0EEi5gvQGiEw4DkCtsNHm3PYgyf/8PgP8HAAAN/h8AE8mDKwE8AoDZ/yB1JQPAaXwIgP8LsTQAMOdpfHgRgJAAAAjwfwD8g9QX2zhNA7DMDwEAAAAIgAAAAGiqnK0XLqzw7f8BAICmAlgLKHARAF0AyAlAyF0o5+ouAAAALQaMKADXG4YAAAAA/w8AAAAAAD4AAAAAAACAPwwAAACJUE5HDQoaCgAAAA1JSERSAAAAAQAAAAEIAgAAAJB3U94AAAABc1JHQgCuzhzpAAAACXBIWXMAAAAnAAAAJwEqCZFPAAADpGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgICAgICAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyI+CiAgICAgICAgIDx4bXA6TW9kaWZ5RGF0ZT4yMDIwLTAyLTE4VDE2OjAyOjc3PC94bXA6TW9kaWZ5RGF0ZT4KICAgICAgICAgPHhtcDpDcmVhdG9yVG9vbD5QaXhlbG1hdG9yIDMuOC42PC94bXA6Q3JlYXRvclRvb2w+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjU8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOlJlc29sdXRpb25Vbml0PjI8L3RpZmY6UmVzb2x1dGlvblVuaXQ+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjE8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOlhSZXNvbHV0aW9uPjE8L3RpZmY6WFJlc29sdXRpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xPC9leGlmOlBpeGVsWERpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT4xPC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CuFcjzcAAAAMSURBVAgdY+jt7QUAA1IBqAQYrMIAAAAASUVORK5CYIIA"
+    }
+  ],
+  "extensionsRequired": [
+    "KHR_draco_mesh_compression"
+  ],
+  "extensionsUsed": [
+    "KHR_draco_mesh_compression"
+  ]
+}

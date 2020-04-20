@@ -298,7 +298,7 @@ function loaderPlateau (load, test) {
 	  const root = gltf.scene;
 	  scene.add(root);
 
-	  root.updateMatrixWorld();
+	//   root.updateMatrixWorld();
 	});
 }
 
@@ -311,12 +311,46 @@ var plateauObjects = [
 			'orangerie', 'parlement', 'pont', 'rail',
 			'route', 'tram', 'campus', 'cascade', 'maison'
 ];
+// const plateauObjects = [];
 
-for (let i = 0; i < 13; i++) {
-  let objVar = plateauObjects[i];
-  let loader = new THREE.GLTFLoader();
-  loaderPlateau(loader, objVar);
-}
+// for (let i = 0; i < 13; i++) {
+//   let objVar = plateauObjects[i];
+
+//   let gltfBasisLoader = new THREE.LoadingManager();
+
+//   let basisLoader = new THREE.BasisTextureLoader(gltfBasisLoader);
+// 	basisLoader.setTranscoderPath( '/js/threejs/basis/' );
+// 	basisLoader.detectSupport( renderer );
+// 	gltfBasisLoader.addHandler(/\.basis$/i, basisLoader);
+
+//   let loader = new THREE.GLTFLoader(gltfBasisLoader);
+// 	let dracoLoader = new THREE.DRACOLoader();
+// 	dracoLoader.setDecoderPath( '/js/threejs/draco/' );
+// 	loader.setDRACOLoader( dracoLoader );
+
+//   loaderPlateau(loader, objVar);
+// }
+
+const geometry = new THREE.BoxGeometry( 4, 0.3, 4 );
+// var material = new THREE.MeshBasicMaterial( {color: 0x000000} );
+const textureLoader = new THREE.TextureLoader();
+const material = new THREE.MeshBasicMaterial({
+    map: textureLoader.load('/img/texture_screenshoted.png'),
+  });
+
+// CubeTextureLoader
+//   var textureLoader = new THREE.CubeTextureLoader();
+//   textureLoader.setPath( '/img/' );
+// var textureCube = textureLoader.load( [
+// 	'/img/texture_screenshoted.png', '/img/texture_screenshoted.png',
+// 	'/img/texture_screenshoted.png', '/img/texture_screenshoted.png',
+// 	'/img/texture_screenshoted.png', '/img/texture_screenshoted.png'
+// ] );
+// var material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
+
+let cube = new THREE.Mesh( geometry, material );
+cube.position.set(0, -0.13, 0);
+scene.add(cube);
 
 
 /**
