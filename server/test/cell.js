@@ -1,4 +1,5 @@
 const Cells          = require('../lib/cells');
+const Cell          = require('../game/cell');
 const Property      = require('../game/property');
 const PublicCompany = require('../game/publicCompany');
 const Street        = require('../game/street');
@@ -17,4 +18,18 @@ describe("Cell", function() {
         const street = Cells.new[3];
         assert.equal("Rue des tonneliers", street.property.name);
     });
+
+    describe('toJSON()', function () {
+        it('doit retourner correctement la cellule en JSON', function () {
+            let cell = new Cell(
+                type=Constants.CELL_TYPE.OTHER,
+                null
+            );
+            let rec = cell.toJSON();
+            assert.equal(rec.type, Constants.CELL_TYPE.OTHER);
+            assert.equal(rec.property, null);
+            assert.equal(rec.tax, null);
+        });
+    });
+
 });

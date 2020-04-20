@@ -21,6 +21,19 @@ class Property { // classe abstraite
         this.load(data);
     }
 
+    toJSON () {
+        let owner = null;
+        if(this.owner)
+            owner = this.owner.id;
+
+        return {
+            id: this.id,
+            isMortgaged: this.isMortgaged,
+            owner: owner,
+            type: this.type
+        }
+    }
+
     /**
      * @return Le prix d'hypothéque de la compagnie
      */
