@@ -42,11 +42,12 @@ class Bid {
 
         const msg = this.property.name;
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidRes', {
-            bidID      : this.id,
-            playerID   : null,
-            text       : msg,
-            propertyID : this.property.id,
-            price      : this.amountAsked
+            bidID           : this.id,
+            playerID        : null,
+            text            : msg,
+            propertyID      : this.property.id,
+            propertyOwnerID : this.property.owner ? this.property.owner.id : null,
+            price           : this.amountAsked
         });
     }
 
