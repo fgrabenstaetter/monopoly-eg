@@ -291,24 +291,24 @@ function loaderPawn (pawn, vdp) {
 		varCase = tabCases[varMovement];
 
 		let vdpx = varCase.x;
-		vdpx = (Math.floor(vdpx * 100) / 100);
-
+		//vdpx = (Math.floor(vdpx * 100) / 100);
 		let vdpz = varCase.z;
-		vdpz = (Math.floor(vdpz * 100) / 100);
+		//vdpz = (Math.floor(vdpz * 100) / 100);
 		root.position.set(vdpx, 2, vdpz);
 
 		if (vdp >= 0 && vdp <= 9) {
 			root.rotateY(Math.PI / -2);
-			window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			//window[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
+			//console.log(window[pawn].position.x );
 		} else if (vdp >= 10 && vdp <= 19) {
 			root.rotateY(Math.PI);
-			window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
+			//window[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
 		} else if (vdp >= 20 && vdp <= 29) {
 			root.rotateY(Math.PI / 2);
-			window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
+			//window[pawn].position.x += (Math.floor(0.01 * 100) / 100);
 		} else {
 			root.rotateY(Math.PI * 2);
-			window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
+			//window[pawn].position.z += (Math.floor(0.01 * 100) / 100);
 		}
 
 		scene.add(root);
@@ -379,7 +379,8 @@ function zoomOnOff(number) {
 }
 
 /* Animates a Vector3 to the target */
-function animateVector3(vectorToAnimate, target, options){
+function animateVector3(pawn, vectorToAnimate, target, options){
+	//console.log("5");
 	options = options || {};
 	// get targets from options or set to defaults
 	var to = target || THREE.Vector3(),
@@ -398,7 +399,9 @@ function animateVector3(vectorToAnimate, target, options){
 		if(options.callback) options.callback();
 		});
 	// start the tween
+
 	tweenVector3.start();
+	
 	// return the tween in case we want to manipulate it later on
 	return tweenVector3;
 }
@@ -410,21 +413,151 @@ function animateVector3(vectorToAnimate, target, options){
  * @param {int} vdp Un entier entre [0-39] 
  * @callback callback Appel d'un callback()
  */
-function movement (pawn, vdp, callback) {
+let posPawn;
+function movement (pawn, suce, callback) {
+	let i;
+	vdp = suce;
+	for (i=0;i<40;i++)
+	{
+		if ((Math.floor(window[pawn].position.x *100)/ 100) == (Math.floor(tabCases[i].x * 100) / 100) && (Math.floor(window[pawn].position.z * 100)/100) == (Math.floor(tabCases[i].z * 100) / 100)) {
+			posPawn = i;
+			//console.log("1");
+		}
+	}
 
+	//console.log((Math.floor(tabCases[10].x * 100) / 100));
+	console.log(posPawn);
+
+		if(vdp > posPawn && vdp < 10){
+			// route en bas
+			console.log("1");
+			movementAux(0, pawn, vdp, callback);
+		} else if (vdp == 10 && posPawn < 10) {
+			// pour aller dans le coins en bas a gauche
+			console.log("2");
+			movementAux(1, pawn, 10, callback);
+		} else if (posPawn == 10 && vdp > 10) {
+			// aller du coin en bas a gauche vers la route de gauche
+			console.log("3");
+			movementAux(0, pawn, vdp, callback);
+ 		} else if (posPawn < 10 && vdp > 10) {
+			 // de la route en bas à la route à gauche
+			 console.log("4");
+			movementAux(1, pawn, 10, callback);
+		} else if (posPawn > 10 && posPawn < 20 && vdp < 20) {
+			// route de gauche vers la route à gauche
+			console.log("5");
+			movementAux(0, pawn, vdp, callback);
+		} else if (vdp == 20 && posPawn < 20) {
+			// pour aller dans le coin en haut a gauche
+			console.log("6");
+			movementAux(1, pawn, 20, callback);
+		} else if (posPawn == 20 && vdp > 20) { 
+			// aller du coin en haut a gauche vers la route d'en haut
+			console.log("7");
+			movementAux(0, pawn, vdp, callback);
+		} else if (posPawn < 20 && vdp > 20) { 
+			 // de la route gauche à la route d'en haut
+			 console.log("8");
+			movementAux(1, pawn, 20, callback);
+		} else if (posPawn > 20 && posPawn < 30 && vdp > 20 && vdp < 30) { 
+			// route d'en haut vers la route d'en haut
+			console.log("9");
+			movementAux(0, pawn, vdp, callback);
+		} else if (vdp == 30 && posPawn < 30) {
+			// pour aller dans le coin en haut a droite
+			console.log("10");
+			movementAux(1, pawn, 30, callback);
+		} else if (posPawn == 30 && vdp > 30) {
+			// aller du coin en haut a droite vers la route a droite
+			console.log("11");
+			movementAux(0, pawn, vdp, callback);
+		} else if (posPawn < 30 && vdp > 30) {
+			// de la route d'en haut à la route de droite
+			console.log("12");
+			movementAux(1, pawn, 30, callback);
+		} else if (posPawn > 30 && posPawn < 39 && vdp >= 31 && vdp <= 39) { 
+			// route de droite vers la route de droite
+			console.log("13");
+			movementAux(0, pawn, vdp, callback);
+		} else if (posPawn >= 30 && posPawn <= 39 && vdp == 0) {
+			// pour aller dans le coin en haut en bas
+			console.log("14");
+			movementAux(0, pawn, 0, callback);
+		} else if (posPawn == 0 && vdp > 0) {
+			// aller du coin en bas a droite vers la route d'en bas
+			console.log("15");
+			movementAux(0, pawn, vdp, callback);
+		} else if (posPawn >= 30 && posPawn <= 39 && vdp >= 0 && vdp <= 11) {
+			// de la route de droite à la route d'en bas
+			console.log("16");
+			movementAux(1, pawn, 0, callback);
+		} else if (posPawn >= 20 && posPawn <= 30 && vdp >= 0 && vdp <= 10) {
+			// de la route en haut à la route d'en bas
+			console.log("17");
+			movementAux(1, pawn, 30, callback);
+		} 
+
+
+		if (callback)
+			callback();
+}
+
+
+/**
+ * Déplace le pion sur le plateau
+ * @param {string} pawn Le nom du pion (Ex: 'moto')
+ * @param {int} vdp Un entier entre [0-39]
+ * @callback callback Appel d'un callback()
+ */
+//let compteur = 0;
+function movementAux (compteur, pawn, coin, callback) {
 	// const target = new THREE.Vector3(3.5, 2, 3.85);
-	const target = tabCases[vdp];
-	animateVector3(window[pawn].position, target, {
-		duration: 3000,
+	const target = tabCases[coin];
+	//console.log(window[pawn].position);
+	animateVector3(window[pawn], window[pawn].position, target, {
+		duration: 2000,
 		easing : TWEEN.Easing.Quadratic.InOut,
 		update: function(d) {
-			// console.log("Updating: " + d);
+				//console.log(window[pawn].position);
+			if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 1) { 
+				//console.log("bon1");
+				if (vdp > 20) 
+					movementAux(0, pawn, 20, callback);
+				else 
+					movementAux(0, pawn, vdp, callback);		
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 1) {
+				//console.log("bon2");
+				if (vdp > 30) 
+					movementAux(0, pawn, 30, callback);
+				else
+					movementAux(0, pawn, vdp, callback);
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 1) {
+				//console.log("bon3");
+				if (vdp >= 0 && vdp <= 10)
+					movementAux(0, pawn, 0, callback);
+				else 
+					movementAux(0, pawn, vdp, callback);
+			}else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 1) {
+				//console.log("bon4");
+				if (vdp >= 10 && vdp <= 20)
+					movementAux(0, pawn, 10, callback);
+				else
+					movementAux(0, pawn, vdp, callback);
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 0 && vdp > 20 && vdp < 30) {
+				movementAux(2, pawn, vdp, callback);
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 0 && vdp > 30 && vdp < 40) {
+				movementAux(2, pawn, vdp, callback);
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 0 && vdp >= 0 && vdp < 10) {
+				movementAux(2, pawn, vdp, callback);
+			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 0 && vdp >= 10 && vdp < 20) {
+				movementAux(2, pawn, vdp, callback);
+			}
 		},
-		callback : function(){
+		/*callback : function(){
 			callback();
-		}
+		}*/
 	});
-
 	return;
 
 	varFunction = callback;
