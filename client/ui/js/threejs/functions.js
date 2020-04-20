@@ -472,9 +472,9 @@ function animateVector3(pawn, vectorToAnimate, target, options){
  * @callback callback Appel d'un callback()
  */
 let posPawn;
-function movement (pawn, suce, callback) {
+function movement (pawn, caseArr, callback) {
 	let i;
-	vdp = suce;
+	vdp = caseArr;
 	for (i=0;i<40;i++)
 	{
 		if ((Math.floor(window[pawn].position.x *100)/ 100) == (Math.floor(tabCases[i].x * 100) / 100) && (Math.floor(window[pawn].position.z * 100)/100) == (Math.floor(tabCases[i].z * 100) / 100)) {
@@ -494,7 +494,7 @@ function movement (pawn, suce, callback) {
 			// pour aller dans le coins en bas a gauche
 			console.log("2");
 			movementAux(1, pawn, 10, callback);
-		} else if (posPawn == 10 && vdp > 10) {
+		} else if (posPawn == 10 && vdp > 10 && vdp < 20) {
 			// aller du coin en bas a gauche vers la route de gauche
 			console.log("3");
 			movementAux(0, pawn, vdp, callback);
@@ -510,7 +510,7 @@ function movement (pawn, suce, callback) {
 			// pour aller dans le coin en haut a gauche
 			console.log("6");
 			movementAux(1, pawn, 20, callback);
-		} else if (posPawn == 20 && vdp > 20) { 
+		} else if (posPawn == 20 && vdp > 20 && vdp < 30) { 
 			// aller du coin en haut a gauche vers la route d'en haut
 			console.log("7");
 			movementAux(0, pawn, vdp, callback);
