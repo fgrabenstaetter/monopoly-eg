@@ -52,6 +52,7 @@ let tabCases = {
     29  : new THREE.Vector3(0.335*10,2,0.335*1), 
     
     30  : new THREE.Vector3(0.335*11.5,2,0.335*1), 
+    
     31  : new THREE.Vector3(0.335*11.5,2,0.335*2), 
     32  : new THREE.Vector3(0.335*11.5,2,0.335*3), 
     33  : new THREE.Vector3(0.335*11.5,2,0.335*4), 

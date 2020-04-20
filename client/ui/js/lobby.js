@@ -369,14 +369,19 @@ function lobbyInvitation(invitationID, senderFriendNickname) {
 function addPlayerInGroup(id, nickname, avatar) {
     const shouldDisplayKickButton = ID === hostID && id !== ID;
     const isHost = id === hostID;
+    
+    let kickButton = '';
+    if (shouldDisplayKickButton) 
+        kickButton = '<div class="friend-action"><i class="fas fa-times"></i></div>';
+    
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
             <img class="friends-avatar" data-id="${id}" src="${avatar}" data-toggle="modal" data-target="#` + nickname + `" />
             <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + nickname + `">` + nickname + `</div>
-            <div class="friend-action" style="display: ` + (shouldDisplayKickButton ? 'block' : 'none') + `;">exclure</div>
+            ${kickButton}
         </div>`;
 
-    $('.grouplist .group-entries-container > div').append(html);
+    $('.grouplist .group-entries-container').append(html);
 }
 
 /**
