@@ -502,12 +502,14 @@ socket.on("gamePropertyMortgageRes", (res) => {
 socket.on("gameBidRes", (res) => {
     console.log("gameBidRes");
     console.log(res);
-    let playerNick = idToNick(res.playerID);
-    if (playerNick == null)
-        openBidPopup(res.bidID, 'undefined', res.text);
-    else
-        openBidPopup(res.bidID, playerNick, res.text);
-
+    let first_message = idToNick(res.playerID);
+    if (first_message == null) {
+        let ownerNick = idToNick(res.propertyOwnerId)
+        if (ownerNick == null)
+            openBidPopup(res.bidID, 'undefined', res.text);
+        else
+            openBidPopup(res.bidID, playerNick, res.text);
+    }
 });
 
 socket.on("gameOverbidRes", (res) => {
@@ -1007,7 +1009,7 @@ $('body').on('click', '.bid-popup .bid-validation', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
     const price = parseInt($('input.bid-input').val());
-    socket.emit('gameOverbidReq', { bidID: bidID, price : price });
+    socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
 
     return false;
