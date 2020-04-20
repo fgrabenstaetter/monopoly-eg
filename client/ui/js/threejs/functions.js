@@ -294,7 +294,7 @@ var plateauDrapeaux = [
  * @param {string} Nom de l'élément du plateau
  */
 function loaderPlateau(load, test) {
-	const plateauObjects = [];
+	const plateauObjects = ['plateau2'];
 
 	const loader = new THREE.GLTFLoader();
 	// let dracoLoader = new THREE.DRACOLoader();
@@ -309,25 +309,25 @@ function loaderPlateau(load, test) {
 	}
 
 	// Chargement du plateau par "cube Three JS"
-	const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);
-	const textureLoader = new THREE.TextureLoader();
-	const materials = [
-		new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
-		null,
-		new THREE.MeshBasicMaterial({
-			map: textureLoader.load('/img/texture_plateau.png', (texture) => {
-				texture.outputEncoding = THREE.LinearEncoding
-			}),
-			needsUpdate: true,
-			reflectivity: false
-		}),
-		null,
-		new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
-		null,
-	];
-	let cube = new THREE.Mesh(geometry, materials);
-	cube.position.set(0, -0.13, 0);
-	scene.add(cube);
+	// const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);
+	// const textureLoader = new THREE.TextureLoader();
+	// const materials = [
+	// 	new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
+	// 	null,
+	// 	new THREE.MeshBasicMaterial({
+	// 		map: textureLoader.load('/img/texture_plateau.png', (texture) => {
+	// 			texture.outputEncoding = THREE.LinearEncoding
+	// 		}),
+	// 		needsUpdate: true,
+	// 		reflectivity: false
+	// 	}),
+	// 	null,
+	// 	new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
+	// 	null,
+	// ];
+	// let cube = new THREE.Mesh(geometry, materials);
+	// cube.position.set(0, -0.13, 0);
+	// scene.add(cube);
 }
 
 
