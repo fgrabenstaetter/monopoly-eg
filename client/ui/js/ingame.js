@@ -944,7 +944,7 @@ function displayPropertyInfos(property) {
     $('.overview-card').fadeIn();
 }
 
-$('.player-list').on('click', '.property', function () {
+$('.player-list').on('click', '.property', function (e) {
 
     let propertyId = $(this).attr('data-id');
     if (!propertyId) {
@@ -956,6 +956,8 @@ $('.player-list').on('click', '.property', function () {
         return;
 
     displayPropertyInfos(property);
+
+    e.stopPropagation();
 });
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
