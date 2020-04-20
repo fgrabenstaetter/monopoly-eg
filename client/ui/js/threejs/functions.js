@@ -7,20 +7,24 @@ let name, zoomOn = 1;
 const canvas = document.querySelector('#c');
 const HEIGHT = canvas.clientHeight;
 const WIDTH = canvas.clientWidth;
-const aspectRatio = WIDTH / HEIGHT;
-
 const W_HEIGHT = window.innerHeight;
 const W_WIDTH = window.innerWidth;
+const aspectRatio = WIDTH / HEIGHT;
+
+// const W_HEIGHT = window.innerHeight;
+// const W_WIDTH = window.innerWidth;
 const pixelRatio = window.devicePixelRatio;
 
-const renderer = new THREE.WebGLRenderer({ canvas });
-renderer.setPixelRatio(pixelRatio);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setViewport(0,0,W_WIDTH,W_HEIGHT);
+// renderer.setPixelRatio(pixelRatio);
+renderer.setSize(WIDTH, HEIGHT);
 
 
 const gltfLoader = new THREE.GLTFLoader();
-// let dracoLoader = new THREE.DRACOLoader();
-// dracoLoader.setDecoderPath('/js/threejs/draco/');
-// gltfLoader.setDRACOLoader(dracoLoader);
+const dracoLoader = new THREE.DRACOLoader();
+dracoLoader.setDecoderPath('/js/threejs/draco/');
+gltfLoader.setDRACOLoader(dracoLoader);
 
 
 /**
@@ -30,16 +34,15 @@ const gltfLoader = new THREE.GLTFLoader();
 //Creation du render
 // renderer.setClearColor(0x000000, 0);
 // renderer.setPixelRatio(pixelRatio);
-renderer.setSize(WIDTH, HEIGHT);
+// renderer.setSize(WIDTH, HEIGHT);
 
 
-// renderer.outputEncoding = THREE.sRGBEncoding;
-// renderer.gammaOutput = true;
-// renderer.gammaFactor = 2.2;
-// // renderer.autoClear = false;
-// renderer.shadowMap.enabled = false;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.gammaOutput = true;
+renderer.gammaFactor = 2.2;
+renderer.shadowMap.enabled = true;
 
-// window.addEventListener('resize', handleWindowResize, false);
+window.addEventListener('resize', handleWindowResize, false);
 
 
 /**
@@ -52,49 +55,21 @@ const scene = new THREE.Scene();
  * CAMERA
  */
 const d = 2;
-// var w = canvas.clientWidth;
-// var h = canvas.clientHeight;
-// var viewSize = h;
-// var aspectRatio2 = w / h;
-
-// _viewport = {
-//     viewSize: viewSize,
-//     aspectRatio: aspectRatio2,
-//     left: (-aspectRatio2 * viewSize) / 2,
-//     right: (aspectRatio2 * viewSize) / 2,
-//     top: viewSize / 2,
-//     bottom: -viewSize / 2,
-//     near: -100,
-//     far: 100
-// }
-
-// const camera = new THREE.OrthographicCamera ( 
-//     _viewport.left, 
-//     _viewport.right, 
-//     _viewport.top, 
-//     _viewport.bottom, 
-//     _viewport.near, 
-//     _viewport.far 
-// );
 const camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000);
-// const camera = new THREE.OrthographicCamera( W_WIDTH * pixelRatio / -2, W_WIDTH * pixelRatio / 2, W_HEIGHT * pixelRatio / 2, W_HEIGHT * pixelRatio / - 2, 1, 1000 );
 camera.position.set(20, 20, 20);
-
 camera.lookAt(scene.position);
-
-// const fov = 45;
-// const aspect = 2;  // the canvas default
-// const near = 0.1;
-// const far = 100;
-// const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-// camera.position.set(20,20,20);
 
 /**
  * OBJETS glTF PLATEAU
  */
 {
-	const plateauObjects = ['plateau2'];
+	// const plateauObjects = ['plateau2']; // Plateau texture UV
 	// const plateauObjects = [];
+	const plateauObjects = [
+			'collections', 'eau', 'egout', 'egout',
+			'orangerie', 'parlement', 'pont', 'rail',
+			'route', 'tram', 'campus', 'cascade', 'maison'
+	];
 	
 	for (const i in plateauObjects) {
 		gltfLoader.load('models/plateau/' + plateauObjects[i] + '.gltf', (gltf) => {
@@ -129,23 +104,23 @@ camera.lookAt(scene.position);
   * LUMIERE
   */
  {
-	// let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	// light.position.set(7, 4, 3);
-	// scene.add(light);
+	let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	light.position.set(7, 4, 3);
+	scene.add(light);
 
-	// let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	// light2.position.set(3, 3, 4);
-	// scene.add(light2);
+	let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	light2.position.set(3, 3, 4);
+	scene.add(light2);
 
-	// let ambientLight = new THREE.AmbientLight(0x111111);
-	// scene.add(ambientLight);
+	let ambientLight = new THREE.AmbientLight(0x111111);
+	scene.add(ambientLight);
 
-	const color = 0xFFFFFF;
-    const intensity = 1;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(5, 10, 2);
-    scene.add(light);
-    scene.add(light.target);
+	// const color = 0xFFFFFF;
+    // const intensity = 1;
+    // const light = new THREE.DirectionalLight(color, intensity);
+    // light.position.set(5, 10, 2);
+    // scene.add(light);
+    // scene.add(light.target);
 }
 
 function handleWindowResize() {
@@ -171,48 +146,17 @@ document.body.appendChild(stats.dom)
  * @return {needSize} Booléen 
  */
 function render(time) {
-	// glS.start();
-
-	// rS( 'frame' ).start();
-	// rS( 'rAF' ).tick();
-	// rS( 'FPS' ).frame();
-
-
-	// TWEEN.update();
-
-	// if (counter != 0)
-	// 	movement(varPawn, varMovement, varFunction);
-
 	// if (resizeRendererToDisplaySize(renderer)) {
 	// 	const canvas = renderer.domElement;
 	// 	camera.aspect = canvas.clientWidth / canvas.clientHeight;
 	// 	camera.updateProjectionMatrix();
 	// }
 
-	// if (counter == 0) {
-	// 	const canvas = document.querySelector('#c');
-	// 	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
-	// 	let d = 2;
-	// 	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
-
-	// 	camera.position.set(20, 20, 20);
-	// 	camera.lookAt(scene.position);
-	// }
-
 	stats.update();
 	// rendererStats.update(renderer);
 	TWEEN.update(time);
 
-	// rS( 'render' ).start();
 	renderer.render(scene, camera);
-	// rS( 'render' ).end();
-
-	// rS( 'frame' ).end();
-
-	// rS( 'rStats ' ).start();
-	// rS().update();
-	// rS( 'rStats' ).end();
-
 	requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
