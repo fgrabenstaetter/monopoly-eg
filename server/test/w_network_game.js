@@ -546,7 +546,7 @@ describe('Network + Game', () => {
                     assert.ok(data.text);
                     assert.strictEqual(data.price, 300);
 
-                    const bid = Bid.bidByID(nextBidID);
+                    const bid = Bid.bidByID(game, nextBidID);
                     assert.strictEqual(bid.amountAsked, 300);
                     assert.strictEqual(bid.player, player);
                     assert.strictEqual(bid.property, game.cells[player.cellPos].property);

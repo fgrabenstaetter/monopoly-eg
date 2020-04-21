@@ -948,7 +948,7 @@ class Network {
             let err = Errors.SUCCESS, offer;
             if (data.offerID == null)
                 err = Errors.MISSING_FIELD;
-            else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player)
+            else if (!(offer = Offer.offerByID(game, data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
             else if (offer.receiver.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
@@ -978,7 +978,7 @@ class Network {
             else if (player.money < data.price)
                 Errors.BID.NOT_ENOUGH_MONEY;
             else {
-                const bid = Bid.bidByID(data.bidID);
+                const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
                     err = Errors.BID.ENDED;
                 else {

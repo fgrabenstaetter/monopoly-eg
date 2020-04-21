@@ -27,20 +27,23 @@ class Game {
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor (id, users, duration, GLOBAL) {
-        this.id                 = id;
-        this.GLOBAL             = GLOBAL;
-        this.players            = [];
-        this.forcedDiceRes      = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells              = Cells.new;
-        this.chanceDeck         = new Deck(chanceCardsMeta);
-        this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.chat               = new Chat();
-        this.bank               = new Bank(this.cells);
+        this.id                       = id;
+        this.GLOBAL                   = GLOBAL;
+        this.players                  = [];
+        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.cells                    = Cells.new;
+        this.chanceDeck               = new Deck(chanceCardsMeta);
+        this.communityChestDeck       = new Deck(communityChestCardsMeta);
+        this.chat                     = new Chat();
+        this.bank                     = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
-        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        this.offers                   = [];
+        this.bids                     = [];
+        this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
+        this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
 
+        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime = null; // timestamp de démarrage en ms
-        this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
