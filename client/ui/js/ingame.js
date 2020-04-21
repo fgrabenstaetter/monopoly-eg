@@ -503,7 +503,7 @@ socket.on("gameOfferFinishedRes", (res) => {
         property.ownerID = res.makerID;
         let cell = getCellByProperty(res.propertyID);
         delProperty(res.propertyID);
-        loaderFlag("d" + cell.id, owner.color);
+        loaderFlag("d" + cell.id, buyer.color);
         if (property.type == "publicCompany") {
             createProperty(res.makerID, 'company', property.name, property.id);
         }
@@ -659,7 +659,6 @@ socket.on('gameReconnectionRes', (data) => {
                 }
                 else {
                     createProperty(player.id, property.color, property.name, property.id);
-
                 }
             }
         });
@@ -1116,32 +1115,32 @@ socket.on('gamePlayerFailureRes', (res) => {
 
 
 const splashSettings = {};
-splashSettings.opacityIn = [0,1];
+splashSettings.opacityIn = [0, 1];
 splashSettings.scaleIn = [0.2, 1];
 splashSettings.scaleOut = 3;
 splashSettings.durationIn = 800;
 splashSettings.durationOut = 600;
 splashSettings.delay = 500;
 
-const splashAnim = anime.timeline({loop: false, autoplay: false})
-.add({
-    targets: '.splash-text .letters-1',
-    opacity: splashSettings.opacityIn,
-    scale: splashSettings.scaleIn,
-    duration: splashSettings.durationIn
-}).add({
-    targets: '.splash-text .letters-1',
-    opacity: 0,
-    scale: splashSettings.scaleOut,
-    duration: splashSettings.durationOut,
-    easing: "easeInExpo",
-    delay: splashSettings.delay
-}).add({
-    targets: '.splash-text',
-    opacity: 0,
-    duration: 500,
-    delay: 500
-});
+const splashAnim = anime.timeline({ loop: false, autoplay: false })
+    .add({
+        targets: '.splash-text .letters-1',
+        opacity: splashSettings.opacityIn,
+        scale: splashSettings.scaleIn,
+        duration: splashSettings.durationIn
+    }).add({
+        targets: '.splash-text .letters-1',
+        opacity: 0,
+        scale: splashSettings.scaleOut,
+        duration: splashSettings.durationOut,
+        easing: "easeInExpo",
+        delay: splashSettings.delay
+    }).add({
+        targets: '.splash-text',
+        opacity: 0,
+        duration: 500,
+        delay: 500
+    });
 
 /**
  * Génère une animation "splash screen" (en grand à l'écran)
