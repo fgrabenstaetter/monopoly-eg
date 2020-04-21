@@ -380,6 +380,7 @@ class Game {
         this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
+        //const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [3, 5];
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
@@ -485,6 +486,11 @@ class Game {
     turnPlayerPropertyCell(diceRes) {
         const total = diceRes[0] + diceRes[1];
         const property = this.curCell.property;
+
+        for (const bid of this.bids) {
+            if (bid.property === property)
+                return;
+        }
 
         if (property.isMortgaged)
             return; // rien à faire

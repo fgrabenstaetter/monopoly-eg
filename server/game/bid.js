@@ -32,6 +32,7 @@ class Bid {
         this.game                 = game;
         this.manual               = manual;
         this.text                 = this.property.name;
+        this.nBidsOnProperty      = [];
         this.game.bids.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
 
@@ -63,6 +64,11 @@ class Bid {
             return false;
         }
 
+        if (this.nBidsOnProperty.indexOf(player.id) === -1)
+            this.nBidsOnProperty.push(player.id);
+
+        if (this.nBidsOnProperty.length === this.game.players.length)
+            this.expired();
         return true;
     }
 
