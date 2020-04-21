@@ -900,7 +900,7 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -943,7 +943,7 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -982,7 +982,7 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
