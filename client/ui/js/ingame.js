@@ -534,7 +534,7 @@ socket.on("gameOfferFinishedRes", (res) => {
         property.ownerID = res.makerID;
         let cell = getCellByProperty(res.propertyID);
         delProperty(res.propertyID);
-        loaderFlag("d" + cell.id, owner.color);
+        loaderFlag("d" + cell.id, buyer.color);
         if (property.type == "publicCompany") {
             createProperty(res.makerID, 'company', property.name, property.id);
         }
@@ -557,9 +557,8 @@ socket.on("gamePropertyMortgageRes", (res) => {
     console.log("gamePropertyMortgageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
     console.log(res);
-    for (const p in res.properties)
-    {
-        DATA.properties[res.properties[p]].isMortgage=1;
+    for (const p in res.properties) {
+        DATA.properties[res.properties[p]].isMortgage = 1;
         mortgageProperty(res.properties[p]);
     }
     $('.overview-card').fadeOut();
@@ -570,7 +569,7 @@ socket.on("gamePropertyUnmortgagedRes", (res) => {
     console.log("gamePropertyUnmortgagedRes");
     console.log(res);
     setPlayerMoney(res.playerID, res.playerMoney);
-    DATA.properties[res.propertyID].isMortgage=0;
+    DATA.properties[res.propertyID].isMortgage = 0;
     unMortgageProperty(res.propertyID);
     $('.overview-card').fadeOut();
 });
@@ -700,7 +699,6 @@ socket.on('gameReconnectionRes', (data) => {
                 }
                 else {
                     createProperty(player.id, property.color, property.name, property.id);
-
                 }
             }
         });
@@ -925,7 +923,7 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -968,7 +966,7 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -1007,7 +1005,7 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -1084,7 +1082,7 @@ $('.overview-card .mortgage-button').click(function (e) {
     console.log(propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-    
+
     return false;
 });
 
@@ -1092,7 +1090,7 @@ $('.overview-card .buyback-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
     console.log(propertyID);
-    socket.emit("gamePropertyUnmortgageReq", { propertyID : propertyID });
+    socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
     return false;
 });
@@ -1130,7 +1128,8 @@ function unMortgageProperty(id) {
 $('body').on('click', '.bid-popup .bid-validation', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
-    const price = parseInt($('input.bid-input').val());
+    console.log($(this).parent().find(".input").val());
+    const price = parseInt($(this).parent().children(':first-child').val());
     socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
 
@@ -1167,32 +1166,32 @@ socket.on('gamePlayerFailureRes', (res) => {
 
 
 const splashSettings = {};
-splashSettings.opacityIn = [0,1];
+splashSettings.opacityIn = [0, 1];
 splashSettings.scaleIn = [0.2, 1];
 splashSettings.scaleOut = 3;
 splashSettings.durationIn = 800;
 splashSettings.durationOut = 600;
 splashSettings.delay = 500;
 
-const splashAnim = anime.timeline({loop: false, autoplay: false})
-.add({
-    targets: '.splash-text .letters-1',
-    opacity: splashSettings.opacityIn,
-    scale: splashSettings.scaleIn,
-    duration: splashSettings.durationIn
-}).add({
-    targets: '.splash-text .letters-1',
-    opacity: 0,
-    scale: splashSettings.scaleOut,
-    duration: splashSettings.durationOut,
-    easing: "easeInExpo",
-    delay: splashSettings.delay
-}).add({
-    targets: '.splash-text',
-    opacity: 0,
-    duration: 500,
-    delay: 500
-});
+const splashAnim = anime.timeline({ loop: false, autoplay: false })
+    .add({
+        targets: '.splash-text .letters-1',
+        opacity: splashSettings.opacityIn,
+        scale: splashSettings.scaleIn,
+        duration: splashSettings.durationIn
+    }).add({
+        targets: '.splash-text .letters-1',
+        opacity: 0,
+        scale: splashSettings.scaleOut,
+        duration: splashSettings.durationOut,
+        easing: "easeInExpo",
+        delay: splashSettings.delay
+    }).add({
+        targets: '.splash-text',
+        opacity: 0,
+        duration: 500,
+        delay: 500
+    });
 
 /**
  * Génère une animation "splash screen" (en grand à l'écran)
