@@ -638,6 +638,35 @@
         }
         ```
 
+- **Un joueur quitte la partie**
+    > Automatiquement émit lorsqu'un joueur est déconnecté => tous ses tours seront passés
+
+    * **Requête:** playerLeavingReq
+        * *Données:*
+        ```javascript
+        {
+            null
+        }
+        ```
+
+    * **Réponse:** playerLeavingRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+    * **Réponse:** playerHasLeftRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
+        }
+        ```
+
+
 ### --- Tour de jeu
 
 - **Doit jouer (lancer les dés)**

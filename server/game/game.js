@@ -254,6 +254,18 @@ class Game {
         this.nextTurn();
     }
 
+    playerLeaving (player) {
+        for (const prop of player.properties) {
+            this.bank.addProperty(prop);
+        }
+        this.bank.addMoney(player.money);
+        const ind = this.players.indexOf(player);
+        this.players.splice(ind, 1);
+        this.GLOBAL.network.io.to(this.name).emit('playerHasLeftRes', {
+            playerID: player.id
+        });
+    }
+
     /**
      * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite OU le timeout de partie a été atteint)
      * @return true si la partie est finie, false sinon

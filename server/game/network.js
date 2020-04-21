@@ -116,6 +116,7 @@ class Network {
         this.gamePropertyBuyReq           (player, game);
         this.gamePropertyUpgradeReq       (player, game);
         this.gamePropertyMortgageReq      (player, game);
+        this.gamePlayerLeavingReq         (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
@@ -1021,6 +1022,15 @@ class Network {
             }
 
             player.socket.emit('gameManualBidRes', { error: err.code, status: err.status });
+        });
+    }
+
+    gamePlayerLeavingReq (player, game) {
+        player.socket.on('playerLeavingReq', (data) => {
+            let err = Errors.SUCCESS;
+            game.playerLeaving(player);
+
+            player.socket.emit('playerLeavingRes', {error: err.code, status: err.status });
         });
     }
 
