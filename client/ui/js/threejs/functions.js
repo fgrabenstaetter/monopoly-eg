@@ -64,7 +64,7 @@ camera.lookAt(scene.position);
  * OBJETS glTF PLATEAU
  */
 {
-	const plateauObjects = ['plateau2']; // Plateau texture UV
+	const plateauObjects = ['plateau']; // Plateau texture UV
 	// const plateauObjects = [];
 	// const plateauObjects = [
 	// 	'collections', 'eau', 'egout', 'egout',
