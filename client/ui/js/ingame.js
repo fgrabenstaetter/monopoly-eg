@@ -534,9 +534,8 @@ socket.on("gamePropertyMortgageRes", (res) => {
     console.log("gamePropertyMortgageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
     console.log(res);
-    for (const p in res.properties)
-    {
-        DATA.properties[res.properties[p]].isMortgage=1;
+    for (const p in res.properties) {
+        DATA.properties[res.properties[p]].isMortgage = 1;
         mortgageProperty(res.properties[p]);
     }
     $('.overview-card').fadeOut();
@@ -547,7 +546,7 @@ socket.on("gamePropertyUnmortgagedRes", (res) => {
     console.log("gamePropertyUnmortgagedRes");
     console.log(res);
     setPlayerMoney(res.playerID, res.playerMoney);
-    DATA.properties[res.propertyID].isMortgage=0;
+    DATA.properties[res.propertyID].isMortgage = 0;
     unMortgageProperty(res.propertyID);
     $('.overview-card').fadeOut();
 });
@@ -1060,7 +1059,7 @@ $('.overview-card .mortgage-button').click(function (e) {
     console.log(propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-    
+
     return false;
 });
 
@@ -1068,7 +1067,7 @@ $('.overview-card .buyback-button').click(function (e) {
     e.preventDefault();
     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
     console.log(propertyID);
-    socket.emit("gamePropertyUnmortgageReq", { propertyID : propertyID });
+    socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
     return false;
 });

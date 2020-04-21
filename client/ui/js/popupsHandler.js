@@ -23,8 +23,8 @@ $('.player-list').on('mouseenter', '.property', function (e) {
                 <button class="plus">+</button>`
     }
     const html = `<div id="houseOption">`
-                + build +
-                `<i class="fas fa-info-circle"></i>
+        + build +
+        `<i class="fas fa-info-circle"></i>
                 </div>`
     $(this).append(html);
 });
@@ -265,7 +265,7 @@ function openBidPopup(id, playername, streetname, startingprice) {
                 <div class="bid-input">
                     <input type="text" placeholder="Prix"></input>€
                     <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
-                    <button class="bid-cancel">Annuler</button>
+                    <button class="bid-cancel">Passer</button>
                 </div>
             </div>
         </div>`;
@@ -278,7 +278,7 @@ function openBidPopup(id, playername, streetname, startingprice) {
                 <div class="bid-input">
                     <input type="text" placeholder="Prix"></input>€
                     <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
-                    <button class="bid-cancel">Annuler</button>
+                    <button class="bid-cancel">Passer</button>
                 </div>
             </div>
         </div>`;
@@ -316,9 +316,9 @@ function addBidInfo(id, message) {
 /**
  * Active ou désactive le bouton "enchérir" en fonction de l'input
  */
-$('#bid-popup-container').on('keyup', '.bid-input input', function(e) {
+$('#bid-popup-container').on('keyup', '.bid-input input', function (e) {
     let empty = false;
-    
+
     empty = $(this).val().length == 0;
 
     if (empty)
