@@ -92,6 +92,7 @@ socket.on('gameStartedRes', (data) => {
     for (const i in DATA.properties) {
         DATA.properties[i].level = 0;
         DATA.properties[i].ownerID = null;
+        DATA.properties[i].isMortgage = 0;
     };
     // Génération de la liste de joueurs
     DATA.players.forEach((player, index) => {
@@ -485,6 +486,13 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+socket.on("gamePropertyUnmortgageRes", (res) => {
+    if (res.error === 0)
+        console.log("gamePropertyUnmortgageRes")
+    else // hôte uniquement
+        toast(`gamePropertyUnmortgageRes ${res.status}`, 'danger', 5);
+});
+
 socket.on("gameOfferFinishedRes", (res) => {
     console.log("gameOfferFinishedRes")
     let buyer = getPlayerById(res.makerID);
@@ -525,13 +533,23 @@ socket.on("gameOfferFinishedRes", (res) => {
 socket.on("gamePropertyMortgageRes", (res) => {
     console.log("gamePropertyMortgageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
+    console.log(res);
+    for (const p in res.properties)
+    {
+        DATA.properties[res.properties[p]].isMortgage=1;
+        mortgageProperty(res.properties[p]);
+    }
     $('.overview-card').fadeOut();
-    // Ne pas supprimer les cartes mais afficher (avec une classe ?) le fait qu'elles soient hypothéquées !
-    // for (const i in res.properties) {
-    //     $(`.player-entry[data-id="${res.playerID}"] .property[data-id="${res.properties[i].id}"]`).fadeOut(function() {
-    //         $(this).remove();
-    //     });
-    // }
+});
+
+//Faire lever l'hypotheque
+socket.on("gamePropertyUnmortgagedRes", (res) => {
+    console.log("gamePropertyUnmortgagedRes");
+    console.log(res);
+    setPlayerMoney(res.playerID, res.playerMoney);
+    DATA.properties[res.propertyID].isMortgage=0;
+    unMortgageProperty(res.propertyID);
+    $('.overview-card').fadeOut();
 });
 
 //Enchères
@@ -997,12 +1015,13 @@ function displayPropertyInfos(property) {
     emptyOverviewCard();
     $('.overview-card').attr('data-id', property.id);
     let isMine = (property.ownerID == ID);
+    let isMortgage = property.isMortgage;
     if (property.type == "street") {
-        populateStreetOverviewCard(property, isMine);
+        populateStreetOverviewCard(property, isMine, isMortgage);
     } else if (property.type == "trainStation") {
-        populateStationOverviewCard(property, isMine);
+        populateStationOverviewCard(property, isMine, isMortgage);
     } else {
-        populateCompanyOverviewCard(property, isMine);
+        populateCompanyOverviewCard(property, isMine, isMortgage);
     }
     $('.overview-card').fadeIn();
 }
@@ -1042,7 +1061,16 @@ $('.overview-card .mortgage-button').click(function (e) {
     console.log(propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
+    
+    return false;
+});
 
+$('.overview-card .buyback-button').click(function (e) {
+    e.preventDefault();
+    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    console.log(propertyID);
+    socket.emit("gamePropertyUnmortgageReq", { propertyID : propertyID });
+    console.log("gamePropertyUnmortgageReq");
     return false;
 });
 
