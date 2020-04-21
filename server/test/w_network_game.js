@@ -375,6 +375,58 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
+    it('Annuler une hypothèque avec le taux d\'intérêt', (done) => {
+        const game = new Game(1, [user, user2], null, GLOBAL);
+        // démarrage manuel
+        for (const player of game.players)
+            player.isReady = true;
+        game.forcedDiceRes = [1, 2]; // => Properties.STREET[0]
+        game.start(true);
+        const player = game.curPlayer; // doit payer loyer
+        const player2 = game.players[0] === player ? game.players[1] : game.players[0]; // recoit le loyer
+        const property = game.cells[3].property;
+
+        player.addProperty(property);
+        property.mortgage(game);
+
+        let sock;
+        if (player.user.socket === serverSocket)
+            sock = clientSocket;
+        else
+            sock = clientSocket2;
+
+        let nb = 0;
+
+        const pMoney = player.money;
+
+        sock.on('gameActionRes', (data) => {
+            assert.strictEqual(data.cellPos, 3);
+
+            sock.on('gamePropertyUnmortgageRes', (data) => {
+                assert.strictEqual(data.error, 0);
+                if (++ nb === 2)
+                    done();
+            });
+
+            sock.on('gamePropertyUnmortgagedRes', (data) => {
+                assert.strictEqual(data.playerID, player.id);
+                assert.strictEqual(data.propertyID, property.id);
+                assert.strictEqual(data.playerMoney, player.money);
+                assert.strictEqual(data.bankMoney, game.bank.money);
+
+                assert.strictEqual(player.money, pMoney - property.unmortgagePrice);
+                assert.strictEqual(property.isMortgaged, false);
+
+                if (++ nb === 2)
+                    done();
+            });
+
+            sock.emit('gamePropertyUnmortgageReq', { propertyID: property.id });
+        });
+
+        sock.emit('gameRollDiceReq');
+    });
+
     it('Test sur le retrait de carte chance/communauté', (done) => {
         const game = new Game(1, [user, user2], null, GLOBAL);
         // démarrage manuel

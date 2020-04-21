@@ -116,6 +116,7 @@ class Network {
         this.gamePropertyBuyReq           (player, game);
         this.gamePropertyUpgradeReq       (player, game);
         this.gamePropertyMortgageReq      (player, game);
+        this.gamePropertyUnmortgageReq    (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
@@ -870,7 +871,7 @@ class Network {
 
     gamePropertyUnmortgageReq(player, game) {
         player.socket.on('gamePropertyUnmortgageReq', (data) => {
-            let err = Errors.SUCCESS;
+            let err = Errors.SUCCESS, prop;
 
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
@@ -1072,10 +1073,11 @@ class Network {
                 // propriétés
                 if (cell.type === Constants.CELL_TYPE.PROPERTY) {
                     let propertyData = {
-                        id          : cell.property.id,
-                        type        : cell.property.type,
-                        name        : cell.property.name,
-                        description : cell.property.description
+                        id           : cell.property.id,
+                        type         : cell.property.type,
+                        name         : cell.property.name,
+                        description  : cell.property.description,
+                        isMortgaged  : cell.property.isMortgaged
                     };
 
                     switch (cell.property.type) {

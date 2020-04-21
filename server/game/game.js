@@ -43,8 +43,6 @@ class Game {
         this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
-
-
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
         for (let i = 0, l = users.length; i < l; i++) {
             const randInd = Math.floor(Math.random() * pawns.length);
