@@ -11,13 +11,3 @@ function toast(content, type, time) {
 
     $(html).appendTo('#content').fadeIn('fast').delay(time * 1000).fadeOut('fast', function() { $(".toast-notification").remove(); });
 }
-
-/**
- * Fermeture animée d'une modal
- */
-$('data-toggle=["modal"]').on('show.bs.modal', function (e) {
-  $(this).attr('class', 'modal-dialog animated bounceIn');
-});
-$('data-toggle=["modal"]').on('hide.bs.modal', function (e) {
-    $(this).attr('class', 'modal-dialog animated bounceOut');
-});
