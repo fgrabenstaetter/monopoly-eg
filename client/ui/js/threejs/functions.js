@@ -1,5 +1,6 @@
 // let varMovement, varCase, vdp, varFunction, varPawn;
 let name, zoomOn = 1;
+let posPawn;
 // let name, zoomOn = 1, counter = 0, counter2 = 0;
 // Pas possible de les changer en let
 // var pawn, window, cases;
@@ -374,10 +375,10 @@ function hotelPropertyL(hotelPropriete) {
 function zoomOnOff(number) {
 	zoomOn = number;
 }
-let compteurCoin = 0;
+
+
 /* Animates a Vector3 to the target */
-function animateVector3(coin, pawn, vectorToAnimate, target, options){
-	//console.log("5");
+function animateVector3(pawn, vectorToAnimate, target, options){
 	options = options || {};
 	// get targets from options or set to defaults
 	var to = target || THREE.Vector3(),
@@ -387,13 +388,37 @@ function animateVector3(coin, pawn, vectorToAnimate, target, options){
 	var tweenVector3 = new TWEEN.Tween(vectorToAnimate)
 		.to({ x: to.x, y: to.y, z: to.z, }, duration)
 		.easing(easing)
-		.onUpdate(function (d) {
-			if (options.update) {
-				options.update(d);
-			}
+		.onUpdate(function () {
+			
 		})
 		.onComplete(function () {
-			if (options.callback) options.callback();
+			if ((pawn.position.x.toFixed(2) == 0.33 || pawn.position.x.toFixed(2) == 0.34) && 
+					pawn.position.z.toFixed(2) == 3.85) {
+				pawn.rotateY(Math.PI / -2);
+				if (vdp >= 11 && vdp <= 20)
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
+				else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 24 || vdp == 21)
+					animateVector3(pawn, vectorToAnimate, tabCases[20], options);
+			} else if (pawn.position.x.toFixed(2) == 0.34 && (pawn.position.z.toFixed(2) == 0.33 || 
+						pawn.position.z.toFixed(2) == 0.34)) {
+				pawn.rotateY(Math.PI / -2);
+				if (vdp >= 21 && vdp <= 30)
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
+				else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 31)
+					animateVector3(pawn, vectorToAnimate, tabCases[30], options);			
+			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34) {
+				pawn.rotateY(Math.PI / -2);
+				if (vdp >= 31 && vdp <= 39)
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
+				else if (vdp == 0 || vdp == 1 || vdp == 11 || vdp == 15)
+					animateVector3(pawn, vectorToAnimate, tabCases[0], options);			
+			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 3.85) {
+				pawn.rotateY(Math.PI / -2);
+				if (vdp >= 1 && vdp <= 10)
+					animateVector3(1, pawn, vectorToAnimate, tabCases[vdp], options);		
+				else if (vdp == 24 || vdp == 11 || vdp == 15) 		
+					animateVector3(pawn, vectorToAnimate, tabCases[10], options);	
+			}
 		});
 	// start the tween
 
@@ -402,36 +427,7 @@ function animateVector3(coin, pawn, vectorToAnimate, target, options){
 	// console.log(pawn.position.z.toFixed(2));
 	// console.log("coin");
 	// console.log(coin);
-	// if ((posPawn >= 0 && posPawn <= 9) && (coin >= 10 && coin <= 21 /*|| coin == 20 || coin == 21 || coin == 0 || coin == 30*/)) {
-	// 	//console.log("sdfs");
-	// 	if (pawn.position.x.toFixed(2) == 0.34 && pawn.position.z.toFixed(2) == 3.85 && compteurCoin == 0) {
-	// 		console.log("sdssadsadsaddfs");
-	// 		pawn.rotateY(Math.PI / -2);
-	// 		compteurCoin++;
-	// 	}
-	
-	// 	if (pawn.position.x.toFixed(2) == 0.34 && pawn.position.z.toFixed(2) == 0.34 && compteurCoin == 1) {
-	// 		pawn.rotateY(Math.PI / -2);
-	// 		compteurCoin++;
-	// 	}
-	// }
-	// 	if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34 && compteurCoin == 2) {
-	// 		pawn.rotateY(Math.PI / -2);
-	// 		compteurCoin++;
-	// 	}
-		// if ((Math.floor(pawn.position.x * 100) / 100) == 3.85 && (Math.floor(pawn.position.z * 100) / 100) == 3.85 && compteurCoin == 0) {
-		// 	console.log("sdssadsadsaddfs123");
-		// 	pawn.rotateY(Math.PI / -2);
-		// 	compteurCoin++;
-		// }
-		// console.log(compteurCoin);
-	//} 
-	// if ((posPawn >= 10 && posPawn <= 19) && (coin == 20 || coin == 21)) {
-	// 	if (pawn.position.x.toFixed(2) == 0.34 && pawn.position.z.toFixed(2) == 0.34 && compteurCoin == 0) {
-	// 		pawn.rotateY(Math.PI / -2);
-	// 		compteurCoin++;
-	// 	}
-	// }	
+			
 	// return the tween in case we want to manipulate it later on
 	return tweenVector3;
 }
@@ -443,20 +439,16 @@ function animateVector3(coin, pawn, vectorToAnimate, target, options){
  * @param {int} vdp Un entier entre [0-39] 
  * @callback callback Appel d'un callback()
  */
-let posPawn;
 function movement (pawn, caseArr, callback) {
 	let i;
 	vdp = caseArr;
-	for (i=0;i<40;i++)
-	{
-		if ((Math.floor(window[pawn].position.x *100)/ 100) == (Math.floor(tabCases[i].x * 100) / 100) && (Math.floor(window[pawn].position.z * 100)/100) == (Math.floor(tabCases[i].z * 100) / 100)) {
+
+	for (i = 0; i < 40; i++){
+		if ((Math.floor(window[pawn].position.x *100)/ 100) == (Math.floor(tabCases[i].x * 100) / 100) && 
+				(Math.floor(window[pawn].position.z * 100)/100) == (Math.floor(tabCases[i].z * 100) / 100)) {
 			posPawn = i;
-			//console.log("1");
 		}
 	}
-
-	//console.log((Math.floor(tabCases[10].x * 100) / 100));
-	//console.log(posPawn);
 
 		if(vdp > posPawn && vdp < 10){
 			// route en bas
@@ -486,7 +478,8 @@ function movement (pawn, caseArr, callback) {
 			// aller du coin en haut a gauche vers la route d'en haut
 			console.log("7");
 			movementAux(0, pawn, vdp, callback);
-		} else if (posPawn >= 10 && posPawn < 20 && vdp > 20 && vdp < 30) { 
+			// changer en <= 31 avant cetait < 30
+		} else if (posPawn >= 10 && posPawn < 20 && vdp > 20 && vdp <= 31) { 
 			 // de la route gauche à la route d'en haut
 			 console.log("8");
 			movementAux(1, pawn, 20, callback);
@@ -573,66 +566,14 @@ function movementAux (compteur, pawn, coin, callback) {
 	// const target = new THREE.Vector3(3.5, 2, 3.85);
 	const target = tabCases[coin];
 	//console.log(window[pawn].position);
-	animateVector3(coin, window[pawn], window[pawn].position, target, {
-		duration: 3000,
+	animateVector3(window[pawn], window[pawn].position, target, {
+		duration: 3140,
 		easing : TWEEN.Easing.Quadratic.InOut,
-		update: function(d) {
-			// Pour le déplacement de base + coins + chance et communauté
-			if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 1) { 
-				console.log("bon1");
-				if (vdp > 20 || vdp == 0 || vdp == 1) 
-					movementAux(0, pawn, 20, callback);
-				else 
-					movementAux(0, pawn, vdp, callback);		
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 1) {
-				console.log("bon2");
-				if (vdp > 30 || vdp == 0) 
-					movementAux(0, pawn, 30, callback);
-				else
-					movementAux(0, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 1) {
-				console.log("bon3");
-				if (vdp >= 0 && vdp <= 15)
-					movementAux(0, pawn, 0, callback);
-				else 
-					movementAux(0, pawn, vdp, callback);
-			}else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 1) {
-				console.log("bon4");
-				if (vdp >= 10 && vdp <= 24)
-					movementAux(0, pawn, 10, callback);
-				else
-					movementAux(0, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 0 && vdp > 20 && vdp < 30) {
-				movementAux(2, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 0 && ((vdp > 30 && vdp < 40) || vdp == 0)) {
-				if (vdp == 0)
-					movementAux(2, pawn, 0, callback);
-				else 
-					movementAux(2, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 0 && vdp >= 0 && vdp <= 15) {
-				if (vdp >= 11 && vdp <= 15)
-					movementAux(2, pawn, 10, callback);
-				else
-					movementAux(2, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 0 && vdp >= 10 && vdp < 20) {
-				movementAux(2, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 0 && ((vdp > 30 && vdp <= 39) || vdp == 0 || vdp == 1)) {
-				movementAux(2, pawn, 30, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 2 && ((vdp > 30 && vdp < 40) || vdp == 0)) {
-				movementAux(3, pawn, vdp, callback);
-				//movement(pawn, 0, callback)
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 2 && vdp >= 11 && vdp <= 15) {
-				movementAux(3, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 3.85 && compteur == 0 && vdp == 24) {
-				movementAux(2, pawn, 20, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 0.33 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 2 && vdp == 24) {
-				movementAux(3, pawn, vdp, callback);
-			} else if ((Math.floor(window[pawn].position.x * 100) / 100) == 3.85 && (Math.floor(window[pawn].position.z * 100) / 100) == 0.33 && compteur == 2 && vdp == 1) {
-				movementAux(0, pawn, 0, callback);
-			} // Fin des déplacements de base, coins, chance et communauté
-		},
+		/*update: function(d) {
 		
-		/*callback : function(){
+		},
+
+		callback : function(){
 			callback();
 		}*/
 	});
