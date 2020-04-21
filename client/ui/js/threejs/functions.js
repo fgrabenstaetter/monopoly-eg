@@ -82,6 +82,13 @@ camera.lookAt(scene.position);
 			scene.add(root);
 		});
 	}
+
+	// gltfLoader.load('models/town/scene.gltf', (gltf) => {
+	// 	const root = gltf.scene;
+	// 	scene.add(root);
+	// });
+	// camera.zoom = 0.001;
+	// camera.updateProjectionMatrix();
 	
 	// Chargement du plateau par "cube Three JS"
 	// const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);

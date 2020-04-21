@@ -2519,6 +2519,33 @@ input {
   border-radius: 2px;
 }
 
+.ingame-ui-container .splash-text {
+  position: absolute;
+  width: 500px;
+  height: 180px;
+  top: 50%;
+  left: 50%;
+  margin-left: -250px;
+  /* margin is -0.5 * dimension */
+  margin-top: -100px;
+  color: white;
+  font-weight: 900;
+  font-size: 4.5em;
+  text-transform: uppercase;
+  font-family: "LilitaOne", sans-serif;
+  text-align: center;
+  text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+.ingame-ui-container .splash-text .letters {
+  position: absolute;
+  margin: auto;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .toast-notification {
   border-radius: 20px;
   padding: 20px;

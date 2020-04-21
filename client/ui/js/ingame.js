@@ -123,14 +123,14 @@ socket.on('gameTurnRes', (data) => {
 
     // afficher décompte de temps du tour
     if (data.playerID === ID) {
-        console.log('C\'est à mon tour de jouer !');
+        triggerSplashAnimation('C\'est à vous de jouer !');
 
         console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressStart(turnTimeSeconds);
     } else {
-        console.log('C\'est au tour de ' + idToNick(data.playerID) + ' de jouer !');
+        triggerSplashAnimation(`C'est au tour de ${idToNick(data.playerID)} !`);
         console.log("[BOUTON D'ACTION] Passage en attente");
         $('#timer').progressFinish();
     }
@@ -1112,3 +1112,42 @@ socket.on('gamePlayerFailureRes', (res) => {
     // Simple texte d'annonce
     $(`.player-entry[data-id="${res.playerID}"] .name`).append(' (failure)');
 });
+
+
+
+const splashSettings = {};
+splashSettings.opacityIn = [0,1];
+splashSettings.scaleIn = [0.2, 1];
+splashSettings.scaleOut = 3;
+splashSettings.durationIn = 800;
+splashSettings.durationOut = 600;
+splashSettings.delay = 500;
+
+const splashAnim = anime.timeline({loop: false, autoplay: false})
+.add({
+    targets: '.splash-text .letters-1',
+    opacity: splashSettings.opacityIn,
+    scale: splashSettings.scaleIn,
+    duration: splashSettings.durationIn
+}).add({
+    targets: '.splash-text .letters-1',
+    opacity: 0,
+    scale: splashSettings.scaleOut,
+    duration: splashSettings.durationOut,
+    easing: "easeInExpo",
+    delay: splashSettings.delay
+}).add({
+    targets: '.splash-text',
+    opacity: 0,
+    duration: 500,
+    delay: 500
+});
+
+/**
+ * Génère une animation "splash screen" (en grand à l'écran)
+ * @param {string} text Le texte à afficher
+ */
+function triggerSplashAnimation(text) {
+    $('.splash-text .letters-1').html(text);
+    splashAnim.restart();
+}
