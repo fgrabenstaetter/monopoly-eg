@@ -116,6 +116,8 @@ class Network {
         this.gamePropertyBuyReq           (player, game);
         this.gamePropertyUpgradeReq       (player, game);
         this.gamePropertyMortgageReq      (player, game);
+        this.gamePlayerLeavingReq         (player, game);
+        this.gamePropertyUnmortgageReq    (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
@@ -870,7 +872,7 @@ class Network {
 
     gamePropertyUnmortgageReq(player, game) {
         player.socket.on('gamePropertyUnmortgageReq', (data) => {
-            let err = Errors.SUCCESS;
+            let err = Errors.SUCCESS, prop;
 
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
@@ -947,7 +949,7 @@ class Network {
             let err = Errors.SUCCESS, offer;
             if (data.offerID == null)
                 err = Errors.MISSING_FIELD;
-            else if (!(offer = Offer.offerByID(data.offerID)) || offer.receiver !== player)
+            else if (!(offer = Offer.offerByID(game, data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
             else if (offer.receiver.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
@@ -977,7 +979,7 @@ class Network {
             else if (player.money < data.price)
                 Errors.BID.NOT_ENOUGH_MONEY;
             else {
-                const bid = Bid.bidByID(data.bidID);
+                const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
                     err = Errors.BID.ENDED;
                 else {
@@ -1011,7 +1013,7 @@ class Network {
             let err = Errors.SUCCESS, prop;
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
-            else if (Bid.alreadyOneManualBid)
+            else if (game.alreadyOneManualBid)
                 err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
@@ -1021,6 +1023,15 @@ class Network {
             }
 
             player.socket.emit('gameManualBidRes', { error: err.code, status: err.status });
+        });
+    }
+
+    gamePlayerLeavingReq (player, game) {
+        player.socket.on('playerLeavingReq', (data) => {
+            let err = Errors.SUCCESS;
+            game.playerLeaving(player);
+
+            player.socket.emit('playerLeavingRes', {error: err.code, status: err.status });
         });
     }
 
@@ -1072,10 +1083,11 @@ class Network {
                 // propriétés
                 if (cell.type === Constants.CELL_TYPE.PROPERTY) {
                     let propertyData = {
-                        id          : cell.property.id,
-                        type        : cell.property.type,
-                        name        : cell.property.name,
-                        description : cell.property.description
+                        id           : cell.property.id,
+                        type         : cell.property.type,
+                        name         : cell.property.name,
+                        description  : cell.property.description,
+                        isMortgaged  : cell.property.isMortgaged
                     };
 
                     switch (cell.property.type) {
@@ -1111,7 +1123,7 @@ class Network {
 
             let bids = [], offers = [];
 
-            for (const bid of Bid.bids) {
+            for (const bid of game.bids) {
                 bids.push({
                     bidID    : bid.id,
                     playerID : bid.player ? bid.player.id : null,
@@ -1120,7 +1132,7 @@ class Network {
                 });
             }
 
-            for (const offer of Offer.offers) {
+            for (const offer of game.offers) {
                 offers.push({
                     offerID    : offer.id,
                     makerID    : offer.maker.id,
