@@ -788,6 +788,8 @@ class Game {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
             this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
+            // si il a fait un double, annuler le devoir de relancer les dés
+            this.turnData.canRollDiceAgain = false;
         }
     }
 }
