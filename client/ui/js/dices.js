@@ -111,9 +111,9 @@ async function rollDice(dice, number, rotations){
 
 async function triggerDices(d1, d2, _callback){
 	rotations = 6;
-	if ($('.dice-container').css('transform') == 'matrix(0.5, 0, 0, 0.5, 200, 0)') {
+	if ($('.dice-container').css('top') == '50px') {
 		$('.dice-container').css('top', '50%');
-		$('.dice-container').css('transform', 'translate(calc(-50% + 50vw + 200px), -50%) scale(1)');
+		$('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
 		await sleep(1000);
 	}
 	showDices();
@@ -122,7 +122,7 @@ async function triggerDices(d1, d2, _callback){
 	rollDice(2,d2,rotations);
 	await sleep(rotations*400 + 800);
 	$('.dice-container').css('top', '50px');
-	$('.dice-container').css('transform', 'translate(300px, 0) scale(0.5)');
+	$('.dice-container').css('transform', 'translate(calc(-50% + 50vw - 118px), 0) scale(0.5)');
 	if (typeof _callback !== "undefined")
 		_callback();
 	await sleep(10000);
