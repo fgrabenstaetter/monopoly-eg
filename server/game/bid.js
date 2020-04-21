@@ -3,11 +3,9 @@ const Constants = require('../lib/constants');
 class Bid {
 
     static idCounter = 0;
-    static bids = [];
-    static alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
 
-    static bidByID (id) {
-        for (const bid of Bid.bids) {
+    static bidByID (game, id) {
+        for (const bid of game.bids) {
             if (bid.id === id)
                 return bid;
         }
@@ -15,13 +13,13 @@ class Bid {
     }
 
     static delBid (bid) {
-        const ind = Bid.bids.indexOf(bid);
+        const ind = bid.game.bids.indexOf(bid);
         if (ind === -1) {
             if (bid.manual)
-                Bid.alreadyOneManualBid = false;
+                bid.game.alreadyOneManualBid = false;
             return false;
         }
-        Bid.bids.splice(ind, 1);
+        bid.game.bids.splice(ind, 1);
         return true;
     }
 
@@ -34,11 +32,12 @@ class Bid {
         this.game                 = game;
         this.manual               = manual;
         this.text                 = this.property.name;
-        Bid.bids.push(this);
+        this.nBidsOnProperty      = [];
+        this.game.bids.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
 
         if (manual)
-            Bid.alreadyOneManualBid = true;
+            this.game.alreadyOneManualBid = true;
 
         const msg = this.property.name;
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidRes', {
@@ -65,11 +64,16 @@ class Bid {
             return false;
         }
 
+        if (this.nBidsOnProperty.indexOf(player.id) === -1)
+            this.nBidsOnProperty.push(player.id);
+
+        if (this.nBidsOnProperty.length === this.game.players.length)
+            this.expired();
         return true;
     }
 
     expired () {
-        const curBid = Bid.bidByID(this.id);
+        const curBid = Bid.bidByID(this.game, this.id);
         if (!curBid)
             return;
 

@@ -1,26 +1,26 @@
-function sleep(ms){
+function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-function random(min, max){
+function random(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min +1)) + min;
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-async function showDices(){
+async function showDices() {
 	$(".dice-container").css("display", "block");
 	await sleep(200);
 	$(".dice-container").css("opacity", "1");
 }
 
-async function hideDices(){
+async function hideDices() {
 	$(".dice-container").css("opacity", "0");
 	await sleep(200);
 	$(".dice-container").css("display", "none");
 }
 
-function rotateDice(dice, number){
+function rotateDice(dice, number) {
 	if (dice == 1) {
 		switch (number) {
 			case 1:
@@ -71,7 +71,7 @@ function rotateDice(dice, number){
 	}
 };
 
-function scaleUpDice(dice){
+function scaleUpDice(dice) {
 	if (dice == 1) {
 		$(".ingame-ui-container .dice-container #view1").css("transform", "scale(0.7)");
 	}
@@ -80,7 +80,7 @@ function scaleUpDice(dice){
 	}
 }
 
-function scaleDownDice(dice){
+function scaleDownDice(dice) {
 	if (dice == 1) {
 		$(".ingame-ui-container .dice-container #view1").css("transform", "scale(0.5)");
 	}
@@ -89,13 +89,13 @@ function scaleDownDice(dice){
 	}
 }
 
-async function rollDice(dice, number, rotations){
+async function rollDice(dice, number, rotations) {
 	var i;
 	var lastNum = 1;
 	var tmp = 0;
 	for (i = 0; i < rotations; i++) {
-		while(tmp == lastNum) {
-			tmp = random(1,6);
+		while (tmp == lastNum) {
+			tmp = random(1, 6);
 		}
 		lastNum = tmp;
 		rotateDice(dice, tmp);
@@ -109,20 +109,20 @@ async function rollDice(dice, number, rotations){
 	await sleep(150);
 }
 
-async function triggerDices(d1, d2, _callback){
+async function triggerDices(d1, d2, _callback) {
 	rotations = 6;
+	if ($('.dice-container').css('top') == '50px') {
+		$('.dice-container').css('top', '50%');
+		$('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
+		await sleep(1000);
+	}
 	showDices();
 	await sleep(300);
-	rollDice(1,d1,rotations);
-	rollDice(2,d2,rotations);
-	await sleep(rotations*400 + 800);
+	rollDice(1, d1, rotations);
+	rollDice(2, d2, rotations);
+	await sleep(rotations * 400 + 800);
 	$('.dice-container').css('top', '50px');
-	$('.dice-container').css('transform', 'translate(200px, 0) scale(0.5)');
+	$('.dice-container').css('transform', 'translate(calc(-50% + 50vw - 118px), 0) scale(0.5)');
 	if (typeof _callback !== "undefined")
 		_callback();
-	await sleep(10000);
-	hideDices();
-	await sleep(200);
-	$('.dice-container').css('top', '50%');
-	$('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
 }
