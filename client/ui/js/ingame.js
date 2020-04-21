@@ -1061,7 +1061,7 @@ $('.overview-card .mortgage-button').click(function (e) {
     console.log(propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-    
+
     return false;
 });
 
@@ -1107,7 +1107,8 @@ function unMortgageProperty(id) {
 $('body').on('click', '.bid-popup .bid-validation', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
-    const price = parseInt($('input.bid-input').val());
+    console.log($(this).parent().find(".input").val());
+    const price = parseInt($(this).parent().children(':first-child').val());
     socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
 
