@@ -111,6 +111,12 @@ async function rollDice(dice, number, rotations){
 
 async function triggerDices(d1, d2, _callback){
 	rotations = 6;
+	alert($('.dice-container').css('transform'));
+	if ($('.dice-container').css('transform') == 'matrix(0.5, 0, 0, 0.5, 200, 0)') {
+		$('.dice-container').css('top', '50%');
+		$('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
+		await sleep(1000);
+	}
 	showDices();
 	await sleep(300);
 	rollDice(1,d1,rotations);
