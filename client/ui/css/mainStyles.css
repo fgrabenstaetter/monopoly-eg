@@ -1608,6 +1608,7 @@ input {
           transform: translate(300px, -50%);
   margin: 0;
   text-align: center;
+  z-index: 1000;
 }
 
 @media (max-width: 1199.98px) {
