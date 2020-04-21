@@ -92,6 +92,7 @@ socket.on('gameStartedRes', (data) => {
     for (const i in DATA.properties) {
         DATA.properties[i].level = 0;
         DATA.properties[i].ownerID = null;
+        DATA.properties[i].isMortgage = 0;
     };
     // Génération de la liste de joueurs
     DATA.players.forEach((player, index) => {
@@ -485,6 +486,13 @@ socket.on("gameOfferAcceptRes", (res) => {
         toast(`gameOfferAcceptRes ${res.status}`, 'danger', 5);
 });
 
+socket.on("gamePropertyUnmortgageRes", (res) => {
+    if (res.error === 0)
+        console.log("gamePropertyUnmortgageRes")
+    else // hôte uniquement
+        toast(`gamePropertyUnmortgageRes ${res.status}`, 'danger', 5);
+});
+
 socket.on("gameOfferFinishedRes", (res) => {
     console.log("gameOfferFinishedRes")
     let buyer = getPlayerById(res.makerID);
@@ -503,7 +511,7 @@ socket.on("gameOfferFinishedRes", (res) => {
         property.ownerID = res.makerID;
         let cell = getCellByProperty(res.propertyID);
         delProperty(res.propertyID);
-        loaderFlag("d" + cell.id, owner.color);
+        loaderFlag("d" + cell.id, buyer.color);
         if (property.type == "publicCompany") {
             createProperty(res.makerID, 'company', property.name, property.id);
         }
@@ -525,13 +533,22 @@ socket.on("gameOfferFinishedRes", (res) => {
 socket.on("gamePropertyMortgageRes", (res) => {
     console.log("gamePropertyMortgageRes");
     setPlayerMoney(res.playerID, res.playerMoney);
+    console.log(res);
+    for (const p in res.properties) {
+        DATA.properties[res.properties[p]].isMortgage = 1;
+        mortgageProperty(res.properties[p]);
+    }
     $('.overview-card').fadeOut();
-    // Ne pas supprimer les cartes mais afficher (avec une classe ?) le fait qu'elles soient hypothéquées !
-    // for (const i in res.properties) {
-    //     $(`.player-entry[data-id="${res.playerID}"] .property[data-id="${res.properties[i].id}"]`).fadeOut(function() {
-    //         $(this).remove();
-    //     });
-    // }
+});
+
+//Faire lever l'hypotheque
+socket.on("gamePropertyUnmortgagedRes", (res) => {
+    console.log("gamePropertyUnmortgagedRes");
+    console.log(res);
+    setPlayerMoney(res.playerID, res.playerMoney);
+    DATA.properties[res.propertyID].isMortgage = 0;
+    unMortgageProperty(res.propertyID);
+    $('.overview-card').fadeOut();
 });
 
 //Enchères
@@ -659,7 +676,6 @@ socket.on('gameReconnectionRes', (data) => {
                 }
                 else {
                     createProperty(player.id, property.color, property.name, property.id);
-
                 }
             }
         });
@@ -884,7 +900,7 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -927,7 +943,7 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -966,7 +982,7 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
         $('.overview-card .buy-button').css("display", "block");
         $('.overview-card .sell-button').css("display", "none");
         $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "block");
+        $('.overview-card .buyback-button').css("display", "none");
     }
 }
 
@@ -997,12 +1013,13 @@ function displayPropertyInfos(property) {
     emptyOverviewCard();
     $('.overview-card').attr('data-id', property.id);
     let isMine = (property.ownerID == ID);
+    let isMortgage = property.isMortgage;
     if (property.type == "street") {
-        populateStreetOverviewCard(property, isMine);
+        populateStreetOverviewCard(property, isMine, isMortgage);
     } else if (property.type == "trainStation") {
-        populateStationOverviewCard(property, isMine);
+        populateStationOverviewCard(property, isMine, isMortgage);
     } else {
-        populateCompanyOverviewCard(property, isMine);
+        populateCompanyOverviewCard(property, isMine, isMortgage);
     }
     $('.overview-card').fadeIn();
 }
@@ -1046,6 +1063,15 @@ $('.overview-card .mortgage-button').click(function (e) {
     return false;
 });
 
+$('.overview-card .buyback-button').click(function (e) {
+    e.preventDefault();
+    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+    console.log(propertyID);
+    socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
+    console.log("gamePropertyUnmortgageReq");
+    return false;
+});
+
 
 $('#overviewCardBuyForm .send').click(function (e) {
     e.preventDefault();
@@ -1079,7 +1105,8 @@ function unMortgageProperty(id) {
 $('body').on('click', '.bid-popup .bid-validation', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
-    const price = parseInt($('input.bid-input').val());
+    console.log($(this).parent().find(".input").val());
+    const price = parseInt($(this).parent().children(':first-child').val());
     socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
 
@@ -1116,32 +1143,32 @@ socket.on('gamePlayerFailureRes', (res) => {
 
 
 const splashSettings = {};
-splashSettings.opacityIn = [0,1];
+splashSettings.opacityIn = [0, 1];
 splashSettings.scaleIn = [0.2, 1];
 splashSettings.scaleOut = 3;
 splashSettings.durationIn = 800;
 splashSettings.durationOut = 600;
 splashSettings.delay = 500;
 
-const splashAnim = anime.timeline({loop: false, autoplay: false})
-.add({
-    targets: '.splash-text .letters-1',
-    opacity: splashSettings.opacityIn,
-    scale: splashSettings.scaleIn,
-    duration: splashSettings.durationIn
-}).add({
-    targets: '.splash-text .letters-1',
-    opacity: 0,
-    scale: splashSettings.scaleOut,
-    duration: splashSettings.durationOut,
-    easing: "easeInExpo",
-    delay: splashSettings.delay
-}).add({
-    targets: '.splash-text',
-    opacity: 0,
-    duration: 500,
-    delay: 500
-});
+const splashAnim = anime.timeline({ loop: false, autoplay: false })
+    .add({
+        targets: '.splash-text .letters-1',
+        opacity: splashSettings.opacityIn,
+        scale: splashSettings.scaleIn,
+        duration: splashSettings.durationIn
+    }).add({
+        targets: '.splash-text .letters-1',
+        opacity: 0,
+        scale: splashSettings.scaleOut,
+        duration: splashSettings.durationOut,
+        easing: "easeInExpo",
+        delay: splashSettings.delay
+    }).add({
+        targets: '.splash-text',
+        opacity: 0,
+        duration: 500,
+        delay: 500
+    });
 
 /**
  * Génère une animation "splash screen" (en grand à l'écran)

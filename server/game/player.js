@@ -15,6 +15,7 @@ class Player {
         this.isReady    = false; // synchronisation de tous les joueurs avant lancement de partie
         this.failure    = false;
         this.connected  = true; // false si déconnexion
+        this.hasLeft    = false; // true si il quitte = rage quit volontaire
         this.money      = Constants.GAME_PARAM.PLAYER_INITIAL_MONEY;
         this.cellPos    = 0;
         this.properties = [];

@@ -619,8 +619,8 @@
                     connected: bool
                 }, ...
             ],
-            cells: [], // (voir gameStartedRes)
-            properties: [] // (voir gameStartedRes et ligne ci-dessous)
+            cells: [], // voir gameStartedRes
+            properties: [] // voir gameStartedRes et ligne ci-dessous (+ champ isMortgaged pour chaque propriété)
             // ATTENTION: si propriété == Street => l'objet contient aussi housesNb (int) et hasHostel (bool)
         }
         ```
@@ -635,6 +635,36 @@
             type: string, // 'failure' si dernier joueur qui n'a pas fait faillite ou 'timeout' si le timeout de partie a expiré et que c'est le joueur qui possède la plus grande valeur
             winnerID: int, // ID joueur qui a gagné
             duration: timestamp // durée totale du jeu en ms
+        }
+        ```
+
+- **Quitter la partie (ragequit)**
+    > À envoyer pour quitter le jeu si on est un lâche (sans être reconnecté automatiquement)
+
+    * **Requête:** gamePlayerLeavingReq
+        * *Données:*
+        ```javascript
+        {
+            null
+        }
+        ```
+
+    * **Réponse:** gamePlayerLeavingRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Un joueur a quitté la partie**
+
+    * **Réponse:** gamePlayerHasLeftRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int
         }
         ```
 

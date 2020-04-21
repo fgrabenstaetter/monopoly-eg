@@ -3,7 +3,7 @@ $(document).ready(() => {
         e.preventDefault();
         // This function will show a progress meter for
         // the specified amount of time
-        if ($(this).attr('data-loading') == 'LANCER LES DES') {
+        if ($(this).attr('data-loading') == 'LANCER LES DES' || $(this).attr('data-loading') == 'RELANCER LES DES') {
             // socket lancer les dés
             $(this).addClass('disabled');
             console.log('gameRollDiceReq');

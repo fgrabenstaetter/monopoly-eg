@@ -208,7 +208,7 @@
     .bid-popup {
       max-width: 990px;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       z-index: 10;
       background-color: rgba($color: black, $alpha: 0.7);
@@ -217,43 +217,64 @@
       transition: transform 0.5s ease;
       margin: 10px auto;
   
-      .content {
-        width: 100%;
-        text-align: center;
+      .bid-form {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .content {
+          width: 100%;
+          text-align: center;
+          color: white;
+          font-size: 13px;
+          font-weight: bold;
+          margin: 0 20px 0 5px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+    
+        .bid-input {
+          display: flex;
+          flex-direction: row;
+          color: white;
+    
+          input {
+            flex-grow: 10;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            padding-left: 10px;
+            width: 70px;
+            margin: 0 5px;
+            color: black;
+          }
+      
+          button {
+            flex-grow: 2;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+
+            &.bid-validation {
+              background-color: green;
+              margin: 0 5px 0 20px;
+            }
+
+            &.bid-cancel {
+              background-color: red;
+              margin: 0 5px 0 5px;
+            }
+          }
+        }
+      }        
+
+      .bid-info {
         color: white;
         font-size: 13px;
         font-weight: bold;
-        margin: 0 20px 0 5px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-  
-      .bid-input {
-        display: flex;
-        flex-direction: row;
-        color: white;
-  
-        input {
-          flex-grow: 10;
-          border: none;
-          border-radius: 5px;
-          font-size: 12px;
-          padding-left: 10px;
-          width: 70px;
-          margin: 0 5px;
-          color: black;
-        }
-    
-        button {
-          flex-grow: 2;
-          background-color: green;
-          border: none;
-          border-radius: 5px;
-          color: white;
-          font-size: 12px;
-          margin: 0 5px 0 20px;
-        }
+        margin: 10px auto 5px auto;
       }
     }
   }
