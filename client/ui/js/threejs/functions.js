@@ -63,18 +63,18 @@ camera.lookAt(scene.position);
  * OBJETS glTF PLATEAU
  */
 {
-	// const plateauObjects = ['plateau2']; // Plateau texture UV
+	const plateauObjects = ['plateau2']; // Plateau texture UV
 	// const plateauObjects = [];
 	// const plateauObjects = [
 	// 	'collections', 'eau', 'egout', 'egout',
 	// 	'orangerie', 'parlement', 'pont', 'rail',
 	// 	'route', 'tram', 'campus', 'cascade', 'maison'
 	// ];
-	const plateauObjects = [
-		'plateau2', 'egout',
-		'orangerie', 'parlement', 'pont',
-		'tram', 'campus', 'cascade', 'maison'
-	];
+	// const plateauObjects = [
+	// 	'plateau2', 'egout',
+	// 	'orangerie', 'parlement', 'pont',
+	// 	'tram', 'campus', 'cascade', 'maison'
+	// ];
 	
 	for (const i in plateauObjects) {
 		gltfLoader.load('models/plateau/' + plateauObjects[i] + '.gltf', (gltf) => {

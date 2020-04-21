@@ -1,3 +1,8 @@
+// Redirection si utilisateur pas connecté
+if (!ID) {
+    window.location = "/login";
+}
+
 // Animation bouton JOUER pendant matchmaking
 $("#play").click(function () {
     $(this).addClass('loading');

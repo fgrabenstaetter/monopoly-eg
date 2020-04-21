@@ -233,18 +233,15 @@ input {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.options-overlay-container {
+.profile-overlay-container {
   position: absolute;
   z-index: 2;
   top: 20px;
-  left: 50%;
-  -webkit-transform: translate(-50%, 0);
-          transform: translate(-50%, 0);
+  right: 34px;
 }
 
-.options-overlay-container i {
+.profile-overlay-container i.open-settings {
   position: relative;
-  left: 535px;
   height: 40px;
   width: 40px;
   text-align: center;
@@ -255,21 +252,6 @@ input {
   color: white;
   border-radius: 100%;
   cursor: pointer;
-}
-
-@media (max-width: 1199.98px) {
-  .options-overlay-container i {
-    left: 445px;
-  }
-}
-
-.profile-overlay-container {
-  position: absolute;
-  z-index: 2;
-  top: 20px;
-  left: 50%;
-  -webkit-transform: translate(-50%, 0);
-          transform: translate(-50%, 0);
 }
 
 .profile-overlay-container .profile-row {
@@ -283,7 +265,6 @@ input {
       -ms-flex-align: center;
           align-items: center;
   position: relative;
-  left: 400px;
 }
 
 .profile-overlay-container .profile-row .username {
@@ -306,10 +287,15 @@ input {
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 1199.98px) {
-  .profile-overlay-container .profile-row {
-    left: 310px;
-  }
+.page-lobby {
+  background: red !important;
+}
+
+.page-lobby .profile-overlay-container {
+  right: 0;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
 }
 
 .tchat-container {
@@ -432,7 +418,7 @@ input {
 .resolution-overlay-container {
   position: absolute;
   top: 0;
-  z-index: 3;
+  z-index: 10000000;
   width: 100%;
   height: 100%;
   background-color: #0052ba;
@@ -470,7 +456,7 @@ input {
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 1000000;
   background-color: #0052ba;
   top: 0;
   display: -webkit-box;
@@ -1272,6 +1258,10 @@ input {
   z-index: 1;
 }
 
+.ingame-ui-container .container-fluid {
+  max-width: 1800px;
+}
+
 .ingame-ui-container .dice-container {
   position: fixed;
   top: 50%;
@@ -1788,15 +1778,16 @@ input {
   font-size: 13px;
 }
 
-.ingame-ui-container .container:first-child {
+.ingame-ui-container .players-list-container {
   position: absolute;
   top: 100px;
   left: 50%;
   -webkit-transform: translate(-50%, 0);
           transform: translate(-50%, 0);
+  z-index: 1000;
 }
 
-.ingame-ui-container .container:first-child .player-list {
+.ingame-ui-container .players-list-container .player-list {
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
@@ -1813,12 +1804,12 @@ input {
           justify-content: center;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry {
+.ingame-ui-container .players-list-container .player-list .player-entry {
   margin-bottom: 10px;
   position: relative;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .name {
+.ingame-ui-container .players-list-container .player-list .player-entry .name {
   font-size: 17px;
   font-weight: bold;
   font-family: "Work Sans", sans-serif;
@@ -1828,7 +1819,7 @@ input {
   cursor: pointer;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .name::before {
+.ingame-ui-container .players-list-container .player-list .player-entry .name::before {
   content: attr(title);
   position: absolute;
   -webkit-text-stroke: 0.2em rgba(1, 9, 97, 0.8);
@@ -1836,13 +1827,13 @@ input {
   z-index: -1;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .money {
+.ingame-ui-container .players-list-container .player-list .player-entry .money {
   color: white;
   font-size: 13px;
   padding-left: 25px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .money::before {
+.ingame-ui-container .players-list-container .player-list .player-entry .money::before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -1862,7 +1853,7 @@ input {
   top: -1px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .odometer-inside::after {
+.ingame-ui-container .players-list-container .player-list .player-entry .odometer-inside::after {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -1878,7 +1869,7 @@ input {
   vertical-align: baseline;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup {
   position: absolute;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 30px;
@@ -1896,15 +1887,15 @@ input {
       flex-wrap: wrap;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup.top {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup.top {
   top: -20px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup.bottom {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup.bottom {
   bottom: 1px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1920,7 +1911,7 @@ input {
   display: none;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container .blank-property {
   text-align: center;
   width: 120px;
   height: 35px;
@@ -1934,7 +1925,7 @@ input {
   border-style: solid;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container .property {
   text-align: center;
   width: 120px;
   border: none;
@@ -1944,96 +1935,96 @@ input {
   margin: 5px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.green .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.yellow .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.cyan .property {
   outline: 1px solid #fff;
   outline-offset: -4px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.yellow .property {
   background-color: #C0B90D;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.yellow .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.yellow .blank-property {
   border-color: #C0B90D;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.blue .property {
   background-color: blue;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.blue .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.blue .blank-property {
   border-color: blue;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.red .property {
   background-color: red;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.red .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.red .blank-property {
   border-color: red;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.orange .property {
   background-color: orange;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.orange .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.orange .blank-property {
   border-color: orange;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.purple .property {
   background-color: purple;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.purple .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.purple .blank-property {
   border-color: purple;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.brown .property {
   background-color: brown;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.brown .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.brown .blank-property {
   border-color: brown;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.cyan .property {
   background-color: cyan;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.cyan .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.cyan .blank-property {
   border-color: cyan;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.green .property {
   background-color: green;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.green .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.green .blank-property {
   border-color: green;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .property {
   background-color: white;
   color: black;
   text-align: left;
   padding-left: 12px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .property:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .property:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2050,18 +2041,18 @@ input {
   vertical-align: text-top;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.station .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .blank-property {
   border-color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property {
   background-color: black;
   text-align: left;
   padding-left: 12px;
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.eau:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property.eau:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2078,7 +2069,7 @@ input {
   vertical-align: text-top;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .property.electricite:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property.electricite:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2095,11 +2086,11 @@ input {
   vertical-align: text-top;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup .properties-container.company .blank-property {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .blank-property {
   border-color: black;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .popup:after {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup:after {
   content: "";
   position: absolute;
   left: 0;
@@ -2112,15 +2103,15 @@ input {
   margin-left: -10px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .top:after {
+.ingame-ui-container .players-list-container .player-list .player-entry .top:after {
   top: 10px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry .bottom:after {
+.ingame-ui-container .players-list-container .player-list .player-entry .bottom:after {
   bottom: 20px;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry.current::before {
+.ingame-ui-container .players-list-container .player-list .player-entry.current::before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2141,50 +2132,50 @@ input {
 }
 
 @media (max-height: 820px) {
-  .ingame-ui-container .container:first-child .player-list .player-entry {
+  .ingame-ui-container .players-list-container .player-list .player-entry {
     margin-bottom: 0px;
   }
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:first-of-type .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:first-of-type .name {
   color: yellow;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(2) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(2) .name {
   color: #d43333;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(3) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(3) .name {
   color: #006aff;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(4) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(4) .name {
   color: #22d406;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(5) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(5) .name {
   color: white;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(6) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(6) .name {
   color: violet;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(7) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(7) .name {
   color: cyan;
 }
 
-.ingame-ui-container .container:first-child .player-list .player-entry:nth-of-type(8) .name {
+.ingame-ui-container .players-list-container .player-list .player-entry:nth-of-type(8) .name {
   color: orange;
 }
 
 @media (max-height: 820px) {
-  .ingame-ui-container .container:first-child .player-list {
+  .ingame-ui-container .players-list-container .player-list {
     margin-top: -40px;
   }
 }
 
-.ingame-ui-container .container:nth-child(2) {
+.ingame-ui-container .bottom-container {
   position: absolute;
   bottom: 5%;
   left: 50%;
@@ -2192,7 +2183,7 @@ input {
           transform: translate(-50%, 0);
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container {
+.ingame-ui-container .bottom-container .notification-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2209,7 +2200,7 @@ input {
   right: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification {
+.ingame-ui-container .bottom-container .notification-container .notification {
   border-radius: 15px;
   background-color: transparent;
   border: none;
@@ -2220,56 +2211,56 @@ input {
   width: 225px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header {
   border-radius: 15px 15px 0px 0px;
   color: white;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.brown {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.brown {
   background-color: brown;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.orange {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.orange {
   background-color: orange;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.blue {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.blue {
   background-color: blue;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.red {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.red {
   background-color: red;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.purple {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.purple {
   background-color: purple;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.green {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.green {
   background-color: green;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.yellow {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.yellow {
   background-color: #C0B90D;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.cyan {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.cyan {
   background-color: cyan;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.company {
   background-color: black;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company .title {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.company .title {
   display: inline;
   position: relative;
   left: -13px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company.eau:before {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.company.eau:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2288,7 +2279,7 @@ input {
           transform: translateX(-13px) translateY(2px);
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.company.electricite:before {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.company.electricite:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2307,18 +2298,18 @@ input {
           transform: translateX(-13px) translateY(1px);
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.station {
   background-color: white;
   color: black;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station .title {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.station .title {
   display: inline;
   position: relative;
   left: -13px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.station:before {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.station:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -2337,16 +2328,16 @@ input {
           transform: translateX(-13px) translateY(2px);
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header.event {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header.event {
   background-color: silver;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-header .title {
+.ingame-ui-container .bottom-container .notification-container .notification .card-header .title {
   font-family: "LilitaOne", sans-serif;
   font-size: 17px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body {
+.ingame-ui-container .bottom-container .notification-container .notification .card-body {
   border-radius: 0px 0px 15px 15px;
   background-color: rgba(0, 0, 0, 0.2);
   display: -webkit-box;
@@ -2362,11 +2353,11 @@ input {
   font-size: 13px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body.no-header {
+.ingame-ui-container .bottom-container .notification-container .notification .card-body.no-header {
   border-radius: 15px 15px 15px 15px;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn {
+.ingame-ui-container .bottom-container .notification-container .notification .card-body .btn {
   height: 32px;
   font-size: 12px;
   width: 110px;
@@ -2374,35 +2365,35 @@ input {
   padding: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-primary {
+.ingame-ui-container .bottom-container .notification-container .notification .card-body .btn-primary {
   background-color: #35d859;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
+.ingame-ui-container .bottom-container .notification-container .notification .card-body .btn-secondary {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification.sale p:first-of-type {
+.ingame-ui-container .bottom-container .notification-container .notification.sale p:first-of-type {
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
   margin: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification.sale p:nth-of-type(2) {
+.ingame-ui-container .bottom-container .notification-container .notification.sale p:nth-of-type(2) {
   color: white;
   font-size: 25px;
   margin-bottom: 20px;
   font-weight: bold;
 }
 
-.ingame-ui-container .container:nth-child(2) .notification-container .notification.event p {
+.ingame-ui-container .bottom-container .notification-container .notification.event p {
   color: white;
   font-size: 15px;
   margin-bottom: 20px;
   font-weight: bold;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container {
+.ingame-ui-container .bottom-container .action-button-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2416,7 +2407,7 @@ input {
   padding: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 {
   padding: 0;
   /* Hide the original text of the button. Then the loading or finished
           text will be shown in the :after element above it. */
@@ -2427,7 +2418,7 @@ input {
   /* The bar can be either horizontal, or vertical */
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button {
   width: 175px;
   height: 50px;
   border-radius: 25px;
@@ -2443,13 +2434,13 @@ input {
           box-shadow: 0 1px 1px #ccc;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress,
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.in-progress,
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.finished {
   color: transparent !important;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after,
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.in-progress:after,
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.finished:after {
   position: absolute;
   z-index: 2;
   width: 100%;
@@ -2460,11 +2451,11 @@ input {
   left: 0;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:after {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.in-progress:after {
   content: attr(data-loading);
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:before {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.in-progress:before {
   position: fixed;
   top: 270px;
   right: 65px;
@@ -2488,16 +2479,16 @@ input {
 }
 
 @media (max-height: 820px) {
-  .ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.in-progress:before {
+  .ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.in-progress:before {
     top: 190px;
   }
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button.finished:after {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button.finished:after {
   content: attr(data-finished);
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button .tz-bar {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button .tz-bar {
   background-color: #ff6200;
   height: 3px;
   bottom: 0;
@@ -2512,7 +2503,7 @@ input {
   border-radius: 2px;
 }
 
-.ingame-ui-container .container:nth-child(2) .action-button-container .col-md-12 .action-button .tz-bar.background-vertical {
+.ingame-ui-container .bottom-container .action-button-container .col-md-12 .action-button .tz-bar.background-vertical {
   height: 0;
   top: 0;
   width: 100%;
@@ -2535,6 +2526,7 @@ input {
   font-family: "LilitaOne", sans-serif;
   text-align: center;
   text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .ingame-ui-container .splash-text .letters {
@@ -2544,6 +2536,7 @@ input {
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 }
 
 .toast-notification {
