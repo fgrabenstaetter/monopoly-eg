@@ -38,7 +38,7 @@ $('.player-list').on('mouseleave', '.property', function (e) {
 $('.player-list').on('click', '.minus', function (e) {
     const nbHouse = parseInt($(this).parent().find('.fa-home').text());
     if (nbHouse > 1) {
-        $(this).parent().find('.fa-home').text(nbHouse-1);
+        $(this).parent().find('.fa-home').text(nbHouse - 1);
     }
 
     e.stopPropagation();
@@ -47,7 +47,7 @@ $('.player-list').on('click', '.minus', function (e) {
 $('.player-list').on('click', '.plus', function (e) {
     const nbHouse = parseInt($(this).parent().find('.fa-home').text());
     if (nbHouse < 4) {
-        $(this).parent().find('.fa-home').text(nbHouse+1);
+        $(this).parent().find('.fa-home').text(nbHouse + 1);
     }
 
     e.stopPropagation();
@@ -261,20 +261,26 @@ function openBidPopup(id, playername, streetname, startingprice) {
     if (playername == "undefined") {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">Une enchère est lancée pour ` + streetname + `</div>
-            <div class="bid-input">
-                <input class="bid-input" type="text" placeholder="Prix"></input>€
-                <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
+            <div class="bid-form">
+                <div class="content">Une enchère est lancée pour ` + streetname + `</div>
+                <div class="bid-input">
+                    <input type="text" placeholder="Prix"></input>€
+                    <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
+                    <button class="bid-cancel">Annuler</button>
+                </div>
             </div>
         </div>`;
     }
     else {
         var html =
             `<div class="bid-popup" data-bidID="` + id + `">
-            <div class="content">` + playername + ` lance une enchère pour ` + streetname + `. Prix de départ :` + startingprice + `</div>
-            <div class="bid-input">
-                <input class="bid-input" type="text" placeholder="Prix"></input>€
-                <button class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
+            <div class="bid-form">
+                <div class="content">` + playername + ` lance une enchère pour ` + streetname + `. Prix de départ : ` + startingprice + `</div>
+                <div class="bid-input">
+                    <input type="text" placeholder="Prix"></input>€
+                    <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
+                    <button class="bid-cancel">Annuler</button>
+                </div>
             </div>
         </div>`;
     }
@@ -297,3 +303,27 @@ function validateBid(id) {
 function closeBidPopup(id) {
     $('*[data-bidID="' + id + '"]').fadeOut(500, function () { $(this).remove(); });
 }
+
+/**
+ * Ajoute un message d'information à une popup d'enchères
+ * @param {*} id id de la popup
+ * @param {*} message message à afficher
+ */
+function addBidInfo(id, message) {
+    var html = `<div class="bid-info">` + message + `</div>`;
+    $('*[data-bidID="' + id + '"]').append(html);
+}
+
+/**
+ * Active ou désactive le bouton "enchérir" en fonction de l'input
+ */
+$('#bid-popup-container').on('keyup', '.bid-input input', function(e) {
+    let empty = false;
+    
+    empty = $(this).val().length == 0;
+
+    if (empty)
+        $(this).parent().find('.bid-validation').attr('disabled', 'disabled');
+    else
+        $(this).parent().find('.bid-validation').attr('disabled', false);
+});
