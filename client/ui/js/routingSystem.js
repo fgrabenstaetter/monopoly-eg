@@ -3,7 +3,6 @@ function loadContent () {
         $(".board-container").load("html/board.html");
         $(".ingame-ui-container").load("html/ingame_ui.html");
         $(".lobby-ui-container").load("html/lobby_ui.html");
-        $(".options-overlay-container").load("html/options_overlay.html");
         $(".profile-overlay-container").load("html/profile_overlay.html");
         $(".loader-overlay-container").load("html/loader_overlay.html");
         $(".resolution-overlay-container").load("html/res_overlay.html");
@@ -12,9 +11,9 @@ function loadContent () {
 }    
 
 // Routing des pages
-let contentDiv = document.getElementById('content');
+const contentDiv = document.getElementById('content');
 
-let homePage = `
+const homePage = `
         <div class="background-container"></div>
 
         <div class="welcome-screen">
@@ -23,33 +22,31 @@ let homePage = `
         <div class="resolution-overlay-container"></div>
 `;
 
-let gamePage = `
+const gamePage = `
         <div class="background-container"></div>
         <div class="board-container">
                 <canvas id="c"></canvas>
         </div>
         <div class="ingame-ui-container"></div>
-        <div class="options-overlay-container"></div>
         <div class="profile-overlay-container"></div>
         <div class="loader-overlay-container"></div>
         <div class="resolution-overlay-container"></div>
 `;
 
-let lobbyPage = `
+const lobbyPage = `
         <div class="background-container"></div>
         <div class="lobby-ui-container"></div>
-        <div class="options-overlay-container"></div>
         <div class="profile-overlay-container"></div>
         <div class="resolution-overlay-container"></div>
 `;
 
-let loginPage = `
+const loginPage = `
         <div class="background-container"></div>
         <div class="login-ui-container"></div>
         <div class="resolution-overlay-container"></div>
 `;
 
-let signinPage = `
+const signinPage = `
         <div class="background-container"></div>
         <div class="signin-ui-container"></div>
         <div class="resolution-overlay-container"></div>
@@ -66,20 +63,23 @@ const routes = {
 
 window.onpopstate = () => {
     contentDiv.innerHTML = routes[window.location.pathname];
+    contentDiv.className = 'page-' + window.location.pathname.substring(1);
     loadContent();
 }
 
-let onNavItemClick = (pathName) => {
+const onNavItemClick = (pathName) => {
     window.history.pushState(
         {},
         pathName,
         window.location.origin + pathName
     );
     contentDiv.innerHTML = routes[pathName];
+    contentDiv.className = 'page-' + pathName.substring(1);
     loadContent();
 }
 
 $(document).ready( () => {
     contentDiv.innerHTML = routes[window.location.pathname];
+    contentDiv.className = 'page-' + window.location.pathname.substring(1);
     loadContent();
 });

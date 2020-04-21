@@ -2,15 +2,32 @@
   position: absolute;
   z-index: 2;
   top: 20px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  // right: 0;
+  right: 34px;
+  // left: 50%;
+  // transform: translate(-50%, 0);
+
+  i.open-settings {
+    position: relative;
+    // left: 535px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 20px;
+    padding-top: 10px;
+    background-color: rgba($color: black, $alpha: 0.3);
+    color: white;
+    border-radius: 100%;
+    cursor: pointer;
+  }
 
   .profile-row {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     position: relative;
-    left: 400px;
+    // left: 400px;
 
     .username {
       margin-right: 20px;
@@ -33,10 +50,20 @@
   }
 }
 
-@media (max-width: 1199.98px) {
+.page-lobby {
+  background: red !important;
   .profile-overlay-container {
-    .profile-row {
-      left: 310px;
-    }
+    right: 0;
+    // right: 34px;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
+
+  // @media (max-width: 1199.98px) {
+  //   .profile-overlay-container {
+  //     .profile-row {
+  //       left: 310px;
+  //     }
+  //   }
+  // }
 }

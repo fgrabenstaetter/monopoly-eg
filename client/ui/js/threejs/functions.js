@@ -1,89 +1,138 @@
-let varMovement, varCase, vdp, varFunction, varPawn;
-let name, zoomOn = 1, counter = 0, counter2 = 0;
-let scene, light, camera, renderer;
+// let varMovement, varCase, vdp, varFunction, varPawn;
+let name, zoomOn = 1;
+// let name, zoomOn = 1, counter = 0, counter2 = 0;
 // Pas possible de les changer en let
-var pawn, window, cases;
+// var pawn, window, cases;
+
+const canvas = document.querySelector('#c');
+const HEIGHT = canvas.clientHeight;
+const WIDTH = canvas.clientWidth;
+const W_HEIGHT = window.innerHeight;
+const W_WIDTH = window.innerWidth;
+const aspectRatio = WIDTH / HEIGHT;
+
+// const W_HEIGHT = window.innerHeight;
+// const W_WIDTH = window.innerWidth;
+const pixelRatio = window.devicePixelRatio;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setViewport(0,0,W_WIDTH,W_HEIGHT);
+// renderer.setPixelRatio(pixelRatio);
+renderer.setSize(WIDTH, HEIGHT);
+
+
+const gltfLoader = new THREE.GLTFLoader();
+const dracoLoader = new THREE.DRACOLoader();
+dracoLoader.setDecoderPath('/js/threejs/draco/');
+gltfLoader.setDRACOLoader(dracoLoader);
 
 
 /**
- * Creation de la scene
- * @return {scene} La scene
+ * RENDERER
  */
-function getScene() {
-	let scene = new THREE.Scene();
-	return scene;
+
+//Creation du render
+// renderer.setClearColor(0x000000, 0);
+// renderer.setPixelRatio(pixelRatio);
+// renderer.setSize(WIDTH, HEIGHT);
+
+
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.gammaOutput = true;
+renderer.gammaFactor = 2.2;
+renderer.shadowMap.enabled = true;
+
+window.addEventListener('resize', handleWindowResize, false);
+
+
+/**
+ * SCENE
+ */
+const scene = new THREE.Scene();
+
+
+/**
+ * CAMERA
+ */
+const d = 2;
+const camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000);
+camera.position.set(20, 20, 20);
+camera.lookAt(scene.position);
+
+/**
+ * OBJETS glTF PLATEAU
+ */
+{
+	const plateauObjects = ['plateau2']; // Plateau texture UV
+	// const plateauObjects = [];
+	// const plateauObjects = [
+	// 	'collections', 'eau', 'egout', 'egout',
+	// 	'orangerie', 'parlement', 'pont', 'rail',
+	// 	'route', 'tram', 'campus', 'cascade', 'maison'
+	// ];
+	// const plateauObjects = [
+	// 	'plateau2', 'egout',
+	// 	'orangerie', 'parlement', 'pont',
+	// 	'tram', 'campus', 'cascade', 'maison'
+	// ];
+	
+	for (const i in plateauObjects) {
+		gltfLoader.load('models/plateau/' + plateauObjects[i] + '.gltf', (gltf) => {
+			const root = gltf.scene;
+			scene.add(root);
+		});
+	}
+
+	// gltfLoader.load('models/town/scene.gltf', (gltf) => {
+	// 	const root = gltf.scene;
+	// 	scene.add(root);
+	// });
+	// camera.zoom = 0.001;
+	// camera.updateProjectionMatrix();
+	
+	// Chargement du plateau par "cube Three JS"
+	// const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);
+	// const textureLoader = new THREE.TextureLoader();
+	// const materials = [
+	// 	new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
+	// 	null,
+	// 	new THREE.MeshBasicMaterial({
+	// 		map: textureLoader.load('/img/texture_plateau.png', (texture) => {
+	// 			texture.outputEncoding = THREE.LinearEncoding
+	// 		}),
+	// 		needsUpdate: true,
+	// 		reflectivity: false
+	// 	}),
+	// 	null,
+	// 	new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
+	// 	null,
+	// ];
+	// let cube = new THREE.Mesh(geometry, materials);
+	// cube.position.set(0, -0.13, 0);
+	// scene.add(cube);
 }
 
+ /**
+  * LUMIERE
+  */
+ {
+	// let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	// light.position.set(7, 4, 3);
+	// scene.add(light);
 
-/**
- * Creation de la camera
- * @return {camera} La camera
- */
-function getCamera() {
-	const canvas = document.querySelector('#c');
-	const WIDTH = canvas.clientWidth;
-	const HEIGHT = canvas.clientHeight;
-	const aspectRatio = WIDTH / HEIGHT;
+	// let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
+	// light2.position.set(3, 3, 4);
+	// scene.add(light2);
 
-	const d = 2;
-	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000);
-	camera.position.set(20, 20, 20);
+	// let ambientLight = new THREE.AmbientLight(0x111111);
+	// scene.add(ambientLight);
 
-	camera.lookAt(scene.position);
-
-	return camera;
-}
-
-
-/**
- * Creation de la lumiere
- * @return {light} La lumiere
- */
-function getLight(scene) {
-	let light = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	light.position.set(7, 4, 3);
-	scene.add(light);
-
-	let light2 = new THREE.PointLight("rgb(154, 151, 150)", 1, 0);
-	light2.position.set(3, 3, 4);
-	scene.add(light2);
-
-	let ambientLight = new THREE.AmbientLight(0x111111);
-	scene.add(ambientLight);
-
-	return light;
-}
-
-
-/**
- * Creation du rendu
- * @return {renderer} Le rendu
- */
-function getRenderer() {
-	const canvas = document.querySelector('#c');
-	const HEIGHT = canvas.clientHeight;
-	const WIDTH = canvas.clientWidth;
-	// const HEIGHT = window.innerHeight;
-	// const WIDTH = window.innerWidth;
-	const pixelRatio = window.devicePixelRatio;
-
-	//Creation du render
-	renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, canvas });
-	renderer.setClearColor(0x000000, 0);
-	renderer.setPixelRatio(pixelRatio);
-	renderer.setSize(WIDTH, HEIGHT);
-	// document.body.appendChild(renderer.domElement);
-
-
-	renderer.outputEncoding = THREE.sRGBEncoding;
-	renderer.gammaOutput = true;
-	renderer.gammaFactor = 2.2;
-	// renderer.autoClear = false;
-	renderer.shadowMap.enabled = false;
-
-	window.addEventListener('resize', handleWindowResize, false);
-
-	return renderer;
+	const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(5, 10, 2);
+    scene.add(light);
+    scene.add(light.target);
 }
 
 function handleWindowResize() {
@@ -95,12 +144,6 @@ function handleWindowResize() {
 	camera.updateProjectionMatrix();
 }
 
-scene = getScene();
-camera = getCamera();
-light = getLight(scene);
-renderer = getRenderer();
-loaderPlateau();
-
 // let rendererStats	= new THREEx.RendererStats();
 // rendererStats.domElement.style.position	= 'absolute'
 // rendererStats.domElement.style.left	= '0px'
@@ -110,77 +153,22 @@ loaderPlateau();
 let stats = new Stats();
 document.body.appendChild(stats.dom)
 
-// let glS = new glStats();
-// let tS = new threeStats( renderer ); // init after WebGLRenderer is created
-// let rS = new rStats( {
-//     values: {
-//         frame: { caption: 'Total frame time (ms)', over: 16 },
-//         fps: { caption: 'Framerate (FPS)', below: 30 },
-//         calls: { caption: 'Calls (three.js)', over: 3000 },
-//         raf: { caption: 'Time since last rAF (ms)' },
-//         rstats: { caption: 'rStats update (ms)' }
-//     },
-//     groups: [
-//         { caption: 'Framerate', values: [ 'fps', 'raf' ] },
-//         { caption: 'Frame Budget', values: [ 'frame', 'texture', 'setup', 'render' ] }
-//     ],
-//     fractions: [
-//         { base: 'frame', steps: [ 'render' ] }
-//     ],
-//     plugins: [
-//         tS,
-//         glS
-//     ]
-// } );
-
-
 /**
  * Génère le rendu de la scène 
  * @return {needSize} Booléen 
  */
 function render(time) {
-	// glS.start();
-
-	// rS( 'frame' ).start();
-	// rS( 'rAF' ).tick();
-	// rS( 'FPS' ).frame();
-
-
-	// TWEEN.update();
-
-	// if (counter != 0)
-	// 	movement(varPawn, varMovement, varFunction);
-
 	// if (resizeRendererToDisplaySize(renderer)) {
 	// 	const canvas = renderer.domElement;
 	// 	camera.aspect = canvas.clientWidth / canvas.clientHeight;
 	// 	camera.updateProjectionMatrix();
 	// }
 
-	// if (counter == 0) {
-	// 	const canvas = document.querySelector('#c');
-	// 	let aspectRatio = canvas.clientWidth / canvas.clientHeight;
-	// 	let d = 2;
-	// 	camera = new THREE.OrthographicCamera(-d * aspectRatio, d * aspectRatio, d, -d, 1, 1000); 
-
-	// 	camera.position.set(20, 20, 20);
-	// 	camera.lookAt(scene.position);
-	// }
-
 	stats.update();
 	// rendererStats.update(renderer);
 	TWEEN.update(time);
 
-	// rS( 'render' ).start();
 	renderer.render(scene, camera);
-	// rS( 'render' ).end();
-
-	// rS( 'frame' ).end();
-
-	// rS( 'rStats ' ).start();
-	// rS().update();
-	// rS( 'rStats' ).end();
-
 	requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
@@ -260,8 +248,7 @@ function deleteFlag(flag) {
  * @param {string} Nom de la couleur
  */
 function loaderFlag(flag, colore) {
-	let load = new THREE.GLTFLoader();
-	load.load('models/drapeaux/' + flag + '.gltf', (gltf) => {
+	gltfLoader.load('models/drapeaux/' + flag + '.gltf', (gltf) => {
 		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[flag] = gltf.scene;
@@ -289,58 +276,12 @@ var plateauDrapeaux = [
 
 
 /**
- * Charge le plateau
- * @param {function} Loader
- * @param {string} Nom de l'élément du plateau
- */
-function loaderPlateau(load, test) {
-	// const plateauObjects = ['plateau2'];
-	const plateauObjects = [];
-
-	const loader = new THREE.GLTFLoader();
-	// let dracoLoader = new THREE.DRACOLoader();
-	// dracoLoader.setDecoderPath('/js/threejs/draco/');
-	// loader.setDRACOLoader(dracoLoader);
-
-	for (const i in plateauObjects) {
-		loader.load('models/plateau/' + plateauObjects[i] + '.gltf', (gltf) => {
-			const root = gltf.scene;
-			scene.add(root);
-		});
-	}
-
-	// Chargement du plateau par "cube Three JS"
-	const geometry = new THREE.BoxBufferGeometry(4, 0.3, 4);
-	const textureLoader = new THREE.TextureLoader();
-	const materials = [
-		new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
-		null,
-		new THREE.MeshBasicMaterial({
-			map: textureLoader.load('/img/texture_plateau.png', (texture) => {
-				texture.outputEncoding = THREE.LinearEncoding
-			}),
-			needsUpdate: true,
-			reflectivity: false
-		}),
-		null,
-		new THREE.MeshBasicMaterial({ color: 0x3c2105 }),
-		null,
-	];
-	let cube = new THREE.Mesh(geometry, materials);
-	cube.position.set(0, -0.13, 0);
-	scene.add(cube);
-}
-
-
-
-/**
  * Ajoute un pion à la case qu'on veut
  * @param {string} pawn Le nom du pion (Ex: 'moto')
  * @param {int} vdp Un entier entre [0-39]
  */
 function loaderPawn(pawn, vdp) {
-	load = new THREE.GLTFLoader();
-	load.load('models/pions/' + pawn + '.gltf', (gltf) => {
+	gltfLoader.load('models/pions/' + pawn + '.gltf', (gltf) => {
 		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[pawn] = gltf.scene;
@@ -393,8 +334,7 @@ function loaderHouseProperty(ncase, nhouse) {
  * @param {string} houseProperty  Nom de la maison (Ex: M3_1_2)
  */
 function housePropertyL(houseProperty) {
-	let load = new THREE.GLTFLoader();
-	load.load('models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
+	gltfLoader.load('models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
 		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[houseProperty] = gltf.scene;
@@ -418,8 +358,7 @@ function loaderHotelProperty(ncase) {
  * @param {string} hotelPropriete Nom de l'hôtel (Ex: H1_2)
  */
 function hotelPropertyL(hotelPropriete) {
-	let load = new THREE.GLTFLoader();
-	load.load('models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
+	gltfLoader.load('models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
 		// requestAnimationFrame(render);
 		const root = gltf.scene;
 		window[hotelPropriete] = gltf.scene;
