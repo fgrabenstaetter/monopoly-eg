@@ -1029,9 +1029,13 @@ class Network {
     gamePlayerLeavingReq (player, game) {
         player.socket.on('playerLeavingReq', (data) => {
             let err = Errors.SUCCESS;
-            game.playerLeaving(player);
+            game.playerFailure(player);
+            player.hasLeft = true;
 
-            player.socket.emit('playerLeavingRes', {error: err.code, status: err.status });
+            player.socket.emit('playerLeavingRes', { error: err.code, status: err.status });
+            this.GLOBAL.network.io.to(this.name).emit('playerHasLeftRes', {
+                playerID: player.id
+            });
         });
     }
 

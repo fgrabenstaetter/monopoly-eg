@@ -638,8 +638,8 @@
         }
         ```
 
-- **Un joueur quitte la partie**
-    > Automatiquement émit lorsqu'un joueur est déconnecté => tous ses tours seront passés
+- **Quitter la partie (ragequit)**
+    > À envoyer pour quitter le jeu si on est un lâche (sans être reconnecté automatiquement)
 
     * **Requête:** playerLeavingReq
         * *Données:*
@@ -658,6 +658,8 @@
         }
         ```
 
+* **Un joueur a quitté la partie**
+
     * **Réponse:** playerHasLeftRes
         * *Données:*
         ```javascript
@@ -665,7 +667,6 @@
             playerID: int
         }
         ```
-
 
 ### --- Tour de jeu
 
