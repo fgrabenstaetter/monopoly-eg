@@ -619,8 +619,8 @@
                     connected: bool
                 }, ...
             ],
-            cells: [], // (voir gameStartedRes)
-            properties: [] // (voir gameStartedRes et ligne ci-dessous)
+            cells: [], // voir gameStartedRes
+            properties: [] // voir gameStartedRes et ligne ci-dessous (+ champ isMortgaged pour chaque propriété)
             // ATTENTION: si propriété == Street => l'objet contient aussi housesNb (int) et hasHostel (bool)
         }
         ```

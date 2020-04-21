@@ -16,11 +16,15 @@ $('.player-list').on('click', '.player-entry', function (e) {
 
 $('.player-list').on('mouseenter', '.property', function (e) {
     $(this).children().hide();
-    const html = `<div id="houseOption">
-                    <button class="minus">-</button>
-                    <i class="fas fa-home">1</i>
-                    <button class="plus">+</button>
-                    <i class="fas fa-info-circle"></i>
+    var build = '';
+    if (!($(this).parent().find('.blank-property').length || $(this).parent().hasClass('station') || $(this).parent().hasClass('company'))) {
+        build = `<button class="minus">-</button>
+                <i class="fas fa-home">1</i>
+                <button class="plus">+</button>`
+    }
+    const html = `<div id="houseOption">`
+                + build +
+                `<i class="fas fa-info-circle"></i>
                 </div>`
     $(this).append(html);
 });
