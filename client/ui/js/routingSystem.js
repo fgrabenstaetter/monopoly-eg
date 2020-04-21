@@ -8,6 +8,7 @@ function loadContent () {
         $(".resolution-overlay-container").load("html/res_overlay.html");
         $(".login-ui-container").load("html/login_ui.html");
         $(".signin-ui-container").load("html/signin_ui.html");
+        $(".profile-modals-container").load("html/profile_modals.html");
 }    
 
 // Routing des pages
@@ -31,6 +32,7 @@ const gamePage = `
         <div class="profile-overlay-container"></div>
         <div class="loader-overlay-container"></div>
         <div class="resolution-overlay-container"></div>
+        <div class="profile-modals-container"></div>
 `;
 
 const lobbyPage = `
@@ -38,6 +40,7 @@ const lobbyPage = `
         <div class="lobby-ui-container"></div>
         <div class="profile-overlay-container"></div>
         <div class="resolution-overlay-container"></div>
+        <div class="profile-modals-container"></div>
 `;
 
 const loginPage = `

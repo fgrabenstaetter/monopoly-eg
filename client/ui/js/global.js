@@ -11,3 +11,41 @@ function toast(content, type, time) {
 
     $(html).appendTo('#content').fadeIn('fast').delay(time * 1000).fadeOut('fast', function() { $(".toast-notification").remove(); });
 }
+
+/**
+ * Gestion des options joueur
+ */
+$('#content').on('shown.bs.modal', '#optionsModal', function() {
+    $('#optionsModal #graphics-quality').val(loggedUser.settings.graphicsQuality);
+    $('#optionsModal #auto-zoom').prop('checked', loggedUser.settings.autoZoom);
+});
+
+$('#content').on('change', '#optionsModal #graphics-quality', function() {
+    // local save
+    loggedUser.settings.graphicsQuality = $(this).val();
+    localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
+
+    // socket save
+    socket.emit('playerSettingsReq', {
+        graphicsQuality: loggedUser.settings.graphicsQuality,
+        autoZoom: loggedUser.settings.autoZoom
+    });
+    
+    if (typeof setPlayerGraphicsQuality === 'function')
+        setPlayerGraphicsQuality();
+});
+
+$('#content').on('change', '#optionsModal #auto-zoom', function() {
+    // local save
+    loggedUser.settings.autoZoom = $(this).prop('checked');
+    localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
+
+    // socket save
+    socket.emit('playerSettingsReq', {
+        graphicsQuality: loggedUser.settings.graphicsQuality,
+        autoZoom: loggedUser.settings.autoZoom
+    });
+    
+    if (typeof setPlayerAutoZoom === 'function')
+        setPlayerAutoZoom();
+});

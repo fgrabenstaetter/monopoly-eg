@@ -22,11 +22,9 @@ $(document).ready( () => {
 
             success:  (res) => {
                 // Forcément status 200 (donc pas d'erreur)
+                res.user.avatar = res.avatar;
                 localStorage.setItem('jwt', res.token);
-                localStorage.setItem('id', res.user._id);
-                localStorage.setItem('nickname', res.user.nickname);
-                localStorage.setItem('email', res.user.email);
-                localStorage.setItem('avatar', res.avatar);
+                localStorage.setItem('loggedUser', JSON.stringify(res.user));
                 location.replace('/lobby');
             },
 

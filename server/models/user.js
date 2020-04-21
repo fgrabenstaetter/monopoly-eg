@@ -13,7 +13,11 @@ let userSchema = new Schema({
     inscriptionDate: { type: Date, required: true, default: Date.now },
     level: { type: Number, required: true, default: 1 },
     exp: { type: Number, required: true, default: 0 },
-    friends: [{ type: Schema.Types.ObjectId, ref: 'Friend' }]
+    friends: [{ type: Schema.Types.ObjectId, ref: 'Friend' }],
+    settings: {
+        graphicsQuality: { type: Number, required: true, enum: [0, 1, 2], default: 1 },
+        autoZoom: { type: Boolean, required: true, default: true }
+    }
 });
 
 userSchema.methods.getAvatar = function () {

@@ -89,6 +89,7 @@ class Network {
         this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
         this.lobbyPlayReq                   (user, lobby);
+        this.playerSettings                 (user);
 
         // Amis
         this.lobbyFriendListReq             (user, lobby);
@@ -124,6 +125,9 @@ class Network {
         this.gameOfferSendReq             (player, game);
         this.gameOfferAcceptReq           (player, game);
         this.gameOverbidReq               (player, game);
+
+        // Paramètres
+        this.playerSettings               (player);
     }
 
     //////////////////
@@ -1162,6 +1166,30 @@ class Network {
                 player.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
             }
         });
+    }
+
+    // Settings
+    playerSettings (user) {
+        user.socket.on('playerSettingsReq', (data) => {
+            if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
+                return;
+            
+            UserSchema.findById(user.id, (error, userMongo) => {
+                if (error || !userMongo)
+                    return;
+
+                let gQuality = parseInt(data.graphicsQuality);
+                gQuality = ([0,1,2].includes(gQuality)) ? gQuality : 1;
+                userMongo.settings.graphicsQuality = gQuality;
+
+                userMongo.settings.autoZoom = Boolean(data.autoZoom);
+
+                userMongo.save((err) => {
+                    return;
+                });
+            });
+        });
+        
     }
 }
 

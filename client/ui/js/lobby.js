@@ -381,8 +381,8 @@ function addPlayerInGroup(id, nickname, avatar) {
     
     const html = `
         <div class="group-entry` + (isHost ? ' leader' : '') + `">
-            <img class="friends-avatar" data-id="${id}" src="${avatar}" data-toggle="modal" data-target="#` + nickname + `" />
-            <div data-id="` + id + `"` + `class="friends-name" data-toggle="modal" data-target="#` + nickname + `">` + nickname + `</div>
+            <img class="friends-avatar" data-id="${id}" src="${avatar}">
+            <div data-id="` + id + `"` + `class="friends-name">` + nickname + `</div>
             ${kickButton}
         </div>`;
 
@@ -546,18 +546,22 @@ $('.grouplist').on('click', '.friend-action', function () {
 });
 
 /**** PARAMETRES DU PROFIL *****/
-$('#optionsModal').on('show.bs.modal', () => {
-    $('#user-settings input[name="nickname"]').val(NICKNAME);
-    $('#user-settings input[name="email"]').val(EMAIL);
-    $('#user-settings input[name="password"]').val('');
+$(document).ready(function() {
+    $('#open-user-settings').show();  
 });
 
-$('#optionsModal').on('shown.bs.modal', () => {
+$('#userSettingsModal').on('show.bs.modal', () => {
+    $('#user-settings input[name="nickname"]').val(loggedUser.nickname);
+    $('#user-settings input[name="email"]').val(loggedUser.email);
+    $('#user-settings input[name="password"]').val('');
+
+    $('#user-settings').show();
+
     $('#user-settings input:first').focus();
 });
 
-$('#optionsModal').on('hidden.bs.modal', () => {
-    $('form#user-settings')[0].reset();
+$('#userSettingsModal').on('shown.bs.modal', () => {
+    $('#user-settings input').first().focus();
 });
 
 $('#user-settings').submit((e) => {
@@ -581,16 +585,15 @@ socket.on('lobbyUpdateProfileRes', (res) => {
         toast(res.status, 'danger', 5);
     } else {
         if (res.user) {
-            NICKNAME = res.user.nickname;
-            EMAIL = res.user.email;
-
-            localStorage.setItem('nickname', NICKNAME);
-            localStorage.setItem('email', EMAIL);
-            $(`[data-id="${res.user._id}"]`).text(res.user.nickname);
+            loggedUser.nickname = res.user.nickname;
+            loggedUser.email = res.user.email;
+            localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
+            $(`[data-id="${res.user._id}"]`).text(loggedUser.nickname);
         }
 
         toast('Profil mis à jour', 'success', 3);
-        $('#optionsModal').modal('hide');
+        $('#userSettingsModal').modal('hide');
+        $('form#user-settings')[0].reset();
     }
 
     $('#user-settings button[type="submit"]')

@@ -2,6 +2,29 @@
 //     NICKNAME => mon pseudo
 //     ID       => mon user/player ID
 
+///////////////////////////////////////////
+// Adaptation aux paramètres utilisateur //
+///////////////////////////////////////////
+
+// Qualité graphique
+function setPlayerGraphicsQuality() {
+    if (loggedUser.settings.graphicsQuality == 0)
+        renderer.setPixelRatio(0.5);
+    else if (loggedUser.settings.graphicsQuality == 2)
+        renderer.setPixelRatio(window.devicePixelRatio);
+    else
+        renderer.setPixelRatio(1);
+}
+
+// Auto zoom (aux déplacements) - A traiter
+function setPlayerAutoZoom() {
+    if (loggedUser.settings.autoZoom)
+        console.log('Activer auto zoom');
+    else
+        console.log('Désactiver auto zoom');
+}
+
+
 // données statiques de jeu (format: voir /socket_events.md)
 let DATA = {
     players: [],
