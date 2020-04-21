@@ -96,22 +96,22 @@ input {
   bottom: 50px;
   text-align: center;
   max-width: 300px;
-  z-index: 1000;
+  z-index: 10000;
   margin: 0 auto;
   left: 0;
   right: 0;
 }
 
-.toast-notification .danger {
-  background-color: rgba(255, 0, 0, 0.5);
+.toast-notification.danger {
+  background-color: rgba(255, 0, 0, 0.8);
 }
 
-.toast-notification .success {
-  background-color: rgba(0, 128, 0, 0.5);
+.toast-notification.success {
+  background-color: rgba(0, 128, 0, 0.8);
 }
 
-.toast-notification .info {
-  background-color: rgba(0, 0, 0, 0.3);
+.toast-notification.info {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 /***********/
@@ -349,35 +349,6 @@ select.custom-select:focus {
 
 .login-ui-container .card a:not([href]), .signin-ui-container .card a:not([href]) {
   color: white;
-}
-
-.toast-notification {
-  border-radius: 20px;
-  padding: 20px;
-  color: white;
-  max-width: 300px;
-  text-align: center;
-  font-size: 13px;
-  margin-top: 20px;
-  position: fixed;
-  bottom: 25px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  max-width: 500px;
-  z-index: 1000;
-}
-
-.toast-notification.danger {
-  background-color: rgba(255, 0, 0, 0.8);
-}
-
-.toast-notification.success {
-  background-color: rgba(0, 128, 0, 0.8);
-}
-
-.toast-notification.info {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .profile-overlay-container {
@@ -838,6 +809,14 @@ select.custom-select:focus {
   width: 100%;
 }
 
+.lobby-ui-container .logout-btn {
+  position: absolute;
+  top: -60px;
+  color: #ffffff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
 .lobby-ui-container .container:first-child {
   position: absolute;
   top: 100px;
@@ -915,7 +894,6 @@ select.custom-select:focus {
 .lobby-ui-container .container:first-child .box.friendlist .friend-request, .lobby-ui-container .container:first-child .box.grouplist .friend-request {
   background: rgba(0, 0, 0, 0.2);
   margin: 0 0 5px 0;
-  width: 220px;
   padding: 20px;
   text-align: left;
 }
@@ -1368,35 +1346,6 @@ select.custom-select:focus {
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
   background-color: rgba(0, 0, 0, 0.3);
-}
-
-.toast-notification {
-  border-radius: 20px;
-  padding: 20px;
-  color: white;
-  max-width: 300px;
-  text-align: center;
-  font-size: 13px;
-  margin-top: 20px;
-  position: fixed;
-  bottom: 25px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  max-width: 500px;
-  z-index: 1000;
-}
-
-.toast-notification.danger {
-  background-color: rgba(255, 0, 0, 0.8);
-}
-
-.toast-notification.success {
-  background-color: rgba(0, 128, 0, 0.8);
-}
-
-.toast-notification.info {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
@@ -2713,34 +2662,5 @@ select.custom-select:focus {
   left: 0;
   right: 0;
   z-index: 1;
-}
-
-.toast-notification {
-  border-radius: 20px;
-  padding: 20px;
-  color: white;
-  max-width: 300px;
-  text-align: center;
-  font-size: 13px;
-  margin-top: 20px;
-  position: fixed;
-  bottom: 25px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  max-width: 500px;
-  z-index: 1000;
-}
-
-.toast-notification.danger {
-  background-color: rgba(255, 0, 0, 0.8);
-}
-
-.toast-notification.success {
-  background-color: rgba(0, 128, 0, 0.8);
-}
-
-.toast-notification.info {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 /*# sourceMappingURL=mainStyles.css.map */

@@ -73,21 +73,21 @@ input {
   bottom: 50px;
   text-align: center;
   max-width: 300px;
-  z-index: 1000;
+  z-index: 10000;
   margin: 0 auto;
   left: 0;
   right: 0;
 
-  .danger {
-    background-color: rgba($color: red, $alpha: 0.5);
+  &.danger {
+    background-color: rgba($color: red, $alpha: 0.8);
   }
 
-  .success {
-    background-color: rgba($color: green, $alpha: 0.5);
+  &.success {
+    background-color: rgba($color: green, $alpha: 0.8);
   }
 
-  .info {
-    background-color: rgba($color: black, $alpha: 0.3);
+  &.info {
+    background-color: rgba($color: black, $alpha: 0.4);
   }
 }
 
