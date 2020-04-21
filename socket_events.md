@@ -641,7 +641,7 @@
 - **Quitter la partie (ragequit)**
     > À envoyer pour quitter le jeu si on est un lâche (sans être reconnecté automatiquement)
 
-    * **Requête:** playerLeavingReq
+    * **Requête:** gamePlayerLeavingReq
         * *Données:*
         ```javascript
         {
@@ -649,7 +649,7 @@
         }
         ```
 
-    * **Réponse:** playerLeavingRes
+    * **Réponse:** gamePlayerLeavingRes
         * *Données:*
         ```javascript
         {
@@ -660,7 +660,7 @@
 
 * **Un joueur a quitté la partie**
 
-    * **Réponse:** playerHasLeftRes
+    * **Réponse:** gamePlayerHasLeftRes
         * *Données:*
         ```javascript
         {
