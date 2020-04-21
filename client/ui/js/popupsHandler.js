@@ -16,8 +16,9 @@ $('.player-list').on('click', '.player-entry', function (e) {
 
 $('.player-list').on('mouseenter', '.property', function (e) {
     $(this).children().hide();
+    const propContain = $(this).parent();
     var build = '';
-    if (!($(this).parent().find('.blank-property').length || $(this).parent().hasClass('station') || $(this).parent().hasClass('company'))) {
+    if (!(propContain.find('.blank-property').length || propContain.hasClass('station') || propContain.hasClass('company') || propContain.parent().parent().attr('data-id') != ID)) {
         build = `<button class="minus">-</button>
                 <i class="fas fa-home">1</i>
                 <button class="plus">+</button>`

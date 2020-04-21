@@ -124,7 +124,7 @@ app.post('/api/register', (req, res) => {
 app.post('/api/login', (req, res) => {
     UserManager.login(req.body.nickname, req.body.password, (err, userSchema) => {
         let token = null, id = null, avatar = "";
-        
+
         if (err.code === Errors.SUCCESS.code) {
             // si le user n'est pas déjà dans la liste, l'y ajouter
             let user = getConnectedUserById(userSchema._id);
@@ -197,10 +197,10 @@ io.on('connection', (socket) => {
 
     user.socket = socket;
 
-    // regarder si le joueur est dans une partie
+    // regarder si le joueur est dans une partie + !hasLeft
     for (const game of GLOBAL.games) {
         const player = game.playerByID(user.id);
-        if (player) {
+        if (player && !player.hasLeft) {
             // le joueur est dans une partie !
             if (!player.connected) // RECONNEXION
                 GLOBAL.network.gamePlayerReconnected(player, game);
