@@ -1533,10 +1533,10 @@ input {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
+  -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+      -ms-flex-direction: column;
+          flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -1551,7 +1551,20 @@ input {
   margin: 10px auto;
 }
 
-.ingame-ui-container #bid-popup-container .bid-popup .content {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .content {
   width: 100%;
   text-align: center;
   color: white;
@@ -1563,7 +1576,7 @@ input {
   white-space: nowrap;
 }
 
-.ingame-ui-container #bid-popup-container .bid-popup .bid-input {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .bid-input {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1574,7 +1587,7 @@ input {
   color: white;
 }
 
-.ingame-ui-container #bid-popup-container .bid-popup .bid-input input {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .bid-input input {
   -webkit-box-flex: 10;
       -ms-flex-positive: 10;
           flex-grow: 10;
@@ -1587,16 +1600,31 @@ input {
   color: black;
 }
 
-.ingame-ui-container #bid-popup-container .bid-popup .bid-input button {
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .bid-input button {
   -webkit-box-flex: 2;
       -ms-flex-positive: 2;
           flex-grow: 2;
-  background-color: green;
   border: none;
   border-radius: 5px;
   color: white;
   font-size: 12px;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .bid-input button.bid-validation {
+  background-color: green;
   margin: 0 5px 0 20px;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-form .bid-input button.bid-cancel {
+  background-color: red;
+  margin: 0 5px 0 5px;
+}
+
+.ingame-ui-container #bid-popup-container .bid-popup .bid-info {
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 10px auto 5px auto;
 }
 
 .ingame-ui-container .overview-card {
