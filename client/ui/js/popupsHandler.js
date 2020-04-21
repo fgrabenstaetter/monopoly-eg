@@ -303,11 +303,19 @@ function closeBidPopup(id) {
     $('*[data-bidID="' + id + '"]').fadeOut(500, function () { $(this).remove(); });
 }
 
+/**
+ * Ajoute un message d'information à une popup d'enchères
+ * @param {*} id id de la popup
+ * @param {*} message message à afficher
+ */
 function addBidInfo(id, message) {
     var html = `<div class="bid-info">` + message + `</div>`;
     $('*[data-bidID="' + id + '"]').append(html);
 }
 
+/**
+ * Active ou désactive le bouton "enchérir" en fonction de l'input
+ */
 $('#bid-popup-container').on('keyup', '.bid-input input', function(e) {
     let empty = false;
     
