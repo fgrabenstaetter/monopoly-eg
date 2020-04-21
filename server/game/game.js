@@ -260,8 +260,7 @@ class Game {
             this.bank.addProperty(prop);
         }
         this.bank.addMoney(player.money);
-        const ind = this.players.indexOf(player);
-        this.players.splice(ind, 1);
+        this.playerFailure(player);
         this.GLOBAL.network.io.to(this.name).emit('playerHasLeftRes', {
             playerID: player.id
         });
