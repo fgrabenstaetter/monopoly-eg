@@ -313,76 +313,11 @@
     left: 50%;
     transform: translate(-50%, 0);
 
-    .nb-joueurs-container, .game-time-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-
-      .nb-joueurs-selector, .game-time-selector {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-end;
-
-        #nbJoueurs, #gameTime {
-          height: 50px;
-          width: 50px;
-          border-radius: 100%;
-          padding: 0;
-          position: relative;
-        }
-
-        #gameTime:after {
-          position: absolute;
-          bottom: -40px;
-          content: "Durée de la Partie";
-          width: 140px;
-          left: -47.5px;
-        }
-
-        #nbJoueurs:after {
-          position: absolute;
-          bottom: -40px;
-          content: "Nombre de Joueurs";
-          width: 140px;
-          left: -45px;
-        }
-
-        .stylized {
-          border-color: rgba($color: black, $alpha: 0.5);
-          background-color: rgba($color: black, $alpha: 0.3);
-        }
-
-        .arrow-right, .arrow-left {
-          position: absolute;
-          bottom: 15px;
-          background-color: transparent;
-          border: none;
-          padding: 0;
-          width: 0;
-          height: 0;
-          border-top: 10px solid transparent;
-          border-bottom: 10px solid transparent;
-        }
-
-        .arrow-right {
-          right: -8px;
-          border-left:17px solid rgba($color: white, $alpha: 0.5);
-        }
-
-        .arrow-left {
-          left: -8px;
-          border-right:17px solid rgba($color: white, $alpha: 0.5);
-        }
-      }
-    }
-
     // Bouton "JOUER"
     .play-button-container {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-end;
       justify-content: flex-end;
 
       .play-button {
@@ -475,6 +410,70 @@
           }
         }
       }
+    }
+  }
+}
+
+
+.nb-joueurs-container, .game-time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  .nb-joueurs-selector, .game-time-selector {
+    display: block;
+    margin: 0 auto 50px auto;
+    position: relative;
+
+    #nbJoueurs, #gameTime {
+      height: 50px;
+      width: 50px;
+      border-radius: 100%;
+      padding: 0;
+      position: relative;
+    }
+
+    #gameTime:after, #nbJoueurs:after {
+      position: absolute;
+      bottom: -36px;
+      width: 140px;
+      left: -47.5px;
+    }
+
+    #gameTime:after {
+      content: "Durée de la Partie";
+    }
+
+    #nbJoueurs:after {
+      content: "Nombre de Joueurs";
+    }
+
+    .stylized {
+      border-color: rgba($color: black, $alpha: 0.5);
+      background-color: rgba($color: black, $alpha: 0.3);
+    }
+
+    .arrow-right, .arrow-left {
+      position: absolute;
+      bottom: 15px;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+
+    .arrow-right {
+      right: -40px;
+      border-left:17px solid rgba($color: white, $alpha: 0.5);
+    }
+
+    .arrow-left {
+      left: -40px;
+      border-right:17px solid rgba($color: white, $alpha: 0.5);
     }
   }
 }

@@ -39,10 +39,23 @@
         <div class="col-md-3">
             <div class="card box grouplist">
                 <div class="card-header">
-                    QUÊTES
+                    PARAMÈTRES
                 </div>
                 <div class="card-body pl-3 pr-3 pt-3 pb-3">
-                    Bientôt !
+                    <div class="game-time-container">
+                        <div class="game-time-selector">
+                            <button class="arrow-left" id="leftGameTime"></button>
+                            <button class="btn btn-primary stylized" id="gameTime" style="cursor: default;">&infin;</button>
+                            <button class="arrow-right" id="rightGameTime"></button>
+                        </div>
+                    </div>
+                    <div class="nb-joueurs-container">
+                        <div class="nb-joueurs-selector">
+                            <button class="arrow-left" id="leftNbJ"></button>
+                            <button class="btn btn-primary stylized" id="nbJoueurs" style="cursor: default;">?</button>
+                            <button class="arrow-right" id="rightNbJ"></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,22 +77,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-1 game-time-container">
-            <div class="game-time-selector">
-                <button class="arrow-left" id="leftGameTime"></button>
-                <button class="btn btn-primary stylized" id="gameTime" style="cursor: default;">&infin;</button>
-                <button class="arrow-right" id="rightGameTime"></button>
-            </div>
-        </div>
-        <div class="col-md-2 play-button-container">
+        <div class="col-md-8 text-right play-button-container">
             <a class="btn btn-primary stylized play-button" id="play">JOUER</a>
-        </div>
-        <div class="col-md-1 nb-joueurs-container">
-            <div class="nb-joueurs-selector">
-                <button class="arrow-left" id="leftNbJ"></button>
-                <button class="btn btn-primary stylized" id="nbJoueurs" style="cursor: default;">?</button>
-                <button class="arrow-right" id="rightNbJ"></button>
-            </div>
         </div>
         <div class="col-md-4 notification-container" id="inviteGameContainer">
             <!-- Géré dynamiquement -->

@@ -1147,89 +1147,6 @@ select.custom-select:focus {
           transform: translate(-50%, 0);
 }
 
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container, .lobby-ui-container .container:nth-child(2) .game-time-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime {
-  height: 50px;
-  width: 50px;
-  border-radius: 100%;
-  padding: 0;
-  position: relative;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #gameTime:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #gameTime:after {
-  position: absolute;
-  bottom: -40px;
-  content: "Durée de la Partie";
-  width: 140px;
-  left: -47.5px;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector #nbJoueurs:after, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector #nbJoueurs:after {
-  position: absolute;
-  bottom: -40px;
-  content: "Nombre de Joueurs";
-  width: 140px;
-  left: -45px;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .stylized, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .stylized {
-  border-color: rgba(0, 0, 0, 0.5);
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
-  position: absolute;
-  bottom: 15px;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-right, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-right {
-  right: -8px;
-  border-left: 17px solid rgba(255, 255, 255, 0.5);
-}
-
-.lobby-ui-container .container:nth-child(2) .nb-joueurs-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .nb-joueurs-container .game-time-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .nb-joueurs-selector .arrow-left, .lobby-ui-container .container:nth-child(2) .game-time-container .game-time-selector .arrow-left {
-  left: -8px;
-  border-right: 17px solid rgba(255, 255, 255, 0.5);
-}
-
 .lobby-ui-container .container:nth-child(2) .play-button-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1238,9 +1155,9 @@ select.custom-select:focus {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
@@ -1346,6 +1263,78 @@ select.custom-select:focus {
 
 .lobby-ui-container .container:nth-child(2) .notification-container .notification .card-body .btn-secondary {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.nb-joueurs-container, .game-time-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.nb-joueurs-container .nb-joueurs-selector, .nb-joueurs-container .game-time-selector, .game-time-container .nb-joueurs-selector, .game-time-container .game-time-selector {
+  display: block;
+  margin: 0 auto 50px auto;
+  position: relative;
+}
+
+.nb-joueurs-container .nb-joueurs-selector #nbJoueurs, .nb-joueurs-container .nb-joueurs-selector #gameTime, .nb-joueurs-container .game-time-selector #nbJoueurs, .nb-joueurs-container .game-time-selector #gameTime, .game-time-container .nb-joueurs-selector #nbJoueurs, .game-time-container .nb-joueurs-selector #gameTime, .game-time-container .game-time-selector #nbJoueurs, .game-time-container .game-time-selector #gameTime {
+  height: 50px;
+  width: 50px;
+  border-radius: 100%;
+  padding: 0;
+  position: relative;
+}
+
+.nb-joueurs-container .nb-joueurs-selector #gameTime:after, .nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .nb-joueurs-container .game-time-selector #gameTime:after, .nb-joueurs-container .game-time-selector #nbJoueurs:after, .game-time-container .nb-joueurs-selector #gameTime:after, .game-time-container .nb-joueurs-selector #nbJoueurs:after, .game-time-container .game-time-selector #gameTime:after, .game-time-container .game-time-selector #nbJoueurs:after {
+  position: absolute;
+  bottom: -36px;
+  width: 140px;
+  left: -47.5px;
+}
+
+.nb-joueurs-container .nb-joueurs-selector #gameTime:after, .nb-joueurs-container .game-time-selector #gameTime:after, .game-time-container .nb-joueurs-selector #gameTime:after, .game-time-container .game-time-selector #gameTime:after {
+  content: "Durée de la Partie";
+}
+
+.nb-joueurs-container .nb-joueurs-selector #nbJoueurs:after, .nb-joueurs-container .game-time-selector #nbJoueurs:after, .game-time-container .nb-joueurs-selector #nbJoueurs:after, .game-time-container .game-time-selector #nbJoueurs:after {
+  content: "Nombre de Joueurs";
+}
+
+.nb-joueurs-container .nb-joueurs-selector .stylized, .nb-joueurs-container .game-time-selector .stylized, .game-time-container .nb-joueurs-selector .stylized, .game-time-container .game-time-selector .stylized {
+  border-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.nb-joueurs-container .nb-joueurs-selector .arrow-right, .nb-joueurs-container .nb-joueurs-selector .arrow-left, .nb-joueurs-container .game-time-selector .arrow-right, .nb-joueurs-container .game-time-selector .arrow-left, .game-time-container .nb-joueurs-selector .arrow-right, .game-time-container .nb-joueurs-selector .arrow-left, .game-time-container .game-time-selector .arrow-right, .game-time-container .game-time-selector .arrow-left {
+  position: absolute;
+  bottom: 15px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.nb-joueurs-container .nb-joueurs-selector .arrow-right, .nb-joueurs-container .game-time-selector .arrow-right, .game-time-container .nb-joueurs-selector .arrow-right, .game-time-container .game-time-selector .arrow-right {
+  right: -40px;
+  border-left: 17px solid rgba(255, 255, 255, 0.5);
+}
+
+.nb-joueurs-container .nb-joueurs-selector .arrow-left, .nb-joueurs-container .game-time-selector .arrow-left, .game-time-container .nb-joueurs-selector .arrow-left, .game-time-container .game-time-selector .arrow-left {
+  left: -40px;
+  border-right: 17px solid rgba(255, 255, 255, 0.5);
 }
 
 /*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
