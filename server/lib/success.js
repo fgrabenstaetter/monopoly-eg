@@ -13,16 +13,16 @@ const Success = [{
     token: 'build3Hostels',
     description: 'Construisez 3 hôtels en 1 partie',
     exp: 600
-// }, {
-//     id: 3,
-//     token: 'doubleAtBeg',
-//     description: 'faire 1 double au début de la partie',
-//     exp: 150
-// }, {
-//     id: 4,
-//     token: 'buy',
-//     description: 'Achetez la rue "Chemin du Wacken"', // Case 11 => STREET[5]
-//     exp: 348
+}, {
+     id: 3,
+     token: 'doubleAtBeg',
+     description: 'faire 1 double au début de la partie',
+     exp: 150
+}, {
+     id: 4,
+     token: 'buyWacken',
+     description: 'Achetez la rue "Chemin du Wacken"', // Case 11 => STREET[5]
+     exp: 348
 }];
 
 module.exports = Success;
