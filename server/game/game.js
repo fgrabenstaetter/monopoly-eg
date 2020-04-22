@@ -9,7 +9,7 @@ const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
 const Bid                     = require('./bid');
-const SuccessManager          = require('./successManager');
+//const SuccessManager          = require('./successManager');
 const activeGameSchema              = require('./../models/activeGame');
 
 
@@ -79,7 +79,7 @@ class Game {
             playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
             persistInterval      : null  // id de interval pour fairie clearInterval apres
         };
-        this.successManager = new SuccessManager(this);
+        //this.successManager = new SuccessManager(this);
 
         if (this.shouldPersist) {
             let gameState = activeGameSchema(this.currentGameState());
@@ -325,7 +325,7 @@ class Game {
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
 
-        this.successManager.check();
+        //this.successManager.check();
 
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
