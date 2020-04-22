@@ -1170,6 +1170,18 @@ socket.on('gamePlayerFailureRes', (res) => {
 });
 
 
+// Fin de partie
+socket.on('gameEndRes', (res) => {
+    const winner = getPlayerById(res.winnerID);
+    const type = res.type; // 'failure' (dernier en vie) ou 'timeout'
+    const duration = res.duration * 1.66667e-5; // durée totale du jeu en minutes
+
+    alert('Fin de la partie (' + type + ') après ' + duration + ' minutes de jeu');
+    alert(winner.nickname + ' a gagné, félicitations !');
+    window.location = '/lobby';
+});
+
+
 // Quitter la partie
 $('#content').on('click', '#quit-game', () => {
     socket.emit('gamePlayerLeavingReq');
