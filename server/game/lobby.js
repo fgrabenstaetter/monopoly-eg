@@ -73,6 +73,15 @@ class Lobby {
                 hostID: newHost.id
             });
         }
+        const inMM = this.GLOBAL.matchmaking.queue[this.targetUsersNb - 2].indexOf(this);
+        if (inMM !== -1) {
+            let err = Errors.SUCCESS;
+            this.GLOBAL.matchmaking.delLobby(this);
+            this.GLOBAL.network.io.to(this.name).emit('lobbyCancelPlayRes', {
+                error: err.code,
+                status: err.status
+            });
+        }
     }
 
     /**

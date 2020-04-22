@@ -1059,12 +1059,12 @@ class Network {
                 playerID: player.id
             });
 
-            let cpt = 0;
+            let nbPlayersLeft = 0;
             for (const player of game.players) {
                 if (player.hasLeft)
-                    cpt++;
+                    nbPlayersLeft++;
             }
-            if (cpt === game.players.length)
+            if (nbPlayersLeft === game.players.length)
                 game.delete();
         });
     }
