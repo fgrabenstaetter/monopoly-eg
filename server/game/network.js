@@ -978,6 +978,7 @@ class Network {
     gameOverbidReq(player, game) {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
+            console.log(data);
             if (!data.price || data.bidID == null)
                 err = Errors.MISSING_FIELD;
             else if (player.money < data.price)
@@ -989,7 +990,6 @@ class Network {
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
-
                     // if (boundary >= 10) { COMMENTÉ POUR ENCHERES ONESHOT TMP !
                         if (!bid.updateBid(player, data.price))
                             err = Errors.UNKNOW;
@@ -1177,7 +1177,7 @@ class Network {
         user.socket.on('playerSettingsReq', (data) => {
             if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
                 return;
-            
+
             UserSchema.findById(user.id, (error, userMongo) => {
                 if (error || !userMongo)
                     return;
@@ -1193,7 +1193,7 @@ class Network {
                 });
             });
         });
-        
+
     }
 }
 

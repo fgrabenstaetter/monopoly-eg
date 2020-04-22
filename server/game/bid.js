@@ -52,9 +52,16 @@ class Bid {
 
     //Test réalisé dans network
     updateBid (player, amount) {
-        if (amount <= this.amountAsked)
+        if (this.nBidsOnProperty.indexOf(player.id) === -1)
+            this.nBidsOnProperty.push(player.id);
+
+        if (amount <= this.amountAsked) {
             // return false;
+            if (this.nBidsOnProperty.length === this.game.players.length)
+                this.expired();
+
             return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
+        }
 
         this.amountAsked = amount;
         this.player = player;
@@ -64,8 +71,6 @@ class Bid {
             return false;
         }
 
-        if (this.nBidsOnProperty.indexOf(player.id) === -1)
-            this.nBidsOnProperty.push(player.id);
 
         if (this.nBidsOnProperty.length === this.game.players.length)
             this.expired();
