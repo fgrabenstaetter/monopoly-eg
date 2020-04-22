@@ -1,5 +1,7 @@
 const Success                     = require('./../lib/success');
 const Constants                   = require('./../lib/constants');
+const Properties                  = require('./../lib/properties');
+const Street                      = require('./street');
 const { UserSchema, UserManager } = require('../models/user');
 
 class SuccessManager {
@@ -13,10 +15,11 @@ class SuccessManager {
             this.datas[key]             = {};
             this.datas[key].nbDoubles   = 0;
             this.datas[key].nbJailTimes = 0;
+            this.datas[key].turnNumber  = 0;
             this.datas[key].completed   = []; // liste des ID des succès déjà validés
 
             this.getPlayerAllSuccess(player, (success) => {
-                this.data[key].completed = success;
+                this.datas[key].completed = success;
             });
         }
     }
@@ -72,6 +75,7 @@ class SuccessManager {
             if (this[succ.token](this.datas[key], player))
                 checkCompleted(succ.id, player);
         }
+        this.datas[key].turnNumber++;
     }
 
     make10Doubles (obj, player) {
@@ -100,6 +104,17 @@ class SuccessManager {
         }
 
         if (cpt >= 3)
+            return true;
+    }
+
+    doubleAtBeg (obj, player) {
+        if (obj.turnNumber === 0 && this.game.turnData.nbDoubleDices !== 0)
+            return true;
+    }
+
+    buyWacken (obj, player) {
+        const wacken = new Street(Properties.STREET[5]);
+        if (player.properties.indexOf(wacken) !== -1)
             return true;
     }
 }
