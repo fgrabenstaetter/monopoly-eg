@@ -521,7 +521,7 @@ class Network {
             else if (Matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
-                Matchmaking.delLobby(lobby);
+                this.GLOBAL.matchmaking.delLobby(lobby);
                 this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
@@ -1058,12 +1058,12 @@ class Network {
                 playerID: player.id
             });
 
-            let cpt = 0;
+            let nbPlayersLeft = 0;
             for (const player of game.players) {
                 if (player.hasLeft)
-                    cpt++;
+                    nbPlayersLeft++;
             }
-            if (cpt === game.players.length)
+            if (nbPlayersLeft === game.players.length)
                 game.delete();
         });
     }
