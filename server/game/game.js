@@ -689,6 +689,18 @@ class Game {
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
+    playerLeaving (player) {
+        for (const prop of player.properties) {
+            this.bank.addProperty(prop);
+        }
+        this.bank.addMoney(player.money);
+        player.hasLeft = true;
+
+        this.GLOBAL.network.io.to(this.name).emit('gamePlayerHasLeftRes', {
+            playerID: player.id
+        });
+    }
+
     /**
      * Attention: peut être appelée pour une hypothèque volontaire ou forcée !
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
