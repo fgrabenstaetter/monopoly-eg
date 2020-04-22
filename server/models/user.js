@@ -17,7 +17,8 @@ let userSchema = new Schema({
     settings: {
         graphicsQuality: { type: Number, required: true, enum: [0, 1, 2], default: 1 },
         autoZoom: { type: Boolean, required: true, default: true }
-    }
+    },
+    success: [{ type: Number }]
 });
 
 userSchema.methods.getAvatar = function () {

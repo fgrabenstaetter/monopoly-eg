@@ -1,7 +1,7 @@
-const Constants = require('./../lib/constants');
-const Game = require('./game');
+const Constants  = require('./../lib/constants');
+const Game       = require('./game');
 const GameSchema = require('../models/game');
-const Lobby = require('./lobby');
+const Lobby      = require('./lobby');
 
 /**
  * Représente un matchmaking (recherche de partie)

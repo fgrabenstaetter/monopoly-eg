@@ -316,7 +316,6 @@ class Game {
     }
 
     nextTurn() {
-        this.successManager.check(this);
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
             this.turnPlayerTimeoutAction(false);
@@ -325,6 +324,9 @@ class Game {
         // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
+
+        this.successManager.check();
+
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
         if (this.checkEnd())

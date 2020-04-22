@@ -1,13 +1,12 @@
 const Constants                   = require('../lib/constants');
 const Errors                      = require('../lib/errors');
-const { UserSchema, UserManager } = require('../models/user');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
 const Matchmaking                 = require('./matchmaking');
-
-const SocketIOFileUpload = require("socketio-file-upload");
-const FileType = require('file-type');
-const fs          = require('fs');
+const { UserSchema, UserManager } = require('../models/user');
+const SocketIOFileUpload          = require("socketio-file-upload");
+const FileType                    = require('file-type');
+const fs                          = require('fs');
 
 /**
  * Simplifie et centralise toutes les communications socket
