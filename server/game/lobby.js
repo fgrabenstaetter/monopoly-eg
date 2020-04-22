@@ -1,4 +1,6 @@
 const Chat = require('./chat');
+const Matchmaking = require('./matchmaking');
+const Errors = require('../lib/errors');
 
 /**
  * Représente un Lobby
@@ -73,7 +75,7 @@ class Lobby {
                 hostID: newHost.id
             });
         }
-        const inMM = this.GLOBAL.matchmaking.queue[this.targetUsersNb - 2].indexOf(this);
+        const inMM = Matchmaking.queue[this.targetUsersNb - 2].indexOf(this);
         if (inMM !== -1) {
             let err = Errors.SUCCESS;
             this.GLOBAL.matchmaking.delLobby(this);

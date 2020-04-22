@@ -522,7 +522,7 @@ class Network {
             else if (Matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
-                Matchmaking.delLobby(lobby);
+                this.GLOBAL.matchmaking.delLobby(lobby);
                 this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
