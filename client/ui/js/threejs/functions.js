@@ -382,8 +382,8 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 	options = options || {};
 	// get targets from options or set to defaults
 	var to = target || THREE.Vector3(),
-		easing = options.easing || TWEEN.Easing.Quadratic.In,
-		duration = options.duration || 2000;
+		easing = options.easing || TWEEN.Easing.Quadratic.InOut,
+		duration = options.duration || 3140;
 	// create the tween
 	var tweenVector3 = new TWEEN.Tween(vectorToAnimate)
 		.to({ x: to.x, y: to.y, z: to.z, }, duration)
@@ -419,12 +419,16 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 				else if (vdp == 24 || vdp == 11 || vdp == 15) 		
 					animateVector3(pawn, vectorToAnimate, tabCases[10], options);	
 			}
+			if (tabCases[vdp].x.toFixed(2) == to.x.toFixed(2) && tabCases[vdp].z.toFixed(2) == to.z.toFixed(2))
+				options();	
 		});
 	// start the tween
 
 	tweenVector3.start();
-	// console.log(pawn.position.x.toFixed(2));
+	//console.log(pawn.position.x.toFixed(2));
 	// console.log(pawn.position.z.toFixed(2));
+	// console.log(tabCases[vdp].x.toFixed(2));
+	// console.log(to.x.toFixed(2));
 	// console.log("coin");
 	// console.log(coin);
 			
@@ -453,105 +457,125 @@ function movement (pawn, caseArr, callback) {
 		if(vdp > posPawn && vdp < 10){
 			// route en bas
 			console.log("1");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (vdp == 10 && posPawn < 10) {
 			// pour aller dans le coins en bas a gauche
 			console.log("2");
-			movementAux(1, pawn, 10, callback);
+			//movementAux(1, pawn, 10, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[10], callback);
 		} else if (posPawn == 10 && vdp > 10 && vdp < 20) {
 			// aller du coin en bas a gauche vers la route de gauche
 			console.log("3");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
  		} else if (posPawn >= 0 && posPawn < 10 && vdp > 10 && vdp < 22) {
 			 // de la route en bas à la route à gauche
 			 console.log("4");
-			movementAux(1, pawn, 10, callback);
+			//movementAux(1, pawn, 10, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[10], callback);
 		} else if (posPawn > 10 && posPawn < 20 && vdp > 10 && vdp < 20) {
 			// route de gauche vers la route à gauche
 			console.log("5");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (vdp == 20 && posPawn < 20) {
 			// pour aller dans le coin en haut a gauche
 			console.log("6");
-			movementAux(1, pawn, 20, callback);
+			//movementAux(1, pawn, 20, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[20], callback);
 		} else if (posPawn == 20 && vdp > 20 && vdp < 30) { 
 			// aller du coin en haut a gauche vers la route d'en haut
 			console.log("7");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 			// changer en <= 31 avant cetait < 30
 		} else if (posPawn >= 10 && posPawn < 20 && vdp > 20 && vdp <= 31) { 
 			 // de la route gauche à la route d'en haut
 			 console.log("8");
-			movementAux(1, pawn, 20, callback);
+			//movementAux(1, pawn, 20, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[20], callback);
 		} else if (posPawn > 20 && posPawn < 30 && vdp > 20 && vdp < 30) { 
 			// route d'en haut vers la route d'en haut
 			console.log("9");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (vdp == 30 && posPawn < 30) {
 			// pour aller dans le coin en haut a droite
 			console.log("10");
-			movementAux(1, pawn, 30, callback);
+			//movementAux(1, pawn, 30, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[30], callback);
 		} else if (posPawn == 30 && vdp > 30) {
 			// aller du coin en haut a droite vers la route a droite
 			console.log("11");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (posPawn >= 20 && posPawn < 30 && vdp > 30 && vdp <= 39) {
 			// de la route d'en haut à la route de droite
 			console.log("12");
-			movementAux(1, pawn, 30, callback);
+			//movementAux(1, pawn, 30, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[30], callback);
 		} else if (posPawn > 30 && posPawn < 39 && vdp >= 31 && vdp <= 39) { 
 			// route de droite vers la route de droite
 			console.log("13");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (posPawn >= 30 && posPawn <= 39 && vdp == 0) {
 			// pour aller dans le coin en haut en bas
 			console.log("14");
-			movementAux(0, pawn, 0, callback);
+			//movementAux(0, pawn, 0, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[0], callback);
 		} else if (posPawn == 0 && vdp > 0) {
 			// aller du coin en bas a droite vers la route d'en bas
 			console.log("15");
-			movementAux(0, pawn, vdp, callback);
+			//movementAux(0, pawn, vdp, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[vdp], callback);
 		} else if (posPawn >= 30 && posPawn <= 39 && vdp >= 0 && vdp <= 11) {
 			// de la route de droite à la route d'en bas
 			console.log("16");
-			movementAux(1, pawn, 0, callback);
+			//movementAux(1, pawn, 0, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[0], callback);
 		} else if (posPawn >= 20 && posPawn <= 30 && vdp >= 0 && vdp <= 10) {
 			// de la route en haut à la route d'en bas
 			console.log("17");
-			movementAux(1, pawn, 30, callback);
+			//movementAux(1, pawn, 30, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[30], callback);
 		} else if ((posPawn == 2 || posPawn == 7) && vdp == 39) {
 			// de la route en bas à la route de droite case 39
 			console.log("18");
-			movementAux(1, pawn, 10, callback);
+			//movementAux(1, pawn, 10, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[10], callback);
 		} else if ((posPawn == 2 || posPawn == 7) && vdp == 24) {
 			// de la route en bas à la route d'en haut case 24
 			console.log("19");
-			movementAux(1, pawn, 10, callback);
+			//movementAux(1, pawn, 10, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[10], callback);
 		} else if ((posPawn == 2 || posPawn == 7) && (vdp == 0 || vdp == 1)) {
 			// de la route en bas à la case de départ
 			console.log("20");
-			movementAux(1, pawn, 10, callback);
+			//movementAux(1, pawn, 10, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[10], callback);
 		} else if (posPawn == 22 && (vdp == 15 || vdp == 11)) {
 			// de la route en haut à la route de gauche case 11 ou case 15
 			console.log("21");
-			movementAux(1, pawn, 30, callback);
+			//movementAux(1, pawn, 30, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[30], callback);
 		} else if ((posPawn == 36 || posPawn == 33) && (vdp == 24 || vdp == 15 || vdp == 11)) {
 			// de la route a droite à la route d'en haut case 24
 			console.log("22");
-			movementAux(1, pawn, 0, callback);
+			//movementAux(1, pawn, 0, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[0], callback);
 		} else if ((posPawn == 36 || posPawn == 33) && (vdp == 24 || vdp == 15 || vdp == 11)) {
 			// de la route a droite à la route d'en haut case 24
 			console.log("22");
-			movementAux(1, pawn, 0, callback);
+			//movementAux(1, pawn, 0, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[0], callback);
 		} else if (posPawn == 17 && (vdp == 0) || vdp == 1) {
 			// de la route a gauche à la case de départ
 			console.log("23");
-			movementAux(1, pawn, 20, callback);
+			//movementAux(1, pawn, 20, callback);
+			animateVector3(window[pawn], window[pawn].position, tabCases[20], callback);
 		}
-
-
-		if (callback)
-			callback();
 }
 
 
@@ -562,20 +586,13 @@ function movement (pawn, caseArr, callback) {
  * @callback callback Appel d'un callback()
  */
 //let compteur = 0;
-function movementAux (compteur, pawn, coin, callback) {
+/*function movementAux (compteur, pawn, coin, callback) {
 	// const target = new THREE.Vector3(3.5, 2, 3.85);
 	const target = tabCases[coin];
 	//console.log(window[pawn].position);
 	animateVector3(window[pawn], window[pawn].position, target, {
 		duration: 3140,
 		easing : TWEEN.Easing.Quadratic.InOut,
-		/*update: function(d) {
-		
-		},
-
-		callback : function(){
-			callback();
-		}*/
 	});
 
-}
+}*/
