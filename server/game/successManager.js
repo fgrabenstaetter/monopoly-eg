@@ -19,7 +19,7 @@ class SuccessManager {
             this.datas[key].completed   = []; // liste des ID des succès déjà validés
 
             this.getPlayerAllSuccess(player, (success) => {
-                this.data[key].completed = success;
+                this.datas[key].completed = success;
             });
         }
     }
