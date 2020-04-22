@@ -445,7 +445,7 @@
         }
         ```
 
-### --- Créer / Inviter / Rejoindre / Quitter
+### --- Divers
 - **Mettre à jour son profil**
     > Mettre à jour pseudo, adresse email et mot de passe (optionnel)
 
@@ -500,6 +500,21 @@
         {
             id: string, // id de l'utilisateur qui a mis à jour son avatar
             path: string // nouveau path de l'image à partir de la racine du serveur
+        }
+        ```
+
+- **Recevoir la liste de tous les succès**
+
+    * **Réponse:** playerSuccessRes
+        * *Données:*
+        ```javascript
+        {
+            success: [ {
+                description: string,
+                difficulty: int, // 1: facile, 2: normal, 3: difficile
+                exp: int,
+                completed: bool
+            }, ... ]
         }
         ```
 
@@ -1094,15 +1109,19 @@
             error: int,
             status: string
         }
+        ```
 
-- **Une quête vient d'être accomplie**
-    > Le client et le serveur doivent connaître toutes les quêtes selon leur ID
+- **Un succès vient d'être complété**
+    > Reçu lorsque un succès a été complété (= validé)
 
-    * **Réponse:** gameQuestFinishedRes
+    * **Réponse:** gameSuccessCompletedRes
         * *Données:*
         ```javascript
         {
-            questID: int
+            description: string,
+            difficulty: int, // 1 facile 2 normal 3 difficile
+            exp: int,
+            playerLevel: int,
+            playerExp: int
         }
-
         ```
