@@ -1058,6 +1058,14 @@ class Network {
             this.GLOBAL.network.io.to(game.name).emit('gamePlayerHasLeftRes', {
                 playerID: player.id
             });
+
+            let cpt = 0;
+            for (const player of game.players) {
+                if (player.hasLeft)
+                    cpt++;
+            }
+            if (cpt === game.players.length)
+                game.delete();
         });
     }
 
