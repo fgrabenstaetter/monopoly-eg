@@ -3,7 +3,6 @@ const Game = require('./game');
 const GameSchema = require('../models/game');
 const Lobby = require('./lobby');
 
-
 /**
  * Représente un matchmaking (recherche de partie)
  */
@@ -124,7 +123,7 @@ class Matchmaking {
 
                                 let mergedLobby = [];
                                 for (let f of fusion)
-                                mergedLobby.push(Matchmaking.queue[i][f]);
+                                    mergedLobby.push(Matchmaking.queue[i][f]);
 
                                 this.createGame(mergedLobby);
                             }

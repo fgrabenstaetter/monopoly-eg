@@ -252,7 +252,7 @@
         }
         ```
 
-- **Démarrer la partie (=> Matchmaking)**
+- **Démarrer la recherche de partie (=> Matchmaking)**
     > Rechercher une partie avec les joueurs présents dans le lobby
 
     * **Requête:** lobbyPlayReq
@@ -262,6 +262,25 @@
          ```
 
     * **Réponse:** lobbyPlayRes
+        * *Données:*
+        ```javascript
+        {
+            error: int,
+            status: string
+        }
+        ```
+
+- **Annuler la recherche de partie (retirer du Matchmaking)**
+    > Annuler la recherche de partie. La réponse peut être envoyée sans requête préalable si un joueur quitte le lobby durant la recherche
+
+    * **Requête:** lobbyCancelPlayReq
+        * *Données:*
+        ```javascript
+         null
+         ```
+
+    * **Réponse:** lobbyCancelPlayRes
+        > Si succès, envoyé à tout le monde, sinon (erreur) envoyée seulement à l'émetteur
         * *Données:*
         ```javascript
         {

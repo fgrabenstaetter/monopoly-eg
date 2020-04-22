@@ -3,6 +3,7 @@ const Errors                      = require('../lib/errors');
 const { UserSchema, UserManager } = require('../models/user');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
+const Matchmaking                 = require('./matchmaking');
 
 const SocketIOFileUpload = require("socketio-file-upload");
 const FileType = require('file-type');
@@ -37,9 +38,8 @@ class Network {
             if (event.file) {
                 event.file.name = `${user.id}.jpg`;
                 callback(true);
-            } else {
+            } else
                 callback(false);
-            }
         };
 
         const currObj = this;
@@ -89,6 +89,7 @@ class Network {
         this.lobbyChangeDurationReq         (user, lobby);
         this.lobbyChatSendReq               (user, lobby);
         this.lobbyPlayReq                   (user, lobby);
+        this.lobbyCancelPlayReq             (user, lobby);
         this.playerSettings                 (user);
 
         // Amis
@@ -509,6 +510,24 @@ class Network {
                 lobby.searchGame();
 
             user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
+        });
+    }
+
+    lobbyCancelPlayReq(user, lobby) {
+        user.socket.on('lobbyCancelPlayReq', (data) => {
+            let err = Errors.SUCCESS;
+
+            if (!lobby.isHost(user))
+                err = Errors.UNKNOW; // n'est pas l'hôte
+            else if (Matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
+                err = Errors.LOBBY.NOT_IN_MATCHMAKING;
+            else {
+                Matchmaking.delLobby(lobby);
+                this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
+            }
+
+            if (err !== Errors.SUCCESS)
+                user.socket.emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
         });
     }
 

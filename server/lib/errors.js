@@ -158,6 +158,10 @@ module.exports = Object.freeze({
         WRONG_DURATION: {
             code: 6,
             status: 'Valeur de durée de partie incorrecte'
+        },
+        NOT_IN_MATCHMAKING: {
+            code: 7,
+            status: 'Vous n\'êtes pas en recherche de partie'
         }
     },
 
