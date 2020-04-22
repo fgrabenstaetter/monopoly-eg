@@ -1037,7 +1037,7 @@ class Network {
             player.hasLeft = true;
 
             player.socket.emit('gamePlayerLeavingRes', { error: err.code, status: err.status });
-            this.GLOBAL.network.io.to(this.name).emit('gamePlayerHasLeftRes', {
+            this.GLOBAL.network.io.to(game.name).emit('gamePlayerHasLeftRes', {
                 playerID: player.id
             });
         });
@@ -1177,7 +1177,7 @@ class Network {
         user.socket.on('playerSettingsReq', (data) => {
             if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
                 return;
-            
+
             UserSchema.findById(user.id, (error, userMongo) => {
                 if (error || !userMongo)
                     return;
@@ -1193,7 +1193,7 @@ class Network {
                 });
             });
         });
-        
+
     }
 }
 
