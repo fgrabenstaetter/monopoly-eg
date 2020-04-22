@@ -1,6 +1,6 @@
 // let varMovement, varCase, vdp, varFunction, varPawn;
 let name, zoomOn = 1;
-let posPawn;
+let posPawn, vdp;
 // let name, zoomOn = 1, counter = 0, counter2 = 0;
 // Pas possible de les changer en let
 // var pawn, window, cases;
@@ -415,7 +415,7 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 3.85) {
 				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 1 && vdp <= 10)
-					animateVector3(1, pawn, vectorToAnimate, tabCases[vdp], options);		
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);		
 				else if (vdp == 24 || vdp == 11 || vdp == 15) 		
 					animateVector3(pawn, vectorToAnimate, tabCases[10], options);	
 			}
