@@ -51,7 +51,7 @@ class SuccessManager {
 
         // emit au joueur
         let succ;
-        for (const succes of Success) {
+        for (const success of Success) {
             if (success.id  === successID) {
                 succ = success;
                 break;
@@ -73,7 +73,7 @@ class SuccessManager {
         const key = player.id;
         for (const succ of Success) {
             if (this[succ.token](this.datas[key], player))
-                checkCompleted(succ.id, player);
+                this.checkCompleted(succ.id, player);
         }
         this.datas[key].turnNumber++;
     }
