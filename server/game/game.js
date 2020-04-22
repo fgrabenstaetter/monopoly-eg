@@ -380,7 +380,6 @@ class Game {
         this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();
         const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-        //const diceRes = this.forcedDiceRes ? this.forcedDiceRes : [3, 5];
 
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);

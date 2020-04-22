@@ -989,7 +989,6 @@ class Network {
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
-
                     // if (boundary >= 10) { COMMENTÉ POUR ENCHERES ONESHOT TMP !
                         if (!bid.updateBid(player, data.price))
                             err = Errors.UNKNOW;

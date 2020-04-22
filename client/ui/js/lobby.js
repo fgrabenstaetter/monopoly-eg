@@ -184,9 +184,10 @@ socket.on('lobbyGameFoundRes', () => {
 /**Vérifications des Res asynchrones
 */
 socket.on('lobbyFriendInvitationSendRes', (res) => {
-    if (res.error === 0)
+    if (res.error === 0) {
         toast('Invitation envoyée', 'success', 3);
-    else // hôte uniquement
+        $('#addFriendModal').modal('hide');
+    } else // hôte uniquement
         toast(`Erreur ${res.status}`, 'danger', 5);
 });
 
@@ -230,31 +231,38 @@ socket.emit('lobbyReadyReq'); // AUCUN EVENT SOCKET (ON) APRES CECI
 // INTERFACE JS FUNCTIONS //
 ////////////////////////////
 
-$(document).ready(() => {
+// Ajout d'un nouvel ami
 
-    // $('.progress-button').progressInitialize();
+$('#addFriendModal').on('shown.bs.modal', () => {
+    $('#addFriendModal input').first().focus();
+});
+
+$('#addFriendModal').on('hidden.bs.modal', () => {
+    $('#addFriendModal input').first().val('');
+});
+
+$('#addFriendModal').modal('hide');
+
+$('#add-friend').on('submit', (e) => {
+    const nickname = $('#add-friend input').val();
+    socket.emit('lobbyFriendInvitationSendReq', { nickname: nickname });
+    console.log("lobbyFriendInvitationSendReq");
+    $('#friendBar').val('');
+    e.preventDefault();
+});
+
+$(document).ready(() => {
     $('#friendBar').keyup((e) => {
         let input, filter, element, a, i, txtValue;
         input = document.getElementById('friendBar');
         filter = input.value;
-        if (e.keyCode == '13') {
-            /**
-            * recherche d'un nouvel ami
-            * nom de l'ami stocker dans filter
-            */
-            socket.emit('lobbyFriendInvitationSendReq', { nickname: filter });
-            console.log("lobbyFriendInvitationSendReq");
-            $('#friendBar').val('');
-        }
-        else {
-            element = document.getElementsByClassName('friend-entry');
-            for (i = 0; i < element.length; i++) {
-                txtValue = element[i].getElementsByClassName('friends-name')[0].innerHTML;
-                if (txtValue.toUpperCase().indexOf(filter.toUpperCase()) > -1)
-                    element[i].style.display = '';
-                else
-                    element[i].style.display = 'none';
-            }
+        element = document.getElementsByClassName('friend-entry');
+        for (i = 0; i < element.length; i++) {
+            txtValue = element[i].getElementsByClassName('friends-name')[0].innerHTML;
+            if (txtValue.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+                element[i].style.display = '';
+            else
+                element[i].style.display = 'none';
         }
     });
 
@@ -630,6 +638,14 @@ socket.on('lobbyUpdateAvatarRes', (res) => {
     console.log(res);
     if (res.error !== 0)
         toast(res.status, 'danger', 3);
+});
+
+
+// Déconnexion
+$('.logout-btn').click(() => {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('loggedUser');
+    window.location = '/login';
 });
 
 

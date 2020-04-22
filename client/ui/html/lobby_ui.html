@@ -1,9 +1,14 @@
 <div class="container">
     <div class="row">
+        <div class="col">
+            <i class="logout-btn fas fa-power-off" title="Déconnexion"></i>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-3">
             <div class="card box friendlist">
                 <div class="card-header">
-                    AMIS
+                    AMIS <i class="fas fa-user-plus float-right mt-1" style="cursor:pointer;" data-toggle="modal" data-target="#addFriendModal" title="Ajouter un nouvel ami"></i>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
@@ -14,7 +19,7 @@
                         <div id="friendList">
                             <!-- Géré dynamiquement -->
                         </div>
-                        <div class="add-new-friend">"entrée" pour ajouter un nouvel ami</div>
+                        <!-- <div class="add-new-friend">"entrée" pour ajouter un nouvel ami</div> -->
                     </div>
                 </div>
             </div>
@@ -111,6 +116,28 @@
                         <input type="file" class="form-control-file" id="avatar">
                     </div>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ajouter un ami -->
+<div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter un ami</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                    <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-friend">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Pseudo..." autocomplete="off" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
                 </form>
             </div>
         </div>
