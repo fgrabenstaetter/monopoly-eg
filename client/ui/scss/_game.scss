@@ -787,6 +787,26 @@
           top: 10px;
           left: -17px;
         }
+
+        &.failure::before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f714";
+          margin-right: 10px;
+          font-size: 22px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 10px;
+          left: -30px;
+        }
       }
 
       @media (max-height: 820px) {
@@ -1129,13 +1149,10 @@
   }
 
 	.splash-text {
-		position: absolute;
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translate(-50%, -50%);
 		width: 500px;
-		height: 180px;
-		top: 50%;
-		left: 50%;
-		margin-left: -250px; /* margin is -0.5 * dimension */
-		margin-top: -100px; 
 		color: white;
 		font-weight: 900;
 		font-size: 4.5em;
@@ -1144,11 +1161,12 @@
 		text-align: center;
     text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    line-height: 1.2;
 
     .letters {
       position: absolute;
       margin: auto;
-      opacity: 0; 
+      opacity: 0;
       top: 0;
       left: 0;
       right: 0;

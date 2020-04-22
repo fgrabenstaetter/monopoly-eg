@@ -648,6 +648,8 @@ $('.logout-btn').click(() => {
     window.location = '/login';
 });
 
+$('#optionsModal #quit-game').remove();
+
 
 /**
  * Maj des flèches de changement de la duree desire de la partie

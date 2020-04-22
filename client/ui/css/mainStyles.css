@@ -2256,6 +2256,26 @@ select.custom-select:focus {
   left: -17px;
 }
 
+.ingame-ui-container .players-list-container .player-list .player-entry.failure::before {
+  font-family: "Font Awesome 5 Free";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: "\f714";
+  margin-right: 10px;
+  font-size: 22px;
+  color: white;
+  vertical-align: text-top;
+  position: absolute;
+  top: 10px;
+  left: -30px;
+}
+
 @media (max-height: 820px) {
   .ingame-ui-container .players-list-container .player-list .player-entry {
     margin-bottom: 0px;
@@ -2637,13 +2657,11 @@ select.custom-select:focus {
 
 .ingame-ui-container .splash-text {
   position: absolute;
-  width: 500px;
-  height: 180px;
-  top: 50%;
+  top: 30%;
   left: 50%;
-  margin-left: -250px;
-  /* margin is -0.5 * dimension */
-  margin-top: -100px;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 500px;
   color: white;
   font-weight: 900;
   font-size: 4.5em;
@@ -2652,6 +2670,7 @@ select.custom-select:focus {
   text-align: center;
   text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  line-height: 1.2;
 }
 
 .ingame-ui-container .splash-text .letters {

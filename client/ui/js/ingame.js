@@ -126,7 +126,7 @@ socket.on('gameStartedRes', (data) => {
         player.color = PLAYERS_COLORS[index];
         player.isInJail = false;
         loaderPawn(PAWNS[player.pawn], player.cellPos.toString());
-        generatePlayerEntry(player.id, player.nickname, player.money);
+        createPlayerEntry(player);
     });
 
     initProperty();
@@ -147,14 +147,14 @@ socket.on('gameTurnRes', (data) => {
 
     // afficher décompte de temps du tour
     if (data.playerID === ID) {
-        triggerSplashAnimation('C\'est à vous de jouer !');
+        triggerSplashAnimation('<br>C\'est à vous de jouer !', 'white');
 
         console.log("[BOUTON D'ACTION] Initialisation");
         $('#timer').progressReset();
         console.log("[BOUTON D'ACTION] Passage en timer");
         $('#timer').progressStart(turnTimeSeconds);
     } else {
-        triggerSplashAnimation(`C'est au tour de ${idToNick(data.playerID)} !`);
+        triggerSplashAnimation(`<br>C'est au tour de ${idToNick(data.playerID)} !`, 'white');
         console.log("[BOUTON D'ACTION] Passage en attente");
         $('#timer').progressFinish();
     }
@@ -676,7 +676,7 @@ socket.on('gameReconnectionRes', (data) => {
     // Génération de la liste de joueurs
     DATA.players.forEach((player, index) => {
         loaderPawn(PAWNS[player.pawn], player.cellPos);
-        generatePlayerEntry(player.id, player.nickname, player.money);
+        createPlayerEntry(player);
         player.color = PLAYERS_COLORS[index];
         player.isInJail = false;
     });
@@ -809,13 +809,11 @@ function bindOfferListener() {
 
 /**
  * Crée une entrée dans la listedes joueurs
- * @param id Identifiant du joueur
- * @param nickname Pseudo du joueur
- * @param money Solde du joueur
+ * @param player Joueur à ajouter dans la liste du HUD
  */
-function generatePlayerEntry(id, nickname, money) {
-    let html = `<div class="player-entry" data-id="` + id + `">
-                        <div class="name" title="`+ nickname + `">` + nickname + `</div>
+function createPlayerEntry(player) {
+    let html = `<div class="player-entry" data-id="${player.id}">
+                        <div class="name" title="${player.nickname}">${player.nickname}</div>
                         <div class="money"></div>
                         <div class="popup top" style="display: none;">
                         </div>
@@ -829,7 +827,7 @@ function generatePlayerEntry(id, nickname, money) {
     const el = last.querySelector('.money');
     new Odometer({
         el: el,
-        value: money,
+        value: player.money,
 
         // Any option (other than auto and selector) can be passed in here
         format: '',
@@ -837,6 +835,16 @@ function generatePlayerEntry(id, nickname, money) {
         format: '( ddd),dd', // Change how digit groups are formatted, and how many digits are shown after the decimal point
         duration: 3000, // Change how long the javascript expects the CSS animation to take
         theme: 'default', // Specify the theme (if you have more than one theme css file on the page)
+    });
+}
+
+/**
+ * Retire un joueur de la liste de joueurs
+ * @param {Object} player Joueur à retirer de la liste
+ */
+function removePlayerEntry(player) {
+    $(`.player-list .player-entry[data-id="${player.id}"]`).fadeOut(function() {
+        $(this).remove();
     });
 }
 
@@ -1136,12 +1144,6 @@ $('body').on('click', '.bid-popup .bid-validation', function (e) {
     return false;
 });
 
-$('.quit-game').click((e) => {
-    e.preventDefault();
-    alert('Event quit game à implémenter côté serveur !');
-    return false;
-});
-
 
 // Player failure
 socket.on('gamePlayerFailureRes', (res) => {
@@ -1150,17 +1152,44 @@ socket.on('gamePlayerFailureRes', (res) => {
 
     const player = getPlayerById(res.playerID);
 
-    // Toutes les propriétés sont à nouveau à vendre
-    DATA.properties.forEach((property) => {
-        if (property.ownerID == player.id)
-            property.ownerID = null;
-    });
+    if (player) {
+        triggerSplashAnimation(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
 
-    // Enlever les propriétés du HUD pour ce joueur
-    $(`.player-entry[data-id="${res.playerID}"] .properties-container`).empty();
+        // Toutes les propriétés sont à nouveau à vendre
+        DATA.properties.forEach((property) => {
+            if (property.ownerID == player.id)
+                property.ownerID = null;
+        });
 
-    // Simple texte d'annonce
-    $(`.player-entry[data-id="${res.playerID}"] .name`).append(' (failure)');
+        // Enlever les propriétés du HUD pour ce joueur
+        $(`.player-entry[data-id="${res.playerID}"] .properties-container`).empty();
+
+        // Simple texte d'annonce
+        $(`.player-entry[data-id="${res.playerID}"]`).addClass('failure');
+    }
+});
+
+
+// Quitter la partie
+$('#content').on('click', '#quit-game', () => {
+    socket.emit('gamePlayerLeavingReq');
+});
+socket.on('gamePlayerLeavingRes', (res) => {
+    if (res.error === 0)
+        window.location = '/lobby';
+    else
+        notify(res.status, 'danger', 5);
+});
+socket.on('gamePlayerHasLeftRes', (res) => {
+    console.log("=== PLAYER LEFT ===");
+    console.log(res);
+    const player = getPlayerById(res.playerID);
+    if (player) {
+        console.log('PLAYER LEFT IS')
+        console.log(player);
+        addMsg(-1, `${player.nickname} a quitté la partie :/`, new Date());
+        removePlayerEntry(player);
+    }
 });
 
 
@@ -1197,7 +1226,7 @@ const splashAnim = anime.timeline({ loop: false, autoplay: false })
  * Génère une animation "splash screen" (en grand à l'écran)
  * @param {string} text Le texte à afficher
  */
-function triggerSplashAnimation(text) {
-    $('.splash-text .letters-1').html(text);
+function triggerSplashAnimation(text, color) {
+    $('.splash-text .letters-1').html(text).css('color', color);
     splashAnim.restart();
 }
