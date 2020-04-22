@@ -45,6 +45,23 @@ class SuccessManager {
 
         this.datas[player.id].completed.push(successID);
         this.saveOne(player);
+
+        // emit au joueur
+        let succ;
+        for (const succes of Success) {
+            if (success.id  === successID) {
+                succ = success;
+                break;
+            }
+        }
+
+        player.socket.emit('gameSuccessCompletedRes', {
+            description : succ.description,
+            difficulty  : succ.difficulty,
+            exp         : succ.exp,
+            playerLevel : player.level,
+            playerExp   : player.exp
+        });
     }
 
     check () {

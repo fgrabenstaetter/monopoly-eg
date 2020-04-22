@@ -7,6 +7,7 @@ const { UserSchema, UserManager } = require('../models/user');
 const SocketIOFileUpload          = require("socketio-file-upload");
 const FileType                    = require('file-type');
 const fs                          = require('fs');
+const Success                     = require('../lib/success');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -89,7 +90,6 @@ class Network {
         this.lobbyChatSendReq               (user, lobby);
         this.lobbyPlayReq                   (user, lobby);
         this.lobbyCancelPlayReq             (user, lobby);
-        this.playerSettings                 (user);
 
         // Amis
         this.lobbyFriendListReq             (user, lobby);
@@ -98,6 +98,10 @@ class Network {
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
         // this.lobbyFriendDeleteReq(user, lobby);
+
+        // Paramètres + Succès
+        this.playerSettingsReq            (user);
+        this.playerSuccessReq             (user);
 
         user.socket.on('lobbyReadyReq', () => {
             // réponse de création / rejoignage de lobby
@@ -126,8 +130,9 @@ class Network {
         this.gameOfferAcceptReq           (player, game);
         this.gameOverbidReq               (player, game);
 
-        // Paramètres
-        this.playerSettings               (player);
+        // Paramètres + Succès
+        this.playerSettingsReq            (player);
+        this.playerSuccessReq             (player);
     }
 
     //////////////////
@@ -1198,7 +1203,7 @@ class Network {
     }
 
     // Settings
-    playerSettings (user) {
+    playerSettingsReq (user) {
         user.socket.on('playerSettingsReq', (data) => {
             if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
                 return;
@@ -1219,6 +1224,27 @@ class Network {
             });
         });
 
+    }
+
+    // Success
+    playerSuccessReq (user) {
+        user.socket.on('playerSuccessReq', () => {
+            UserSchema.findById(user.id, (err, usr) => {
+                if (err || !usr)
+                    return;
+                let res = [];
+                for (const succ of Success) {
+                    const obj = {
+                        description : succ.description,
+                        difficulty  : succ.difficulty,
+                        exp         : succ.exp,
+                        completed   : usr.success.indexOf(succ.id) !== -1 ? true : false
+                    }
+                }
+
+                user.socket.emit('playerSuccessRes', { success: res });
+            });
+        });
     }
 }
 
