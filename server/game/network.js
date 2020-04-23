@@ -511,7 +511,7 @@ class Network {
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else if (!lobby.open)
                 err = Errors.LOBBY.CLOSED;
-            else (err.code === Errors.SUCCESS.code)
+            else
                 lobby.searchGame();
 
             user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
