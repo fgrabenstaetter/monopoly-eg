@@ -320,7 +320,7 @@ function imHost() {
         console.log('duree 1 :' + duree);
         if (duree == '1 h')
             duree = '30 min'
-        else if (duree == '∞')
+        else if (duree == 'Illimité')
             duree = '1 h'
         console.log('duree 2 :' + duree);
         console.log('socket gametime : 313');
@@ -331,7 +331,7 @@ function imHost() {
         var duree = document.getElementById('gameTime').textContent;
         console.log('duree 1 :' + duree);
         if (duree == '1 h')
-            duree = '∞';
+            duree = 'Illimité';
         else if (duree == '30 min')
             duree = '1 h'
         console.log('duree 2 :' + duree);

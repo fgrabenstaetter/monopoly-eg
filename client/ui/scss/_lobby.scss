@@ -52,7 +52,7 @@
       .card-header {
         border-radius: 0;
         background-color: $card-header;
-        font-family: 'LilitaOne', sans-serif;
+        font-family: "LilitaOne", sans-serif;
         color: white;
         font-size: 17px;
       }
@@ -88,7 +88,8 @@
       }
 
       // Spécifique à la liste d'amis et la liste du groupe
-      &.friendlist, &.grouplist {
+      &.friendlist,
+      &.grouplist {
         display: flex;
         justify-content: space-between;
         width: 100% !important;
@@ -156,7 +157,8 @@
           }
         }
 
-        .friend-entry, .group-entry {
+        .friend-entry,
+        .group-entry {
           display: flex;
           align-items: center;
           margin: 15px;
@@ -208,7 +210,7 @@
               display: none;
             }
           }
-          
+
           .friends-avatar {
             max-height: 80px;
             max-width: 80px;
@@ -294,7 +296,8 @@
           justify-content: center;
           padding: 20px 0 0 0;
 
-          .avatar-bubble, i {
+          .avatar-bubble,
+          i {
             align-self: center;
             background-color: rgba($color: white, $alpha: 0.3);
             color: white;
@@ -303,12 +306,12 @@
           .avatar-bubble {
             height: 40px;
             padding: 8px 25px 0 25px;
-            font-family: 'LilitaOne', sans-serif;
+            font-family: "LilitaOne", sans-serif;
             position: relative;
           }
 
           .avatar-bubble:after {
-            content: '';
+            content: "";
             position: absolute;
             right: 0;
             top: 20px;
@@ -363,21 +366,25 @@
         &.loading {
           background-size: 30px 30px;
           background-image: linear-gradient(
-            45deg, 
-            rgba(black, 0.1)  25%, 
-            transparent       25%, 
-            transparent       50%, 
-            rgba(black, 0.1)  50%, 
-            rgba(black, 0.1)  75%, 
-            transparent       75%, 
+            45deg,
+            rgba(black, 0.1) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(black, 0.1) 50%,
+            rgba(black, 0.1) 75%,
+            transparent 75%,
             transparent
           );
           animation: barberpole 0.5s linear infinite;
         }
 
         @keyframes barberpole {
-          from { background-position: 0 0; }
-          to   { background-position: 60px 30px; }
+          from {
+            background-position: 0 0;
+          }
+          to {
+            background-position: 60px 30px;
+          }
         }
       }
     }
@@ -401,17 +408,17 @@
         margin-top: 20px;
         margin-left: auto;
         width: 300px;
-  
+
         .card-header {
           height: 40px;
           border-radius: 15px 15px 0px 0px;
-          font-family: 'LilitaOne', sans-serif;
+          font-family: "LilitaOne", sans-serif;
           font-size: 14px;
           color: white;
           background-color: rgba($color: black, $alpha: 0.5);
           padding-top: 10px;
         }
-  
+
         .card-body {
           border-radius: 0px 0px 15px 15px;
           background-color: rgba($color: black, $alpha: 0.3);
@@ -444,47 +451,42 @@
   }
 }
 
-
-.nb-joueurs-container, .game-time-container {
+.nb-joueurs-container,
+.game-time-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
 
-  .nb-joueurs-selector, .game-time-selector {
+  .nb-joueurs-selector,
+  .game-time-selector {
     display: block;
     margin: 0 auto 50px auto;
     position: relative;
 
-    #nbJoueurs, #gameTime {
+    #nbJoueurs,
+    #gameTime {
       height: 50px;
       width: 50px;
       border-radius: 100%;
       padding: 0;
       position: relative;
+      font-family: "LilitaOne", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    #gameTime:after, #nbJoueurs:after {
-      position: absolute;
-      bottom: -36px;
-      width: 140px;
-      left: -47.5px;
+    #nbJoueurs {
+      font-size: 30px;
     }
 
-    #gameTime:after {
-      content: "Durée de la Partie";
+    #gameTime {
+      font-size: 15px;
     }
 
-    #nbJoueurs:after {
-      content: "Nombre de Joueurs";
-    }
-
-    .stylized {
-      border-color: rgba($color: black, $alpha: 0.5);
-      background-color: rgba($color: black, $alpha: 0.3);
-    }
-
-    .arrow-right, .arrow-left {
+    .arrow-right,
+    .arrow-left {
       position: absolute;
       bottom: 15px;
       background-color: transparent;
@@ -498,12 +500,31 @@
 
     .arrow-right {
       right: -40px;
-      border-left:17px solid rgba($color: white, $alpha: 0.5);
+      border-left: 17px solid rgba($color: white, $alpha: 0.5);
     }
 
     .arrow-left {
       left: -40px;
-      border-right:17px solid rgba($color: white, $alpha: 0.5);
+      border-right: 17px solid rgba($color: white, $alpha: 0.5);
     }
   }
+}
+
+.game-time-container,
+.nb-joueurs-container {
+  &:after {
+    position: relative;
+    bottom: 50px;
+    font-size: 18px;
+    font-family: "LilitaOne", sans-serif;
+    color: rgba($color: white, $alpha: 0.7);
+  }
+}
+
+.game-time-container:after {
+  content: "Durée de jeu";
+}
+
+.nb-joueurs-container:after {
+  content: "Nombre de joueurs";
 }
