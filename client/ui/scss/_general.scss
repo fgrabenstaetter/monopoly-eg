@@ -99,30 +99,39 @@ input {
 
   .modal-content {
     width: 350px;
-    color: #ffffff;
-    // background: rgba(0, 0, 0, 0.4);
-    background: rgba(255, 182, 107, 0.6);
-    border: 12px solid #fd8000;
+    color: rgb(5, 5, 85);
+    background: rgba($color: white, $alpha: 0.9);
     text-transform: uppercase;
     font-family: "LilitaOne", sans-serif;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 12ox;
     border-radius: 12px;
+    padding: 20px;
+
+    input, select {
+      font-family: "Roboto", sans-serif;
+      font-size: 14px;
+    }
 
     .modal-header {
       // border-bottom: 2px solid #fd8000;
       border-bottom: 0;
 
       .modal-title {
-        font-size: 1.6em;
-        margin: 0 auto;
+        font-size: 20px;
+        margin: -60px auto 0 auto;
+        background-color: rgb(7, 7, 126);
+        color: white;
+        border-radius: 25px;
+        padding: 10px 20px;
+        filter: drop-shadow(0 0 0.2rem rgb(3, 3, 100));
       }
 
       .close {
         color: #ffffff;
         position: absolute;
-        top: -28px;
-        right: -26px;
+        top: -20px;
+        right: -20px;
         font-size: 2.4em;
         background: red;
         opacity: 1;
@@ -132,20 +141,32 @@ input {
         line-height: 0.6;
         padding: 0 0px 2px 2px;
         margin: 0;
+        filter: drop-shadow(0 0 0.2rem rgb(119, 13, 13));
       }
     }
 
-    ul {
-      margin: 0;
-      padding: 0;
-    }
-
-    ul li {
+    .modal-body {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      list-style-type: none;
-      margin-bottom: 12px;
+
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+  
+      ul li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        list-style-type: none;
+        margin-bottom: 12px;
+      }
+
+      button {
+        width: 200px;
+        margin: 20px auto 0 auto;
+      }
     }
   }
 }

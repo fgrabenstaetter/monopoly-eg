@@ -123,14 +123,19 @@ input {
 
 .modal .modal-content {
   width: 350px;
-  color: #ffffff;
-  background: rgba(255, 182, 107, 0.6);
-  border: 12px solid #fd8000;
+  color: #050555;
+  background: rgba(255, 255, 255, 0.9);
   text-transform: uppercase;
   font-family: "LilitaOne", sans-serif;
   text-align: center;
-  font-size: 1.2em;
+  font-size: 12ox;
   border-radius: 12px;
+  padding: 20px;
+}
+
+.modal .modal-content input, .modal .modal-content select {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
 }
 
 .modal .modal-content .modal-header {
@@ -138,15 +143,21 @@ input {
 }
 
 .modal .modal-content .modal-header .modal-title {
-  font-size: 1.6em;
-  margin: 0 auto;
+  font-size: 20px;
+  margin: -60px auto 0 auto;
+  background-color: #07077e;
+  color: white;
+  border-radius: 25px;
+  padding: 10px 20px;
+  -webkit-filter: drop-shadow(0 0 0.2rem #030364);
+          filter: drop-shadow(0 0 0.2rem #030364);
 }
 
 .modal .modal-content .modal-header .close {
   color: #ffffff;
   position: absolute;
-  top: -28px;
-  right: -26px;
+  top: -20px;
+  right: -20px;
   font-size: 2.4em;
   background: red;
   opacity: 1;
@@ -156,14 +167,29 @@ input {
   line-height: 0.6;
   padding: 0 0px 2px 2px;
   margin: 0;
+  -webkit-filter: drop-shadow(0 0 0.2rem #770d0d);
+          filter: drop-shadow(0 0 0.2rem #770d0d);
 }
 
-.modal .modal-content ul {
+.modal .modal-content .modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal .modal-content .modal-body ul {
   margin: 0;
   padding: 0;
 }
 
-.modal .modal-content ul li {
+.modal .modal-content .modal-body ul li {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -175,6 +201,11 @@ input {
           align-items: center;
   list-style-type: none;
   margin-bottom: 12px;
+}
+
+.modal .modal-content .modal-body button {
+  width: 200px;
+  margin: 20px auto 0 auto;
 }
 
 @media screen and (min-width: 768px) {
@@ -363,7 +394,6 @@ select.custom-select:focus {
   height: 40px;
   width: 40px;
   text-align: center;
-  margin-top: 10px;
   font-size: 20px;
   padding-top: 10px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -403,6 +433,17 @@ select.custom-select:focus {
   border: 4px solid white;
   -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.profile-overlay-container i.fa-pen {
+  -webkit-transform: translateX(-10px);
+          transform: translateX(-10px);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.profile-overlay-container i.fa-pen:hover {
+  color: white !important;
 }
 
 .page-lobby {
