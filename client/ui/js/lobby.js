@@ -3,6 +3,35 @@ if (!ID) {
     window.location = "/login";
 }
 
+
+const lobbyMusic = new Howl({
+    src: ['/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3'],
+    autoplay: true,
+    loop: true,
+    volume: 0.5
+});
+
+const notificationSfx = new Howl({
+    src: ['/audio/sfx/clearly.mp3'],
+    autoplay: false,
+    loop: false,
+    volume: 0.5
+});
+
+const userJoinedSfx = new Howl({
+    src: ['/audio/sfx/hollow.mp3'],
+    autoplay: false,
+    loop: false,
+    volume: 0.5
+});
+
+const userLeftSfx = new Howl({
+    src: ['/audio/sfx/glitch-in-the-matrix.mp3'],
+    autoplay: false,
+    loop: false,
+    volume: 0.5
+});
+
 // Animation bouton JOUER pendant matchmaking
 $("#play").click(function () {
     $(this).addClass('loading');
@@ -48,12 +77,6 @@ socket.on('lobbyCreatedRes', (res) => {
 });
 
 socket.on('lobbyJoinedRes', (res) => {
-    console.log('lobbyJoinedRes: ' + Object.keys(res));
-    console.log(res);
-    // res.targetUsersNb
-    // res.users = liste des users présents (nickname + pion)
-    // res.messages = liste des anciens messages du lobby (senderNickname + text + createdTime)
-
     // nb par défaut de joueurs désiré
     document.getElementById('nbJoueurs').textContent = res.targetUsersNb;
 
@@ -111,15 +134,13 @@ socket.on('lobbyRequestedFriendListRes', (res) => {
 
 // récéption d'une demande d'ami
 socket.on('lobbyFriendInvitationReceivedRes', (res) => {
-    console.log("lobbyFriendInvitationReceivedRes =>");
-    console.log(res);
+    notificationSfx.play();
     friendRequest(res.id, res.nickname);
 });
 
 //Invitation d'un amis pour rejoindre son lobby
 socket.on('lobbyInvitationReceivedRes', (res) => {
-    console.log("lobbyInvitationReceivedRes");
-    console.log(res);
+    notificationSfx.play();
     lobbyInvitation(res.invitationID, res.senderFriendNickname);
 });
 
@@ -127,7 +148,8 @@ socket.on('lobbyInvitationReceivedRes', (res) => {
 /**Gestion du lobby
  */
 socket.on('lobbyUserJoinedRes', (res) => {
-    console.log('[Lobby] ' + res.nickname + 'a rejoin !');
+    userJoinedSfx.play();
+    
     users.push({ id: res.id, nickname: res.nickname, avatar: res.avatar });
     addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
 
@@ -141,7 +163,8 @@ socket.on('lobbyUserJoinedRes', (res) => {
 });
 
 socket.on('lobbyUserLeftRes', (res) => {
-    console.log('[Lobby] ' + idToNick(res.userID) + ' est parti !');
+    userLeftSfx.play();
+    
     if (res.userID === ID) {
         // j'ai été KICK
         window.location = '/lobby';
@@ -178,7 +201,10 @@ socket.on('lobbyPlayRes', (res) => {
 });
 
 socket.on('lobbyGameFoundRes', () => {
-    window.location = '/game';
+    lobbyMusic.fadeOut(lobbyMusic.volume(), 0, 500);
+    setTimeout(() => {
+        window.location = '/game';
+    }, 500);
 });
 
 /**Vérifications des Res asynchrones
