@@ -164,7 +164,7 @@ socket.on('lobbyUserJoinedRes', (res) => {
 
 socket.on('lobbyUserLeftRes', (res) => {
     userLeftSfx.play();
-    
+
     if (res.userID === ID) {
         // j'ai été KICK
         window.location = '/lobby';

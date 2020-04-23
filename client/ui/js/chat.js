@@ -1,5 +1,4 @@
 $(document).ready(() => {
-
     updateScroll();
     $('#chat').keypress((e) => {
         if (e.keyCode == '13') { // touche entrer
@@ -14,8 +13,18 @@ $(document).ready(() => {
     });
 });
 
+
+const newMessageSfx = new Howl({
+    src: ['/audio/sfx/when.mp3'],
+    autoplay: false,
+    loop: false,
+    volume: 0.5
+});
+
 socket.on('lobbyChatReceiveRes', (mess) => {
-    console.log('lobbyChatReceiveRes');
+    if (mess.senderUserID != loggedUser._id) {
+        newMessageSfx.play();
+    }
     addMsg(mess.senderUserID, mess.content, mess.createdTime);
 });
 
