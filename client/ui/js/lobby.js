@@ -444,8 +444,8 @@ function addFriend(id, name, avatar) {
         </div>`);
 
     $(".modal-container").append(`
-        <div class="modal fade" id="` + name + `Modal" tabindex="-1" role="dialog" aria-labelledby="` + name + `ModalLabel" aria-hidden="true" data-id="` + id + `">
-            <div class="modal-dialog" role="document">
+        <div class="modal" id="` + name + `Modal" tabindex="-1" role="dialog" aria-labelledby="` + name + `ModalLabel" aria-hidden="true" data-id="` + id + `">
+            <div class="modal-dialog animated bounceIn" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="` + name + `ModalLabel">` + name + `</h5>
@@ -454,11 +454,8 @@ function addFriend(id, name, avatar) {
                         </button>
                     </div>
                     <div class="modal-body">
+                        Voulez-vous supprimer ` + name + ` ?
                         <button class="btn btn-danger delete-friend-button" data-id="` + id + `">supprimer</button>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>

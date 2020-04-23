@@ -2,10 +2,7 @@
   position: absolute;
   z-index: 2;
   top: 20px;
-  // right: 0;
-  right: 34px;
-  // left: 50%;
-  // transform: translate(-50%, 0);
+  right: 0;
 
   i.open-settings {
     position: relative;
@@ -25,7 +22,6 @@
     justify-content: flex-end;
     align-items: center;
     position: relative;
-    // left: 400px;
 
     .username {
       margin-right: 20px;
@@ -37,7 +33,7 @@
       white-space: nowrap;
       direction: rtl;
     }
-  
+
     img {
       height: 60px;
       width: 60px;
@@ -59,19 +55,15 @@
 }
 
 .page-lobby {
-  background: red !important;
   .profile-overlay-container {
-    right: 0;
-    // right: 34px;
-    left: 50%;
-    transform: translate(-50%, 0);
+    right: calc(50vw - 510px) !important;
   }
+}
 
-  // @media (max-width: 1199.98px) {
-  //   .profile-overlay-container {
-  //     .profile-row {
-  //       left: 310px;
-  //     }
-  //   }
-  // }
+@media (max-width: 1199.98px) {
+  .page-lobby {
+    .profile-overlay-container {
+      right: calc(50vw - 418px) !important;
+    }
+  }
 }

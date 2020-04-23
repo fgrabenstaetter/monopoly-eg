@@ -253,3 +253,10 @@ select.custom-select {
 select.custom-select:focus {
   outline: none !important;
 }
+
+// Cacher bouton quitter partie dans le lobby
+.page-lobby {
+  button#quit-game {
+    display: none;
+  }
+}

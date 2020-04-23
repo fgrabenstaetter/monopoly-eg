@@ -292,6 +292,10 @@ select.custom-select:focus {
   outline: none !important;
 }
 
+.page-lobby button#quit-game {
+  display: none;
+}
+
 .background-container {
   position: absolute;
   z-index: -2;
@@ -386,7 +390,7 @@ select.custom-select:focus {
   position: absolute;
   z-index: 2;
   top: 20px;
-  right: 34px;
+  right: 0;
 }
 
 .profile-overlay-container i.open-settings {
@@ -446,15 +450,14 @@ select.custom-select:focus {
   color: white !important;
 }
 
-.page-lobby {
-  background: red !important;
+.page-lobby .profile-overlay-container {
+  right: calc(50vw - 510px) !important;
 }
 
-.page-lobby .profile-overlay-container {
-  right: 0;
-  left: 50%;
-  -webkit-transform: translate(-50%, 0);
-          transform: translate(-50%, 0);
+@media (max-width: 1199.98px) {
+  .page-lobby .profile-overlay-container {
+    right: calc(50vw - 418px) !important;
+  }
 }
 
 .tchat-container {
@@ -852,10 +855,29 @@ select.custom-select:focus {
 
 .lobby-ui-container .logout-btn {
   position: absolute;
-  top: -60px;
-  color: #ffffff;
-  font-size: 1.2em;
+  top: -70px;
+  right: 15px;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  font-size: 20px;
+  padding-top: 10px;
+  background-color: rgba(204, 11, 11, 0.671);
+  color: white;
+  border-radius: 100%;
   cursor: pointer;
+}
+
+.lobby-ui-container #addFriendModal input {
+  width: calc(100% + 40px);
+  margin: 0 -20px !important;
+}
+
+.lobby-ui-container #userSettingsModal button.btn-primary {
+  position: relative;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
 .lobby-ui-container .container:first-child {
@@ -1036,6 +1058,10 @@ select.custom-select:focus {
 .lobby-ui-container .container:first-child .box.friendlist .friend-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.friendlist .group-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friend-action:hover, .lobby-ui-container .container:first-child .box.grouplist .group-entry .friend-action:hover {
   color: white;
   border-color: white;
+}
+
+.lobby-ui-container .container:first-child .box.friendlist .friend-entry .friends-avatar, .lobby-ui-container .container:first-child .box.grouplist .friend-entry .friends-avatar {
+  cursor: pointer;
 }
 
 .lobby-ui-container .container:first-child .box.friendlist .group-entry, .lobby-ui-container .container:first-child .box.grouplist .group-entry {
