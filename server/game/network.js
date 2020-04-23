@@ -509,8 +509,9 @@ class Network {
 
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
-
-            if (err.code === Errors.SUCCESS.code)
+            else if (!lobby.open)
+                err = Errors.LOBBY.CLOSED;
+            else (err.code === Errors.SUCCESS.code)
                 lobby.searchGame();
 
             user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
@@ -527,6 +528,7 @@ class Network {
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
                 this.GLOBAL.matchmaking.delLobby(lobby);
+                lobby.close = false;
                 this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
