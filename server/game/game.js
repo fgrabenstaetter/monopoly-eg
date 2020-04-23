@@ -365,9 +365,9 @@ class Game {
         if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
             if (expired) // si expiré uniquement !
-                this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT);
+                this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         } else
-            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_ROLL_DICE_INTERVAL_AFTER_TIMEOUT); // fin tour
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.GAME_PARAM.TURN_AUTO_ROLL_DICE_MIN_INTERVAL); // fin tour
     }
 
     /**
@@ -687,6 +687,13 @@ class Game {
         this.bank.addMoney(player.money);
         player.loseMoney(player.money);
         player.failure = true;
+
+        if (player === this.curPlayer) {
+            clearTimeout(this.turnData.timeout);
+            clearTimeout(this.turnData.midTimeout);
+            clearTimeout(this.turnData.timeoutActionTimeout);
+            this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
+        }
 
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
