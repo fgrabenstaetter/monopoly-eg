@@ -213,7 +213,7 @@ class Network {
                     } else {
                         for (const game of this.GLOBAL.games) {
                             const tmp = game.playerByID(data.friendID);
-                            if (tmp) {
+                            if (tmp && !tmp.hasLeft) {
                                 err = Errors.FRIENDS.IN_GAME;
                                 break;
                             }
@@ -956,6 +956,8 @@ class Network {
                      (data.propertyID === -1 && recvr.nbJailEscapeCards === 0) ||
                      (data.propertyID >= 0 && !(prop = recvr.propertyByID(data.propertyID))))
                 err = Errors.UNKNOW;
+            else if (recvr.failure)
+                err = Errors.GAME.PLAYER_IN_FAILURE;
             else {
                 const offer = new Offer(game, player, recvr, prop, data.price);
                 this.io.to(game.name).emit('gameOfferReceiveRes', {
@@ -976,6 +978,8 @@ class Network {
             let err = Errors.SUCCESS, offer;
             if (data.offerID == null)
                 err = Errors.MISSING_FIELD;
+            else if (player.failure)
+                err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (!(offer = Offer.offerByID(game, data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
             else if (offer.receiver.money < offer.amount)
@@ -1003,6 +1007,8 @@ class Network {
             let err = Errors.SUCCESS;
             if (!data.price || data.bidID == null)
                 err = Errors.MISSING_FIELD;
+            else if (player.failure)
+                err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (player.money < data.price)
                 Errors.BID.NOT_ENOUGH_MONEY;
             else {
@@ -1039,6 +1045,8 @@ class Network {
             let err = Errors.SUCCESS, prop;
             if (!data.propertyID)
                 err = Errors.MISSING_FIELD;
+            else if (player.failure)
+                err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (game.alreadyOneManualBid)
                 err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))

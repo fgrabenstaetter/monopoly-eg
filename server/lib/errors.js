@@ -194,6 +194,10 @@ module.exports = Object.freeze({
         PROPERTY_IS_MORTGAGED: {
             code: 7,
             status: 'Cette propriété est hypothéquée'
+        },
+        PLAYER_IN_FAILURE: {
+            code: 8,
+            status: 'Le joueur est en faillite'
         }
     },
 
