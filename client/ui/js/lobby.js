@@ -201,7 +201,7 @@ socket.on('lobbyPlayRes', (res) => {
 });
 
 socket.on('lobbyGameFoundRes', () => {
-    lobbyMusic.fadeOut(lobbyMusic.volume(), 0, 500);
+    lobbyMusic.fade(lobbyMusic.volume(), 0, 500);
     setTimeout(() => {
         window.location = '/game';
     }, 500);

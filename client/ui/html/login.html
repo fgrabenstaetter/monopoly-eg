@@ -1,16 +1,16 @@
-<div class="signin-ui-container">
+<div class="background-container"></div>
+<div class="login-ui-container">
     <div class="card">
         <div class="card-header">
-            INSCRIVEZ-VOUS
+            CONNECTEZ-VOUS
         </div>
         <div class="card-body">
             <div class="form-group">
-                <form method='post' id='formSignin-id'>
+                <form method="post" id="formLogin-id">
                     <input type="text" class="form-control" name="" id="nickname-input" aria-describedby="helpId" placeholder="Nom d'utilisateur">
-                    <input type="email" class="form-control" name="" id="email-input" aria-describedby="helpId" placeholder="Mail">
                     <input type="password" class="form-control" name="" id="password-input" aria-describedby="helpId" placeholder="Mot de passe">
-                    <button type="submit" class="btn btn-primary" id="signin-btn">INSCRIPTION</button>
-                    <button type="button" onclick="onNavItemClick('/login'); return false;" class="btn btn-secondary">ANNULER</button>
+                    <button type="submit" class="btn btn-primary" id="login-btn">CONNEXION</button>
+                    <button type="button" class="btn btn-secondary" onclick="router.navigate('/signin')">INSCRIPTION</button>
                 </form>
             </div>
             <a id="forgot-password" href="#">Mot de passe oublié ?</a>
@@ -18,4 +18,4 @@
     </div>
 </div>
 
-<script type="text/javascript" src="js/form/requestHTTPSignin.js"></script>
+<script type="text/javascript" src="js/form/requestHTTPLogin.js"></script>

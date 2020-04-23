@@ -1,3 +1,32 @@
+/** ROUTER **/
+const root = null;
+const useHash = false; // Defaults to: false
+const hash = '#'; // Defaults to: '#'
+const router = new Navigo(root, useHash, hash);
+
+function loadView(view) {
+    $('#content').load(`/html/${view}.html`);
+    $('#content').attr('class', `page-${view}`);
+}
+
+router
+    .on(() => {
+        loadView('home');
+    })
+    .on('/login', function () {
+        loadView('login');
+    })
+    .on('/signin', function () {
+        loadView('signin');
+    })
+    .on('/lobby', function () {
+        loadView('lobby');
+    })
+    .on('/game', function () {
+        loadView('game');
+    })
+    .resolve();
+
 /**
  * Crée une notification "toast"
  * @param {string} content Contenu de la notification

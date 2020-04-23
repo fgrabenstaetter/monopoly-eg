@@ -1,0 +1,222 @@
+<div class="background-container"></div>
+<div class="lobby-ui-container">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <i class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card box friendlist">
+                    <div class="card-header">
+                        AMIS <i class="fas fa-user-plus float-right mt-1" style="cursor:pointer;" data-toggle="modal" data-target="#addFriendModal" title="Ajouter un nouvel ami"></i>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="friendBar" placeholder="Rechercher un ami...">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="friends-entries-container">
+                            <div id="friendList">
+                                <!-- Géré dynamiquement -->
+                            </div>
+                            <!-- <div class="add-new-friend">"entrée" pour ajouter un nouvel ami</div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card box grouplist">
+                    <div class="card-header">
+                        MON GROUPE
+                    </div>
+                    <div class="card-body">
+                        <div class="group-entries-container">
+                            <!-- Géré dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card box grouplist">
+                    <div class="card-header">
+                        PARAMÈTRES
+                    </div>
+                    <div class="card-body pl-3 pr-3 pt-3 pb-3">
+                        <div class="game-time-container">
+                            <div class="game-time-selector">
+                                <button class="arrow-left" id="leftGameTime"></button>
+                                <div id="gameTime">Illimité</div>
+                                <button class="arrow-right" id="rightGameTime"></button>
+                            </div>
+                        </div>
+                        <div class="nb-joueurs-container">
+                            <div class="nb-joueurs-selector">
+                                <button class="arrow-left" id="leftNbJ"></button>
+                                <div id="nbJoueurs">?</div>
+                                <button class="arrow-right" id="rightNbJ"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="tchat-container" id="msgChat">
+                    <!-- Géré dynamiquement -->
+                </div>
+    
+                <div class="tchat-container">
+                    <div class="input-group">
+                        <input class="form-control" type="text" id="chat" placeholder="Votre message...">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-paper-plane" id="btnSendMsg"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 text-right play-button-container">
+                <a class="btn btn-primary stylized play-button" id="play">JOUER</a>
+            </div>
+            <div class="col-md-4 notification-container" id="inviteGameContainer">
+                <!-- Géré dynamiquement -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edition du profil -->
+    <div class="modal" id="userSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog animated bounceIn" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Édition du profil</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-settings" class="text-left">
+                        <div class="form-group">
+                            <label>Pseudo</label>
+                            <input type="text" class="form-control" name="nickname" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Adresse email</label>
+                            <input type="email" class="form-control" name="email" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nouveau mot de passe</label>
+                            <input type="password" class="form-control" name="password" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatar">Avatar <small>(JPG, Max 1Mo, format carré de préférence)</small></label>
+                            <input type="file" class="form-control-file" id="avatar">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ajouter un ami -->
+    <div class="modal" id="addFriendModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog animated bounceIn" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter un ami</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-friend">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Pseudo..." autocomplete="off" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal-container" id="modal">
+        <!--<div class="modal fade" id="Unknown67Modal" tabindex="-1" role="dialog" aria-labelledby="Unknown67ModalLabel" aria-hidden="true" data-id="1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="Unknown67ModalLabel">Unknown67</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <button class="btn btn-danger delete-friend-button" data-id="1">supprimer</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </div>
+    
+    <script src="js/chat.js"></script>
+    <script src="js/lobby.js"></script>
+    
+</div>
+<div class="profile-overlay-container">
+    <div class="profile-row">
+        <div class="username" data-id=""></div>
+        <i style="display: none;color: #fff;cursor:pointer;" id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
+        <img class="user-avatar" data-id="" src="">
+        <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
+    </div>
+</div>
+
+<div class="profile-modals-container">
+<!-- Options -->
+<div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
+aria-hidden="true" data-id="1">
+<div class="modal-dialog animated bounceIn" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="optionsModalLabel">Options</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <ul>
+                <li>
+                    <span>Qualité graphique</span>
+                    <select id="graphics-quality" class="custom-select">
+                        <option value="0">Bas</option>
+                        <option value="1">Standard</option>
+                        <option value="2">Élevé</option>
+                    </select>
+                </li>
+                <li>
+                    <span>Zoom automatique</span>
+                    <label class="switch">
+                        <input id="auto-zoom" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </li>
+            </ul>
+
+            <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
+            <button id="quit-game" class="btn btn-primary" href="#" role="button"
+                style="background-color: red;">QUITTER LA PARTIE</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
