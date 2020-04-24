@@ -60,7 +60,7 @@ function addMsg(senderID, text, createdTime) {
     const localeDate = new Date(createdTime).toLocaleString();
     const html = `
         <div class="` + msgClass + `" title="` + localeDate + `">
-            <div class="msg-author">` + (senderID === -1 ? '[Server]' : idToNick(senderID)) + `</div>`
+            <div class="msg-author">` + (senderID === -1 ? '[Serveur]' : idToNick(senderID)) + `</div>`
         + text +
         `</div>`;
 
@@ -80,7 +80,7 @@ function addOfferMsg(senderID, text, createdTime, amount) {
     const html = `
         <div class="purchase-offer" title="` + localeDate + `">
             <div class="msg-author">Enchère</div>
-            <span>` + (senderID === -1 ? '[Server]' : idToNick(senderID)) + `</span> propose de vous acheter ??? pour ` + amout + `€
+            <span>` + (senderID === -1 ? '[Serveur]' : idToNick(senderID)) + `</span> propose de vous acheter ??? pour ` + amout + `€
 			<div class="buttons-container">
                 <div class="accept-button">accepter</div>
                 <div class="deny-button">refuser</div>
