@@ -29,7 +29,6 @@ class Deck {
     drawCard (game, player) {
         if (this.activeCards.length === 0) {
             this.activeCards = this.drawnCards;
-            //this.drawnCards = [];
             this.shuffle();
             const card = this.activeCards.pop();
             card.execute(game, player);
