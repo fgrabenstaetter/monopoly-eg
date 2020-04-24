@@ -206,7 +206,6 @@
     align-items: center;
 
     .bid-popup {
-      max-width: 990px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -224,6 +223,7 @@
 
         .content {
           width: 100%;
+          max-width: 500px;
           text-align: center;
           color: white;
           font-size: 13px;
@@ -674,7 +674,13 @@
                 background-color: white;
                 color: black;
                 text-align: left;
-                padding-left: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 10px;
+                text-align: center;
+                justify-content: center;
+                height: 60px;
 
                 &:before {
                   font-family: "Font Awesome 5 Free";
@@ -687,7 +693,7 @@
                   line-height: 1;
                   font-weight: 900;
                   content: "\f239";
-                  margin-right: 10px;
+                  margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: black;
                   vertical-align: text-top;
@@ -703,8 +709,14 @@
               .property {
                 background-color: black;
                 text-align: left;
-                padding-left: 12px;
+                padding: 10px;
                 color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                height: 90px;
 
                 &.eau:before {
                   font-family: "Font Awesome 5 Free";
@@ -717,7 +729,7 @@
                   line-height: 1;
                   font-weight: 900;
                   content: "\f043";
-                  margin-right: 10px;
+                  margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: white;
                   vertical-align: text-top;
@@ -734,7 +746,7 @@
                   line-height: 1;
                   font-weight: 900;
                   content: "\f0eb";
-                  margin-right: 10px;
+                  margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: white;
                   vertical-align: text-top;
