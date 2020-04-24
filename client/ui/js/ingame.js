@@ -1004,34 +1004,62 @@ function displayPropertyInfos(property) {
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 
-$('.overview-card .buy-button').click(function (e) {
-    e.preventDefault();
-    const propertyID = $(this).parent('.overview-card').attr('data-id');
-    $('#overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
-    $('#overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
-    $('#overviewCardModal').modal('show');
+function buyProp(e) {
+    const propertyID = $(e).parent().parent().attr('data-id');
+    console.log("propertyID=" + propertyID);
+    $('#buyModal #overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
+    $('#buyModal #overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
+    $('#buyModal').modal('show');
 
     return false;
-});
+};
 
-$('.overview-card .mortgage-button').click(function (e) {
-    e.preventDefault();
-    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
-    console.log(propertyID);
+function sellProp(e) {
+    const propertyID = $(e).parent().parent().attr('data-id');
+    console.log("propertyID=" + propertyID);
+    $('#sellModal #overviewCardBuyForm #overviewCardBuyFormPropertyId').val(propertyID);
+    $('#sellModal #overviewCardBuyForm #overviewCardBuyFormPrice').val(10);
+    $('#sellModal').modal('show');
+
+    return false;
+};
+
+function mortgageProp(e) {
+    const propertyID = parseInt($(e).parent().parent().attr('data-id'));
+    //console.log("propertyID=" + propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-
+    
     return false;
-});
+};
 
-$('.overview-card .buyback-button').click(function (e) {
-    e.preventDefault();
-    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
-    console.log(propertyID);
+function rebuyProp(e) {
+    const propertyID = parseInt($(e).parent().parent().attr('data-id'));
+    //console.log("propertyID=" + propertyID);
     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
+    
     return false;
-});
+};
+
+// $('.overview-card .mortgage-button').click(function (e) {
+//     e.preventDefault();
+//     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+//     console.log(propertyID);
+//     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
+//     console.log("gamepropertyMortgageReq");
+
+//     return false;
+// });
+
+// $('.overview-card .buyback-button').click(function (e) {
+//     e.preventDefault();
+//     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+//     console.log(propertyID);
+//     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
+//     console.log("gamePropertyUnmortgageReq");
+//     return false;
+// });
 
 
 $('#overviewCardBuyForm .send').click(function (e) {

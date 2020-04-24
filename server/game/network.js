@@ -198,6 +198,8 @@ class Network {
                     err = Errors.FRIENDS.NOT_EXISTS;
                 else if (lobby.users.length >= lobby.maxUsersNb)
                     err = Errors.LOBBY.FULL;
+                else if (!lobby.open)
+                    err = Errors.LOBBY.CLOSED;
                 else if (lobby.userByID(data.friendID))
                     err = Errors.FRIENDS.ALREADY_SAME_LOBBY;
                 else {
@@ -374,7 +376,7 @@ class Network {
                         }
                     }
 
-                    if (!friendLobby)
+                    if (!friendLobby || !friendLobby.open)
                         err = Errors.LOBBY.CLOSED;
                     else if (friendLobby.users.length >= friendLobby.maxUsersNb)
                         err = Errors.LOBBY.FULL;
@@ -1049,7 +1051,7 @@ class Network {
     gameManualBidReq (player, game) {
         player.socket.on('gameManualBidReq', (data) => {
             let err = Errors.SUCCESS, prop;
-            if (!data.propertyID)
+            if (data.propertyID == null || data.initialPrice == null)
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
@@ -1058,7 +1060,7 @@ class Network {
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
-                new Bid(prop, prop.value, game, true);
+                new Bid(prop, data.initialPrice, game, true);
                 // réponse envoyée depuis le constructeur de Bid
             }
 
