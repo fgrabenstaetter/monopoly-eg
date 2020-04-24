@@ -20,6 +20,13 @@
                                     <i class="fa fa-search"></i>
                                 </div>
                                 <div class="friends-entries-container">
+                                    <div v-for="friend in friendsInvitations" :key="friend.id" class="friend-request">
+                                        <div class="friend-request-text">
+                                            <span>{{friend.nickname}}</span> souhaite vous ajouter à sa liste d'amis
+                                        </div>
+                                        <div v-on:click="acceptFriendInvitation(friend.id, friend.nickname)" class="accept-button">accepter</div>
+                                        <div v-on:click="rejectFriendInvitation(friend.id, friend.nickname)" class="deny-button">refuser</div>
+                                    </div>
                                     <div id="friendList">
                                         <div v-for="friend in friends" :key="friend.id" class="friend-entry">
                                             <img class="friends-avatar" :src="friend.avatar" data-toggle="modal" data-target="#` + name + `Modal" />
@@ -75,18 +82,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="tchat-container" id="msgChat">
-                            <!-- Géré dynamiquement -->
-                        </div>
-            
-                        <div class="tchat-container">
-                            <div class="input-group">
-                                <input class="form-control" type="text" id="chat" placeholder="Votre message...">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="fa fa-paper-plane" id="btnSendMsg"></i></span>
-                                </div>
-                            </div>
-                        </div>
+                        <chat-io v-bind:socket="socket"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
                         <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
@@ -152,9 +148,9 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="add-friend">
+                            <form @submit.prevent="addFriend">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Pseudo..." autocomplete="off" required>
+                                    <input v-model="addFriendForm.nickname" type="text" class="form-control" placeholder="Pseudo..." autocomplete="off" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Ajouter</button>
                             </form>
@@ -240,9 +236,13 @@
 
 <script>
 import io from 'socket.io-client';
+import ChatIO from '../components/ChatIO';
 
 export default {
     name: 'Lobby',
+    components: {
+        'chat-io': ChatIO
+    },
     data() {
         return {
             loggedUser: this.$store.getters.loggedUser,
@@ -252,12 +252,16 @@ export default {
                         secure: true
                     }),
             playBtn: {
-                text: "PLAY",
+                text: "JOUER!",
                 loading: false,
                 disabled: true
             },
+            addFriendForm: {
+                nickname: ""
+            },
             players: [],
             friends: [],
+            friendsInvitations: [],
             hostID: null,
             leftNbJ: false,
             rightNbJ: false,
@@ -329,16 +333,40 @@ export default {
             }
         },
         acceptLobbyInvitation(id) {
+            console.log("acceptLobbyInvitation " + id);
             this.socket.emit("lobbyInvitationAcceptReq", { invitationID: id });
             this.deleteLobbyInvitation(id);
         },
         rejectLobbyInvitation(id) {
             this.deleteLobbyInvitation(id);
         },
+        addFriend() {
+            if (this.addFriendForm.nickname !== '') {
+                this.socket.emit('lobbyFriendInvitationSendReq', { nickname: this.addFriendForm.nickname });
+                this.addFriendForm.nickname = '';
+            }
+        },
+        deleteFriendInvitation(friendId) {
+            for (const i in this.friendsInvitations) {
+                if (this.friendsInvitations[i].id === friendId) {
+                    this.friendsInvitations.splice(i, 1);
+                }
+            }
+        },
+        acceptFriendInvitation(friendId, nickname) {
+            this.socket.emit('lobbyFriendInvitationActionReq', { action: 1, nickname: nickname });
+            this.deleteFriendInvitation(friendId);
+            this.socket.emit('lobbyFriendListReq');
+        },
+        rejectFriendInvitation(friendId, nickname) {
+            this.socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: nickname });
+            this.deleteFriendInvitation(friendId);
+        },
         inviteFriendInLobby(id) {
             this.socket.emit("lobbyInvitationReq", { friendID: id });
         },
         kickPlayerFromLobby(id) {
+            console.log("lobby kick req => ", id);
             this.socket.emit('lobbyKickReq', { userToKickID: id });
         },
         imHost() {
@@ -402,6 +430,9 @@ export default {
         });
 
         this.socket.on('lobbyJoinedRes', (res) => {
+            console.log("===");
+            console.log("LOBBY JOINED RES");
+            console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
             // this.hostID = res.users[0].id;
@@ -417,6 +448,7 @@ export default {
 
             this.leftNbJ = false;
             this.rightNbJ = false;
+            console.log("===");
             // for (const mess of res.messages)
             //     addMsg(mess.senderUserID, mess.content, mess.createdTime);
         });
@@ -442,7 +474,7 @@ export default {
 
         this.socket.emit('lobbyPendingFriendListReq');
         this.socket.on('lobbyPendingFriendListRes', (res) => {
-            this.friendsRequests = res.friends;
+            this.friendsInvitations = res.friends;
         })
 
         this.socket.emit('lobbyRequestedFriendListReq');
@@ -457,7 +489,7 @@ export default {
         // récéption d'une demande d'ami
         this.socket.on('lobbyFriendInvitationReceivedRes', (res) => {
             // notificationSfx.play();
-            this.friendsRequests.push({id: res.id, nickname: res.nickname});
+            this.friendsInvitations.push({id: res.id, nickname: res.nickname});
         });
 
         //Invitation d'un amis pour rejoindre son lobby
@@ -559,8 +591,15 @@ export default {
         });
 
         this.socket.on("lobbyInvitationAcceptRes", (res) => {
+            console.log("lobbyInvitationAcceptRes");
+            console.log(res);
             if (res.error === 0) {
-                this.socket.emit('lobbyReadyReq');
+
+                // this.socket.emit('disconnect');
+                setTimeout(() => {
+                    this.socket.emit('lobbyReadyReq');
+                }, 1000);
+                // this.$router.go();
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });

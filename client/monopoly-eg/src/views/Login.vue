@@ -53,8 +53,10 @@ export default {
           res.user.avatar = this.$store.getters.serverUrl + res.avatar;
           res.user.id = res.user._id;
           delete res.user._id;
-          this.$store.dispatch("login", {jwt: res.token, user: res.user});
-          this.$router.push('Lobby');
+          this.$store.dispatch("login", {jwt: res.token, user: res.user})
+          .then(() => {
+            this.$router.push('Lobby');
+          });
         })
         .catch(err => {
           console.log(err);

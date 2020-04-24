@@ -26,7 +26,7 @@ export default {
      * @param {string} type Type de la notification (success, danger ou info)
      * @param {int} time Temps d'affichage de la notification (en secondes)
      */
-    toast(content, time, type) {
+    toast(content, type, time) {
       this.toastContent = content;
       this.toastClass = type;
       setTimeout(() => {

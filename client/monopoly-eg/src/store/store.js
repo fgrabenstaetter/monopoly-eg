@@ -9,16 +9,15 @@ export const store = new Vuex.Store({
       serverUrl: 'http://localhost:3000',
       jwt: localStorage.getItem('jwt'),
       isLoggedIn: !!localStorage.getItem('jwt'),
-      peding: false,
+      pending: false,
       loggedUser: JSON.parse(localStorage.getItem('loggedUser'))
     },
     mutations: {
-      loginPending (state) {
-        state.pending = true;
-      },
-      loggedIn (state, loggedUser) {
-        localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
-        state.loggedUser = loggedUser;
+      loggedIn (state, data) {
+        localStorage.setItem('jwt', data.jwt);
+        localStorage.setItem('loggedUser', JSON.stringify(data.user));
+        state.jwt = data.jwt
+        state.loggedUser = data.user;
         state.isLoggedIn = true;
         state.pending = false;
       },
@@ -28,10 +27,8 @@ export const store = new Vuex.Store({
     },
     actions: {
       login ({ commit }, data) {
-        commit('loginPending');
         console.log("LOGGING IN WITH ", data);
-        localStorage.setItem('jwt', data.jwt);
-        commit('loggedIn', data.user);
+        commit('loggedIn', data);
       },
       logout ({ commit }) {
         commit('loggedOut');
