@@ -1024,24 +1024,42 @@ function sellProp(e) {
     return false;
 };
 
-$('.overview-card .mortgage-button').click(function (e) {
-    e.preventDefault();
-    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
-    console.log(propertyID);
+function mortgageProp(e) {
+    const propertyID = parseInt($(e).parent().parent().attr('data-id'));
+    //console.log("propertyID=" + propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-
+    
     return false;
-});
+};
 
-$('.overview-card .buyback-button').click(function (e) {
-    e.preventDefault();
-    const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
-    console.log(propertyID);
+function rebuyProp(e) {
+    const propertyID = parseInt($(e).parent().parent().attr('data-id'));
+    //console.log("propertyID=" + propertyID);
     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
+    
     return false;
-});
+};
+
+// $('.overview-card .mortgage-button').click(function (e) {
+//     e.preventDefault();
+//     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+//     console.log(propertyID);
+//     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
+//     console.log("gamepropertyMortgageReq");
+
+//     return false;
+// });
+
+// $('.overview-card .buyback-button').click(function (e) {
+//     e.preventDefault();
+//     const propertyID = parseInt($(this).parent('.overview-card').attr('data-id'));
+//     console.log(propertyID);
+//     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
+//     console.log("gamePropertyUnmortgageReq");
+//     return false;
+// });
 
 
 $('#overviewCardBuyForm .send').click(function (e) {

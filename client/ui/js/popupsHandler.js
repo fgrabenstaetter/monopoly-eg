@@ -42,10 +42,10 @@ $('.player-list').on('mouseenter', '.property', function (e) {
     if (isMine) {
         gProp = `<button class="sellProp" onclick="sellProp(this)" >VENDRE</button>`
         if (isMortgage) {
-            gProp += `<button class="rebuyProp">RACHETER</button>`
+            gProp += `<button class="rebuyProp" onclick="rebuyProp(this)" >RACHETER</button>`
         }
         else {
-            gProp += `<button class="mortgageProp">HYPOTHEQUER</button>`
+            gProp += `<button class="mortgageProp" onclick="mortgageProp(this)" >HYPOTHEQUER</button>`
         }
     }
     else {
