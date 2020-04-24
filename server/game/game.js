@@ -41,6 +41,7 @@ class Game {
         this.bids                     = [];
         this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
         this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended                    = false;
 
         this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime = null; // timestamp de démarrage en ms
@@ -85,6 +86,16 @@ class Game {
             let gameState = activeGameSchema(this.currentGameState());
             gameState.save();
         }
+
+        this.checkEndInterval = setInterval( () => {
+            if (this.checkEnd()) {
+                clearInterval(this.checkEndInterval);
+                clearTimeout(this.turnData.timeout);
+                clearTimeout(this.turnData.midTimeout);
+                clearTimeout(this.turnData.timeoutActionTimeout);
+                this.ended = true;
+            }
+        }, 2e3);
     }
 
     deleteGameState () {
@@ -329,8 +340,6 @@ class Game {
 
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
-        if (this.checkEnd())
-            return;
 
         do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
@@ -669,7 +678,6 @@ class Game {
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
                 const bid = new Bid(curProp, 0, this);
-
                 break;
         }
     }
