@@ -1,33 +1,45 @@
 const Success = [{
     id: 0,
     token: 'make10Doubles',
-    description: 'Faites un total de 10 doubles pendant une partie',
+    description: 'Faites un total de 10 doubles',
     difficulty: 3,
     exp: 300
 }, {
     id: 1,
+    token: 'make5Doubles',
+    description: 'Faites un total de 5 doubles',
+    difficulty: 2,
+    exp: 205
+}, {
+    id: 2,
     token: 'inJail3Times',
-    description: 'Allez au moins 3 fois en prison en 1 partie',
+    description: 'Allez au moins 3 fois en prison',
     difficulty: 2,
     exp: 500
 }, {
-    id: 2,
+    id: 3,
     token: 'build3Hostels',
-    description: 'Construisez 3 hôtels en 1 partie',
+    description: 'Construisez 3 hôtels',
     difficulty: 1,
     exp: 600
 }, {
-    id: 3,
+    id: 4,
     token: 'doubleAtBeg',
     description: 'faire 1 double au début de la partie',
     difficulty: 1,
     exp: 150
 }, {
-    id: 4,
+    id: 5,
     token: 'buyWacken',
     description: 'Achetez la rue "Chemin du Wacken"', // Case 11 => STREET[5]
     difficulty: 1,
     exp: 348
+}, {
+    id: 6,
+    token: 'pay3TimesTaxes',
+    description: 'Payez 3 fois les impôts', // Case 11 => STREET[5]
+    difficulty: 2,
+    exp: 82
 }];
 
 module.exports = Success;

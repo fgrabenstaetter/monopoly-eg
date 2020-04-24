@@ -12,11 +12,13 @@ class SuccessManager {
 
         for (const player of game.players) {
             const key = player.id;
-            this.datas[key]             = {};
-            this.datas[key].nbDoubles   = 0;
-            this.datas[key].nbJailTimes = 0;
-            this.datas[key].turnNumber  = 0;
-            this.datas[key].completed   = []; // liste des ID des succès déjà validés
+            this.datas[key] = {
+                nbDoubles   : 0,
+                nbJailTimes : 0,
+                turnNumber  : 0,
+                nbTaxesPaid : 0,
+                completed   : []
+            };
 
             this.getPlayerAllSuccess(player, (success) => {
                 this.datas[key].completed = success;
@@ -32,7 +34,7 @@ class SuccessManager {
         });
     }
 
-    saveOne (player) {
+    save (player) {
         UserSchema.findById(player.id, (err, usr) => {
             if (err || !usr)
                 return;
@@ -47,7 +49,7 @@ class SuccessManager {
             return;
 
         this.datas[player.id].completed.push(successID);
-        this.saveOne(player);
+        this.save(player);
 
         // emit au joueur
         let succ;
@@ -79,19 +81,27 @@ class SuccessManager {
     }
 
     make10Doubles (obj, player) {
-        if (this.game.turnData.nbDoubleDices !== 0)
+        if (this.game.turnData.nbDoubleDices !== 0) {
             obj.nbDoubles += this.game.turnData.nbDoubleDices;
+            if (obj.nbDoubles >= 10)
+                return true;
+        }
+    }
 
-        if (obj.nbDoubles >= 10)
-            return true;
+    make5Doubles (obj, player) {
+        if (this.game.turnData.nbDoubleDices !== 0) {
+            obj.nbDoubles += this.game.turnData.nbDoubleDices;
+            if (obj.nbDoubles >= 5)
+                return true;
+        }
     }
 
     inJail3Times (obj, player) {
-        if (player.remainingTurnsInJail === 3)
+        if (player.remainingTurnsInJail === 3) {
             obj.nbJailTimes ++;
-
-        if (obj.nbJailTimes >= 3)
-            return true;
+            if (obj.nbJailTimes >= 3)
+                return true;
+        }
     }
 
     build3Hostels (obj, player) {
@@ -116,6 +126,14 @@ class SuccessManager {
         const wacken = new Street(Properties.STREET[5]);
         if (player.properties.indexOf(wacken) !== -1)
             return true;
+    }
+
+    pay3TimesTaxes (obj, player) {
+        if (player.cellPos === 4) {
+            obj.nbTaxesPaid ++;
+            if (obj.nbTaxesPaid >= 3)
+                return true;
+        }
     }
 }
 
