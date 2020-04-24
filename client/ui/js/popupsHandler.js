@@ -266,7 +266,7 @@ function openBidPopup(id, playername, streetname, startingprice) {
                 <div class="bid-input">
                     <input type="text" placeholder="Prix"></input>€
                     <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
-                    <button class="bid-cancel">Passer</button>
+                    <button class="bid-cancel" onclick="validateBid(` + id + `)">Passer</button>
                 </div>
             </div>
         </div>`;
