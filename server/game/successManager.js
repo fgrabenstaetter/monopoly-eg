@@ -73,6 +73,8 @@ class SuccessManager {
         //use game.turnData pour les données du tour qui vient de s'achever
         const player = this.game.curPlayer;
         const key = player.id;
+        this.update(this.datas[key], player);
+
         for (const succ of Success) {
             if (this[succ.token](this.datas[key], player))
                 this.checkCompleted(succ.id, player);
@@ -80,28 +82,30 @@ class SuccessManager {
         this.datas[key].turnNumber++;
     }
 
+    update (obj, player) {
+        if (this.game.turnData.canRollDiceAgain)
+            obj.nbDoubles ++;
+
+        if (player.remainingTurnsInJail === 3)
+            obj.nbJailTimes ++;
+
+        if (player.cellPos === 4)
+            obj.nbTaxesPaid ++;
+    }
+
     make10Doubles (obj, player) {
-        if (this.game.turnData.nbDoubleDices !== 0) {
-            obj.nbDoubles += this.game.turnData.nbDoubleDices;
-            if (obj.nbDoubles >= 10)
-                return true;
-        }
+        if (obj.nbDoubles >= 10)
+            return true;
     }
 
     make5Doubles (obj, player) {
-        if (this.game.turnData.nbDoubleDices !== 0) {
-            obj.nbDoubles += this.game.turnData.nbDoubleDices;
-            if (obj.nbDoubles >= 5)
-                return true;
-        }
+        if (obj.nbDoubles >= 5)
+            return true;
     }
 
     inJail3Times (obj, player) {
-        if (player.remainingTurnsInJail === 3) {
-            obj.nbJailTimes ++;
-            if (obj.nbJailTimes >= 3)
-                return true;
-        }
+        if (obj.nbJailTimes >= 3)
+            return true;
     }
 
     build3Hostels (obj, player) {
@@ -129,11 +133,8 @@ class SuccessManager {
     }
 
     pay3TimesTaxes (obj, player) {
-        if (player.cellPos === 4) {
-            obj.nbTaxesPaid ++;
-            if (obj.nbTaxesPaid >= 3)
-                return true;
-        }
+        if (obj.nbTaxesPaid >= 3)
+            return true;
     }
 }
 
