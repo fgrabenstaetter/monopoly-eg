@@ -198,6 +198,10 @@ module.exports = Object.freeze({
         PLAYER_IN_FAILURE: {
             code: 8,
             status: 'Le joueur est en faillite'
+        },
+        ENDED: {
+            code: 9,
+            status: 'La partie est terminée'
         }
     },
 
