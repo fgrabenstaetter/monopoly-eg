@@ -327,14 +327,15 @@ class Game {
     }
 
     nextTurn() {
+        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+        if (this.turnData.asyncRequestType != null)
+            this.asyncActionExpired();
+
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
             this.turnPlayerTimeoutAction(false);
             return;
         }
-        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
-        if (this.turnData.asyncRequestType != null)
-            this.asyncActionExpired();
 
         this.successManager.check();
 
@@ -804,8 +805,6 @@ class Game {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
             this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
-            // si il a fait un double, annuler le devoir de relancer les dés
-            this.turnData.canRollDiceAgain = false;
         }
     }
 }
