@@ -707,6 +707,8 @@ class Network {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
+            else if (game.ended)
+                err = Errors.GAME.ENDED;
             else {
                 const useExitJailCard = (data && data.useExitJailCard) ? true : false;
                 this.gameTurnAction(player, game, useExitJailCard);
@@ -721,6 +723,8 @@ class Network {
             let err = Errors.SUCCESS;
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
+            else if (game.ended)
+                err = Errors.GAME.ENDED;
             else
                 game.endTurn();
 
@@ -1007,7 +1011,7 @@ class Network {
     gameOverbidReq(player, game) {
         player.socket.on('gameOverbidReq', (data) => {
             let err = Errors.SUCCESS;
-            if (!data.price || data.bidID == null)
+            if (data.price == null || data.bidID == null)
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
