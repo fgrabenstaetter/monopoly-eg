@@ -1184,3 +1184,13 @@ function triggerSplashAnimation(text, color) {
     $('.splash-text .letters-1').html(text).css('color', color);
     splashAnim.restart();
 }
+
+function switchZoom(t) {
+    if ($(t).is(':checked')) {
+        zoomOnOff(1);
+        console.log('Zoom activé');
+    } else {
+        zoomOnOff(0);
+        console.log('Zoom désactivé');
+    }
+}
