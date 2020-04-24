@@ -41,7 +41,7 @@ $('.player-list').on('mouseenter', '.property', function (e) {
 
     if (isMine) {
         gProp = `<button class="sellProp">VENDRE</button>`
-        if (isMortgaged) {
+        if (isMortgage) {
             gProp += `<button class="sellProp">RACHETER</button>`
         }
         else {
