@@ -1,0 +1,15 @@
+.board-container {
+    position: relative;
+    height: 100vh;
+    align-items: center;
+
+    #c {
+        margin: 0 auto;
+        height: 100%;
+        width: 177,77777vh;
+        display: block;
+        transform: translateX(-50%);
+        left: 50vw;
+        position: absolute;
+    }
+}

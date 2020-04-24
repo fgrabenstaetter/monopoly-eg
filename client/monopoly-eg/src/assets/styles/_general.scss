@@ -1,0 +1,262 @@
+* {
+  cursor: default;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+
+  scrollbar-width: none; // meilleure solution pour le moment
+  -ms-overflow-style: none;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus {
+    outline: none !important;
+  }
+}
+
+body {
+  overflow: hidden;
+}
+
+.disabled,
+*:disabled {
+  opacity: 0.65 !important;
+}
+.disabled,
+*:disabled,
+.disabled *,
+*:disabled * {
+  cursor: not-allowed !important;
+}
+
+input {
+  cursor: text;
+  user-select: initial; /* supported by Chrome and Opera */
+  -webkit-user-select: initial; /* Safari */
+  -khtml-user-select: initial; /* Konqueror HTML */
+  -moz-user-select: initial; /* Firefox */
+  -ms-user-select: initial; /* Internet Explorer/Edge */
+}
+
+.btn {
+  height: 35px;
+  border-radius: 17.5px;
+  border: none;
+  font-family: "LilitaOne", sans-serif;
+
+  &.stylized {
+    color: white;
+    background-color: $orange;
+    border: #ffa243 4px solid;
+    box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+  }
+
+  &.stylized:hover {
+    background-color: rgba($color: $orange, $alpha: 0.7);
+    border: white 4px solid;
+    color: white;
+  }
+}
+
+.toast-notification {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  max-width: 300px;
+  text-align: center;
+  font-size: 13px;
+  position: absolute;
+  bottom: 50px;
+  text-align: center;
+  max-width: 300px;
+  z-index: 10000;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+
+  &.danger {
+    background-color: rgba($color: red, $alpha: 0.8);
+  }
+
+  &.success {
+    background-color: rgba($color: green, $alpha: 0.8);
+  }
+
+  &.info {
+    background-color: rgba($color: black, $alpha: 0.4);
+  }
+}
+
+/***********/
+/** MODAL **/
+/***********/
+.modal {
+  text-align: center;
+
+  .modal-content {
+    width: 350px;
+    color: rgb(5, 5, 85);
+    background: rgba($color: white, $alpha: 0.9);
+    text-transform: uppercase;
+    font-family: "LilitaOne", sans-serif;
+    text-align: center;
+    font-size: 12ox;
+    border-radius: 12px;
+    padding: 20px;
+
+    input, select {
+      font-family: "Roboto", sans-serif;
+      font-size: 14px;
+    }
+
+    .modal-header {
+      // border-bottom: 2px solid #fd8000;
+      border-bottom: 0;
+
+      .modal-title {
+        font-size: 20px;
+        margin: -60px auto 0 auto;
+        background-color: rgb(7, 7, 126);
+        color: white;
+        border-radius: 25px;
+        padding: 10px 20px;
+        filter: drop-shadow(0 0 0.2rem rgb(3, 3, 100));
+      }
+
+      .close {
+        color: #ffffff;
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        font-size: 2.4em;
+        background: red;
+        opacity: 1;
+        border-radius: 100%;
+        height: 40px;
+        width: 40px;
+        line-height: 0.6;
+        padding: 0 0px 2px 2px;
+        margin: 0;
+        filter: drop-shadow(0 0 0.2rem rgb(119, 13, 13));
+      }
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+  
+      ul li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        list-style-type: none;
+        margin-bottom: 12px;
+      }
+
+      button {
+        width: 200px;
+        margin: 20px auto 0 auto;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) { 
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.modal-backdrop.show {
+  opacity: 0.4;
+}
+
+/************/
+/** SWITCH **/
+/************/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+
+  input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #0269D9;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #0269D9;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+}
+
+/** Custom select **/
+select.custom-select {
+  width: auto;
+  outline: none;
+}
+select.custom-select:focus {
+  outline: none !important;
+}
+
+// Cacher bouton quitter partie dans le lobby
+.page-lobby {
+  button#quit-game {
+    display: none;
+  }
+}

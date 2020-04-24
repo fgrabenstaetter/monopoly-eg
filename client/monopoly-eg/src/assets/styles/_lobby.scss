@@ -1,0 +1,530 @@
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT DANS LE LOBBY ***/
+
+.lobby-ui-container {
+  width: 100%;
+
+  .logout-btn {
+    position: absolute;
+    top: -70px;
+    right: 15px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    font-size: 20px;
+    padding-top: 10px;
+    background-color: rgba(204, 11, 11, 0.671);
+    color: white;
+    border-radius: 100%;
+    cursor: pointer;
+  }
+
+  // Modale d'ajout d'ami
+  #addFriendModal {
+    input {
+      width: calc(100% + 40px);
+      margin: 0 -20px !important;
+    }
+  }
+
+  // Modale des paramètres profil
+  #userSettingsModal {
+    button.btn-primary {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  // Ligne supérieure du lobby: fenêtre de la liste d'amis + avatars
+  .container:first-child {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    // Fenêtres liste d'amis et liste du groupe
+    .box {
+      width: 220px;
+      border-radius: 0;
+      border: none;
+      background: transparent;
+
+      .card-header {
+        border-radius: 0;
+        background-color: $card-header;
+        font-family: "LilitaOne", sans-serif;
+        color: white;
+        font-size: 17px;
+      }
+
+      input {
+        height: 30px;
+        border-radius: 15px;
+        border: none;
+        background-color: $input;
+        color: rgba($color: white, $alpha: 0.7);
+        font-size: 13px;
+        position: relative;
+        margin: 15px auto auto auto;
+        width: 190px;
+      }
+
+      input::placeholder {
+        color: rgba($color: white, $alpha: 0.7);
+      }
+
+      // à compléter plus tard
+      .fa-search {
+        position: absolute;
+        display: none;
+      }
+
+      .card-body {
+        border-radius: 0;
+        background-color: $card-body;
+        color: white;
+        font-size: 14px;
+        padding: 0;
+      }
+
+      // Spécifique à la liste d'amis et la liste du groupe
+      &.friendlist,
+      &.grouplist {
+        display: flex;
+        justify-content: space-between;
+        width: 100% !important;
+
+        .friend-request {
+          background: $notification-body;
+          margin: 0 0 5px 0;
+          padding: 20px;
+          text-align: left;
+
+          .friend-request-text {
+            font-size: 13px;
+            margin: 0 0 10px 0;
+            color: white;
+          }
+
+          .accept-button {
+            border: white 1px solid;
+            border-radius: 3px;
+            margin-left: 0;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+            display: inline-block;
+            background-color: white;
+          }
+
+          .deny-button {
+            border: rgba($color: white, $alpha: 0.7) 1px solid;
+            border-radius: 3px;
+            margin-left: 5px;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+            display: inline-block;
+            background-color: rgba($color: white, $alpha: 0.7);
+          }
+        }
+
+        .friends-entries-container {
+          overflow-y: scroll;
+          height: 300px;
+          padding: 0;
+          margin: 0;
+        }
+
+        .group-entries-container {
+          display: flex;
+          flex-wrap: wrap;
+          overflow-y: scroll;
+          max-height: 361px;
+          padding: 0;
+          margin: 0;
+        }
+
+        @media (max-height: 820px) {
+          .friends-entries-container {
+            height: 175px;
+          }
+
+          .group-entries-container {
+            max-height: 211px;
+          }
+        }
+
+        .friend-entry,
+        .group-entry {
+          display: flex;
+          align-items: center;
+          margin: 15px;
+
+          .friends-avatar {
+            max-height: 35px;
+            max-width: 35px;
+            border-radius: 3px;
+            border: 3px solid rgba($color: white, $alpha: 0.7);
+            box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
+          }
+
+          .friends-name {
+            margin-left: 10px;
+            font-size: 13px;
+            overflow: hidden;
+            overflow-wrap: normal;
+          }
+
+          .friend-action {
+            border: rgba($color: white, $alpha: 0.6) 1px solid;
+            border-radius: 3px;
+            margin-left: auto;
+            padding: 2px 5px;
+            font-size: 12px;
+            color: rgba($color: white, $alpha: 0.6);
+            cursor: pointer;
+          }
+
+          .friend-action:hover {
+            color: white;
+            border-color: white;
+          }
+        }
+
+        .friend-entry {
+          .friends-avatar {
+            cursor: pointer;
+          }
+        }
+
+        .group-entry {
+          display: block;
+          position: relative;
+          text-align: center;
+
+          &.leader {
+            .friend-action {
+              display: none;
+            }
+          }
+
+          .friends-avatar {
+            max-height: 80px;
+            max-width: 80px;
+            height: 80px;
+            width: 80px;
+            vertical-align: baseline;
+            display: inline-block;
+          }
+
+          .friends-name {
+            margin-left: 0;
+          }
+
+          .friend-action {
+            cursor: pointer;
+            color: white;
+            border: 0;
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: rgba(255, 0, 0, 1);
+            font-size: 18px;
+            padding: 2px 6px;
+            margin: 0;
+            line-height: 1;
+            border-radius: 100%;
+            text-align: center;
+            display: none;
+          }
+
+          &.leader::after {
+            font-family: "Font Awesome 5 Free";
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            display: inline-block;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            line-height: 1;
+            font-weight: 900;
+            content: "\f521";
+            font-size: 18px;
+            color: yellow;
+            position: absolute;
+            top: -9px;
+            right: -9px;
+          }
+        }
+
+        .add-new-friend {
+          text-align: center;
+          margin: 20px auto 20px auto;
+          padding: 2px 5px;
+          font-size: 12px;
+          color: rgba($color: white, $alpha: 0.6);
+          cursor: pointer;
+          max-width: 160px;
+        }
+
+        .group-entry:hover {
+          .friend-action {
+            display: block;
+          }
+        }
+      }
+    }
+
+    // Avatars
+    .avatar-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: -1;
+
+      .avatar {
+        width: 250px;
+        height: 310px;
+        transform: translate(0, 25%);
+        margin: 0 20px;
+
+        .avatar-ui {
+          display: flex;
+          justify-content: center;
+          padding: 20px 0 0 0;
+
+          .avatar-bubble,
+          i {
+            align-self: center;
+            background-color: rgba($color: white, $alpha: 0.3);
+            color: white;
+          }
+
+          .avatar-bubble {
+            height: 40px;
+            padding: 8px 25px 0 25px;
+            font-family: "LilitaOne", sans-serif;
+            position: relative;
+          }
+
+          .avatar-bubble:after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-left-color: rgba($color: white, $alpha: 0.3);
+            border-right: 0;
+            margin-top: -6px;
+            margin-right: -6px;
+          }
+
+          i {
+            height: 40px;
+            width: 40px;
+            margin-left: 20px;
+            text-align: center;
+            padding-top: 10px;
+            border: solid 2px white;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+
+  // Ligne inférieure du lobby: chat + counter + bouton "JOUER" + notifications
+  // NB: le style du chat est spécifié dans un fichier externe ("_chat.scss")
+  .container:nth-child(2) {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    // Bouton "JOUER"
+    .play-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+
+      .play-button {
+        height: 50px;
+        border-radius: 25px;
+        font-size: 20px;
+        padding: 6px 30px;
+
+        &:hover {
+          color: white;
+        }
+
+        &.loading {
+          background-size: 30px 30px;
+          background-image: linear-gradient(
+            45deg,
+            rgba(black, 0.1) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(black, 0.1) 50%,
+            rgba(black, 0.1) 75%,
+            transparent 75%,
+            transparent
+          );
+          animation: barberpole 0.5s linear infinite;
+        }
+
+        @keyframes barberpole {
+          from {
+            background-position: 0 0;
+          }
+          to {
+            background-position: 60px 30px;
+          }
+        }
+      }
+    }
+
+    // Notifications
+    .notification-container {
+      display: flex;
+      align-items: bottom;
+      flex-direction: column-reverse;
+      overflow-y: hidden;
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+
+      .notification {
+        border-radius: 15px;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+        position: relative;
+        margin-top: 20px;
+        margin-left: auto;
+        width: 300px;
+
+        .card-header {
+          height: 40px;
+          border-radius: 15px 15px 0px 0px;
+          font-family: "LilitaOne", sans-serif;
+          font-size: 14px;
+          color: white;
+          background-color: rgba($color: black, $alpha: 0.5);
+          padding-top: 10px;
+        }
+
+        .card-body {
+          border-radius: 0px 0px 15px 15px;
+          background-color: rgba($color: black, $alpha: 0.3);
+          padding: 10px;
+
+          .card-text {
+            color: white;
+            font-size: 13px;
+            margin: 10px 0 20px 0;
+          }
+
+          .btn {
+            height: 28px;
+            font-size: 11px;
+            width: 110px;
+            margin: 0 10px 10px 10px;
+            padding: 0;
+          }
+
+          .btn-primary {
+            background-color: $button-primary;
+          }
+
+          .btn-secondary {
+            background-color: $button-secondary;
+          }
+        }
+      }
+    }
+  }
+}
+
+.nb-joueurs-container,
+.game-time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  .nb-joueurs-selector,
+  .game-time-selector {
+    display: block;
+    margin: 0 auto 50px auto;
+    position: relative;
+
+    #nbJoueurs,
+    #gameTime {
+      height: 50px;
+      width: 50px;
+      border-radius: 100%;
+      padding: 0;
+      position: relative;
+      font-family: "LilitaOne", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #nbJoueurs {
+      font-size: 30px;
+    }
+
+    #gameTime {
+      font-size: 15px;
+    }
+
+    .arrow-right,
+    .arrow-left {
+      position: absolute;
+      bottom: 15px;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+
+    .arrow-right {
+      right: -40px;
+      border-left: 17px solid rgba($color: white, $alpha: 0.5);
+    }
+
+    .arrow-left {
+      left: -40px;
+      border-right: 17px solid rgba($color: white, $alpha: 0.5);
+    }
+  }
+}
+
+.game-time-container,
+.nb-joueurs-container {
+  &:after {
+    position: relative;
+    bottom: 50px;
+    font-size: 18px;
+    font-family: "LilitaOne", sans-serif;
+    color: rgba($color: white, $alpha: 0.7);
+  }
+}
+
+.game-time-container:after {
+  content: "Durée de jeu";
+}
+
+.nb-joueurs-container:after {
+  content: "Nombre de joueurs";
+}

@@ -1,0 +1,1188 @@
+/*** IMPORTANT: ces styles prennent effet UNIQUEMENT EN JEU ***/
+
+.ingame-ui-container {
+  width: 100%;
+  z-index: 1;
+
+  .container-fluid {
+    max-width: 1800px;
+  }
+
+  // Dices
+  .dice-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    transition: all 1s ease;
+
+    #view1,
+    #view2 {
+      width: 200px;
+      height: 200px;
+      perspective: 600px;
+      transform: scale(0.5);
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+
+    #dice1,
+    #dice2 {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s;
+    }
+
+    .dot {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 23px;
+      background: #444;
+      box-shadow: inset 5px 0 10px #000;
+    }
+    .dot.center {
+      margin: 77px 0 0 77px;
+    }
+    .dot.dtop {
+      margin-top: 20px;
+    }
+    .dot.dleft {
+      margin-left: 134px;
+    }
+    .dot.dright {
+      margin-left: 20px;
+    }
+    .dot.dbottom {
+      margin-top: 134px;
+    }
+    .dot.center.dleft {
+      margin: 77px 0 0 20px;
+    }
+    .dot.center.dright {
+      margin: 77px 0 0 134px;
+    }
+
+    .diceFace {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      text-align: center;
+      line-height: 200px;
+      font-size: 45px;
+      border: none;
+      box-shadow: inset 0 0 40px #ccc;
+      border-radius: 40px;
+    }
+
+    #dice1 .cover,
+    #dice1 .inner,
+    #dice2 .cover,
+    #dice2 .inner {
+      background: #e0e0e0;
+      box-shadow: none;
+    }
+
+    #dice1 .cover,
+    #dice2 .cover {
+      border-radius: 0;
+      transform: translateZ(0px);
+    }
+    #dice1 .cover.x,
+    #dice2 .cover.x {
+      transform: rotateY(90deg);
+    }
+    #dice1 .cover.z,
+    #dice2 .cover.z {
+      transform: rotateX(90deg);
+    }
+    #dice1 .front,
+    #dice2 .front {
+      transform: translateZ(100px);
+    }
+    #dice1 .front.inner,
+    #dice2 .front.inner {
+      transform: translateZ(98px);
+    }
+    #dice1 .back,
+    #dice2 .back {
+      transform: rotateX(-180deg) translateZ(100px);
+    }
+    #dice1 .back.inner,
+    #dice2 .back.inner {
+      transform: rotateX(-180deg) translateZ(98px);
+    }
+    #dice1 .right,
+    #dice2 .right {
+      transform: rotateY(90deg) translateZ(100px);
+    }
+    #dice1 .right.inner,
+    #dice2 .right.inner {
+      transform: rotateY(90deg) translateZ(98px);
+    }
+    #dice1 .left,
+    #dice2 .left {
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+    #dice1 .left.inner,
+    #dice2 .left.inner {
+      transform: rotateY(-90deg) translateZ(98px);
+    }
+    #dice1 .top,
+    #dice2 .top {
+      transform: rotateX(90deg) translateZ(100px);
+    }
+    #dice1 .top.inner,
+    #dice2 .top.inner {
+      transform: rotateX(90deg) translateZ(98px);
+    }
+    #dice1 .bottom,
+    #dice2 .bottom {
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+    #dice1 .bottom.inner,
+    #dice2 .bottom.inner {
+      transform: rotateX(-90deg) translateZ(98px);
+    }
+
+    .front {
+      background-color: white;
+      transform: rotateY(0deg) translateZ(100px);
+    }
+
+    .right {
+      background-color: white;
+      transform: rotateY(90deg) translateZ(100px);
+    }
+
+    .back {
+      background-color: white;
+      transform: rotateY(180deg) translateZ(100px);
+    }
+
+    .left {
+      background-color: white;
+      transform: rotateY(-90deg) translateZ(100px);
+    }
+
+    .top {
+      background-color: white;
+      transform: rotateX(90deg) translateZ(100px);
+    }
+
+    .bottom {
+      background-color: white;
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+  }
+
+  // Options
+  #optionsModal {
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .btn {
+        width: 180px;
+        margin: 10px auto;
+      }
+    }
+  }
+
+  // bid Popup
+  #bid-popup-container {
+    position: absolute;
+    top: 10px;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    .bid-popup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      background-color: rgba($color: black, $alpha: 0.7);
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: transform 0.5s ease;
+      margin: 10px auto;
+  
+      .bid-form {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .content {
+          width: 100%;
+          max-width: 500px;
+          text-align: center;
+          color: white;
+          font-size: 13px;
+          font-weight: bold;
+          margin: 0 20px 0 5px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+    
+        .bid-input {
+          display: flex;
+          flex-direction: row;
+          color: white;
+    
+          input {
+            flex-grow: 10;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            padding-left: 10px;
+            width: 70px;
+            margin: 0 5px;
+            color: black;
+          }
+      
+          button {
+            flex-grow: 2;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+
+            &.bid-validation {
+              background-color: green;
+              margin: 0 5px 0 20px;
+            }
+
+            &.bid-cancel {
+              background-color: red;
+              margin: 0 5px 0 5px;
+            }
+          }
+        }
+      }        
+
+      .bid-info {
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        margin: 10px auto 5px auto;
+      }
+    }
+  }
+
+  // Overview card
+  .overview-card {
+    display: none;
+    position: absolute;
+    right: 50vw;
+    top: 50vh;
+    transform: translate(300px, -50%);
+    margin: 0;
+    text-align: center;
+    z-index: 1000;
+
+    @media (max-width: 1199.98px) {
+      transform: translate(400px, -50%);
+    }
+
+    .header,
+    .content {
+      width: 180px;
+    }
+
+    .header {
+      min-height: 38px;
+      background: white;
+      color: white;
+      font-family: "LilitaOne", sans-serif;
+      font-size: 15px;
+      padding: 8px;
+      border-radius: 10px 10px 0 0;
+
+      &.station {
+        &:before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f239";
+          margin: 0;
+          font-size: 15px;
+          color: black;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(2px);
+        }
+      }
+
+      &.company {
+        &.eau:before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f043";
+          margin: 0;
+          font-size: 15px;
+          color: white;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(2px);
+        }
+
+        &.electricite:before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f0eb";
+          margin: 0;
+          font-size: 15px;
+          color: white;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(1px);
+        }
+      }
+    }
+
+    .content {
+      background-color: rgba($color: white, $alpha: 0.98);
+      height: 220px;
+      border-radius: 0 0 10px 10px;
+      padding: 10px 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+
+      div {
+        width: 100%;
+        font-family: "Roboto", sans-serif;
+        font-size: 12px;
+        margin: 0;
+
+        &.company-description {
+          font-size: 10px;
+          margin-bottom: 20px;
+        }
+
+        &.rent {
+          margin-bottom: 8px;
+          font-weight: bold;
+          &:before {
+            content: "LOYER ";
+          }
+          &:after {
+            content: "€";
+          }
+        }
+
+        &.with-house,
+        &.with-hotel {
+          display: flex;
+          justify-content: space-between;
+
+          div {
+            &:first-child {
+              text-align: left;
+              flex-grow: 10;
+            }
+
+            &:nth-child(2) {
+              flex-grow: 0;
+              flex-shrink: 10;
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+              &:after {
+                content: "€";
+              }
+            }
+          }
+        }
+
+        &.house-price {
+          margin-top: 8px;
+        }
+      }
+    }
+
+    .buy-button,
+    .sell-button,
+    .mortgage-button {
+      margin: 10px 0;
+      padding-top: 4px;
+      font-size: 13px;
+    }
+  }
+
+  // Ligne supérieure du HUD: liste des joueurs
+  .players-list-container {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1000;
+
+    .player-list {
+      width: max-content;
+      height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .player-entry {
+        margin-bottom: 10px;
+        position: relative;
+
+        .name {
+          font-size: 17px;
+          font-weight: bold;
+          font-family: "Work Sans", sans-serif;
+          position: relative;
+          background: transparent;
+          z-index: 0;
+          cursor: pointer;
+        }
+
+        .name::before {
+          content: attr(title);
+          position: absolute;
+          -webkit-text-stroke: 0.2em rgba($color: #010961, $alpha: 0.8);
+          left: 0;
+          z-index: -1;
+        }
+
+        .money {
+          color: white;
+          font-size: 13px;
+          padding-left: 25px;
+        }
+
+        .money::before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f3d1";
+          margin-right: 10px;
+          font-size: 15px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          left: 0;
+          top: -1px;
+        }
+
+        .odometer-inside::after {
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "€";
+          margin-left: 2px;
+          font-size: 13px;
+          color: white;
+          vertical-align: baseline;
+        }
+
+        .popup {
+          position: absolute;
+          background-color: $popup-background;
+          padding: 30px;
+          width: 450px;
+          border-radius: 20px;
+          left: 170px;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+
+          &.top {
+            top: -20px;
+          }
+
+          &.bottom {
+            bottom: 1px;
+          }
+
+          .properties-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            height: max-content;
+            display: none;
+
+            .blank-property {
+              text-align: center;
+              width: 120px;
+              height: 35px;
+              border: none;
+              border-radius: 5px;
+              padding: 10px 5px;
+              font-size: 10px;
+              margin: 5px;
+              background-color: transparent;
+              border-width: 4px;
+              border-style: solid;
+            }
+
+            .property {
+              text-align: center;
+              width: 120px;
+              border: none;
+              border-radius: 5px;
+              padding: 10px 5px;
+              font-size: 10px;
+              margin: 5px;
+            }
+
+            &.blue,
+            &.red,
+            &.orange,
+            &.purple,
+            &.brown,
+            &.green {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
+            &.yellow,
+            &.purple,
+            &.cyan {
+              .property {
+                outline: 1px solid #fff;
+                outline-offset: -4px;
+              }
+            }
+
+            // Classes coulers propriétés
+            &.yellow {
+              .property {
+                background-color: $property-yellow;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-yellow;
+              }
+            }
+
+            &.blue {
+              .property {
+                background-color: $property-blue;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-blue;
+              }
+            }
+
+            &.red {
+              .property {
+                background-color: $property-red;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-red;
+              }
+            }
+
+            &.orange {
+              .property {
+                background-color: $property-orange;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-orange;
+              }
+            }
+
+            &.purple {
+              .property {
+                background-color: $property-purple;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-purple;
+              }
+            }
+
+            &.brown {
+              .property {
+                background-color: $property-brown;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-brown;
+              }
+            }
+
+            &.cyan {
+              .property {
+                background-color: $property-cyan;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-cyan;
+              }
+            }
+
+            &.green {
+              .property {
+                background-color: $property-green;
+                color: white;
+              }
+              .blank-property {
+                border-color: $property-green;
+              }
+            }
+
+            &.station {
+              .property {
+                background-color: white;
+                color: black;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 10px;
+                text-align: center;
+                justify-content: center;
+                height: 60px;
+
+                &:before {
+                  font-family: "Font Awesome 5 Free";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f239";
+                  margin: 0px auto 10px auto;
+                  font-size: 14px;
+                  color: black;
+                  vertical-align: text-top;
+                }
+              }
+
+              .blank-property {
+                border-color: white;
+              }
+            }
+
+            &.company {
+              .property {
+                background-color: black;
+                text-align: left;
+                padding: 10px;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                height: 90px;
+
+                &.eau:before {
+                  font-family: "Font Awesome 5 Free";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f043";
+                  margin: 0px auto 10px auto;
+                  font-size: 14px;
+                  color: white;
+                  vertical-align: text-top;
+                }
+
+                &.electricite:before {
+                  font-family: "Font Awesome 5 Free";
+                  -moz-osx-font-smoothing: grayscale;
+                  -webkit-font-smoothing: antialiased;
+                  display: inline-block;
+                  font-style: normal;
+                  font-variant: normal;
+                  text-rendering: auto;
+                  line-height: 1;
+                  font-weight: 900;
+                  content: "\f0eb";
+                  margin: 0px auto 10px auto;
+                  font-size: 14px;
+                  color: white;
+                  vertical-align: text-top;
+                }
+              }
+              .blank-property {
+                border-color: black;
+              }
+            }
+          }
+        }
+
+        .popup:after {
+          content: "";
+          position: absolute;
+          left: 0;
+          width: 0;
+          height: 0;
+          border: 10px solid transparent;
+          border-right-color: $popup-background;
+          border-left: 0;
+          margin-top: 10px;
+          margin-left: -10px;
+        }
+
+        .top:after {
+          top: 10px;
+        }
+
+        .bottom:after {
+          bottom: 20px;
+        }
+
+        &.current::before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f111";
+          margin-right: 10px;
+          font-size: 10px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 10px;
+          left: -17px;
+        }
+
+        &.failure::before {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f714";
+          margin-right: 10px;
+          font-size: 22px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 10px;
+          left: -30px;
+        }
+      }
+
+      @media (max-height: 820px) {
+        .player-entry {
+          margin-bottom: 0px;
+        }
+      }
+
+      // couleurs assignées automatiquement aux membres de la liste
+      @import "_players-colors.scss";
+    }
+
+    @media (max-height: 820px) {
+      .player-list {
+        margin-top: -40px;
+      }
+    }
+  }
+
+  // Ligne inférieure du lobby: chat + bouton "ACTION" + notifications
+  // NB: le style du chat est spécifié dans un fichier externe ("_chat.scss")
+  .bottom-container {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    .notification-container {
+      display: flex;
+      align-items: bottom;
+      flex-direction: column-reverse;
+      overflow-y: hidden;
+      position: absolute;
+      bottom: 100px;
+      right: 0;
+
+      .notification {
+        border-radius: 15px;
+        background-color: transparent;
+        border: none;
+        text-align: center;
+        position: relative;
+        margin-top: 20px;
+        margin-left: auto;
+        width: 225px;
+
+        .card-header {
+          border-radius: 15px 15px 0px 0px;
+          color: white;
+          padding-top: 10px;
+          padding-bottom: 10px;
+
+          &.brown {
+            background-color: $property-brown;
+          }
+
+          &.orange {
+            background-color: $property-orange;
+          }
+
+          &.blue {
+            background-color: $property-blue;
+          }
+
+          &.red {
+            background-color: $property-red;
+          }
+
+          &.purple {
+            background-color: $property-purple;
+          }
+
+          &.green {
+            background-color: $property-green;
+          }
+
+          &.yellow {
+            background-color: $property-yellow;
+          }
+
+          &.cyan {
+            background-color: $property-cyan;
+          }
+
+          &.company {
+            background-color: black;
+
+            .title {
+              display: inline;
+              position: relative;
+              left: -13px;
+            }
+
+            &.eau:before {
+              font-family: "Font Awesome 5 Free";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f043";
+              margin-right: 10px;
+              font-size: 15px;
+              color: white;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(2px);
+            }
+
+            &.electricite:before {
+              font-family: "Font Awesome 5 Free";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f0eb";
+              margin-right: 10px;
+              font-size: 15px;
+              color: white;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(1px);
+            }
+          }
+
+          &.station {
+            background-color: white;
+            color: black;
+
+            .title {
+              display: inline;
+              position: relative;
+              left: -13px;
+            }
+
+            &:before {
+              font-family: "Font Awesome 5 Free";
+              -moz-osx-font-smoothing: grayscale;
+              -webkit-font-smoothing: antialiased;
+              display: inline-block;
+              font-style: normal;
+              font-variant: normal;
+              text-rendering: auto;
+              line-height: 1;
+              font-weight: 900;
+              content: "\f239";
+              margin-right: 10px;
+              font-size: 15px;
+              color: black;
+              vertical-align: text-top;
+              transform: translateX(-13px) translateY(2px);
+            }
+          }
+
+          &.event {
+            background-color: silver;
+          }
+
+          .title {
+            font-family: "LilitaOne", sans-serif;
+            font-size: 17px;
+          }
+        }
+
+        .card-body {
+          border-radius: 0px 0px 15px 15px;
+          background-color: $notification-body;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 13px;
+
+          &.no-header {
+            border-radius: 15px 15px 15px 15px;
+          }
+
+          .btn {
+            height: 32px;
+            font-size: 12px;
+            width: 110px;
+            margin: 0 10px 10px 10px;
+            padding: 0;
+          }
+
+          .btn-primary {
+            background-color: $button-primary;
+          }
+
+          .btn-secondary {
+            background-color: $button-secondary;
+          }
+        }
+
+        &.sale {
+          p:first-of-type {
+            color: rgba($color: white, $alpha: 0.7);
+            font-size: 12px;
+            margin: 0;
+          }
+
+          p:nth-of-type(2) {
+            color: white;
+            font-size: 25px;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+        }
+
+        &.event {
+          p {
+            color: white;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .action-button-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      height: 100%;
+      padding: 0;
+
+      .col-md-12 {
+        padding: 0;
+
+        .action-button {
+          width: 175px;
+          height: 50px;
+          border-radius: 25px;
+          font-size: 20px;
+          color: #fff !important;
+          text-decoration: none !important;
+          padding: 11px;
+          line-height: 1;
+          overflow: hidden;
+          position: relative;
+          text-align: center;
+          box-shadow: 0 1px 1px #ccc;
+        }
+
+        /* Hide the original text of the button. Then the loading or finished
+          text will be shown in the :after element above it. */
+
+        .action-button.in-progress,
+        .action-button.finished {
+          color: transparent !important;
+        }
+
+        .action-button.in-progress:after,
+        .action-button.finished:after {
+          position: absolute;
+          z-index: 2;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          padding-top: inherit;
+          color: #fff !important;
+          left: 0;
+        }
+
+        /* If the in-progress class is set on the button, show the
+          contents of the data-loading attribute on the butotn */
+
+        .action-button.in-progress:after {
+          content: attr(data-loading);
+        }
+
+        .action-button.in-progress:before {
+          position: fixed;
+          top: 270px;
+          right: 65px;
+          color: rgba($color: white, $alpha: 0.8);
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: flex;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f522";
+          font-size: 15px;
+          vertical-align: text-top;
+          transform: translateX(-13px) translateY(2px);
+        }
+
+        @media (max-height: 820px) {
+          .action-button.in-progress:before {
+            top: 190px;
+          }
+        }
+
+        /* The same goes for the .finished class */
+
+        .action-button.finished:after {
+          content: attr(data-finished);
+        }
+
+        /* The colorful bar that grows depending on he progress */
+
+        .action-button .tz-bar {
+          background-color: rgba(255, 98, 0, 1);
+          height: 3px;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          position: absolute;
+          z-index: 1;
+
+          border-radius: 0 0 2px 2px;
+
+          -webkit-transition: width 0.5s, height 0.5s;
+          -moz-transition: width 0.5s, height 0.5s;
+          transition: width 0.5s, height 0.5s;
+
+          height: 100%;
+          border-radius: 2px;
+        }
+
+        /* The bar can be either horizontal, or vertical */
+
+        .action-button .tz-bar.background-vertical {
+          height: 0;
+          top: 0;
+          width: 100%;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+
+	.splash-text {
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translate(-50%, -50%);
+		width: 500px;
+		color: white;
+		font-weight: 900;
+		font-size: 4.5em;
+		text-transform: uppercase;
+		font-family: "LilitaOne", sans-serif;
+		text-align: center;
+    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    line-height: 1.2;
+
+    .letters {
+      position: absolute;
+      margin: auto;
+      opacity: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+	}
+}
