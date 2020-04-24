@@ -298,8 +298,8 @@ function openBidPopup(id, playername, streetname, startingprice) {
                 <div class="content">Une enchère est lancée pour ` + streetname + `</div>
                 <div class="bid-input">
                     <input type="text" placeholder="Prix"></input>€
-                    <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
-                    <button class="bid-cancel" onclick="validateBid(` + id + `)">Passer</button>
+                    <button disabled='disabled' class="bid-validation" >Enchérir</button>
+                    <button class="bid-cancel">Passer</button>
                 </div>
             </div>
         </div>`;
@@ -311,8 +311,8 @@ function openBidPopup(id, playername, streetname, startingprice) {
                 <div class="content">` + playername + ` lance une enchère pour ` + streetname + `. Prix de départ : ` + startingprice + `</div>
                 <div class="bid-input">
                     <input type="text" placeholder="Prix"></input>€
-                    <button disabled='disabled' class="bid-validation" onclick="validateBid(` + id + `)">Enchérir</button>
-                    <button class="bid-cancel">Passer</button>
+                    <button disabled='disabled' class="bid-validation" >Enchérir</button>
+                    <button class="bid-cancel" >Passer</button>
                 </div>
             </div>
         </div>`;
@@ -327,6 +327,8 @@ function openBidPopup(id, playername, streetname, startingprice) {
  */
 function validateBid(id) {
     $('*[data-bidID="' + id + '"]').find('input').prop('disabled', true);
+    $('*[data-bidID="' + id + '"]').find('button').prop('disabled', true);
+
 }
 
 /**

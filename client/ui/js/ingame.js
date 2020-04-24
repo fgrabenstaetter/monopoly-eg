@@ -1070,6 +1070,7 @@ $('body').on('click', '.bid-popup .bid-validation', function (e) {
     const price = parseInt($(this).parent().children(':first-child').val());
     socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
+    validateBid(bidID);
 
     return false;
 });
@@ -1077,11 +1078,11 @@ $('body').on('click', '.bid-popup .bid-validation', function (e) {
 $('body').on('click', '.bid-popup .bid-cancel', function (e) {
     e.preventDefault();
     const bidID = parseInt($(this).closest('.bid-popup').attr('data-bidid'));
-    $(this).parent().children(':first-child').val('1');
-    console.log($(this).parent().find(".input").val());
+    $(this).parent().children(':first-child').val('0');
     const price = parseInt($(this).parent().children(':first-child').val());
     socket.emit('gameOverbidReq', { bidID: bidID, price: price });
     console.log("gameOverbidReq");
+    validateBid(bidID);
 
     return false;
 });
