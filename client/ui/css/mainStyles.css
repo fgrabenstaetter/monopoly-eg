@@ -390,7 +390,7 @@ select.custom-select:focus {
   position: absolute;
   z-index: 2;
   top: 20px;
-  right: 0;
+  right: 20px;
 }
 
 .profile-overlay-container i.open-settings {

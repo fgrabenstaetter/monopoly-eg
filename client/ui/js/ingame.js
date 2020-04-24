@@ -915,24 +915,6 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.house + `€ plus 4 maisons</div>`
     $('.overview-card .content').html(htmlContent);
-    if (isMine) {
-        if (isMortgaged) {
-            $('.overview-card .buyback-button').css("display", "block");
-            $('.overview-card .mortgage-button').css("display", "none");
-        }
-        else {
-            $('.overview-card .mortgage-button').css("display", "block");
-            $('.overview-card .buyback-button').css("display", "none");
-        }
-        $('.overview-card .buy-button').css("display", "none");
-        $('.overview-card .sell-button').css("display", "block");
-    }
-    else {
-        $('.overview-card .buy-button').css("display", "block");
-        $('.overview-card .sell-button').css("display", "none");
-        $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "none");
-    }
 }
 
 function populateStationOverviewCard(station, isMine, isMortgaged) {
@@ -958,24 +940,6 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>`
     $('.overview-card .content').html(htmlContent);
-    if (isMine) {
-        $('.overview-card .buy-button').css("display", "none");
-        $('.overview-card .sell-button').css("display", "block");
-        if (isMortgaged) {
-            $('.overview-card .buyback-button').css("display", "block");
-            $('.overview-card .mortgage-button').css("display", "none");
-        }
-        else {
-            $('.overview-card .mortgage-button').css("display", "block");
-            $('.overview-card .buyback-button').css("display", "none");
-        }
-    }
-    else {
-        $('.overview-card .buy-button').css("display", "block");
-        $('.overview-card .sell-button').css("display", "none");
-        $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "none");
-    }
 }
 
 function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
@@ -997,24 +961,6 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ publicCompany.price + `</div>`
     $('.overview-card .content').html(htmlContent);
-    if (isMine) {
-        $('.overview-card .buy-button').css("display", "none");
-        $('.overview-card .sell-button').css("display", "block");
-        if (isMortgaged) {
-            $('.overview-card .buyback-button').css("display", "block");
-            $('.overview-card .mortgage-button').css("display", "none");
-        }
-        else {
-            $('.overview-card .mortgage-button').css("display", "block");
-            $('.overview-card .buyback-button').css("display", "none");
-        }
-    }
-    else {
-        $('.overview-card .buy-button').css("display", "block");
-        $('.overview-card .sell-button').css("display", "none");
-        $('.overview-card .mortgage-button').css("display", "none");
-        $('.overview-card .buyback-button').css("display", "none");
-    }
 }
 
 function emptyOverviewCard() {
@@ -1054,22 +1000,6 @@ function displayPropertyInfos(property) {
     }
     $('.overview-card').fadeIn();
 }
-
-$('.player-list').on('click', '.property', function (e) {
-
-    let propertyId = $(this).attr('data-id');
-    if (!propertyId) {
-        console.log("id_property==null");
-        return;
-    }
-    let property = getPropertyById(propertyId);
-    if (!property)
-        return;
-
-    displayPropertyInfos(property);
-
-    e.stopPropagation();
-});
 
 // addPurchaseOffer(1, 'ABC', 'Avenue des Vosges', 30000);
 // addSaleOffer(1, 'ABC', 'Avenue des Vosges', 30000);
