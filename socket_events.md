@@ -1098,7 +1098,8 @@
         * *Données:*
         ```javascript
         {
-            propertyID: int
+            propertyID: int,
+            initialPrice: int
         }
         ```
 
