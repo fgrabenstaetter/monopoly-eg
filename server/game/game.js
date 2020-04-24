@@ -337,8 +337,10 @@ class Game {
             return;
         }
 
-        this.successManager.check();
+        if (this.ended)
+            return;
 
+        this.successManager.check();
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
