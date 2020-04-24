@@ -17,22 +17,57 @@ $('.player-list').on('click', '.player-entry', function (e) {
 $('.player-list').on('mouseenter', '.property', function (e) {
     $(this).children().hide();
     const propContain = $(this).parent();
+    const propertyId = $(this).attr('data-id');
+    if (!propertyId) {
+        console.log("id_property==null");
+        return;
+    }
+    let property = getPropertyById(propertyId);
+    if (!property)
+        return;
+
+
+    const isMine = (property.ownerID == ID);
+    const isMortgage = property.isMortgage;
+
     var build = '';
+    var gProp;
+
     if (!(propContain.find('.blank-property').length || propContain.hasClass('station') || propContain.hasClass('company') || propContain.parent().parent().attr('data-id') != ID)) {
         build = `<button class="minus">-</button>
                 <i class="fas fa-home">1</i>
                 <button class="plus">+</button>`
     }
+
+    if (isMine) {
+        gProp = `<button class="sellProp">VENDRE</button>`
+        if (isMortgaged) {
+            gProp += `<button class="sellProp">RACHETER</button>`
+        }
+        else {
+            gProp += `<button class="sellProp">HYPOTHEQUER</button>`
+        }
+    }
+    else {
+        gProp = `<button class="buyProp">ACHETER</button>`
+    }
+
     const html = `<div id="houseOption">`
-        + build +
-        `<i class="fas fa-info-circle"></i>
-                </div>`
+        + build + gProp +
+        `</div>`
     $(this).append(html);
+
+    //overview card
+    displayPropertyInfos(property);
+
 });
 
 $('.player-list').on('mouseleave', '.property', function (e) {
     $(this).find('#houseOption').remove();
     $(this).children().show();
+
+    var oc = $(".overview-card");
+    oc.hide();
 });
 
 $('.player-list').on('click', '.minus', function (e) {
@@ -60,10 +95,8 @@ $('.player-list').on('click', '.popup', function (e) {
 
 $(document).on('click', function (e) {
     var container = $(".popup");
-    var oc = $(".overview-card");
     if (!container.is(e.target) && container.has(e.target).length === 0) {
         container.hide();
-        oc.hide();
     }
 });
 
