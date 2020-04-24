@@ -390,7 +390,7 @@ select.custom-select:focus {
   position: absolute;
   z-index: 2;
   top: 20px;
-  right: 0;
+  right: 20px;
 }
 
 .profile-overlay-container i.open-settings {
@@ -1737,7 +1737,6 @@ select.custom-select:focus {
 }
 
 .ingame-ui-container #bid-popup-container .bid-popup {
-  max-width: 990px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1774,6 +1773,7 @@ select.custom-select:focus {
 
 .ingame-ui-container #bid-popup-container .bid-popup .bid-form .content {
   width: 100%;
+  max-width: 500px;
   text-align: center;
   color: white;
   font-size: 13px;
@@ -2258,7 +2258,22 @@ select.custom-select:focus {
   background-color: white;
   color: black;
   text-align: left;
-  padding-left: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px;
+  text-align: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 60px;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .property:before {
@@ -2272,7 +2287,7 @@ select.custom-select:focus {
   line-height: 1;
   font-weight: 900;
   content: "\f239";
-  margin-right: 10px;
+  margin: 0px auto 10px auto;
   font-size: 14px;
   color: black;
   vertical-align: text-top;
@@ -2285,8 +2300,23 @@ select.custom-select:focus {
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property {
   background-color: black;
   text-align: left;
-  padding-left: 12px;
+  padding: 10px;
   color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 90px;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property.eau:before {
@@ -2300,7 +2330,7 @@ select.custom-select:focus {
   line-height: 1;
   font-weight: 900;
   content: "\f043";
-  margin-right: 10px;
+  margin: 0px auto 10px auto;
   font-size: 14px;
   color: white;
   vertical-align: text-top;
@@ -2317,7 +2347,7 @@ select.custom-select:focus {
   line-height: 1;
   font-weight: 900;
   content: "\f0eb";
-  margin-right: 10px;
+  margin: 0px auto 10px auto;
   font-size: 14px;
   color: white;
   vertical-align: text-top;

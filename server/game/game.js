@@ -41,6 +41,7 @@ class Game {
         this.bids                     = [];
         this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
         this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended                    = false;
 
         this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime = null; // timestamp de démarrage en ms
@@ -85,6 +86,16 @@ class Game {
             let gameState = activeGameSchema(this.currentGameState());
             gameState.save();
         }
+
+        this.checkEndInterval = setInterval( () => {
+            if (this.checkEnd()) {
+                clearInterval(this.checkEndInterval);
+                clearTimeout(this.turnData.timeout);
+                clearTimeout(this.turnData.midTimeout);
+                clearTimeout(this.turnData.timeoutActionTimeout);
+                this.ended = true;
+            }
+        }, 2e3);
     }
 
     deleteGameState () {
@@ -316,21 +327,22 @@ class Game {
     }
 
     nextTurn() {
+        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+        if (this.turnData.asyncRequestType != null)
+            this.asyncActionExpired();
+
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
             this.turnPlayerTimeoutAction(false);
             return;
         }
-        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
-        if (this.turnData.asyncRequestType != null)
-            this.asyncActionExpired();
+
+        if (this.ended)
+            return;
 
         this.successManager.check();
-
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
-        if (this.checkEnd())
-            return;
 
         do
             this.turnData.playerInd = (this.turnData.playerInd >= this.players.length - 1) ? 0 : ++this.turnData.playerInd;
@@ -669,7 +681,6 @@ class Game {
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
                 const bid = new Bid(curProp, 0, this);
-
                 break;
         }
     }
@@ -796,8 +807,6 @@ class Game {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
             this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
-            // si il a fait un double, annuler le devoir de relancer les dés
-            this.turnData.canRollDiceAgain = false;
         }
     }
 }
