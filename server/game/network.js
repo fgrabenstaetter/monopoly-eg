@@ -198,6 +198,8 @@ class Network {
                     err = Errors.FRIENDS.NOT_EXISTS;
                 else if (lobby.users.length >= lobby.maxUsersNb)
                     err = Errors.LOBBY.FULL;
+                else if (!lobby.open)
+                    err = Errors.LOBBY.CLOSED;
                 else if (lobby.userByID(data.friendID))
                     err = Errors.FRIENDS.ALREADY_SAME_LOBBY;
                 else {
@@ -374,7 +376,7 @@ class Network {
                         }
                     }
 
-                    if (!friendLobby)
+                    if (!friendLobby || !friendLobby.open)
                         err = Errors.LOBBY.CLOSED;
                     else if (friendLobby.users.length >= friendLobby.maxUsersNb)
                         err = Errors.LOBBY.FULL;
