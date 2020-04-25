@@ -250,69 +250,16 @@
       </div>
     </div>
 
-    <div class="profile-modals-container">
-      <!-- Options -->
-      <div
-        class="modal"
-        id="optionsModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="optionsModalLabel"
-        aria-hidden="true"
-        data-id="1"
-      >
-        <div class="modal-dialog animated bounceIn" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="optionsModalLabel">Options</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-                style="cursor: pointer;"
-              >
-                <span aria-hidden="true" style="cursor: pointer;">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <ul>
-                <li>
-                  <span>Qualité graphique</span>
-                  <select id="graphics-quality" class="custom-select">
-                    <option value="0">Bas</option>
-                    <option value="1">Standard</option>
-                    <option value="2">Élevé</option>
-                  </select>
-                </li>
-                <li>
-                  <span>Zoom automatique</span>
-                  <label class="switch">
-                    <input id="auto-zoom" type="checkbox" />
-                    <span class="slider"></span>
-                  </label>
-                </li>
-              </ul>
+    <!-- Game settings modal -->
+    <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="game"></game-settings-modal>
 
-              <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-              <button
-                id="quit-game"
-                class="btn btn-primary"
-                href="#"
-                role="button"
-                style="background-color: red;"
-              >QUITTER LA PARTIE</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import io from "socket.io-client";
 import GameBoard from "../components/GameBoard";
+import GameSettingsModal from "../components/GameSettingsModal";
 import ActionButton from "../components/ActionButton";
 import PlayerEntry from '../components/PlayerEntry';
 import Dices from '../components/Dices';
@@ -326,6 +273,7 @@ export default {
   components: {
     'gameboard': GameBoard,
     'action-button': ActionButton,
+    'game-settings-modal': GameSettingsModal,
     'player-entry': PlayerEntry,
     'dices': Dices,
     'splash-text': SplashText,

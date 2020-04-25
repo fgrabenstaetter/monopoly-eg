@@ -75,6 +75,12 @@ export default {
             this.$parent.loggedUser.settings = this.userSettings;
             // socket save
             this.socket.emit('playerSettingsReq', this.userSettings);
+
+            if (this.env == 'game') {
+                // Refresh du plateau en direct
+                this.$parent.$refs.gameboard.refreshPlayerGraphicsQuality();
+                this.$parent.$refs.gameboard.refreshPlayerAutoZoom();
+            }
         }
     }
 }
