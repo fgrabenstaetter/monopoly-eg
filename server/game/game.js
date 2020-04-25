@@ -543,6 +543,11 @@ class Game {
                         'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
             } // else => rien à faire
+            else if (!property.owner && this.curPlayer.money < buyingPrice) {
+                if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
+                    const bid = new Bid(property, 0, this);
+                }
+            }
         }
     }
 

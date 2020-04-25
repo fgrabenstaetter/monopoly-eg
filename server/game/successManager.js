@@ -160,6 +160,10 @@ class SuccessManager {
         if (ind1 !== -1 && ind2 !== -1 && ind3 !== -1 && ind4 !== -1)
             return true;
     }
+
+    haveAmonopoly (obj, player) {
+        
+    }
 }
 
 module.exports = SuccessManager;

@@ -52,6 +52,12 @@ const Success = [{
     description: 'Acheter toutes les gares du jeu',
     difficulty: 3,
     exp: 500
+}, {
+    id: 9,
+    token: 'haveAmonopoly',
+    description: 'Acheter toutes les cases d\'une même couleur',
+    difficulty: 3,
+    exp: 480
 }];
 
 module.exports = Success;
