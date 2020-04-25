@@ -8,12 +8,12 @@ const Lobby      = require('./lobby');
  */
 class Matchmaking {
     static localGamesCounter = 0;
-    static queue = new Array(7);
     /**
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor (GLOBAL) {
         this.GLOBAL = GLOBAL;
+        this.queue = new Array(7);
 
         /** Tableau de 6 cases => 1 case pour chaque nb de joueurs souhaité par des lobby
          * case indice 0 => Lobby pour une partie à 2 joueurs
@@ -23,7 +23,7 @@ class Matchmaking {
          */
         //Matchmaking.queue = new Array(7);
         for (let i = 0; i < 7; i++)
-            Matchmaking.queue[i] = [];
+            this.queue[i] = [];
 
         setInterval(this.checkLaunch.bind(this), 1e3);
     }
@@ -40,8 +40,8 @@ class Matchmaking {
 
         // Sinon on l'insère dans la bonne file d'attente
         const index = lobby.targetUsersNb - 2;
-        if (Matchmaking.queue[index].indexOf(lobby) === -1)
-            Matchmaking.queue[index].push(lobby);
+        if (this.queue[index].indexOf(lobby) === -1)
+            this.queue[index].push(lobby);
     }
 
     /**
@@ -49,9 +49,9 @@ class Matchmaking {
      */
     delLobby (lobby) {
         const index = lobby.targetUsersNb - 2;
-        if (Matchmaking.queue[index].indexOf(lobby) !== -1) {
+        if (this.queue[index].indexOf(lobby) !== -1) {
             lobby.delete();
-            Matchmaking.queue[index].splice(Matchmaking.queue[index].indexOf(lobby), 1);
+            this.queue[index].splice(this.queue[index].indexOf(lobby), 1);
         }
     }
 
@@ -98,14 +98,14 @@ class Matchmaking {
         for (let i = 0; i < 7; i++) {
             let nbMax = i + 2;
 
-            for (let j = 0; j < Matchmaking.queue[i].length; j++) {
-                let sum = Matchmaking.queue[i][j].users.length;
+            for (let j = 0; j < this.queue[i].length; j++) {
+                let sum = this.queue[i][j].users.length;
                 let fusion = [];
 
-                for (let k = 0; k < Matchmaking.queue[i].length; k++) {
+                for (let k = 0; k < this.queue[i].length; k++) {
                     if (k !== j) {
-                        if (Matchmaking.queue[i][j].gameDuration === Matchmaking.queue[i][k].gameDuration) {
-                            sum += Matchmaking.queue[i][k].users.length;
+                        if (this.queue[i][j].gameDuration === this.queue[i][k].gameDuration) {
+                            sum += this.queue[i][k].users.length;
                             if (sum < nbMax) {
                                 if (fusion.indexOf(j) === -1)
                                 fusion.push(i);
@@ -113,7 +113,7 @@ class Matchmaking {
                                 fusion.push(j);
                             }
                             else if (sum > nbMax) {
-                                sum -= Matchmaking.queue[i][k].users.length;
+                                sum -= this.queue[i][k].users.length;
                             }
                             else {
                                 if (fusion.indexOf(j) === -1)
@@ -123,7 +123,7 @@ class Matchmaking {
 
                                 let mergedLobby = [];
                                 for (let f of fusion)
-                                    mergedLobby.push(Matchmaking.queue[i][f]);
+                                    mergedLobby.push(this.queue[i][f]);
 
                                 this.createGame(mergedLobby);
                             }
