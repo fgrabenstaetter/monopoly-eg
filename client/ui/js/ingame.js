@@ -1247,3 +1247,13 @@ function switchZoom(t) {
         console.log('Zoom désactivé');
     }
 }
+
+function openBuyModal(e) {
+    $('#buyModal').attr("data-id", e);
+    $('#buyModal').modal('show');
+}
+
+function openSellModal(e) {
+    $('#sellModal').attr("data-id", e);
+    $('#sellModal').modal('show');
+}

@@ -400,19 +400,15 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 					animateVector3(pawn, vectorToAnimate, tabCases[20], options);
 					tweenCamera(tabCases[20], 3140);
 				}
-			} else if (((pawn.position.x.toFixed(2) == 0.34) || (pawn.position.x.toFixed(2) == 0.33)) && (pawn.position.z.toFixed(2) == 0.33 || 
+			} else if (pawn.position.x.toFixed(2) == 0.34 && (pawn.position.z.toFixed(2) == 0.33 || 
 						pawn.position.z.toFixed(2) == 0.34)) {
+				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 21 && vdp <= 30) {
-					pawn.rotateY(Math.PI / -2);
 					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
 					tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 31) {
-					pawn.rotateY(Math.PI / -2);
 					animateVector3(pawn, vectorToAnimate, tabCases[30], options);
 					tweenCamera(tabCases[30], 3140);
-				} else if (vdp == 18) {
-					pawn.rotateY(Math.PI / 2);
-					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
 				}
 			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34) {
 				pawn.rotateY(Math.PI / -2);
@@ -442,7 +438,7 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 	// start the tween
 
 	tweenVector3.start();
-	// console.log(pawn.position.x.toFixed(2));
+	//console.log(pawn.position.x.toFixed(2));
 	// console.log(pawn.position.z.toFixed(2));
 	// console.log(tabCases[vdp].x.toFixed(2));
 	// console.log(to.x.toFixed(2));
@@ -503,6 +499,7 @@ function movement (pawn, caseArr, callback) {
 		}
 	}
 
+<<<<<<< HEAD
 	 	/*if (posPawn == 7 && vdp == 3) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[3], callback);
@@ -513,6 +510,9 @@ function movement (pawn, caseArr, callback) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[32], callback);
 		 } else*/ if (vdp > posPawn && vdp < 10){
+=======
+		if(vdp > posPawn && vdp < 10){
+>>>>>>> 8824877e7a9d465e1d1412de6744108fd1f11507
 			// route en bas
 			console.log("1");
 			//movementAux(0, pawn, vdp, callback);
