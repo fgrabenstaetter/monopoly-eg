@@ -21,7 +21,6 @@ class Lobby {
      */
     constructor(user, GLOBAL) {
         this.GLOBAL = GLOBAL;
-        this.invitedUsers = []; // ne pas supprime les users ici si ils se deco !
         this.chat = new Chat();
         this.id = Lobby.lobbyIDCounter++;
 
@@ -59,10 +58,8 @@ class Lobby {
         const ind = this.users.indexOf(user);
         if (ind === -1)
             return;
-        const isInvited = this.invitedUsers.indexOf(user) !== -1;
-        if (isInvited)
-            return; // NE PAS LE SUPPRIMER CAR IL VIENT DACCEPTER LINVITATION LOBBY DUN AMI
 
+        this.GLOBAL.network.lobbyUserStopListening(user, this);
         this.users.splice(ind, 1);
 
         if (this.users.length === 0) {
@@ -75,6 +72,7 @@ class Lobby {
                 hostID: newHost.id
             });
         }
+
         const inMM = Matchmaking.queue[this.targetUsersNb - 2].indexOf(this);
         if (inMM !== -1) {
             let err = Errors.SUCCESS;
