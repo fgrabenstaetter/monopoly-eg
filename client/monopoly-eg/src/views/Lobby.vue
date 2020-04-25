@@ -186,7 +186,7 @@
         <div class="profile-overlay-container">
             <div class="profile-row">
                 <div class="username" data-id="">{{loggedUser.nickname}}</div>
-                <i style="display: none;color: #fff;cursor:pointer;" id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
+                <i id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
                 <img class="user-avatar" data-id="" :src="loggedUser.avatar">
                 <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
             </div>

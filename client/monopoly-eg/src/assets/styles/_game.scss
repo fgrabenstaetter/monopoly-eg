@@ -6,6 +6,8 @@
 
   .container-fluid {
     max-width: 1800px;
+    left: 50%;
+    transform: translate(-50%, 0);
   }
 
   // Dices
@@ -437,7 +439,49 @@
     }
   }
 
-  // Ligne supérieure du HUD: liste des joueurs
+  // Ligne supérieure du HUD: top-bar et en dessous liste des joueurs
+  .top-bar {
+    position: absolute;
+    top: 0;
+
+    .offers-container {
+      margin: 10px;
+
+      .offer {
+        background-color: rgba($color: black, $alpha: 0.7);
+        color: white;
+        padding: 15px;
+        width: 400px;
+        font-size: 15px;
+        border-radius: 10px;
+
+        .form {
+          margin: 10px auto 3px auto;
+
+          button {
+            border: 1px solid rgba($color: white, $alpha: 0.7);
+            background: none;
+            color: rgba($color: white, $alpha: 0.7);
+            border-radius: 5px;
+
+            &:first-child {
+              margin-right: 10px;
+            }
+
+            &:hover {
+              border-color: white;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    .profile-row {
+      margin-right: 20px;
+    }
+  }
+
   .players-list-container {
     position: absolute;
     top: 100px;
