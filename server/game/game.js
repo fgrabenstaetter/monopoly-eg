@@ -544,9 +544,7 @@ class Game {
                 }
             } // else => rien à faire
             else if (!property.owner && this.curPlayer.money < buyingPrice) {
-                if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
                     const bid = new Bid(property, 0, this);
-                }
             }
         }
     }
