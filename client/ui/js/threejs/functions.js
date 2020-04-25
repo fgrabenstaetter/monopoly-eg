@@ -463,7 +463,7 @@ function tweenCamera(position, time){
 	var camTween = new TWEEN.Tween(camera.position).to(position, time).easing(TWEEN.Easing.Quadratic.InOut)
 	.onUpdate(function(){
 		if (zoomOn == 1) {
-			camera.near = -0.5;
+			camera.near = -5;
 			camera.zoom = 1.5;
 			camera.updateProjectionMatrix();
 		}
