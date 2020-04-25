@@ -31,7 +31,7 @@
                             <div class="col-md-12 text-center value">
                                 <p>{{notif.content}}</p>
                             </div>
-                            <button class="btn btn-primary reject">OK</button>
+                            <button class="btn btn-primary" v-on:click="discardTurnNotif(index)">OK</button>
                         </div>
                     </div>
 
@@ -434,13 +434,17 @@ export default {
         this.socket.emit('gameTurnEndReq');
     },
 
+    discardTurnNotif(index) {
+        this.turnNotifications.splice(index, 1);
+    },
+
     saleCardBuyProperty(notifIndex) {
         this.socket.emit('gamePropertyBuyReq');
         this.turnNotifications.splice(notifIndex, 1);
     },
 
     saleCardReject(notifIndex) {
-        this.turnNotifications.splice(notifIndex, 1);
+        this.discardTurnNotif(notifIndex);
     },
 
     /**
@@ -754,20 +758,15 @@ export default {
 
         // On vide toutes les notifications (au cas-où)
         this.turnNotifications = [];
-
         this.currentPlayerID = data.playerID;
 
         // afficher décompte de temps du tour
         if (this.currentPlayerID == this.loggedUser.id) {
-            // triggerSplashAnimation('<br>C\'est à vous de jouer !', 'white');
-
-            console.log("[BOUTON D'ACTION] Initialisation");
             this.$refs.actionBtn.progressReset();
-            console.log("[BOUTON D'ACTION] Passage en timer");
+            this.$refs.splashText.trigger('<br>C\'est à vous de jouer !', 'white');
             this.$refs.actionBtn.progressStart(turnTimeSeconds);
         } else {
-            // triggerSplashAnimation(`<br>C'est au tour de ${idToNick(data.playerID)} !`, 'white');
-            console.log("[BOUTON D'ACTION] Passage en attente");
+            this.$refs.splashText.trigger(`<br>C'est au tour de ${this.idToNick(data.playerID)} !`, 'white');
             this.$refs.actionBtn.progressFinish();
         }
     });
@@ -779,7 +778,7 @@ export default {
 
         console.log("Action déclenchée par " + this.idToNick(data.playerID) + " => " + data.actionMessage);
 
-        let currPlayer = this.getPlayerById(data.playerID);
+        const currPlayer = this.getPlayerById(data.playerID);
         if (!currPlayer) {
             console.log('JOUEUR INTROUVABLE');
             return;
@@ -787,12 +786,10 @@ export default {
 
         if (currPlayer.id == this.loggedUser.id) {
             console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1]) {
+            if (data.dicesRes[0] != data.dicesRes[1])
                 this.$refs.actionBtn.progressSetStateTerminer();
-            }
-            else {
+            else
                 this.$refs.actionBtn.progressSetStateRelancer();
-            }
         }
 
         if (currPlayer.isInJail && currPlayer.isInJail > 3)
@@ -837,7 +834,6 @@ export default {
                 color: 'brown',
                 content: 'Impossible d\'acheter'
             });
-            // createTextCard(data.status, true, 'brown', 'Impossible d\'acheter');
             return;
         }
 

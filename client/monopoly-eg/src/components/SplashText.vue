@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import $ from 'jquery';
+
 export default {
     name: 'SplashText',
     data() {
@@ -23,7 +25,6 @@ export default {
         splashSettings.durationOut = 600;
         splashSettings.delay = 500;
         
-        // const targets = this.$el;
         this.splashAnim = this.$anime
         .timeline({ loop: false, autoplay: false })
         .add({
@@ -46,7 +47,7 @@ export default {
         });
     },
     methods: {
-        triggerSplashAnimation(text, color) {
+        trigger(text, color) {
             $('.splash-text .letters-1').html(text).css('color', color);
             this.splashAnim.restart();
         }

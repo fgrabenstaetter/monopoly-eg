@@ -594,6 +594,7 @@ export default {
             console.log("lobbyInvitationAcceptRes");
             console.log(res);
             if (res.error === 0) {
+                this.socket.emit('lobbyReadyReq');
 
                 // this.socket.emit('disconnect');
                 setTimeout(() => {
