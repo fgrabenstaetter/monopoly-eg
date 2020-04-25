@@ -1249,11 +1249,11 @@ function switchZoom(t) {
 }
 
 function openBuyModal(e) {
-    $('#buyModal').attr("data-id", e);
+    $('#buyModal button.buySend').attr("data-id", e);
     $('#buyModal').modal('show');
 }
 
 function openSellModal(e) {
-    $('#sellModal').attr("data-id", e);
+    $('#sellModal button.sellSend').attr("data-id", e);
     $('#sellModal').modal('show');
 }
