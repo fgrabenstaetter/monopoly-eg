@@ -245,7 +245,7 @@ class Network {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
 
-                if (!data.friendID)
+                if (data.friendID == null)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
                     err = Errors.FRIENDS.NOT_EXISTS;
@@ -412,7 +412,7 @@ class Network {
             let err = Errors.SUCCESS;
             let friendLobby = null;
 
-            if (!data || !data.invitationID)
+            if (!data || data.invitationID == null)
                 err = Errors.MISSING_FIELD;
             else {
                 const invitObj = lobby.delInvitation(parseInt(data.invitationID));
@@ -459,7 +459,7 @@ class Network {
             let err = Errors.SUCCESS;
             let userToKick = null;
 
-            if (!data.userToKickID)
+            if (data.userToKickID == null)
                 err = Errors.MISSING_FIELD;
             else if (data.userToKickID === user.id)
                 err = Errors.UNKNOW;
@@ -966,7 +966,7 @@ class Network {
         player.socket.on('gamePropertyUnmortgageReq', (data) => {
             let err = Errors.SUCCESS, prop;
 
-            if (!data.propertyID)
+            if (data.propertyID == null)
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
