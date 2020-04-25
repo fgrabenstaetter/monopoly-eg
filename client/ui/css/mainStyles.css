@@ -1873,7 +1873,7 @@ select.custom-select:focus {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -1883,7 +1883,6 @@ select.custom-select:focus {
   margin: 0;
   font-size: 15px;
   color: black;
-  vertical-align: text-top;
   -webkit-transform: translateX(-13px) translateY(2px);
           transform: translateX(-13px) translateY(2px);
 }
@@ -1892,7 +1891,7 @@ select.custom-select:focus {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -1902,7 +1901,6 @@ select.custom-select:focus {
   margin: 0;
   font-size: 15px;
   color: white;
-  vertical-align: text-top;
   -webkit-transform: translateX(-13px) translateY(2px);
           transform: translateX(-13px) translateY(2px);
 }
@@ -1911,7 +1909,7 @@ select.custom-select:focus {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -1921,7 +1919,6 @@ select.custom-select:focus {
   margin: 0;
   font-size: 15px;
   color: white;
-  vertical-align: text-top;
   -webkit-transform: translateX(-13px) translateY(1px);
           transform: translateX(-13px) translateY(1px);
 }
@@ -2156,10 +2153,11 @@ select.custom-select:focus {
   border-radius: 5px;
   padding: 10px 5px;
   font-size: 10px;
-  margin: 5px;
+  margin: 15px;
   background-color: transparent;
   border-width: 4px;
   border-style: solid;
+  height: 60px;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container .property {
@@ -2169,7 +2167,32 @@ select.custom-select:focus {
   border-radius: 5px;
   padding: 10px 5px;
   font-size: 10px;
-  margin: 5px;
+  margin: 15px;
+  height: 60px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container .property button {
+  height: 20px;
+  width: 90px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  margin: 2px auto;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.blue .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.red .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.orange .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.purple .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.brown .property, .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.green .property {
@@ -2273,14 +2296,13 @@ select.custom-select:focus {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  height: 60px;
 }
 
-.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .property:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .property .property-name:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2290,7 +2312,6 @@ select.custom-select:focus {
   margin: 0px auto 10px auto;
   font-size: 14px;
   color: black;
-  vertical-align: text-top;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.station .blank-property {
@@ -2319,11 +2340,11 @@ select.custom-select:focus {
   height: 90px;
 }
 
-.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property.eau:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property .property-name:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2333,14 +2354,13 @@ select.custom-select:focus {
   margin: 0px auto 10px auto;
   font-size: 14px;
   color: white;
-  vertical-align: text-top;
 }
 
-.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property.electricite:before {
+.ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .property .property-name:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2350,7 +2370,6 @@ select.custom-select:focus {
   margin: 0px auto 10px auto;
   font-size: 14px;
   color: white;
-  vertical-align: text-top;
 }
 
 .ingame-ui-container .players-list-container .player-list .player-entry .popup .properties-container.company .blank-property {
@@ -2551,7 +2570,7 @@ select.custom-select:focus {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2561,16 +2580,13 @@ select.custom-select:focus {
   margin-right: 10px;
   font-size: 15px;
   color: white;
-  vertical-align: text-top;
-  -webkit-transform: translateX(-13px) translateY(2px);
-          transform: translateX(-13px) translateY(2px);
 }
 
 .ingame-ui-container .bottom-container .notification-container .notification .card-header.company.electricite:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2580,9 +2596,6 @@ select.custom-select:focus {
   margin-right: 10px;
   font-size: 15px;
   color: white;
-  vertical-align: text-top;
-  -webkit-transform: translateX(-13px) translateY(1px);
-          transform: translateX(-13px) translateY(1px);
 }
 
 .ingame-ui-container .bottom-container .notification-container .notification .card-header.station {
@@ -2593,14 +2606,13 @@ select.custom-select:focus {
 .ingame-ui-container .bottom-container .notification-container .notification .card-header.station .title {
   display: inline;
   position: relative;
-  left: -13px;
 }
 
 .ingame-ui-container .bottom-container .notification-container .notification .card-header.station:before {
   font-family: "Font Awesome 5 Free";
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
+  display: block;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
@@ -2610,9 +2622,6 @@ select.custom-select:focus {
   margin-right: 10px;
   font-size: 15px;
   color: black;
-  vertical-align: text-top;
-  -webkit-transform: translateX(-13px) translateY(2px);
-          transform: translateX(-13px) translateY(2px);
 }
 
 .ingame-ui-container .bottom-container .notification-container .notification .card-header.event {
@@ -2760,7 +2769,6 @@ select.custom-select:focus {
   font-weight: 900;
   content: "\f522";
   font-size: 15px;
-  vertical-align: text-top;
   -webkit-transform: translateX(-13px) translateY(2px);
           transform: translateX(-13px) translateY(2px);
 }

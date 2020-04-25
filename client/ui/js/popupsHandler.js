@@ -157,7 +157,7 @@ function initProperty() {
 }
 
 function createProperty(playerID, type, roadName, roadID) {
-    const roadHtml = `<div>` + roadName + `</div>`
+    const roadHtml = `<div class="property-name">` + roadName + `</div>`
     if (roadName == "Syndicat Des Eaux et de l'Assainissement") {
         html = `<div class="property eau" data-id="` + roadID + `">`
             + roadHtml +
