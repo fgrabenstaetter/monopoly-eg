@@ -47,7 +47,7 @@ const Success = [{
     difficulty: 2,
     exp: 234
 }, {
-    if: 8,
+    id: 8,
     token: 'buyAllTrainStations',
     description: 'Acheter toutes les gares du jeu',
     difficulty: 3,
