@@ -657,7 +657,7 @@ export default {
     this.loadSfx();
 
     // let $ = JQuery
-    this.loading = true;
+    this.loading = false; // DEBUG
     this.players = [];
     const gameboard = this.$refs.gameboard;
 
