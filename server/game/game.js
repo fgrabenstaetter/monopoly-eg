@@ -10,7 +10,7 @@ const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
 const Bid                     = require('./bid');
 const SuccessManager          = require('./successManager');
-const activeGameSchema              = require('./../models/activeGame');
+const activeGameSchema        = require('./../models/activeGame');
 
 
 /**
@@ -132,7 +132,6 @@ class Game {
             return;
 
         this.players.splice(ind, 1);
-        // this.GLOBAL.network.io.to(this.name).emit('gameQuitRes', { playerNickname: player.nickname });
     }
 
     /**
