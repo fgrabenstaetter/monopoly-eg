@@ -400,15 +400,20 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 					animateVector3(pawn, vectorToAnimate, tabCases[20], options);
 					tweenCamera(tabCases[20], 3140);
 				}
-			} else if (pawn.position.x.toFixed(2) == 0.34 && (pawn.position.z.toFixed(2) == 0.33 || 
+			} else if ((pawn.position.x.toFixed(2) == 0.34 || (pawn.position.x.toFixed(2) == 0.33)) && (pawn.position.z.toFixed(2) == 0.33 || 
 						pawn.position.z.toFixed(2) == 0.34)) {
-				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 21 && vdp <= 30) {
+					pawn.rotateY(Math.PI / -2);
 					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
 					tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 31) {
+					pawn.rotateY(Math.PI / -2);
 					animateVector3(pawn, vectorToAnimate, tabCases[30], options);
 					tweenCamera(tabCases[30], 3140);
+				} else if (vdp == 18) {
+					pawn.rotateY(Math.PI / 2);
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
+					tweenCamera(tabCases[vdp], 3140);
 				}
 			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34) {
 				pawn.rotateY(Math.PI / -2);
@@ -499,16 +504,22 @@ function movement (pawn, caseArr, callback) {
 		}
 	}
 
-	 	/*if (posPawn == 7 && vdp == 3) {
+	 	if (posPawn == 7 && vdp == 3) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[3], callback);
+			if (zoomOn == 1)
+				tweenCamera(tabCases[vdp], 3140);
 		} else if (posPawn == 22 && vdp == 18) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[20], callback);
+			if (zoomOn == 1)
+				tweenCamera(tabCases[20], 3140);
  		} else if (posPawn == 36 && vdp == 32) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[32], callback);
-		} else*/ if (vdp > posPawn && vdp < 10){
+			if (zoomOn == 1)
+				tweenCamera(tabCases[vdp], 3140);
+		} else if (vdp > posPawn && vdp < 10){
 			// route en bas
 			console.log("1");
 			//movementAux(0, pawn, vdp, callback);
