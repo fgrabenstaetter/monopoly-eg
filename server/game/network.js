@@ -2,7 +2,6 @@ const Constants                   = require('../lib/constants');
 const Errors                      = require('../lib/errors');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
-const Matchmaking                 = require('./matchmaking');
 const { UserSchema, UserManager } = require('../models/user');
 const SocketIOFileUpload          = require("socketio-file-upload");
 const FileType                    = require('file-type');
@@ -630,7 +629,7 @@ class Network {
 
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
-            else if (Matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
+            else if (this.GLOBAL.matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
                 this.GLOBAL.matchmaking.delLobby(lobby);
