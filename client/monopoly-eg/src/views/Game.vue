@@ -675,7 +675,8 @@ export default {
         // Génération de la liste de joueurs
         data.players.forEach((player, index) => {
             // Champs par défaut du joueur
-            player.properties = [];
+            // player.properties = [];
+            this.$set(player, 'properties', []);
             player.money = data.playersMoney;
             player.cellPos = 0;
             player.color = this.CST.PLAYERS_COLORS[index];
@@ -700,18 +701,27 @@ export default {
         this.properties = data.properties;
         this.gameEndTime = data.gameEndTime;
 
-        for (const i in this.properties) {
-            this.properties[i].level = 0;
-            this.properties[i].ownerID = null;
-        }
-
         // Génération de la liste de joueurs
         this.players.forEach((player, index) => {
             this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
-            player.properties = [];
+            // player.properties = [];
+            this.$set(player, 'properties', []);
         });
+
+        for (const i in this.properties) {
+            // this.properties[i].level = 0;
+            // this.properties[i].ownerID = null;
+            if (this.properties[i].ownerID) {
+                console.log()
+                const player = this.getPlayerById(this.properties[i].ownerID);
+                if (player) {
+                    console.log(`=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`);
+                    player.properties.push(this.properties[i]);
+                }
+            }
+        }
 
         data.players.forEach((player, index) => {
             player.properties.forEach((playerProperty) => {
@@ -850,6 +860,7 @@ export default {
             // player.properties.push(property);
             property.ownerID = player.id;
             player.properties.push(property);
+            console.log(player.properties);
             // MANQUE ACCÈS A LA COULEUR DU JOUEUR
             this.$refs.gameboard.loaderFlag("d" + cell.id, player.color);
 

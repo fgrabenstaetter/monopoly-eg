@@ -127,7 +127,7 @@ export default {
     },
     mounted() {
         this.popupItem = this.$el;
-        this.player.properties = [];
+        // this.player.properties = [];
 
         // this.player.properties.push({
         //     "id": 1,
