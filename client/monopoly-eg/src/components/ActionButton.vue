@@ -13,45 +13,48 @@ export default {
         }
     },
     methods: {
-        progressInitialize() {
-            $(this.$el).progressInitialize();
+        setDataLoadingTerminer() {
+            $('#timer').attr({ 'data-loading': 'TERMINER' });
         },
-        progressReset() {
-            $(this.$el).progressReset();
+        progressInitialize() {
+            $('#timer').progressInitialize();
+        },
+        progressReset(hard) {
+            $('#timer').progressReset(hard);
         },
         progressStart(sec) {
-            $(this.$el).progressStart(sec);
+            $('#timer').progressStart(sec);
         },
         progressFinish() {
-            $(this.$el).progressFinish();
+            $('#timer').progressFinish();
         },
         progressIncrement(val) {
-            $(this.$el).progressIncrement(val);
+            $('#timer').progressIncrement(val);
         },
         progressSetStateTerminer() {
-            $(this.$el).progressSetStateTerminer();
+            $('#timer').progressSetStateTerminer();
         },
         progressSetStateRelancer() {
-            $(this.$el).progressSetStateRelancer();
+            $('#timer').progressSetStateRelancer();
         },
         progressSet(val) {
-            $(this.$el).progressSet(val);
+            $('#timer').progressSet(val);
         },
         progressPause() {
-            $(this.$el).progressPause();
+            $('#timer').progressPause();
         },
         progressResume() {
-            $(this.$el).progressResume();
+            $('#timer').progressResume();
         }
     },
     beforeDestroy() {
-        $(this.$el).remove();
+        $('#timer').remove();
     },
     mounted() {
         let jQuery = $;
         const _this = this;
         
-        $(this.$el).click(function (e) {
+        $('#timer').click(function (e) {
             e.preventDefault();
             // This function will show a progress meter for
             // the specified amount of time

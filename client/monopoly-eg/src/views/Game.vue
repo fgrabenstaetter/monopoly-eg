@@ -21,17 +21,19 @@
               <div class="col-md-12">
 
 
-                <div v-for="(notif, index) in turnNotifications" :key="index" class="card notification event">
+                <div v-for="(notif, index) in turnNotifications" :key="index">
 
                     <div v-if="notif.type == 'text'">
-                        <div v-if="notif.title" class="card-header" :class="notif.color ? notif.color : ''">
-                            <div class="title">{{notif.title}}</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-md-12 text-center value">
-                                <p>{{notif.content}}</p>
+                        <div class="card notification event" :class="{'disabled': !imCurrentPlayer}">
+                            <div v-if="notif.title" class="card-header" :class="[notif.color ? notif.color : '']">
+                                <div class="title">{{notif.title}}</div>
                             </div>
-                            <button class="btn btn-primary" v-on:click="discardTurnNotif(index)">OK</button>
+                            <div class="card-body" :class="{'no-header': !notif.title}">
+                                <div class="col-md-12 text-center value">
+                                    <p>{{notif.content}}</p>
+                                </div>
+                                <button class="btn btn-primary" v-on:click="discardTurnNotif(index)">OK</button>
+                            </div>
                         </div>
                     </div>
 
@@ -42,7 +44,7 @@
                         propertyName: property.name,
                         price: price -->
                     <div v-if="notif.type == 'saleCard'">
-                        <div class="card notification sale">
+                        <div class="card notification sale" :class="{disabled: !imCurrentPlayer}">
                             <div class="card-header" :class="notif.cardType">
                                 <div class="title">{{notif.propertyName}}</div>
                             </div>
@@ -373,6 +375,11 @@ export default {
       currentPlayerID: 0
     };
   },
+  computed: {
+      imCurrentPlayer: function() {
+          return this.currentPlayerID === this.loggedUser.id;
+      }
+  },
   methods: {
     nickToId(nick) {
       for (const i in this.players) {
@@ -425,25 +432,28 @@ export default {
     },
 
     gameRollDiceReq() {
-        console.log('gameRollDiceReq');
+        if (!this.imCurrentPlayer) return;
         this.socket.emit('gameRollDiceReq');
     },
 
     gameTurnEndReq() {
-        console.log('gameTurnEndReq');
+        if (!this.imCurrentPlayer) return;
         this.socket.emit('gameTurnEndReq');
     },
 
     discardTurnNotif(index) {
+        if (!this.imCurrentPlayer) return;
         this.turnNotifications.splice(index, 1);
     },
 
     saleCardBuyProperty(notifIndex) {
+        if (!this.imCurrentPlayer) return;
         this.socket.emit('gamePropertyBuyReq');
         this.turnNotifications.splice(notifIndex, 1);
     },
 
     saleCardReject(notifIndex) {
+        if (!this.imCurrentPlayer) return;
         this.discardTurnNotif(notifIndex);
     },
 
@@ -458,9 +468,7 @@ export default {
         if (data.updateMoney) {
             data.updateMoney.forEach((row) => {
                 const player = this.getPlayerById(row.playerID);
-                // if (player) player.money = row.money;
                 if (player) this.$set(player, 'money', row.money);
-                // Update $set ?
             });
         }
 
@@ -473,45 +481,27 @@ export default {
             if (data.asyncRequestType == "canBuy") {
 
                 let price = data.asyncRequestArgs[0];
+                let notification = {
+                    type: 'saleCard',
+                    cardType: 'company eau',
+                    propertyID: property.id,
+                    propertyName: property.name,
+                    price: price
+                };
+
                 if (property.type == "publicCompany") {
                     if (property.name == 'Eléctricité de Strasbourg') {
-                        this.turnNotifications.push({
-                            type: 'saleCard',
-                            cardType: 'company electricite',
-                            propertyID: property.id,
-                            propertyName: property.name,
-                            price: price
-                        });
-                        // createSaleCard(property.id, "company electricite", property.name, price, (currPlayer.id != ID));
+                        notification.cardType = 'company electricite';
                     } else {
-                        this.turnNotifications.push({
-                            type: 'saleCard',
-                            cardType: 'company electricite',
-                            propertyID: property.id,
-                            propertyName: property.name,
-                            price: price
-                        });
-                        // createSaleCard(property.id, "company eau", property.name, price, (currPlayer.id != ID));
+                        notification.cardType = 'company eau';
                     }
                 } else if (property.type == "trainStation") {
-                    this.turnNotifications.push({
-                        type: 'saleCard',
-                        cardType: 'station',
-                        propertyID: property.id,
-                        propertyName: property.name,
-                        price: price
-                    });
-                    // createSaleCard(property.id, "station", property.name, price, (currPlayer.id != ID));
+                    notification.cardType = 'station';
                 } else {
-                    this.turnNotifications.push({
-                        type: 'saleCard',
-                        cardType: 'station',
-                        propertyID: property.id,
-                        propertyName: property.name,
-                        price: price
-                    });
-                    // createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+                    notification.cardType = property.color;
                 }
+
+                this.turnNotifications.push(notification);
                     
             }
             else if (data.asyncRequestType == "canUpgrade") {
@@ -604,21 +594,8 @@ export default {
      * @param currPlayer Joueur actuel
      */
     gameActionResAfterSecondMovement(data, currPlayer) {
-        if (data.playerID === this.loggedUser.id) {
+        if (data.playerID === this.loggedUser.id)
             this.$refs.actionBtn.progressReset(false);
-        }
-
-        // Si double avec les dés, on peut les relancer
-        if (data.dicesRes[0] == data.dicesRes[1]) {
-            if (data.playerID === this.loggedUser.id) {
-                // LABEL -> "RE-LANCER LES DÉS"
-                console.log("[BOUTON D'ACTION] Initialisation");
-                // Ajouter le progressStart
-            }
-            else {
-                // $(this).attr({ 'data-loading': 'TERMINER' });
-            }
-        }
 
         if (currPlayer.isInJail)
             currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
@@ -659,10 +636,6 @@ export default {
 
         console.log('Le jeu a démarré !');
         console.log(data);
-
-        // Loading cells
-        // for (const i in data.cells)
-        //     this.$set(this.cells, i, data.cells[i]);
 
         // Level par défaut des propriétés = 0 (car non upgrade)
         for (const i in data.properties) {
@@ -864,20 +837,7 @@ export default {
             // MANQUE ACCÈS A LA COULEUR DU JOUEUR
             this.$refs.gameboard.loaderFlag("d" + cell.id, player.color);
 
-            // if (property.type == "publicCompany") {
-            //     createProperty(player.id, 'company', property.name, property.id);
-            // }
-            // else if (property.type == "trainStation") {
-            //     createProperty(player.id, 'station', property.name, property.id);
-            // }
-            // else {
-            //     createProperty(player.id, property.color, property.name, property.id);
-
-            // }
-
-            player.id = data.playerMoney;
-            // setPlayerMoney(player.id, data.playerMoney);
-
+            this.$set(player, 'money', data.playerMoney);
 
             // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
             this.turnNotifications = [];

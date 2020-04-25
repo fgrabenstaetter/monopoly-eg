@@ -56,12 +56,22 @@ export default {
         }
     },
     mounted() {
-        this.socket.on('lobbyChatReceiveRes', (mess) => {
-            // if (mess.senderUserID != loggedUser._id) {
-            //     newMessageSfx.play();
-            // }
-            this.messages.push(mess);
-        });
+        if (this.env === 'lobby') {
+            this.socket.on('lobbyChatReceiveRes', (mess) => {
+                // if (mess.senderUserID != loggedUser._id) {
+                //     newMessageSfx.play();
+                // }
+                this.messages.push(mess);
+            });
+        } else {
+            this.socket.on('gameChatReceiveRes', (mess) => {
+                // if (mess.senderUserID != loggedUser._id) {
+                //     newMessageSfx.play();
+                // }
+                const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
+                this.messages.push(formatMsg);
+            });
+        }
     },
     updated() {
         this.scrollToBottom();
