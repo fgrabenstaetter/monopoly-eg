@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <i class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
+                        <i v-on:click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
                     </div>
                 </div>
                 <div class="row">
@@ -82,7 +82,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <chat-io v-bind:socket="socket"></chat-io>
+                        <chat-io v-bind:socket="socket" ref="chat"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
                         <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
@@ -194,18 +194,24 @@
 
         <!-- Game settings modal -->
         <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
+
+        <full-screen-loader v-if="loading"></full-screen-loader>
+    
     </div>
+
 </template>
 
 <script>
 import {Howl} from 'howler';
 import io from 'socket.io-client';
+import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
 import GameSettingsModal from '../components/GameSettingsModal';
 
 export default {
     name: 'Lobby',
     components: {
+        'full-screen-loader': FullScreenLoader,
         'chat-io': ChatIO,
         'game-settings-modal': GameSettingsModal
     },
@@ -225,6 +231,7 @@ export default {
             addFriendForm: {
                 nickname: ""
             },
+            loading: false,
             players: [],
             friends: [],
             friendsInvitations: [],
@@ -247,9 +254,15 @@ export default {
     methods: {
         play() {
             if (this.hostID === this.loggedUser.id) {
-                this.socket.emit('lobbyPlayReq');
-                this.playBtn.loading = true;
-                this.playBtn.text = "CHARGEMENT...";
+                if (!this.playBtn.loading) {
+                    this.socket.emit('lobbyPlayReq');
+                    this.playBtn.loading = true;
+                    this.playBtn.text = 'CHARGEMENT...';    
+                } else {
+                    this.socket.emit('lobbyCancelPlayReq');
+                    this.playBtn.loading = false;
+                    this.playBtn.text = 'JOUER!';
+                }
             }
         },
         nickToId(nick) {
@@ -282,6 +295,10 @@ export default {
 
                 if (this.nbPlayers > 2) {
                     this.leftNbJ = true;
+                }
+
+                if (this.nbPlayers >= 8) {
+                    this.rightNbJ = false;
                 }
             }
         },
@@ -364,6 +381,11 @@ export default {
             //         break;
             //     }
             // }
+        },
+
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('Home');
         },
 
         playMusic() {
@@ -451,22 +473,19 @@ export default {
             console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
-            // this.hostID = res.users[0].id;
+            this.hostID = res.users[0].id;
 
             for (const usr of res.users) {
                 usr.avatar = this.$store.getters.serverUrl + usr.avatar;
                 this.players.push(usr);
             }
 
-            console.log(this.hostID);
-            this.hostID = res.users[0].id;
-            console.log(this.hostID);
-
             this.leftNbJ = false;
             this.rightNbJ = false;
-            console.log("===");
-            // for (const mess of res.messages)
-            //     addMsg(mess.senderUserID, mess.content, mess.createdTime);
+            this.playBtn.disabled = true;
+
+            for (const mess of res.messages)
+                this.$refs.chat.messages.push(mess);
         });
 
 
@@ -570,7 +589,8 @@ export default {
         this.socket.on('lobbyPlayRes', (res) => {
             if (res.error !== 0) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
-                this.playBtn.disabled = false;
+                this.playBtn.loading = false;
+                // this.playBtn.disabled = false;
                 this.playBtn.text = "JOUER!";
             }
         });
@@ -611,12 +631,6 @@ export default {
             console.log(res);
             if (res.error === 0) {
                 this.socket.emit('lobbyReadyReq');
-
-                // this.socket.emit('disconnect');
-                // setTimeout(() => {
-                //     this.socket.emit('lobbyReadyReq');
-                // }, 1000);
-                // this.$router.go();
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
@@ -637,6 +651,16 @@ export default {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
+        // On peut se reconnecter à une partie en cours
+        this.socket.on('canReconnectToGame', () => {
+            this.loading = true;
+            this.socket.disconnect();
+
+            setTimeout(() => {
+                this.$router.push('Game');
+                this.loading = false;
+            }, 1000);
+        });
 
         console.log("LOBBY READY REQ");
         this.socket.emit('lobbyReadyReq');

@@ -221,34 +221,7 @@
       </div>
     </div>
 
-    <div v-if="loading" class="loader-overlay-container">
-      <div class="boxes">
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <div class="box">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-    </div>
+    <full-screen-loader v-if="loading"></full-screen-loader>
 
     <!-- Game settings modal -->
     <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="game"></game-settings-modal>
@@ -258,6 +231,7 @@
 
 <script>
 import io from "socket.io-client";
+import FullScreenLoader from '../components/FullScreenLoader';
 import GameBoard from "../components/GameBoard";
 import GameSettingsModal from "../components/GameSettingsModal";
 import ActionButton from "../components/ActionButton";
@@ -272,6 +246,7 @@ import 'odometer/themes/odometer-theme-default.css';
 export default {
   name: "Game",
   components: {
+    'full-screen-loader': FullScreenLoader,
     'gameboard': GameBoard,
     'action-button': ActionButton,
     'game-settings-modal': GameSettingsModal,
@@ -308,9 +283,9 @@ export default {
       loading: true,
       loggedUser: this.$store.getters.loggedUser,
       socket: io.connect(this.$store.getters.serverUrl, {
-        query: "token=" + this.$store.getters.jwt,
-        path: "/socket.io",
-        secure: true
+            query: "token=" + this.$store.getters.jwt,
+            path: "/socket.io",
+            secure: true
       }),
       players: [{
           nickname: "",
@@ -443,6 +418,7 @@ export default {
      * Indique au serveur que l'on est prêt à commencer la partie côté client
      */
     gameReady() {
+        // alert('board ready');
         this.socket.emit('gameReadyReq');
     },
 
@@ -604,13 +580,16 @@ export default {
       this.socket.disconnect();
   },
   mounted() {
+    
     this.playMusic();
     this.loadSfx();
 
     // let $ = JQuery
-    this.loading = false;
+    this.loading = true;
     this.players = [];
     const gameboard = this.$refs.gameboard;
+
+    console.log(gameboard);
 
     // setInterval(() => {
     //     this.players[0].money += 100;
@@ -657,7 +636,7 @@ export default {
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
             // this.$set(this.player, index, player);
-            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
+            this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
         });
 
         this.loading = false;
@@ -738,10 +717,14 @@ export default {
         // hideLoaderOverlay();
 
         this.$refs.actionBtn.progressInitialize();
+
+        this.loading = false;
     });
 
 
     this.socket.on('gameTurnRes', (data) => {
+        if (this.loading) return;
+
         console.log(data);
         let currentTimestamp = Date.now();
         let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
@@ -752,19 +735,23 @@ export default {
         this.currentPlayerID = data.playerID;
         const player = this.getPlayerById(data.playerID);
 
-        // afficher décompte de temps du tour
-        if (this.currentPlayerID == this.loggedUser.id) {
-            this.$refs.actionBtn.progressReset();
-            this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white');
-            this.$refs.actionBtn.progressStart(turnTimeSeconds);
-        } else {
-            this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est au tour de ${this.idToNick(data.playerID)} !`, 'white');
-            this.$refs.actionBtn.progressFinish();
+        if (player) {
+            // afficher décompte de temps du tour
+            if (this.currentPlayerID == this.loggedUser.id) {
+                this.$refs.actionBtn.progressReset();
+                this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white');
+                this.$refs.actionBtn.progressStart(turnTimeSeconds);
+            } else {
+                this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est au tour de ${player.nickname} !`, 'white');
+                this.$refs.actionBtn.progressFinish();
+            }
         }
     });
 
 
     this.socket.on('gameActionRes', (data) => {
+        if (this.loading) return;
+
         console.log("=== gameActionRes ===");
         console.log(data);
 
@@ -815,6 +802,8 @@ export default {
 
     // Terrain vierge acheté
     this.socket.on("gamePropertyBuyRes", (data) => {
+        if (this.loading) return;
+
         console.log("gamePropertyBuyRes");
         console.log(data);
         if (typeof data.error !== "undefined") {
@@ -861,6 +850,8 @@ export default {
 
     // Un joueur s'est déconnecté
     this.socket.on('gamePlayerDisconnectedRes', (data) => {
+        if (this.loading) return;
+
         console.log('gamePlayerDisconnectedRes');
         const player = this.getPlayerById(data.playerID);
         if (player) {
@@ -871,6 +862,8 @@ export default {
 
     // Un joueur s'est reconnecté
     this.socket.on('gamePlayerReconnectedRes', (data) => {
+        if (this.loading) return;
+
         const player = this.getPlayerById(data.playerID);
         if (player)
             this.$set(player, 'disconnected', false);
@@ -878,6 +871,8 @@ export default {
 
     // Player failure
     this.socket.on('gamePlayerFailureRes', (res) => {
+        if (this.loading) return;
+
         console.log('gamePlayerFailureRes');
 
         const player = this.getPlayerById(res.playerID);
@@ -900,6 +895,8 @@ export default {
 
     // Fin de partie
     this.socket.on('gameEndRes', (res) => {
+        if (this.loading) return;
+
         const winner = this.getPlayerById(res.winnerID);
         const type = res.type; // 'failure' (dernier en vie) ou 'timeout'
         const duration = res.duration * 1.66667e-5; // durée totale du jeu en minutes
@@ -915,6 +912,8 @@ export default {
 
     // Un joueur quitte la prtie
     this.socket.on('gamePlayerHasLeftRes', (res) => {
+        if (this.loading) return;
+
         console.log("=== PLAYER LEFT ===");
         const player = this.getPlayerById(res.playerID);
         if (player) {
