@@ -499,7 +499,6 @@ function movement (pawn, caseArr, callback) {
 		}
 	}
 
-<<<<<<< HEAD
 	 	/*if (posPawn == 7 && vdp == 3) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[3], callback);
@@ -509,10 +508,7 @@ function movement (pawn, caseArr, callback) {
  		} else if (posPawn == 36 && vdp == 32) {
 			console.log("Reculez de 4 cases");
 			animateVector3(window[pawn], window[pawn].position, tabCases[32], callback);
-		 } else*/ if (vdp > posPawn && vdp < 10){
-=======
-		if(vdp > posPawn && vdp < 10){
->>>>>>> 8824877e7a9d465e1d1412de6744108fd1f11507
+		} else*/ if (vdp > posPawn && vdp < 10){
 			// route en bas
 			console.log("1");
 			//movementAux(0, pawn, vdp, callback);
