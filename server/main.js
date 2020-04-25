@@ -160,6 +160,7 @@ io.use(socketioJwt.authorize({
     secret: JWT_SECRET,
     handshake: true
 }));
+io.origins('*:*');
 
 io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
