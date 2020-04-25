@@ -601,6 +601,7 @@ export default {
   },
   beforeDestroy() {
       this.stopMusic();
+      this.socket.disconnect();
   },
   mounted() {
     this.playMusic();
@@ -650,7 +651,8 @@ export default {
             // Champs par défaut du joueur
             // player.properties = [];
             this.$set(player, 'properties', []);
-            player.money = data.playersMoney;
+            this.$set(player, 'money', data.playersMoney);
+            // player.money = data.playersMoney;
             player.cellPos = 0;
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
@@ -748,14 +750,15 @@ export default {
         // On vide toutes les notifications (au cas-où)
         this.turnNotifications = [];
         this.currentPlayerID = data.playerID;
+        const player = this.getPlayerById(data.playerID);
 
         // afficher décompte de temps du tour
         if (this.currentPlayerID == this.loggedUser.id) {
             this.$refs.actionBtn.progressReset();
-            this.$refs.splashText.trigger('<br>C\'est à vous de jouer !', 'white');
+            this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white');
             this.$refs.actionBtn.progressStart(turnTimeSeconds);
         } else {
-            this.$refs.splashText.trigger(`<br>C'est au tour de ${this.idToNick(data.playerID)} !`, 'white');
+            this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est au tour de ${this.idToNick(data.playerID)} !`, 'white');
             this.$refs.actionBtn.progressFinish();
         }
     });

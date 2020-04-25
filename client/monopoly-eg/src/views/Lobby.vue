@@ -403,6 +403,7 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
+        this.socket.disconnect();
     },
     mounted() {
         this.playMusic();
