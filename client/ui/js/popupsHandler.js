@@ -40,7 +40,7 @@ $('.player-list').on('mouseenter', '.property', function (e) {
     }
 
     if (isMine) {
-        gProp = `<button class="sellProp" onclick="sellProp(this)" >VENDRE</button>`
+        gProp = `<button class="sellProp" onclick="sellBuyModal($(this).parent().parent().attr('data-id'));" >VENDRE</button>`
         if (isMortgage) {
             gProp += `<button class="rebuyProp" onclick="rebuyProp(this)" >RACHETER</button>`
         }
@@ -49,7 +49,7 @@ $('.player-list').on('mouseenter', '.property', function (e) {
         }
     }
     else {
-        gProp = `<button class="buyProp"  onclick="buyProp(this)">ACHETER</button>`
+        gProp = `<button class="buyProp"  onclick="openBuyModal($(this).parent().parent().attr('data-id'));">ACHETER</button>`
     }
 
     const html = `<div id="houseOption">`

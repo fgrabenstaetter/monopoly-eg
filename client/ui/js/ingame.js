@@ -1029,7 +1029,7 @@ function mortgageProp(e) {
     //console.log("propertyID=" + propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-    
+
     return false;
 };
 
@@ -1038,7 +1038,7 @@ function rebuyProp(e) {
     //console.log("propertyID=" + propertyID);
     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
-    
+
     return false;
 };
 
@@ -1221,4 +1221,14 @@ function switchZoom(t) {
         zoomOnOff(0);
         console.log('Zoom désactivé');
     }
+}
+
+function openBuyModal(e) {
+    $('#buyModal').attr("data-id", e);
+    $('#buyModal').modal('show');
+}
+
+function openSellModal(e) {
+    $('#sellModal').attr("data-id", e);
+    $('#sellModal').modal('show');
 }
