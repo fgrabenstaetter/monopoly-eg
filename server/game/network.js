@@ -108,7 +108,33 @@ class Network {
 
     lobbyUserStopListening(user, lobby) {
         user.socket.leave(lobby.name);
-        user.socket.removeAllListeners();
+
+        // Inviter / Rejoindre / Quitter
+        user.socket.removeAllListeners('lobbyInvitationReq');
+        user.socket.removeAllListeners('lobbyInvitationAcceptReq');
+        user.socket.removeAllListeners('lobbyKickReq');
+
+        // Paramètres + Chat
+        user.socket.removeAllListeners('lobbyUpdateProfile');
+        user.socket.removeAllListeners('lobbyChangeTargetUsersNbReq');
+        user.socket.removeAllListeners('lobbyChangeDurationReq');
+        user.socket.removeAllListeners('lobbyChatSendReq');
+        user.socket.removeAllListeners('lobbyPlayReq');
+        user.socket.removeAllListeners('lobbyCancelPlayReq');
+
+        // Amis
+        user.socket.removeAllListeners('lobbyFriendListReq');
+        user.socket.removeAllListeners('lobbyRequestedFriendListReq');
+        user.socket.removeAllListeners('lobbyPendingFriendListReq');
+        user.socket.removeAllListeners('lobbyFriendInvitationSendReq');
+        user.socket.removeAllListeners('lobbyFriendInvitationActionReq');
+
+        // Paramètres + Succès
+        user.socket.removeAllListeners('playerSettingsReq');
+        user.socket.removeAllListeners('playerSuccessReq');
+        user.socket.removeAllListeners('changeAvatarReq');
+
+        user.socket.removeAllListeners('lobbyReadyReq');
     }
 
     gamePlayerListen (player, game) {
@@ -139,7 +165,28 @@ class Network {
 
     gamePlayerStopListening (player, game) {
         player.socket.leave(game.name);
-        player.socket.removeAllListeners();
+
+        // Début/Fin + tour
+        user.socket.removeAllListeners('gameReadyReq');
+        user.socket.removeAllListeners('gameRollDiceReq');
+        user.socket.removeAllListeners('gameTurnEndReq');
+
+        // Actions de tour asynchrones
+        user.socket.removeAllListeners('gamePropertyBuyReq');
+        user.socket.removeAllListeners('gamePropertyUpgradeReq');
+        user.socket.removeAllListeners('gamePropertyMortgageReq');
+        user.socket.removeAllListeners('gamePlayerLeavingReq');
+        user.socket.removeAllListeners('gamePropertyUnmortgageReq');
+
+        // Chat + removeAllListenersres et enchères
+        user.socket.removeAllListeners('gameChatSendReq');
+        user.socket.removeAllListeners('gameOfferSendReq');
+        user.socket.removeAllListeners('gameOfferAcceptReq');
+        user.socket.removeAllListeners('gameOverbidReq');
+
+        // Paramètres + Succès
+        user.socket.removeAllListeners('playerSettingsReq');
+        user.socket.removeAllListeners('playerSuccessReq');
     }
 
     //////////////////
@@ -439,7 +486,7 @@ class Network {
                             const usr = lobby.userByID(user.id);
                             if (usr) {
                                 lobby.delUser(user);
-                                this.lobbyUserStopListening(user);
+                                this.lobbyUserStopListening(user, lobby);
                                 break;
                             }
                         }
