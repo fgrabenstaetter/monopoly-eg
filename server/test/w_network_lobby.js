@@ -101,7 +101,7 @@ describe('Network + Lobby', () => {
     it('Kick d\'un user quittant un lobby', (done) => {
         const lobby = new Lobby(user, GLOBAL);
         lobby.addUser(user2);
-        assert.equal(2, lobby.users.length);
+        assert.strictEqual(lobby.users.length, 2);
         GLOBAL.lobbies.push(lobby);
         lobby.delUser(user2);
 
@@ -116,7 +116,7 @@ describe('Network + Lobby', () => {
     it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
         const lobby = new Lobby(user, GLOBAL);
         GLOBAL.lobbies.push(lobby);
-        const random = Math.floor(Math.random()*(8-2+1)+2);
+        const random = Math.floor(Math.random() * 7 + 2);
 
         clientSocket.emit('lobbyChangeTargetUsersNbReq', {nb: random});
 

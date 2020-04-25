@@ -1,7 +1,12 @@
 <template>
-    <div v-click-outside="hidePlayerProperties" class="player-entry" :class="{current: isCurrent}">
-        <div v-on:click.stop="showPlayerProperties()" class="name">{{player.nickname}}</div>
+    <div v-click-outside="hidePlayerProperties" class="player-entry" :class="{current: isCurrent, disconnected: player.disconnected, failure: player.failure}">
+        <div v-on:click.stop="showPlayerProperties()" class="name">
+            {{player.nickname}}
+            <span v-if="player.disconnected">(Déconnecté)</span>
+        </div>
+        
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
+        
         <div v-if="showProperties" class="popup top">
             <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
                 <div v-for="prop in yellowProperties" :key="prop.id" class="property">
@@ -127,7 +132,7 @@ export default {
     },
     mounted() {
         this.popupItem = this.$el;
-        this.player.properties = [];
+        // this.player.properties = [];
 
         // this.player.properties.push({
         //     "id": 1,
@@ -378,6 +383,11 @@ export default {
     },
     directives: {
         ClickOutside
+    },
+    watch: {
+        // player(nouv, prev) {
+        //     console.log(nouv, prev);
+        // }
     }
 
 }

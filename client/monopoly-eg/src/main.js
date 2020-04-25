@@ -2,23 +2,20 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-// import Vuex from 'vuex'
 import {store} from '@/store/store'
 
 // import VueSocketIO from 'vue-socket.io'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '@fortawesome/fontawesome-free/css/all.css'
-import '@fortawesome/fontawesome-free/js/all.js'
+import './assets/css/anime.min.css';
+import './assets/css/fontawesome.min.css';
+// import '@fortawesome/fontawesome-free/css/all.css'
+// import '@fortawesome/fontawesome-free/js/all.js'
 
 import VueAnime from 'vue-animejs';
 Vue.use(VueAnime);
 
-// library.add(faUserSecret)
-
-// Vue.component('font-awesome-icon', FontAwesomeIcon)
- 
 // Vue.use(new VueSocketIO({
 //     debug: true,
 //     connection: store.getters.serverUrl,
@@ -33,12 +30,6 @@ Vue.use(VueAnime);
 //       secure: true
 //     }
 // }))
-
-Vue.mixin({
-  methods: {
-    toast: str => alert('TOAST MIXIN ' + str)
-  }
-});
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;

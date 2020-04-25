@@ -15,7 +15,6 @@ const mongoose    = require('mongoose');
 const Constants   = require('./lib/constants');
 const Errors      = require('./lib/errors');
 const User        = require('./game/user');
-const Lobby       = require('./game/lobby');
 const Matchmaking = require('./game/matchmaking');
 const Network     = require('./game/network');
 const { UserSchema, UserManager } = require('./models/user');
@@ -161,68 +160,17 @@ io.use(socketioJwt.authorize({
     secret: JWT_SECRET,
     handshake: true
 }));
+io.origins('*:*');
 
 io.on('connection', (socket) => {
     const decodedToken = socket.decoded_token;
+    const user = getConnectedUserById(decodedToken.id);
 
-    let user = getConnectedUserById(decodedToken.id);
     if (!user) {
         console.log('[SOCKET] USER NOT FOUND (not connected), sending notLoggedRes');
         socket.emit('notLoggedRes');
         return;
     }
 
-    console.log('[SOCKET] Utilisateur ' + user.id + ' (' + user.nickname + ') connecté');
-
-    socket.on('disconnect', () => {
-        console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');
-
-        // si il est dans un lobby, l'y supprimer
-        for (const lobby of GLOBAL.lobbies) {
-            if (lobby.userByID(user.id)) {
-                lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
-                return;
-            }
-        }
-
-        // si il est dans une partie de jeu, l'y déconnecter (PAS SUPPRIMER POUR RECONNEXION)
-        for (const game of GLOBAL.games) {
-            const player = game.playerByID(user.id);
-            if (player) {
-                GLOBAL.network.gamePlayerDisconnected(player, game);
-                return;
-            }
-        }
-    });
-
-    user.socket = socket;
-
-    // regarder si le joueur est dans une partie + !hasLeft
-    for (const game of GLOBAL.games) {
-        const player = game.playerByID(user.id);
-        if (player && !player.hasLeft) {
-            // le joueur est dans une partie !
-            if (!player.connected) // RECONNEXION
-                GLOBAL.network.gamePlayerReconnected(player, game);
-            else // ARRIVÉE DANS LE JEU DEPUIS LOBBY
-                GLOBAL.network.gamePlayerListen(player, game);
-            socket.emit('canReconnectToGame');
-            return;
-        }
-    }
-
-    // regarder si le joueur est déjà dans un lobby  === a été invité
-    for (const lobby of GLOBAL.lobbies) {
-        const usr = lobby.userByID(user.id);
-        if (usr) {
-            const ind = lobby.invitedUsers.indexOf(usr);
-            if (ind !== -1)
-                lobby.invitedUsers.splice(ind, 1);
-            GLOBAL.network.lobbyUserListen(usr, lobby);
-            return;
-        }
-    }
-
-    // Mettre le user dans un nouveau Lobby
-    GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
+    GLOBAL.network.handleConnection(user, socket);
 });
