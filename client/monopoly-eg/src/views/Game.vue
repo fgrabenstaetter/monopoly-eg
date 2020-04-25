@@ -648,24 +648,6 @@ export default {
     //     });
     // }, 3000)
 
-    this.socket.on("gameStartedRes", data => {
-      this.players = data.players;
-      this.cells = data.cells;
-      this.properties = data.properties;
-      console.log(this.properties);
-      this.gameEndTime = data.gameEndTime;
-
-      console.log("Le jeu a démarré !");
-      console.log(data);
-
-      // Level par défaut des propriétés = 0 (car non upgrade)
-      for (const i in data.properties) {
-        data.properties[i].level = 0;
-        data.properties[i].ownerID = null;
-        data.properties[i].isMortgage = 0;
-        // this.$set(this.properties, i, data.properties[i]);
-      }
-
     this.socket.on('gameStartedRes', (data) => {
 
         this.players = data.players;
@@ -704,127 +686,83 @@ export default {
         this.$refs.actionBtn.progressInitialize();
     });
 
+
     // Données de reconnexion
-    this.socket.on("gameReconnectionRes", data => {
-      console.log(" --- RECONNEXION DATA");
-      console.log(data);
+    this.socket.on('gameReconnectionRes', (data) => {
+        console.log(' --- RECONNEXION DATA');
+        console.log(data);
 
-      this.players = data.players;
-      this.cells = data.cells;
-      this.properties = data.properties;
-      this.gameEndTime = data.gameEndTime;
+        this.players = data.players;
+        this.cells = data.cells;
+        this.properties = data.properties;
+        this.gameEndTime = data.gameEndTime;
 
-      // Génération de la liste de joueurs
-      this.players.forEach((player, index) => {
-        gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
-        player.color = this.CST.PLAYERS_COLORS[index];
-        player.isInJail = false;
-        // player.properties = [];
-        this.$set(player, "properties", []);
-      });
+        // Génération de la liste de joueurs
+        this.players.forEach((player, index) => {
+            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
+            player.color = this.CST.PLAYERS_COLORS[index];
+            player.isInJail = false;
+            // player.properties = [];
+            this.$set(player, 'properties', []);
+        });
 
-      for (const i in this.properties) {
-        // this.properties[i].level = 0;
-        // this.properties[i].ownerID = null;
-        if (this.properties[i].ownerID) {
-          console.log();
-          const player = this.getPlayerById(this.properties[i].ownerID);
-          if (player) {
-            console.log(
-              `=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`
-            );
-            player.properties.push(this.properties[i]);
-          }
+        for (const i in this.properties) {
+            // this.properties[i].level = 0;
+            // this.properties[i].ownerID = null;
+            if (this.properties[i].ownerID) {
+                console.log()
+                const player = this.getPlayerById(this.properties[i].ownerID);
+                if (player) {
+                    console.log(`=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`);
+                    player.properties.push(this.properties[i]);
+                }
+            }
         }
-      }
 
-      data.players.forEach((player, index) => {
-        player.properties.forEach(playerProperty => {
-          console.log("PROPERTY");
-          console.log(playerProperty);
-          let property = this.getPropertyById(playerProperty);
-          if (property) {
-            property.ownerID = player.id;
-            // MANQUE ACCÈS A LA COULEUR DU JOUEUR
-            let cell = this.getCellByProperty(property);
-            gameboard.loaderFlag("d" + cell.id, player.color);
-            this.players[index].properties.push(property);
-            // if (property.type == "publicCompany") {
-            //     createProperty(player.id, 'company', property.name, property.id);
-            // } else if (property.type == "trainStation") {
-            //     createProperty(player.id, 'station', property.name, property.id);
-            // } else {
-            //     createProperty(player.id, property.color, property.name, property.id);
-            // }
-          }
+        data.players.forEach((player, index) => {
+            player.properties.forEach((playerProperty) => {
+                console.log("PROPERTY");
+                console.log(playerProperty);    
+                let property = this.getPropertyById(playerProperty);
+                if (property) {
+                    property.ownerID = player.id;
+                    // MANQUE ACCÈS A LA COULEUR DU JOUEUR
+                    let cell = this.getCellByProperty(property)
+                    gameboard.loaderFlag("d" + cell.id, player.color);
+                    this.players[index].properties.push(property);
+                    // if (property.type == "publicCompany") {
+                    //     createProperty(player.id, 'company', property.name, property.id);
+                    // } else if (property.type == "trainStation") {
+                    //     createProperty(player.id, 'station', property.name, property.id);
+                    // } else {
+                    //     createProperty(player.id, property.color, property.name, property.id);
+                    // }
+                }
+            });
         });
-      });
 
-      data.chatMessages.forEach(msg => {
-        this.$refs.chat.messages.push({
-          senderUserID: msg.playerID,
-          content: msg.text,
-          createdTime: msg.createdTime
+        data.chatMessages.forEach((msg) => {
+            this.$refs.chat.messages.push({
+                senderUserID: msg.playerID,
+                content: msg.text,
+                createdTime: msg.createdTime
+            });
         });
-      });
 
-      /**
-       * Reste à gérer à la reconnexion :
-       * - bids
-       * - offers
-       * - couleur des cases pour celles déjà achetées
-       */
+        /**
+         * Reste à gérer à la reconnexion :
+         * - bids
+         * - offers
+         * - couleur des cases pour celles déjà achetées
+         */
 
-      // hideLoaderOverlay();
+        // hideLoaderOverlay();
 
         this.$refs.actionBtn.progressInitialize();
 
         this.loading = false;
     });
 
-    this.socket.on("gameTurnRes", data => {
-      console.log(data);
-      let currentTimestamp = Date.now();
-      let turnTimeSeconds = Math.floor(
-        (data.turnEndTime - currentTimestamp) / 1000
-      );
-      console.log(
-        "Le tour se terminera dans " +
-          turnTimeSeconds +
-          " secondes (" +
-          currentTimestamp +
-          " - " +
-          data.turnEndTime +
-          ")"
-      );
-
-      // On vide toutes les notifications (au cas-où)
-      this.turnNotifications = [];
-      this.currentPlayerID = data.playerID;
-      const player = this.getPlayerById(data.playerID);
-
-      // afficher décompte de temps du tour
-      if (this.currentPlayerID == this.loggedUser.id) {
-        this.$refs.actionBtn.progressReset();
-        this.$refs.splashText.trigger(
-          `<img src="/assets/img/pawns/${
-            this.CST.PAWNS[player.pawn]
-          }.png" width="320"><br>C'est à vous de jouer !`,
-          "white"
-        );
-        this.$refs.actionBtn.progressStart(turnTimeSeconds);
-      } else {
-        this.$refs.splashText.trigger(
-          `<img src="/assets/img/pawns/${
-            this.CST.PAWNS[player.pawn]
-          }.png" width="320"><br>C'est au tour de ${this.idToNick(
-            data.playerID
-          )} !`,
-          "white"
-        );
-        this.$refs.actionBtn.progressFinish();
-      }
-    });
 
     this.socket.on('gameTurnRes', (data) => {
         if (this.loading) return;
@@ -834,12 +772,10 @@ export default {
         let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
         console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
 
-      if (currPlayer.id == this.loggedUser.id) {
-        console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-        if (data.dicesRes[0] != data.dicesRes[1])
-          this.$refs.actionBtn.progressSetStateTerminer();
-        else this.$refs.actionBtn.progressSetStateRelancer();
-      }
+        // On vide toutes les notifications (au cas-où)
+        this.turnNotifications = [];
+        this.currentPlayerID = data.playerID;
+        const player = this.getPlayerById(data.playerID);
 
         if (player) {
             // afficher décompte de temps du tour
@@ -852,7 +788,6 @@ export default {
                 this.$refs.actionBtn.progressFinish();
             }
         }
-      });
     });
 
 
@@ -904,8 +839,8 @@ export default {
                 this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
             }
         });
-        return;
-      }
+    });
+
 
     // Terrain vierge acheté
     this.socket.on("gamePropertyBuyRes", (data) => {
@@ -923,21 +858,37 @@ export default {
             return;
         }
 
-        // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
-        this.turnNotifications = [];
-        // $('.notification-container')
-        //     .find('.notification.sale[data-property-id="' + property.id + '"] .btn-primary')
-        //     .animate({ zoom: '130%' }, 250, function () {
-        //         $(this).animate({ zoom: '100%' }, 250, function () {
-        //             setTimeout(function () {
-        //                 $('.notification-container').find('.notification.sale[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
-        //                     $(this).remove();
-        //                 });
-        //             }, 300);
-        //         });
-        //     });
-      }
+        const property = this.getPropertyById(data.propertyID);
+        const cell = this.getCellByProperty(property);
+        if (property && cell) {
+            const player = this.getPlayerById(data.playerID);
+            property.ownerID = player.id;
+            player.properties.push(property);
+            console.log(player.properties);
+            gameboard.loaderFlag("d" + cell.id, player.color);
+
+            if (data.playerMoney != player.money) {
+                this.audio.sfx.cashRegister.play();
+                this.$set(player, 'money', data.playerMoney);
+            }
+
+            // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
+            this.turnNotifications = [];
+            // $('.notification-container')
+            //     .find('.notification.sale[data-property-id="' + property.id + '"] .btn-primary')
+            //     .animate({ zoom: '130%' }, 250, function () {
+            //         $(this).animate({ zoom: '100%' }, 250, function () {
+            //             setTimeout(function () {
+            //                 $('.notification-container').find('.notification.sale[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
+            //                     $(this).remove();
+            //                 });
+            //             }, 300);
+            //         });
+            //     });
+
+        }
     });
+
 
     // Un joueur s'est déconnecté
     this.socket.on('gamePlayerDisconnectedRes', (data) => {
@@ -976,12 +927,12 @@ export default {
                     property.ownerID = null;
             });
 
-        // Reset des propriétés du joueur
-        this.$set(player, "properties", []);
+            // Reset des propriétés du joueur
+            this.$set(player, 'properties', []);
 
-        // Simple texte d'annonce
-        this.$set(player, "failure", true);
-      }
+            // Simple texte d'annonce
+            this.$set(player, 'failure', true);
+        }
     });
 
     // Fin de partie
@@ -1023,8 +974,8 @@ export default {
                 }
             }
         }
-      }
     });
+
   }
 };
 </script>
