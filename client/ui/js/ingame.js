@@ -891,7 +891,9 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
     $('.overview-card .header').removeClass('electricite');
     $('.overview-card .header').css("background-color", property.color);
     $('.overview-card .header').css("color", "white");
-    let htmlContent = `<div class="rent">` + property.rentalPrices.empty + `</div>
+    let htmlContent;
+    if(!property.isMortgaged){
+        htmlContent = `<div class="rent">` + property.rentalPrices.empty + `</div>
                         <div class="with-house">
                             <div>Avec 1 Maison</div>
                             <div>`+ property.rentalPrices.house[0] + `</div>
@@ -913,8 +915,16 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
                             <div>`+ property.rentalPrices.hostel + `</div>
                         </div>
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
-                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.house + `€ plus 4 maisons</div>`
+                        <div class="hotel-price">Prix d'un Hôtel `+ property.prices.house + `€ plus 4 maisons</div>
+                        <div class="mortgage">Valeur de l'hypothèque : `+ property.prices.empty/2 + `€</div>`
+    }
+    else {
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((property.prices.empty/2)*1.1) + `€</div>`
+    }
+
     $('.overview-card .content').html(htmlContent);
+    console.log("oeoaz");
+    console.log(property);
 }
 
 function populateStationOverviewCard(station, isMine, isMortgaged) {
@@ -926,7 +936,9 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
     $('.overview-card .header').addClass('station');
     $('.overview-card .header').css("background-color", "white");
     $('.overview-card .header').css("color", "black");
-    let htmlContent = `<div class="rent">` + station.rentalPrices[0] + `</div>
+    let htmlContent;
+    if (!station.isMortgaged) {
+        htmlContent = `<div class="rent">` + station.rentalPrices[0] + `</div>
                         <div class="with-house">
                             <div>Si vous avez 2 Gares</div>
                             <div>`+ station.rentalPrices[1] + `</div>
@@ -938,7 +950,13 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
                         <div class="with-house">
                             <div>Si vous avez 4 Gares</div>
                             <div>`+ station.rentalPrices[3] + `</div>
-                        </div>`
+                        </div>
+                        <div class="mortgage">Valeur de l'hypothèque : `+ station.price/2 + `€</div>`
+    }
+    else {
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((station.price/2)*1.1) + `€</div>`
+    }
+
     $('.overview-card .content').html(htmlContent);
 }
 
@@ -956,10 +974,17 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
     }
     $('.overview-card .header').css("background-color", "rgb(58, 58, 58)");
     $('.overview-card .header').css("color", "white");
-    let htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
+    let htmlContent;
+    if (!publicCompany.isMortgaged) {
+        htmlContent = `<div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
                             le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                             le loyer est 10 fois le montant indiqué par les dés.</div>
-                        <div class="rent">`+ publicCompany.price + `</div>`
+                        <div class="rent">`+ publicCompany.price + `</div>
+                        <div class="mortgage">Valeur de l'hypothèque : `+  publicCompany.price/2 + `€</div>`
+    }
+    else {
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((publicCompany.price/2)*1.1) + `€</div>`
+    }
     $('.overview-card .content').html(htmlContent);
 }
 
@@ -1029,7 +1054,7 @@ function mortgageProp(e) {
     //console.log("propertyID=" + propertyID);
     socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
     console.log("gamepropertyMortgageReq");
-    
+
     return false;
 };
 
@@ -1038,7 +1063,7 @@ function rebuyProp(e) {
     //console.log("propertyID=" + propertyID);
     socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
     console.log("gamePropertyUnmortgageReq");
-    
+
     return false;
 };
 
