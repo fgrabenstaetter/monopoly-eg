@@ -364,7 +364,7 @@ export default {
      * @param {string} Nom de la couleur
      */
     loaderFlag(flag, colore) {
-        this.gltfLoader.load('models/drapeaux/' + flag + '.gltf', (gltf) => {
+        this.gltfLoader.load('/assets/models/drapeaux/' + flag + '.gltf', (gltf) => {
             // requestAnimationFrame(render);
             const root = gltf.scene;
             this.objs[flag] = gltf.scene;

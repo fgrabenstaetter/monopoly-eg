@@ -12,9 +12,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
-// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueAnime from 'vue-animejs';
+Vue.use(VueAnime);
 
 // library.add(faUserSecret)
 
@@ -39,7 +38,7 @@ Vue.mixin({
   methods: {
     toast: str => alert('TOAST MIXIN ' + str)
   }
-})
+});
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;

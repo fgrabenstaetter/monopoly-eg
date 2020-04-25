@@ -1,10 +1,12 @@
 <template>
-    <div class="player-entry" :class="{current: isCurrent}">
-        <div class="name">{{player.nickname}}</div>
+    <div v-click-outside="hidePlayerProperties" class="player-entry" :class="{current: isCurrent}">
+        <div v-on:click.stop="showPlayerProperties()" class="name">{{player.nickname}}</div>
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
-        <div class="popup top" style="display: none;">
-            <div class="properties-container yellow">
-                <div class="blank-property"></div>
+        <div v-if="showProperties" class="popup top">
+            <div class="properties-container yellow" style="display: block;">
+                <div class="property">
+                    <div>Ma super route</div>
+                </div>
                 <div class="blank-property"></div>
                 <div class="blank-property"></div>
             </div>
@@ -56,6 +58,7 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside'
 import IOdometer from 'vue-odometer';
 
 export default {
@@ -72,6 +75,25 @@ export default {
     },
     components: {
         IOdometer
+    },
+    data() {
+        return {
+            showProperties: false
+        }
+    },
+    mounted() {
+        this.popupItem = this.$el;
+    },
+    methods: {
+        showPlayerProperties() {
+            this.showProperties = true;
+        },
+        hidePlayerProperties: function() {
+            this.showProperties = false;
+        }
+    },
+    directives: {
+        ClickOutside
     }
 
 }
