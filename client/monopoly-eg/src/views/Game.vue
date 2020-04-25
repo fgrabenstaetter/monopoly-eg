@@ -214,7 +214,18 @@
       </div>
 
       <!-- Popup d'Enchères -->
-      <div id="bid-popup-container"></div>
+      <div id="bid-popup-container">
+        <div v-for="bid in bids" :key="bid.bidID" class="bid-popup">
+          <div class="bid-form">
+            <div class="content">Une enchère est lancée pour {{bid.propertyName}}</div>
+            <div class="bid-input">
+              <input type="text" placeholder="Prix">€
+              <button disabled='disabled' class="bid-validation" v-on:click="sendBid(bid.bidID)">Enchérir</button>
+              <button class="bid-cancel" v-on:click="rejectBid(bid.bidID)">Passer</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Dices -->
       <dices ref="dices" v-once></dices>
@@ -341,6 +352,16 @@ export default {
           price: 200,
           offerID: 2
         }
+      ],
+      bids: [
+        {
+          propertyName: "Test",
+          bidID: 1
+        },
+        {
+          propertyName: "Test2",
+          bidID: 2
+        }
       ]
     };
   },
@@ -428,6 +449,14 @@ export default {
 
     offerAccept(offerID) {
       alert('offer accept' + offerID);
+    },
+
+    sendBid(bidID) {
+      alert('sendBid' + bidID);
+    },
+
+    rejectBid(bidID) {
+      alert('rejectBid' + bidID);
     },
 
     playMusic() {
