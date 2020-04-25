@@ -192,56 +192,21 @@
             </div>
         </div>
 
-            <div class="profile-modals-container">
-            <!-- Options -->
-            <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
-            aria-hidden="true" data-id="1">
-            <div class="modal-dialog animated bounceIn" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="optionsModalLabel">Options</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
-                            <span aria-hidden="true" style="cursor: pointer;">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul>
-                            <li>
-                                <span>Qualité graphique</span>
-                                <select id="graphics-quality" class="custom-select">
-                                    <option value="0">Bas</option>
-                                    <option value="1">Standard</option>
-                                    <option value="2">Élevé</option>
-                                </select>
-                            </li>
-                            <li>
-                                <span>Zoom automatique</span>
-                                <label class="switch">
-                                    <input id="auto-zoom" type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </li>
-                        </ul>
-
-                        <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-                        <button id="quit-game" class="btn btn-primary" href="#" role="button"
-                            style="background-color: red;">QUITTER LA PARTIE</button>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
+        <!-- Game settings modal -->
+        <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
     </div>
 </template>
 
 <script>
 import io from 'socket.io-client';
 import ChatIO from '../components/ChatIO';
+import GameSettingsModal from '../components/GameSettingsModal';
 
 export default {
     name: 'Lobby',
     components: {
-        'chat-io': ChatIO
+        'chat-io': ChatIO,
+        'game-settings-modal': GameSettingsModal
     },
     data() {
         return {

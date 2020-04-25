@@ -23,6 +23,11 @@ export const store = new Vuex.Store({
       },
       loggedOut (state) {
         state.isLoggedIn = false;
+      },
+      settingsUpdated (state, data) {
+        state.loggedUser.settings = data;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
       }
     },
     actions: {
@@ -32,6 +37,9 @@ export const store = new Vuex.Store({
       },
       logout ({ commit }) {
         commit('loggedOut');
+      },
+      updateSettings ({ commit }, data) {
+        commit('settingsUpdated', data);
       }
     },
     getters: {
