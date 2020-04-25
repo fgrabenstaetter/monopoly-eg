@@ -265,6 +265,7 @@ import PlayerEntry from '../components/PlayerEntry';
 import Dices from '../components/Dices';
 import ChatIO from '../components/ChatIO';
 import SplashText from '../components/SplashText';
+import {Howl} from 'howler';
 import 'odometer/themes/odometer-theme-default.css';
 // import JQuery from 'jquery'
 
@@ -320,7 +321,11 @@ export default {
       properties: [],
       gameEndTime: null,
       turnNotifications: [],
-      currentPlayerID: 0
+      currentPlayerID: 0,
+      audio: {
+          background: null,
+          sfx: {}
+      }
     };
   },
   computed: {
@@ -405,6 +410,55 @@ export default {
         this.discardTurnNotif(notifIndex);
     },
 
+    playMusic() {
+        this.audio.background = new Howl({
+            src: '/assets/audio/musics/on-my-way-by-kevin-macleod-from-filmmusic-io.mp3',
+            volume: 0.5,
+            autoplay: true,
+            loop: true
+        });
+    },
+
+    stopMusic() {
+        this.audio.background.fade(this.audio.background.volume(), 0, 500);
+        this.audio.background.stop();
+    },
+
+    loadSfx() {
+        this.audio.sfx.rollDices = new Howl({
+            src: ['/assets/audio/sfx/shake-and-roll-dice-soundbible.mp3'],
+            autoplay: false,
+            loop: false,
+            volume: 0.5
+        });
+        this.audio.sfx.cashRegister = new Howl({
+            src: ['/assets/audio/sfx/cash-register-youtube-gaming-sound-fx.mp3'],
+            autoplay: false,
+            loop: false,
+            volume: 0.5
+        });
+    },
+
+    /**
+     * Indique au serveur que l'on est prêt à commencer la partie côté client
+     */
+    gameReady() {
+        this.socket.emit('gameReadyReq');
+    },
+
+    /**
+     * Quitter volontairement la partie
+     */
+    quitGame() {
+        this.socket.emit('gamePlayerLeavingReq');
+        this.socket.on('gamePlayerLeavingRes', (res) => {
+            if (res.error === 0)
+                this.$router.push('Lobby');
+            else
+                this.$parent.toast(res.status, 'danger', 5);
+        });
+    },
+
     /**
      * Continue le tour de jeu (gameActionRes) après le premier déplacement
      * @param data Données de gameActionRes
@@ -413,10 +467,13 @@ export default {
      */
     gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
         // Mise à jour des soldes (le cas échéant)
-        if (data.updateMoney) {
+        if (data.updateMoney && data.updateMoney.length > 0) {
+            this.audio.sfx.cashRegister.play();
             data.updateMoney.forEach((row) => {
                 const player = this.getPlayerById(row.playerID);
-                if (player) this.$set(player, 'money', row.money);
+                if (player) {
+                    this.$set(player, 'money', row.money);
+                }
             });
         }
 
@@ -485,33 +542,24 @@ export default {
         if (typeof data.extra !== "undefined") {
             // Si on est tombé sur une carte (chance / communauté)
             if (typeof data.extra.newCard !== "undefined") {
-                if (data.extra.newCard.type == "chance") {
 
-                    this.turnNotifications.push({
-                        title: 'Carte chance',
-                        content: data.extra.newCard.description,
-                        color: 'blue',
-                        type: 'text'
-                    });
+                let notification = {
+                    content: data.extra.newCard.description,
+                    color: 'blue',
+                    type: 'text'
+                };
 
-                    // createTextCard(, (currPlayer.id != ID), "blue", "Carte chance");
-                } else { // community
+                if (data.extra.newCard.type == "chance")
+                    notification.title = "Carte chance";
+                else
+                    notification.title = "Carte communauté";
 
-                    this.turnNotifications.push({
-                        title: 'Carte communauté',
-                        content: data.extra.newCard.description,
-                        color: 'blue',
-                        type: 'text'
-                    });
-
-                    // createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
-                }
+                this.turnNotifications.push(notification);
             }
 
             // Nb de cartes sortie de prison si il a changé
-            if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+            if (typeof data.extra.nbJailEscapeCards !== "undefined")
                 currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
-            }
 
             if (typeof data.extra.goJail !== "undefined" && data.extra.goJail) {
                 cellPos2 = null;
@@ -551,11 +599,16 @@ export default {
         console.log("=== fin gameActionRes ===");
     }
   },
+  beforeDestroy() {
+      this.stopMusic();
+  },
   mounted() {
+    this.playMusic();
+    this.loadSfx();
+
     // let $ = JQuery
     this.loading = false;
-    // this.loggedUser.money = 10;
-    this.players = [this.loggedUser];
+    this.players = [];
     const gameboard = this.$refs.gameboard;
 
     // setInterval(() => {
@@ -563,12 +616,12 @@ export default {
     //     this.$set(this.players, 0, this.players[0]);
     // }, 1000);
 
-    // this.$refs.gameboard.loaderPawn('montgolfiere', 0);
-    // this.$refs.gameboard.loaderPawn('boat', 0);
+    // gameboard.loaderPawn('montgolfiere', 0);
+    // gameboard.loaderPawn('boat', 0);
 
     // setTimeout(() => {
-    //     this.$refs.gameboard.movement('boat', 5, () => {
-    //         this.$refs.gameboard.movement('montgolfiere', 10, () => {});
+    //     gameboard.movement('boat', 5, () => {
+    //         gameboard.movement('montgolfiere', 10, () => {});
     //     });
     // }, 3000)
 
@@ -623,7 +676,7 @@ export default {
 
         // Génération de la liste de joueurs
         this.players.forEach((player, index) => {
-            this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
+            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
             // player.properties = [];
@@ -738,6 +791,7 @@ export default {
         const cellPos2 = data.cellPosTmp ? data.cellPos : null;
 
         // Lancement de l'animation des dés
+        this.audio.sfx.rollDices.play();
         this.$refs.dices.triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
 
             // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
@@ -745,7 +799,7 @@ export default {
                 console.log("movement(" + this.CST.PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
                 currPlayer.cellPos = cellPos1;
                 this.$refs.actionBtn.progressPause();
-                this.$refs.gameboard.movement(this.CST.PAWNS[currPlayer.pawn], cellPos1.toString(), () => {
+                gameboard.movement(this.CST.PAWNS[currPlayer.pawn], cellPos1.toString(), () => {
                     this.$refs.actionBtn.progressResume();
                     this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
                 });
@@ -754,9 +808,6 @@ export default {
             }
         });
     });
-
-
-
 
 
     // Terrain vierge acheté
@@ -777,14 +828,15 @@ export default {
         const cell = this.getCellByProperty(property);
         if (property && cell) {
             const player = this.getPlayerById(data.playerID);
-            // player.properties.push(property);
             property.ownerID = player.id;
             player.properties.push(property);
             console.log(player.properties);
-            // MANQUE ACCÈS A LA COULEUR DU JOUEUR
-            this.$refs.gameboard.loaderFlag("d" + cell.id, player.color);
+            gameboard.loaderFlag("d" + cell.id, player.color);
 
-            this.$set(player, 'money', data.playerMoney);
+            if (data.playerMoney != player.money) {
+                this.audio.sfx.cashRegister.play();
+                this.$set(player, 'money', data.playerMoney);
+            }
 
             // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
             this.turnNotifications = [];
@@ -802,10 +854,83 @@ export default {
 
         }
     });
-    
 
 
-    this.socket.emit('gameReadyReq');
+    // Un joueur s'est déconnecté
+    this.socket.on('gamePlayerDisconnectedRes', (data) => {
+        console.log('gamePlayerDisconnectedRes');
+        const player = this.getPlayerById(data.playerID);
+        if (player) {
+            this.$set(player, 'disconnected', true);
+            console.log(`${player.nickname} s'est déconnecté`);
+        }
+    });
+
+    // Un joueur s'est reconnecté
+    this.socket.on('gamePlayerReconnectedRes', (data) => {
+        const player = this.getPlayerById(data.playerID);
+        if (player)
+            this.$set(player, 'disconnected', false);
+    });
+
+    // Player failure
+    this.socket.on('gamePlayerFailureRes', (res) => {
+        console.log('gamePlayerFailureRes');
+
+        const player = this.getPlayerById(res.playerID);
+        if (player) {
+            this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
+
+            // Toutes les propriétés sont à nouveau à vendre
+            this.properties.forEach((property) => {
+                if (property.ownerID == player.id)
+                    property.ownerID = null;
+            });
+
+            // Reset des propriétés du joueur
+            this.$set(player, 'properties', []);
+
+            // Simple texte d'annonce
+            this.$set(player, 'failure', true);
+        }
+    });
+
+    // Fin de partie
+    this.socket.on('gameEndRes', (res) => {
+        const winner = this.getPlayerById(res.winnerID);
+        const type = res.type; // 'failure' (dernier en vie) ou 'timeout'
+        const duration = res.duration * 1.66667e-5; // durée totale du jeu en minutes
+
+        alert('Fin de la partie (' + type + ') après ' + duration + ' minutes de jeu');
+        alert(winner.nickname + ' a gagné, félicitations !');
+        this.stopMusic();
+
+        setTimeout(() => {
+            this.$router.push('Lobby');
+        }, 500);
+    });
+
+    // Un joueur quitte la prtie
+    this.socket.on('gamePlayerHasLeftRes', (res) => {
+        console.log("=== PLAYER LEFT ===");
+        const player = this.getPlayerById(res.playerID);
+        if (player) {
+            console.log('PLAYER LEFT IS')
+            console.log(player);
+            this.$refs.chat.messages.push({
+                senderUserID: -1,
+                content: `${player.nickname} a quitté la partie :/`,
+                createdTime: new Date()
+            });
+
+            for (const i in this.players) {
+                if (this.players[i].id == player.id) {
+                    this.players.splice(i, 1);
+                    return;
+                }
+            }
+        }
+    });
 
   }
 };

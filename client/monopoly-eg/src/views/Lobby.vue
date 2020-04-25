@@ -198,6 +198,7 @@
 </template>
 
 <script>
+import {Howl} from 'howler';
 import io from 'socket.io-client';
 import ChatIO from '../components/ChatIO';
 import GameSettingsModal from '../components/GameSettingsModal';
@@ -232,7 +233,15 @@ export default {
             rightNbJ: false,
             gameTime: 'Illimité',
             nbPlayers: 0,
-            lobbyInvitations: []
+            lobbyInvitations: [],
+            audio: {
+                background: null,
+                sfx: {
+                    notification: null,
+                    userLeft: null,
+                    userJoined: null
+                }
+            }
         }
     },
     methods: {
@@ -355,9 +364,50 @@ export default {
             //         break;
             //     }
             // }
+        },
+
+        playMusic() {
+            this.audio.background = new Howl({
+                src: '/assets/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3',
+                volume: 0.5,
+                autoplay: true,
+                loop: true
+            });
+        },
+
+        stopMusic() {
+            this.audio.background.fade(this.audio.background.volume(), 0, 500);
+            this.audio.background.stop();
+        },
+
+        loadSfx() {
+            this.audio.sfx.notification = new Howl({
+                src: ['/assets/audio/sfx/clearly.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
+            this.audio.sfx.userJoined = new Howl({
+                src: ['/assets/audio/sfx/hollow.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
+            this.audio.sfx.userLeft = new Howl({
+                src: ['/assets/audio/sfx/glitch-in-the-matrix.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
         }
     },
-    created() {
+    beforeDestroy() {
+        this.stopMusic();
+    },
+    mounted() {
+        this.playMusic();
+        this.loadSfx();
+
         console.log(this.loggedUser);
         console.log(this.socket);
 
@@ -453,13 +503,13 @@ export default {
 
         // récéption d'une demande d'ami
         this.socket.on('lobbyFriendInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.friendsInvitations.push({id: res.id, nickname: res.nickname});
         });
 
         //Invitation d'un amis pour rejoindre son lobby
         this.socket.on('lobbyInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.lobbyInvitations.push({id: res.invitationID, friendNickname: res.senderFriendNickname});
         });
 
@@ -467,7 +517,7 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
-            // userJoinedSfx.play();
+            this.audio.sfx.userJoined.play();
             
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
@@ -480,7 +530,7 @@ export default {
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
-            // userLeftSfx.play();
+            this.audio.sfx.userLeft.play();
 
             console.log("LOBBY USER LEFT RES");
             console.log(res);
@@ -525,7 +575,7 @@ export default {
         });
 
         this.socket.on('lobbyGameFoundRes', () => {
-            // lobbyMusic.fade(lobbyMusic.volume(), 0, 500);
+            this.stopMusic();
             setTimeout(() => {
                 this.$router.push('Game');
             }, 500);
@@ -562,9 +612,9 @@ export default {
                 this.socket.emit('lobbyReadyReq');
 
                 // this.socket.emit('disconnect');
-                setTimeout(() => {
-                    this.socket.emit('lobbyReadyReq');
-                }, 1000);
+                // setTimeout(() => {
+                //     this.socket.emit('lobbyReadyReq');
+                // }, 1000);
                 // this.$router.go();
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);

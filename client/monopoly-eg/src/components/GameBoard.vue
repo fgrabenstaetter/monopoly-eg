@@ -299,6 +299,9 @@ export default {
             requestAnimationFrame(render);
         }
         requestAnimationFrame(render);
+
+        // On indique que le plateau est chargé
+        this.$parent.gameReady();
   },
   methods: {
     /**

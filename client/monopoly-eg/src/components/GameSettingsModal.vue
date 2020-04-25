@@ -29,7 +29,7 @@
                     </ul>
 
                     <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-                    <button v-if="env == 'game'" class="btn btn-primary" href="#" role="button"
+                    <button v-if="env == 'game'" v-on:click="quitGame" class="btn btn-primary" href="#" role="button"
                         style="background-color: red;">QUITTER LA PARTIE</button>
                 </div>
             </div>
@@ -81,6 +81,9 @@ export default {
                 this.$parent.$refs.gameboard.refreshPlayerGraphicsQuality();
                 this.$parent.$refs.gameboard.refreshPlayerAutoZoom();
             }
+        },
+        quitGame() {
+            this.$parent.quitGame();
         }
     }
 }

@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import {Howl} from 'howler'
+
 export default {
     name: 'ChatIO',
     props: {
@@ -38,7 +40,12 @@ export default {
     data() {
         return {
             messages: [],
-            msg: ''
+            msg: '',
+            audio: {
+                sfx: {
+                    newMessage: null
+                }
+            }
         }
     },
     methods: {
@@ -53,21 +60,31 @@ export default {
         scrollToBottom() {
             const element = this.$el.querySelector("#msgChat");
             element.scrollTop = element.scrollHeight;
+        },
+        loadSfx() {
+            this.audio.sfx.newMessage = new Howl({
+                src: ['/assets/audio/sfx/when.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
         }
     },
     mounted() {
+        this.loadSfx();
+
         if (this.env === 'lobby') {
             this.socket.on('lobbyChatReceiveRes', (mess) => {
-                // if (mess.senderUserID != loggedUser._id) {
-                //     newMessageSfx.play();
-                // }
+                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser._id) {
+                    this.audio.sfx.newMessage.play();
+                }
                 this.messages.push(mess);
             });
         } else {
             this.socket.on('gameChatReceiveRes', (mess) => {
-                // if (mess.senderUserID != loggedUser._id) {
-                //     newMessageSfx.play();
-                // }
+                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser._id) {
+                    this.audio.sfx.newMessage.play();
+                }
                 const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
                 this.messages.push(formatMsg);
             });
