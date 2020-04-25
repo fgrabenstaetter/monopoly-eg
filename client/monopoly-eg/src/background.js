@@ -15,10 +15,28 @@ let win
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
+  // const sesh = session.defaultSession.webRequest.onBeforeSendHeaders({
+  //   urls: ['*://*/*']
+  // }, (details, callback) => {
+  //   // eslint-disable-next-line prefer-destructuring
+  //   details.requestHeaders.Host = details.url.split('://')[1].split('/')[0]
+  //   callback({
+  //     requestHeaders: details.requestHeaders
+  //   })
+  // });
+
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
-    nodeIntegration: true
-  } })
+  win = new BrowserWindow({
+    width: 1000,
+    height: 750,
+    minWidth: 1000,
+    minHeight: 750,
+    webPreferences: {
+      // session: sesh,
+      nodeIntegration: true,
+      webSecurity: false
+    }
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
