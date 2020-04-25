@@ -7,77 +7,13 @@
     <div class="ingame-ui-container">
       <div class="container-fluid players-list-container pl-5 pr-5">
         <div class="player-list">
-          <div v-for="player in players" :key="player.id" class="player-entry">
-            <div class="name">{{player.nickname}}</div>
-            <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
-            <div class="popup top" style="display: none;">
-                <div class="properties-container yellow">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container red">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container blue">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container orange">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container purple">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container brown">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container cyan">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container green">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container station">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-                <div class="properties-container company">
-                    <div class="blank-property"></div>
-                    <div class="blank-property"></div>
-                </div>
-            </div>
-          </div>
+            <player-entry v-for="player in players" :key="player.id" v-bind:player="player" v-bind:isCurrent="currentPlayerID == player.id"></player-entry>
         </div>
       </div>
       <div class="container-fluid bottom-container pl-5 pr-5" style="z-index: 10;">
         <div class="row">
           <div class="col-md-4">
-            <div class="tchat-container" id="msgChat"></div>
-
-            <div class="tchat-container">
-              <div class="input-group">
-                <input class="form-control" type="text" id="chat" placeholder="Votre message..." />
-                <div class="input-group-append">
-                  <span class="input-group-text">
-                    <i class="fa fa-paper-plane" id="btnSendMsg"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
+            <chat-io v-bind:socket="socket" env="game" ref="chat"></chat-io>
           </div>
           <div class="col-md-4"></div>
           <div class="col-md-4">
@@ -430,7 +366,8 @@
 import io from "socket.io-client";
 import GameBoard from "../components/GameBoard";
 import ActionButton from "../components/ActionButton";
-import IOdometer from 'vue-odometer';
+import PlayerEntry from '../components/PlayerEntry';
+import ChatIO from '../components/ChatIO';
 import 'odometer/themes/odometer-theme-default.css';
 // import JQuery from 'jquery'
 
@@ -439,7 +376,8 @@ export default {
   components: {
     'gameboard': GameBoard,
     'action-button': ActionButton,
-    IOdometer
+    'player-entry': PlayerEntry,
+    'chat-io': ChatIO
   },
   data() {
     return {
@@ -480,7 +418,9 @@ export default {
       }],
       cells: [],
       properties: [],
-      gameEndTime: null
+      gameEndTime: null,
+      turnNotifications: [],
+      currentPlayerID: 0
     };
   },
   methods: {
@@ -607,7 +547,274 @@ export default {
     });
 
 
-    this.socket.emit('gameReadyReq')
+    // Données de reconnexion
+    this.socket.on('gameReconnectionRes', (data) => {
+        console.log(' --- RECONNEXION DATA');
+        console.log(data);
+
+        this.players = data.players;
+        this.cells = data.cells;
+        this.properties = data.properties;
+        this.gameEndTime = data.gameEndTime;
+
+        for (const i in this.properties) {
+            this.properties[i].level = 0;
+            this.properties[i].ownerID = null;
+        }
+
+        // Génération de la liste de joueurs
+        this.players.forEach((player, index) => {
+            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
+            player.color = this.CST.PLAYERS_COLORS[index];
+            player.isInJail = false;
+        });
+
+        this.players.forEach((player) => {
+            player.properties.forEach((playerProperty) => {
+                let property = this.getPropertyById(playerProperty);
+                if (property) {
+                    property.ownerID = player.id;
+                    // MANQUE ACCÈS A LA COULEUR DU JOUEUR
+                    let cell = this.getCellByProperty(property)
+                    gameboard.loaderFlag("d" + cell.id, player.color);
+                    // if (property.type == "publicCompany") {
+                    //     createProperty(player.id, 'company', property.name, property.id);
+                    // } else if (property.type == "trainStation") {
+                    //     createProperty(player.id, 'station', property.name, property.id);
+                    // } else {
+                    //     createProperty(player.id, property.color, property.name, property.id);
+                    // }
+                }
+            });
+        });
+
+        data.chatMessages.forEach((msg) => {
+            this.$refs.chat.messages.push({
+                senderUserID: msg.playerID,
+                content: msg.text,
+                createdTime: msg.createdTime
+            });
+        });
+
+        /**
+         * Reste à gérer à la reconnexion :
+         * - bids
+         * - offers
+         * - couleur des cases pour celles déjà achetées
+         */
+
+        // hideLoaderOverlay();
+
+        this.$refs.actionBtn.progressInitialize();
+    });
+
+
+    this.socket.on('gameTurnRes', (data) => {
+        console.log(data);
+        let currentTimestamp = Date.now();
+        let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
+        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
+
+        // On vide toutes les notifications (au cas-où)
+        this.turnNotifications = [];
+        // $('.notification-container > .col-md-12').empty();
+
+        this.currentPlayerID = data.playerID;
+
+        // afficher décompte de temps du tour
+        if (data.playerID === this.loggedUser.id) {
+            // triggerSplashAnimation('<br>C\'est à vous de jouer !', 'white');
+
+            console.log("[BOUTON D'ACTION] Initialisation");
+            this.$refs.actionBtn.progressReset();
+            console.log("[BOUTON D'ACTION] Passage en timer");
+            this.$refs.actionBtn.progressStart(turnTimeSeconds);
+        } else {
+            // triggerSplashAnimation(`<br>C'est au tour de ${idToNick(data.playerID)} !`, 'white');
+            console.log("[BOUTON D'ACTION] Passage en attente");
+            this.$refs.actionBtn.progressFinish();
+        }
+    });
+
+
+    this.socket.on('gameActionRes', (data) => {
+        console.log("=== gameActionRes ===");
+        console.log(data);
+
+        console.log("Action déclenchée par " + this.idToNick(data.playerID) + " => " + data.actionMessage);
+
+
+        // let currentTimestamp = Date.now();
+        // let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
+
+        let currPlayer = this.getPlayerById(data.playerID);
+        if (!currPlayer) {
+            console.log('JOUEUR INTROUVABLE');
+            return;
+        }
+
+        if (currPlayer.id == this.loggedUser.id) {
+            console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
+            if (data.dicesRes[0] != data.dicesRes[1]) {
+                this.$refs.actionBtn.progressSetStateTerminer();
+            }
+            else {
+                this.$refs.actionBtn.progressSetStateRelancer();
+            }
+        }
+
+        if (currPlayer.isInJail && currPlayer.isInJail > 3)
+            currPlayer.isInJail = false;
+
+        let totalDices = data.dicesRes[0] + data.dicesRes[1];
+        console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
+
+        // let cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
+        // let cellPos2 = data.cellPosTmp ? data.cellPos : null;
+
+        // Lancement de l'animation des dés
+        // triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
+
+        //     // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
+        //     if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
+        //         console.log("movement(" + PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
+        //         currPlayer.cellPos = cellPos1;
+        //         $('#timer').progressPause();
+        //         movement(PAWNS[currPlayer.pawn], cellPos1.toString(), function () {
+        //             $('#timer').progressResume();
+        //             gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
+        //         });
+        //     } else {
+        //         gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
+        //     }
+        // });
+    });
+
+    // /**
+    //  * Continue le tour de jeu (gameActionRes) après le premier déplacement
+    //  * @param data Données de gameActionRes
+    //  * @param currPlayer Joueur courant
+    //  * @param cellPos2 Position #2 (le cas échéant)
+    //  */
+    // function gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
+    //     // Mise à jour des soldes (le cas échéant)
+    //     if (data.updateMoney) {
+    //         data.updateMoney.forEach((row) => {
+    //             setPlayerMoney(row.playerID, row.money);
+    //         });
+    //     }
+
+    //     // Récupération de la propriété sur laquelle le joueur est tombé (le cas échéant)
+    //     let property = getPropertyByCellId(data.cellPos);
+
+    //     let afficherMessageAction = false;
+    //     // asyncRequestType à gérer ici
+    //     if (data.asyncRequestType && property) {
+    //         if (data.asyncRequestType == "canBuy") {
+    //             let price = data.asyncRequestArgs[0];
+    //             if (property.type == "publicCompany") {
+    //                 if (property.name == 'Eléctricité de Strasbourg')
+    //                     createSaleCard(property.id, "company electricite", property.name, price, (currPlayer.id != ID));
+    //                 else
+    //                     createSaleCard(property.id, "company eau", property.name, price, (currPlayer.id != ID));
+    //             }
+    //             else if (property.type == "trainStation")
+    //                 createSaleCard(property.id, "station", property.name, price, (currPlayer.id != ID));
+    //             else
+    //                 createSaleCard(property.id, property.color, property.name, price, (currPlayer.id != ID));
+    //         }
+    //         else if (data.asyncRequestType == "canUpgrade") {
+    //             // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
+    //             let level1Price = data.asyncRequestArgs[0];
+    //             let level2Price = data.asyncRequestArgs[1];
+    //             let level3Price = data.asyncRequestArgs[2];
+    //             let level4Price = data.asyncRequestArgs[3];
+    //             let level5price = data.asyncRequestArgs[4];
+
+    //             createUpgradeCard(property.id, property.color, property.name, (currPlayer.id != ID));
+
+    //         } else if (data.asyncRequestType == "shouldMortgage") {
+    //             // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
+    //             let totalMoneyToHave = data.asyncRequestArgs[0];
+    //         } else {
+    //             afficherMessageAction = true;
+    //         }
+    //     } else {
+    //         afficherMessageAction = true;
+    //     }
+
+    //     // Affichage du message d'action donné par le serveur
+    //     if (afficherMessageAction && data.actionMessage)
+    //         createTextCard(data.actionMessage, (currPlayer.id != ID), null, null);
+
+    //     // Traitement des extras
+    //     if (typeof data.extra !== "undefined") {
+    //         // Si on est tombé sur une carte (chance / communauté)
+    //         if (typeof data.extra.newCard !== "undefined") {
+    //             if (data.extra.newCard.type == "chance") {
+    //                 createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte chance");
+    //             } else { // community
+    //                 createTextCard(data.extra.newCard.description, (currPlayer.id != ID), "blue", "Carte communauté");
+    //             }
+    //         }
+
+    //         // Nb de cartes sortie de prison si il a changé
+    //         if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+    //             currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+    //         }
+
+    //         if (typeof data.extra.goJail !== "undefined" && data.extra.goJail) {
+    //             cellPos2 = null;
+    //             currPlayer.isInJail = 1;
+    //             setTimeout(() => {
+    //                 deletePawn(PAWNS[currPlayer.pawn]);
+    //                 setTimeout(() => {
+    //                     loaderPawn(PAWNS[currPlayer.pawn], CELL_PRISON);
+    //                     return gameActionResAfterSecondMovement(data);
+    //                 }, 1000);
+    //             }, 1000);
+    //         }
+    //     }
+
+    //     if (cellPos2 !== null && cellPos2 != currPlayer.cellPos) {
+    //         movement(PAWNS[currPlayer.pawn], cellPos2.toString(), function () {
+    //             currPlayer.cellPos = cellPos2;
+    //             gameActionResAfterSecondMovement(data, currPlayer);
+    //         });
+    //     } else {
+    //         gameActionResAfterSecondMovement(data, currPlayer);
+    //     }
+    // }
+
+    // /**
+    //  * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
+    //  * @param data Données de gameActionRes
+    //  * @param currPlayer Joueur actuel
+    //  */
+    // function gameActionResAfterSecondMovement(data, currPlayer) {
+    //     if (data.playerID === ID) {
+    //         $('#timer').progressReset(false);
+    //     }
+    //     // Si double avec les dés, on peut les relancer
+    //     if (data.dicesRes[0] == data.dicesRes[1]) {
+    //         if (data.playerID === ID) {
+    //             // LABEL -> "RE-LANCER LES DÉS"
+    //             console.log("[BOUTON D'ACTION] Initialisation");
+    //             // Ajouter le progressStart
+    //         }
+    //         else {
+    //             $(this).attr({ 'data-loading': 'TERMINER' });
+    //         }
+    //     }
+
+    //     if (currPlayer.isInJail)
+    //         currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
+
+    //     console.log("=== fin gameActionRes ===");
+    // }
+
+
+    this.socket.emit('gameReadyReq');
 
   }
 };
