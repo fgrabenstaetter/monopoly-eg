@@ -201,11 +201,14 @@
   #bid-popup-container {
     position: absolute;
     top: 10px;
-    width: 100vw;
+    width: max-content;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    z-index: 11000;
 
     .bid-popup {
       display: flex;
@@ -443,6 +446,7 @@
   .top-bar {
     position: absolute;
     top: 0;
+    z-index: 10000;
 
     .offers-container {
       margin: 10px;
@@ -454,6 +458,7 @@
         width: 400px;
         font-size: 15px;
         border-radius: 10px;
+        margin: 20px 0;
 
         .form {
           margin: 10px auto 3px auto;
