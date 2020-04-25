@@ -458,7 +458,8 @@ export default {
         if (data.updateMoney) {
             data.updateMoney.forEach((row) => {
                 const player = this.getPlayerById(row.playerID);
-                if (player) player.money = row.money;
+                // if (player) player.money = row.money;
+                if (player) this.$set(player, 'money', row.money);
                 // Update $set ?
             });
         }
@@ -653,6 +654,7 @@ export default {
         this.players = data.players;
         this.cells = data.cells;
         this.properties = data.properties;
+        console.log(this.properties);
         this.gameEndTime = data.gameEndTime;
 
         console.log('Le jeu a démarré !');
@@ -708,16 +710,20 @@ export default {
             this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
+            player.properties = [];
         });
 
-        this.players.forEach((player) => {
+        data.players.forEach((player, index) => {
             player.properties.forEach((playerProperty) => {
+                console.log("PROPERTY");
+                console.log(playerProperty);    
                 let property = this.getPropertyById(playerProperty);
                 if (property) {
                     property.ownerID = player.id;
                     // MANQUE ACCÈS A LA COULEUR DU JOUEUR
                     let cell = this.getCellByProperty(property)
                     gameboard.loaderFlag("d" + cell.id, player.color);
+                    this.players[index].properties.push(property);
                     // if (property.type == "publicCompany") {
                     //     createProperty(player.id, 'company', property.name, property.id);
                     // } else if (property.type == "trainStation") {
@@ -843,6 +849,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             // player.properties.push(property);
             property.ownerID = player.id;
+            player.properties.push(property);
             // MANQUE ACCÈS A LA COULEUR DU JOUEUR
             this.$refs.gameboard.loaderFlag("d" + cell.id, player.color);
 
