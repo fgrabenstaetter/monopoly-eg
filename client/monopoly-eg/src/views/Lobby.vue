@@ -251,6 +251,11 @@ export default {
             }
         }
     },
+    watch: {
+        loggedUser() {
+            alert('changed');
+        }
+    },
     methods: {
         play() {
             if (this.hostID === this.loggedUser.id) {
@@ -391,10 +396,14 @@ export default {
         playMusic() {
             this.audio.background = new Howl({
                 src: '/assets/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3',
-                volume: 0.5,
+                volume: this.loggedUser.settings.musicLevel / 100,
                 autoplay: true,
                 loop: true
             });
+        },
+
+        setMusicLevel(level) {
+            this.audio.background.volume(level / 100);
         },
 
         stopMusic() {
@@ -407,20 +416,25 @@ export default {
                 src: ['/assets/audio/sfx/clearly.mp3'],
                 autoplay: false,
                 loop: false,
-                volume: 0.5
+                volume: this.loggedUser.settings.sfxLevel / 100
             });
             this.audio.sfx.userJoined = new Howl({
                 src: ['/assets/audio/sfx/hollow.mp3'],
                 autoplay: false,
                 loop: false,
-                volume: 0.5
+                volume: this.loggedUser.settings.sfxLevel / 100
             });
             this.audio.sfx.userLeft = new Howl({
                 src: ['/assets/audio/sfx/glitch-in-the-matrix.mp3'],
                 autoplay: false,
                 loop: false,
-                volume: 0.5
+                volume: this.loggedUser.settings.sfxLevel / 100
             });
+        },
+
+        setSfxLevel(level) {
+            for (let [key] of Object.entries(this.audio.sfx))
+                key.volume(level / 100);
         }
     },
     beforeDestroy() {

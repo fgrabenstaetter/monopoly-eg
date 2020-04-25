@@ -26,6 +26,14 @@
                                 <span class="slider"></span>
                             </label>
                         </li>
+                        <li style="flex-wrap:wrap;">
+                            <span>Musique</span>
+                            <input @change="updateUserSettings" v-model="userSettings.musicLevel" type="range" min="0" max="100" class="range-slider">
+                        </li>
+                        <li style="flex-wrap:wrap;">
+                            <span>Effets sonores</span>
+                            <input @change="updateUserSettings" v-model="userSettings.sfxLevel" type="range" min="0" max="100" class="range-slider">
+                        </li>
                     </ul>
 
                     <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
@@ -58,7 +66,9 @@ export default {
         return {
             userSettings: {
                 graphicsQuality: 1,
-                autoZoom: true
+                autoZoom: true,
+                musicLevel: 100,
+                sfxLevel: 100
             }
         }
     },
@@ -81,6 +91,9 @@ export default {
                 this.$parent.$refs.gameboard.refreshPlayerGraphicsQuality();
                 this.$parent.$refs.gameboard.refreshPlayerAutoZoom();
             }
+
+            // Refresh volume en direct
+            this.$parent.setMusicLevel(this.userSettings.musicLevel);
         },
         quitGame() {
             this.$parent.quitGame();
@@ -88,3 +101,36 @@ export default {
     }
 }
 </script>
+
+<style>
+.range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  margin: 8px 0;
+  background: #d7d7d7;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%; 
+  background: #027AFE;
+  cursor: pointer;
+}
+
+.range-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #027AFE;
+  cursor: pointer;
+}
+</style>

@@ -463,10 +463,14 @@ export default {
       this.audio.background = new Howl({
         src:
           "/assets/audio/musics/on-my-way-by-kevin-macleod-from-filmmusic-io.mp3",
-        volume: 0.5,
+        volume: this.loggedUser.settings.musicLevel / 100,
         autoplay: true,
         loop: true
       });
+    },
+
+    setMusicLevel(level) {
+        this.audio.background.volume(level / 100);
     },
 
     stopMusic() {
@@ -479,14 +483,19 @@ export default {
         src: ["/assets/audio/sfx/shake-and-roll-dice-soundbible.mp3"],
         autoplay: false,
         loop: false,
-        volume: 0.5
+        volume: this.loggedUser.settings.sfxLevel
       });
       this.audio.sfx.cashRegister = new Howl({
         src: ["/assets/audio/sfx/cash-register-youtube-gaming-sound-fx.mp3"],
         autoplay: false,
         loop: false,
-        volume: 0.5
+        volume: this.loggedUser.settings.sfxLevel
       });
+    },
+
+    setSfxLevel(level) {
+        for (let [key] of Object.entries(this.audio.sfx))
+            key.volume(level / 100);
     },
 
     /**

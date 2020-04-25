@@ -16,7 +16,9 @@ let userSchema = new Schema({
     friends: [{ type: Schema.Types.ObjectId, ref: 'Friend' }],
     settings: {
         graphicsQuality: { type: Number, required: true, enum: [0, 1, 2], default: 1 },
-        autoZoom: { type: Boolean, required: true, default: true }
+        autoZoom: { type: Boolean, required: true, default: true },
+        musicLevel: { type: Number, required: true, default: 100 },
+        sfxLevel: { type: Number, required: true, default: 100 }
     },
     success: [{ type: Number }]
 });

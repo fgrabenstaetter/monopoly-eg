@@ -1324,7 +1324,8 @@ class Network {
     // Settings
     playerSettingsReq (user) {
         user.socket.on('playerSettingsReq', (data) => {
-            if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
+            if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined'
+                || typeof data.musicLevel === 'undefined' || typeof data.sfxLevel === 'undefined')
                 return;
 
             UserSchema.findById(user.id, (error, userMongo) => {
@@ -1336,6 +1337,14 @@ class Network {
                 userMongo.settings.graphicsQuality = gQuality;
 
                 userMongo.settings.autoZoom = Boolean(data.autoZoom);
+
+                let musicLevel = parseInt(data.musicLevel);
+                musicLevel = (musicLevel >= 0 && musicLevel <= 100) ? musicLevel : 100;
+                userMongo.settings.musicLevel = musicLevel;
+
+                let sfxLevel = parseInt(data.sfxLevel);
+                sfxLevel = (sfxLevel >= 0 && sfxLevel <= 100) ? sfxLevel : 100;
+                userMongo.settings.sfxLevel = sfxLevel;
 
                 userMongo.save((err) => {
                     return;
