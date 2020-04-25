@@ -15,10 +15,6 @@ import 'bootstrap'
 import VueAnime from 'vue-animejs';
 Vue.use(VueAnime);
 
-// library.add(faUserSecret)
-
-// Vue.component('font-awesome-icon', FontAwesomeIcon)
- 
 // Vue.use(new VueSocketIO({
 //     debug: true,
 //     connection: store.getters.serverUrl,
@@ -33,12 +29,6 @@ Vue.use(VueAnime);
 //       secure: true
 //     }
 // }))
-
-Vue.mixin({
-  methods: {
-    toast: str => alert('TOAST MIXIN ' + str)
-  }
-});
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
