@@ -40,7 +40,7 @@ $('.player-list').on('mouseenter', '.property', function (e) {
     }
 
     if (isMine) {
-        gProp = `<button class="sellProp" onclick="sellBuyModal($(this).parent().parent().attr('data-id'));" >VENDRE</button>`
+        gProp = `<button class="sellProp" onclick="openSellModal($(this).parent().parent().attr('data-id'));" >VENDRE</button>`
         if (isMortgage) {
             gProp += `<button class="rebuyProp" onclick="rebuyProp(this)" >RACHETER</button>`
         }
