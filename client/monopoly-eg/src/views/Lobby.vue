@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <i class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
+                        <i v-on:click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
                     </div>
                 </div>
                 <div class="row">
@@ -82,7 +82,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <chat-io v-bind:socket="socket"></chat-io>
+                        <chat-io v-bind:socket="socket" ref="chat"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
                         <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
@@ -192,56 +192,28 @@
             </div>
         </div>
 
-            <div class="profile-modals-container">
-            <!-- Options -->
-            <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
-            aria-hidden="true" data-id="1">
-            <div class="modal-dialog animated bounceIn" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="optionsModalLabel">Options</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
-                            <span aria-hidden="true" style="cursor: pointer;">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul>
-                            <li>
-                                <span>Qualité graphique</span>
-                                <select id="graphics-quality" class="custom-select">
-                                    <option value="0">Bas</option>
-                                    <option value="1">Standard</option>
-                                    <option value="2">Élevé</option>
-                                </select>
-                            </li>
-                            <li>
-                                <span>Zoom automatique</span>
-                                <label class="switch">
-                                    <input id="auto-zoom" type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </li>
-                        </ul>
+        <!-- Game settings modal -->
+        <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
 
-                        <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-                        <button id="quit-game" class="btn btn-primary" href="#" role="button"
-                            style="background-color: red;">QUITTER LA PARTIE</button>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
+        <full-screen-loader v-if="loading"></full-screen-loader>
+    
     </div>
+
 </template>
 
 <script>
+import {Howl} from 'howler';
 import io from 'socket.io-client';
+import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
+import GameSettingsModal from '../components/GameSettingsModal';
 
 export default {
     name: 'Lobby',
     components: {
-        'chat-io': ChatIO
+        'full-screen-loader': FullScreenLoader,
+        'chat-io': ChatIO,
+        'game-settings-modal': GameSettingsModal
     },
     data() {
         return {
@@ -259,6 +231,7 @@ export default {
             addFriendForm: {
                 nickname: ""
             },
+            loading: false,
             players: [],
             friends: [],
             friendsInvitations: [],
@@ -267,15 +240,29 @@ export default {
             rightNbJ: false,
             gameTime: 'Illimité',
             nbPlayers: 0,
-            lobbyInvitations: []
+            lobbyInvitations: [],
+            audio: {
+                background: null,
+                sfx: {
+                    notification: null,
+                    userLeft: null,
+                    userJoined: null
+                }
+            }
         }
     },
     methods: {
         play() {
             if (this.hostID === this.loggedUser.id) {
-                this.socket.emit('lobbyPlayReq');
-                this.playBtn.loading = true;
-                this.playBtn.text = "CHARGEMENT...";
+                if (!this.playBtn.loading) {
+                    this.socket.emit('lobbyPlayReq');
+                    this.playBtn.loading = true;
+                    this.playBtn.text = 'CHARGEMENT...';    
+                } else {
+                    this.socket.emit('lobbyCancelPlayReq');
+                    this.playBtn.loading = false;
+                    this.playBtn.text = 'JOUER!';
+                }
             }
         },
         nickToId(nick) {
@@ -308,6 +295,10 @@ export default {
 
                 if (this.nbPlayers > 2) {
                     this.leftNbJ = true;
+                }
+
+                if (this.nbPlayers >= 8) {
+                    this.rightNbJ = false;
                 }
             }
         },
@@ -390,9 +381,56 @@ export default {
             //         break;
             //     }
             // }
+        },
+
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('Home');
+        },
+
+        playMusic() {
+            this.audio.background = new Howl({
+                src: '/assets/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3',
+                volume: 0.5,
+                autoplay: true,
+                loop: true
+            });
+        },
+
+        stopMusic() {
+            this.audio.background.fade(this.audio.background.volume(), 0, 500);
+            this.audio.background.stop();
+        },
+
+        loadSfx() {
+            this.audio.sfx.notification = new Howl({
+                src: ['/assets/audio/sfx/clearly.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
+            this.audio.sfx.userJoined = new Howl({
+                src: ['/assets/audio/sfx/hollow.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
+            this.audio.sfx.userLeft = new Howl({
+                src: ['/assets/audio/sfx/glitch-in-the-matrix.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: 0.5
+            });
         }
     },
-    created() {
+    beforeDestroy() {
+        this.stopMusic();
+        this.socket.disconnect();
+    },
+    mounted() {
+        this.playMusic();
+        this.loadSfx();
+
         console.log(this.loggedUser);
         console.log(this.socket);
 
@@ -435,22 +473,19 @@ export default {
             console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
-            // this.hostID = res.users[0].id;
+            this.hostID = res.users[0].id;
 
             for (const usr of res.users) {
                 usr.avatar = this.$store.getters.serverUrl + usr.avatar;
                 this.players.push(usr);
             }
 
-            console.log(this.hostID);
-            this.hostID = res.users[0].id;
-            console.log(this.hostID);
-
             this.leftNbJ = false;
             this.rightNbJ = false;
-            console.log("===");
-            // for (const mess of res.messages)
-            //     addMsg(mess.senderUserID, mess.content, mess.createdTime);
+            this.playBtn.disabled = true;
+
+            for (const mess of res.messages)
+                this.$refs.chat.messages.push(mess);
         });
 
 
@@ -488,13 +523,13 @@ export default {
 
         // récéption d'une demande d'ami
         this.socket.on('lobbyFriendInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.friendsInvitations.push({id: res.id, nickname: res.nickname});
         });
 
         //Invitation d'un amis pour rejoindre son lobby
         this.socket.on('lobbyInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.lobbyInvitations.push({id: res.invitationID, friendNickname: res.senderFriendNickname});
         });
 
@@ -502,7 +537,7 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
-            // userJoinedSfx.play();
+            this.audio.sfx.userJoined.play();
             
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
@@ -515,7 +550,7 @@ export default {
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
-            // userLeftSfx.play();
+            this.audio.sfx.userLeft.play();
 
             console.log("LOBBY USER LEFT RES");
             console.log(res);
@@ -554,13 +589,14 @@ export default {
         this.socket.on('lobbyPlayRes', (res) => {
             if (res.error !== 0) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
-                this.playBtn.disabled = false;
+                this.playBtn.loading = false;
+                // this.playBtn.disabled = false;
                 this.playBtn.text = "JOUER!";
             }
         });
 
         this.socket.on('lobbyGameFoundRes', () => {
-            // lobbyMusic.fade(lobbyMusic.volume(), 0, 500);
+            this.stopMusic();
             setTimeout(() => {
                 this.$router.push('Game');
             }, 500);
@@ -594,12 +630,7 @@ export default {
             console.log("lobbyInvitationAcceptRes");
             console.log(res);
             if (res.error === 0) {
-
-                // this.socket.emit('disconnect');
-                setTimeout(() => {
-                    this.socket.emit('lobbyReadyReq');
-                }, 1000);
-                // this.$router.go();
+                this.socket.emit('lobbyReadyReq');
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
@@ -620,6 +651,16 @@ export default {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
+        // On peut se reconnecter à une partie en cours
+        this.socket.on('canReconnectToGame', () => {
+            this.loading = true;
+            this.socket.disconnect();
+
+            setTimeout(() => {
+                this.$router.push('Game');
+                this.loading = false;
+            }, 1000);
+        });
 
         console.log("LOBBY READY REQ");
         this.socket.emit('lobbyReadyReq');

@@ -22,7 +22,16 @@ export const store = new Vuex.Store({
         state.pending = false;
       },
       loggedOut (state) {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('loggedUser');
+        state.jwt = '';
+        state.loggedUser = null;
         state.isLoggedIn = false;
+      },
+      settingsUpdated (state, data) {
+        state.loggedUser.settings = data;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
       }
     },
     actions: {
@@ -32,6 +41,9 @@ export const store = new Vuex.Store({
       },
       logout ({ commit }) {
         commit('loggedOut');
+      },
+      updateSettings ({ commit }, data) {
+        commit('settingsUpdated', data);
       }
     },
     getters: {
