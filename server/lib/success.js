@@ -40,6 +40,24 @@ const Success = [{
     description: 'Payez 3 fois les impôts', // Case 11 => STREET[5]
     difficulty: 2,
     exp: 82
+}, {
+    id: 7,
+    token: 'buy2companies',
+    description: 'Acheter les 2 compagnies du jeu',
+    difficulty: 2,
+    exp: 234
+}, {
+    id: 8,
+    token: 'buyAllTrainStations',
+    description: 'Acheter toutes les gares du jeu',
+    difficulty: 3,
+    exp: 500
+}, {
+    id: 9,
+    token: 'haveAmonopoly',
+    description: 'Acheter toutes les cases d\'une même couleur',
+    difficulty: 3,
+    exp: 480
 }];
 
 module.exports = Success;
