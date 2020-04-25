@@ -524,7 +524,7 @@ class Network {
 
             if (err.code === Errors.SUCCESS.code) {
                 // le remettre dans un nouveau lobby solo
-                this.GLOBAL.lobbies.push(new Lobby(user, GLOBAL));
+                this.GLOBAL.lobbies.push(new Lobby(user, this.GLOBAL));
             }
         });
     }
