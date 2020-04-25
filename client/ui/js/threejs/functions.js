@@ -395,43 +395,52 @@ function animateVector3(pawn, vectorToAnimate, target, options){
 				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 11 && vdp <= 20) {
 					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
-					tweenCamera(tabCases[vdp], 3140);
+					if (zoomOn == 1)
+						tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 24 || vdp == 21) {
 					animateVector3(pawn, vectorToAnimate, tabCases[20], options);
-					tweenCamera(tabCases[20], 3140);
+					if (zoomOn == 1)
+						tweenCamera(tabCases[20], 3140);
 				}
 			} else if ((pawn.position.x.toFixed(2) == 0.34 || (pawn.position.x.toFixed(2) == 0.33)) && (pawn.position.z.toFixed(2) == 0.33 || 
 						pawn.position.z.toFixed(2) == 0.34)) {
 				if (vdp >= 21 && vdp <= 30) {
 					pawn.rotateY(Math.PI / -2);
-					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
-					tweenCamera(tabCases[vdp], 3140);
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
+					if (zoomOn == 1)	
+						tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 0 || vdp == 1 || vdp == 39 || vdp == 31) {
 					pawn.rotateY(Math.PI / -2);
 					animateVector3(pawn, vectorToAnimate, tabCases[30], options);
-					tweenCamera(tabCases[30], 3140);
+					if (zoomOn == 1)
+						tweenCamera(tabCases[30], 3140);
 				} else if (vdp == 18) {
 					pawn.rotateY(Math.PI / 2);
 					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);
-					tweenCamera(tabCases[vdp], 3140);
+					if (zoomOn == 1)
+						tweenCamera(tabCases[vdp], 3140);
 				}
 			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34) {
 				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 31 && vdp <= 39) {
 					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
-					tweenCamera(tabCases[vdp], 3140);
+					if (zoomOn == 1)
+						tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 0 || vdp == 1 || vdp == 11 || vdp == 15) {
 					animateVector3(pawn, vectorToAnimate, tabCases[0], options);
-					tweenCamera(tabCases[0], 3140);				
+					if (zoomOn == 1)
+						tweenCamera(tabCases[0], 3140);				
 				}
 			} else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 3.85) {
 				pawn.rotateY(Math.PI / -2);
 				if (vdp >= 1 && vdp <= 10) {
-					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);		
-					tweenCamera(tabCases[vdp], 3140);
+					animateVector3(pawn, vectorToAnimate, tabCases[vdp], options);	
+					if (zoomOn == 1)	
+						tweenCamera(tabCases[vdp], 3140);
 				} else if (vdp == 24 || vdp == 11 || vdp == 15) {		
 					animateVector3(pawn, vectorToAnimate, tabCases[10], options);
-					tweenCamera(tabCases[10], 3140);	
+					if (zoomOn == 1)
+						tweenCamera(tabCases[10], 3140);	
 				}
 			}
 			if (tabCases[vdp].x.toFixed(2) == to.x.toFixed(2) && tabCases[vdp].z.toFixed(2) == to.z.toFixed(2)) {
