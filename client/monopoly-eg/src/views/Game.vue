@@ -608,7 +608,6 @@ export default {
     this.loading = false;
     // this.loggedUser.money = 10;
     this.players = [this.loggedUser];
-    this.players[0].money = 100;
     const gameboard = this.$refs.gameboard;
 
     // setInterval(() => {
