@@ -22,6 +22,10 @@ export const store = new Vuex.Store({
         state.pending = false;
       },
       loggedOut (state) {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('loggedUser');
+        state.jwt = '';
+        state.loggedUser = null;
         state.isLoggedIn = false;
       },
       settingsUpdated (state, data) {
