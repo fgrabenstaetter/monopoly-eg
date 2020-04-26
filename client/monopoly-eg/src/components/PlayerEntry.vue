@@ -13,7 +13,7 @@
             </div>
 
             <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in yellowProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in yellowProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingYellowProperties >= 1" class="blank-property"></div>
@@ -21,7 +21,7 @@
                 <div v-if="remainingYellowProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingRedProperties < 3" style="display: block;" class="properties-container red">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in redProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in redProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingRedProperties >= 1" class="blank-property"></div>
@@ -29,14 +29,14 @@
                 <div v-if="remainingRedProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingBlueProperties < 2" style="display: block;" class="properties-container blue">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in blueProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in blueProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingBlueProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingBlueProperties >= 2" class="blank-property"></div>
             </div>
             <div v-if="remainingOrangeProperties < 3" style="display: block;" class="properties-container orange">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in orangeProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in orangeProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingOrangeProperties >= 1" class="blank-property"></div>
@@ -44,7 +44,7 @@
                 <div v-if="remainingOrangeProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingPurpleProperties < 3" style="display: block;" class="properties-container purple">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in purpleProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in purpleProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingPurpleProperties >= 1" class="blank-property"></div>
@@ -52,7 +52,7 @@
                 <div v-if="remainingPurpleProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingBrownProperties < 3" style="display: block;" class="properties-container brown">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in brownProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in brownProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingBrownProperties >= 1" class="blank-property"></div>
@@ -60,7 +60,7 @@
                 <div v-if="remainingBrownProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingCyanProperties < 3" style="display: block;" class="properties-container cyan">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in cyanProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in cyanProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingCyanProperties >= 1" class="blank-property"></div>
@@ -68,7 +68,7 @@
                 <div v-if="remainingCyanProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingGreenProperties < 3" style="display: block;" class="properties-container green">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in greenProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in greenProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingGreenProperties >= 1" class="blank-property"></div>
@@ -76,7 +76,7 @@
                 <div v-if="remainingGreenProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingTrainStationProperties < 4" style="display: block;" class="properties-container station">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in trainStationProperties" :key="prop.id" class="property">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in trainStationProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingTrainStationProperties >= 1" class="blank-property"></div>
@@ -85,7 +85,7 @@
                 <div v-if="remainingTrainStationProperties >= 4" class="blank-property"></div>
             </div>
             <div v-if="remainingPublicCompanyProperties < 2" style="display: block;" class="properties-container company">
-                <div @mouseover="displayOverviewCard(prop)" @mouseleave="hideOverviewCard" v-for="prop in publicCompanyProperties" :key="prop.id" class="property eau">
+                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in publicCompanyProperties" :key="prop.id" class="property eau">
                     <div>{{prop.name}}</div>
                 </div>
                 <div v-if="remainingPublicCompanyProperties >= 1" class="blank-property"></div>
