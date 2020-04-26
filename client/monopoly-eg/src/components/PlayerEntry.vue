@@ -13,6 +13,10 @@
             </div>
 
             <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
+                <div class="houses-btn-container">
+                    <button v-if="remainingYellowProperties == 0" style="display: block;" class="houses-btn yellow"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingYellowProperties == 0" style="display: block;" class="houses-btn yellow"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in yellowProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -21,6 +25,10 @@
                 <div v-if="remainingYellowProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingRedProperties < 3" style="display: block;" class="properties-container red">
+                <div class="houses-btn-container">
+                    <button v-if="remainingRedProperties == 0" style="display: block;" class="houses-btn red"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingRedProperties == 0" style="display: block;" class="houses-btn red"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in redProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -29,6 +37,10 @@
                 <div v-if="remainingRedProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingBlueProperties < 2" style="display: block;" class="properties-container blue">
+                <div class="houses-btn-container">
+                    <button v-if="remainingBlueProperties == 0" style="display: block;" class="houses-btn blue"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingBlueProperties == 0" style="display: block;" class="houses-btn blue"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in blueProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -36,6 +48,10 @@
                 <div v-if="remainingBlueProperties >= 2" class="blank-property"></div>
             </div>
             <div v-if="remainingOrangeProperties < 3" style="display: block;" class="properties-container orange">
+                <div class="houses-btn-container">
+                    <button v-if="remainingBlueProperties == 0" style="display: block;" class="houses-btn blue"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingBlueProperties == 0" style="display: block;" class="houses-btn blue"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in orangeProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -44,6 +60,10 @@
                 <div v-if="remainingOrangeProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingPurpleProperties < 3" style="display: block;" class="properties-container purple">
+                <div class="houses-btn-container">
+                    <button v-if="remainingPurpleProperties == 0" style="display: block;" class="houses-btn purple"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingPurpleProperties == 0" style="display: block;" class="houses-btn purple"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in purpleProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -52,6 +72,10 @@
                 <div v-if="remainingPurpleProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingBrownProperties < 3" style="display: block;" class="properties-container brown">
+                <div class="houses-btn-container">
+                    <button v-if="remainingBrownProperties == 0" style="display: block;" class="houses-btn brown"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingBrownProperties == 0" style="display: block;" class="houses-btn brown"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in brownProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -60,6 +84,10 @@
                 <div v-if="remainingBrownProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingCyanProperties < 3" style="display: block;" class="properties-container cyan">
+                <div class="houses-btn-container">
+                    <button v-if="remainingCyanProperties == 0" style="display: block;" class="houses-btn cyan"><i class="fas fa-home"></i>+</button>
+                    <button v-if="remainingCyanProperties == 0" style="display: block;" class="houses-btn cyan"><i class="fas fa-home"></i>-</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in cyanProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -68,6 +96,10 @@
                 <div v-if="remainingCyanProperties >= 3" class="blank-property"></div>
             </div>
             <div v-if="remainingGreenProperties < 3" style="display: block;" class="properties-container green">
+                <div class="houses-btn-container">
+                    <button v-if="remainingGreenProperties == 0" style="display: block;" class="houses-btn green"><i class="fas fa-home"></i>-</button>
+                    <button v-if="remainingGreenProperties == 0" style="display: block;" class="houses-btn green"><i class="fas fa-home"></i>+</button>
+                </div>
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in greenProperties" :key="prop.id" class="property">
                     <div>{{prop.name}}</div>
                 </div>
@@ -236,6 +268,58 @@ export default {
 
         this.player.properties.push({
             "id": 19,
+            "type": "street",
+            "name": "Rue de Rome",
+            "description": "Quelle magnifique rue !",
+            "color": "yellow",
+            "prices": {
+                "empty": 260,
+                "house": 150,
+                "hostel": 750
+            },
+            "rentalPrices": {
+                "empty": 22,
+                "house": [
+                    110,
+                    330,
+                    800,
+                    975
+                ],
+                "hostel": 1150
+            },
+            "level": 0,
+            "ownerID": null,
+            "isMortgage": 0
+        });
+
+        this.player.properties.push({
+            "id": 20,
+            "type": "street",
+            "name": "Rue de Rome",
+            "description": "Quelle magnifique rue !",
+            "color": "yellow",
+            "prices": {
+                "empty": 260,
+                "house": 150,
+                "hostel": 750
+            },
+            "rentalPrices": {
+                "empty": 22,
+                "house": [
+                    110,
+                    330,
+                    800,
+                    975
+                ],
+                "hostel": 1150
+            },
+            "level": 0,
+            "ownerID": null,
+            "isMortgage": 0
+        });
+
+        this.player.properties.push({
+            "id": 21,
             "type": "street",
             "name": "Rue de Rome",
             "description": "Quelle magnifique rue !",

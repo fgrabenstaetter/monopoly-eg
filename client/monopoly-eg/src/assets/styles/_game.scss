@@ -220,7 +220,7 @@
       border-radius: 20px;
       transition: transform 0.5s ease;
       margin: 10px auto;
-  
+
       .bid-form {
         display: flex;
         flex-direction: row;
@@ -238,12 +238,12 @@
           overflow: hidden;
           white-space: nowrap;
         }
-    
+
         .bid-input {
           display: flex;
           flex-direction: row;
           color: white;
-    
+
           input {
             flex-grow: 10;
             border: none;
@@ -254,7 +254,7 @@
             margin: 0 5px;
             color: black;
           }
-      
+
           button {
             flex-grow: 2;
             border: none;
@@ -273,7 +273,7 @@
             }
           }
         }
-      }        
+      }
 
       .bid-info {
         color: white;
@@ -591,6 +591,63 @@
             margin: 10px 0;
             height: max-content;
             display: none;
+
+            .houses-btn-container {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: space-between;
+              width: 120px;
+              margin: 10px auto 0 auto;
+
+              .houses-btn {
+                width: 55px;
+                border: none;
+                background: rgba($color: black, $alpha: 0.7);
+                color: white;
+                border-radius: 5px;
+
+                &.yellow {
+                  background-color: $property-yellow;
+                  color: white;
+                }
+
+                &.blue {
+                  background-color: $property-blue;
+                  color: white;
+                }
+
+                &.red {
+                  background-color: $property-red;
+                  color: white;
+                }
+
+                &.orange {
+                  background-color: $property-orange;
+                  color: white;
+                }
+
+                &.purple {
+                  background-color: $property-purple;
+                  color: white;
+                }
+
+                &.brown {
+                  background-color: $property-brown;
+                  color: white;
+                }
+
+                &.cyan {
+                  background-color: $property-cyan;
+                  color: white;
+                }
+
+                &.green {
+                  background-color: $property-green;
+                  color: white;
+                }
+              }
+            }
 
             .blank-property {
               text-align: center;
@@ -1211,18 +1268,19 @@
     }
   }
 
-	.splash-text {
+  .splash-text {
     position: absolute;
-    top: 30%; left: 50%;
+    top: 30%;
+    left: 50%;
     transform: translate(-50%, -50%);
-		width: 500px;
-		color: white;
-		font-weight: 900;
-		font-size: 4.5em;
-		text-transform: uppercase;
-		font-family: "LilitaOne", sans-serif;
-		text-align: center;
-    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    width: 500px;
+    color: white;
+    font-weight: 900;
+    font-size: 4.5em;
+    text-transform: uppercase;
+    font-family: "LilitaOne", sans-serif;
+    text-align: center;
+    text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     line-height: 1.2;
 
@@ -1235,5 +1293,5 @@
       right: 0;
       z-index: 1;
     }
-	}
+  }
 }
