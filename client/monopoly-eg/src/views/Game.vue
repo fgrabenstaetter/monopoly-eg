@@ -508,13 +508,13 @@ export default {
         src: ["/assets/audio/sfx/shake-and-roll-dice-soundbible.mp3"],
         autoplay: false,
         loop: false,
-        volume: this.loggedUser.settings.sfxLevel
+        volume: this.loggedUser.settings.sfxLevel / 100
       });
       this.audio.sfx.cashRegister = new Howl({
         src: ["/assets/audio/sfx/cash-register-youtube-gaming-sound-fx.mp3"],
         autoplay: false,
         loop: false,
-        volume: this.loggedUser.settings.sfxLevel
+        volume: this.loggedUser.settings.sfxLevel /100
       });
     },
 

@@ -432,13 +432,13 @@ export default {
                 loop: false,
                 volume: this.loggedUser.settings.sfxLevel / 100
             });
-            this.audio.sfx.userJoined = new Howl({
+            this.audio.sfx.success = new Howl({
                 src: ['/assets/audio/sfx/hollow.mp3'],
                 autoplay: false,
                 loop: false,
                 volume: this.loggedUser.settings.sfxLevel / 100
             });
-            this.audio.sfx.userLeft = new Howl({
+            this.audio.sfx.error = new Howl({
                 src: ['/assets/audio/sfx/glitch-in-the-matrix.mp3'],
                 autoplay: false,
                 loop: false,
@@ -580,7 +580,7 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
-            this.audio.sfx.userJoined.play();
+            this.audio.sfx.success.play();
             
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
@@ -593,7 +593,7 @@ export default {
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
-            this.audio.sfx.userLeft.play();
+            this.audio.sfx.error.play();
 
             console.log("LOBBY USER LEFT RES");
             console.log(res);
@@ -649,10 +649,13 @@ export default {
         */
         this.socket.on('lobbyFriendInvitationSendRes', (res) => {
             if (res.error === 0) {
+                this.audio.sfx.success.play();
                 this.$parent.toast('Invitation envoyée', 'success', 3);
                 $('#addFriendModal').modal('hide');
-            } else // hôte uniquement
+            } else {
+                this.audio.sfx.error.play();
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+            }
         });
 
         this.socket.on("lobbyInvitationRes", (res) => {

@@ -22,11 +22,7 @@
                 placeholder="Mot de passe"
               />
               <button type="submit" class="btn btn-primary">CONNEXION</button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="router.navigate('/signin')"
-              >INSCRIPTION</button>
+              <router-link type="button" class="btn btn-secondary" to="Signin">INSCRIPTION</router-link>
             </form>
           </div>
           <a id="forgot-password" href="#">Mot de passe oublié ?</a>
@@ -59,9 +55,8 @@ export default {
           });
         })
         .catch(err => {
-          console.log(err);
-          if (err.status === 400) alert(err.response.data.status);
-          // toast(err.response.data.status, 'danger', 5);
+          if (err.response.status === 400)
+            this.$parent.toast(err.response.data.status, 'danger', 5);
         });
     }
   }
