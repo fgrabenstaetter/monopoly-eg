@@ -8,8 +8,70 @@
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top">
-            <div v-if="overviewCard" style="position:absolute;z-index:1000;background:white;right:-400px;width:400px;">
-                {{overviewCard}}
+            <div v-if="overviewCard" class="overview-card" style="display:block;">
+                <div v-if="overviewCard.type == 'street'" class="header" v-bind:class="overviewCard.color">
+                    {{overviewCard.name}}
+                </div>
+                <div v-if="overviewCard.type == 'trainStation'" class="header station" v-bind:class="overviewCard.color">
+                    {{overviewCard.name}}
+                </div>
+                <div v-if="overviewCard.type == 'publicCompany'" class="header company" v-bind:class="overviewCard.color">
+                    {{overviewCard.name}}
+                </div>
+                <div v-if="overviewCard.type == 'street'" class="content">
+                    <div class="rent">{{overviewCard.rentalPrices.empty}}</div>
+                    <div class="with-house">
+                        <div>Avec 1 Maison</div>
+                        <div>{{overviewCard.rentalPrices.house[0]}}</div>
+                    </div>
+                    <div class="with-house">
+                        <div>Avec 2 Maisons</div>
+                        <div>{{overviewCard.rentalPrices.house[1]}}</div>
+                    </div>
+                    <div class="with-house">
+                        <div>Avec 3 Maisons</div>
+                        <div>{{overviewCard.rentalPrices.house[2]}}</div>
+                    </div>
+                    <div class="with-house">
+                        <div>Avec 4 Maisons</div>
+                        <div>{{overviewCard.rentalPrices.house[3]}}</div>
+                    </div>
+                    <div class="with-hotel">
+                        <div>Avec 1 Hotel</div>
+                        <div>{{overviewCard.rentalPrices.hostel}}</div>
+                    </div>
+                    <div class="house-price">Prix des Maisons {{overviewCard.prices.house}}€ chacune</div>
+                    <div class="hotel-price">Prix d'un Hôtel {{overviewCard.prices.hostel}}€ plus 4 maisons</div>
+                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                </div>
+                <div v-if="overviewCard.type == 'trainStation'" class="content">
+                    <div class="rent">{{overviewCard.rentalPrices[0]}}</div>
+                    <div class="with-house">
+                        <div>Si vous avez 2 Gares</div>
+                        <div>{{overviewCard.rentalPrices[1]}}</div>
+                    </div>
+                    <div class="with-house">
+                        <div>Si vous avez 3 Gares</div>
+                        <div>{{overviewCard.rentalPrices[2]}}</div>
+                    </div>
+                    <div class="with-house">
+                        <div>Si vous avez 4 Gares</div>
+                        <div>{{overviewCard.rentalPrices[3]}}</div>
+                    </div>
+                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                </div>
+                <div v-if="overviewCard.type == 'publicCompany'" class="content">
+                    <div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
+                        le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
+                        le loyer est 10 fois le montant indiqué par les dés.</div>
+                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                </div>
+                <div class="options">
+                    <button v-if="overviewCard.isMine" class="btn stylized">VENDRE</button>
+                    <button class="btn stylized">RACHETER</button>
+                    <button class="btn stylized">HYPOTHÉQUER</button>
+                    <button class="btn stylized">ACHETER</button>
+                </div>
             </div>
 
             <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
