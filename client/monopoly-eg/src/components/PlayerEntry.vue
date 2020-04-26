@@ -67,7 +67,7 @@
                     <div class="mortgage">Valeur de l'hypothèque : ?€</div>
                 </div>
                 <div class="options">
-                    <button v-if="overviewCard.isMine" class="btn stylized">VENDRE</button>
+                    <button class="btn stylized">VENDRE</button>
                     <button class="btn stylized">RACHETER</button>
                     <button class="btn stylized">HYPOTHÉQUER</button>
                     <button class="btn stylized">ACHETER</button>
