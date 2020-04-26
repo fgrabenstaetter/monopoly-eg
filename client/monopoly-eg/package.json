@@ -59,6 +59,7 @@
   },
   "vuese": {
       "genType": "docute",
-      "title": "Monopoly EG - Client Documentation"
+      "title": "Monopoly EG - Client Documentation",
+      "outDir": "documentation"
   }
 }

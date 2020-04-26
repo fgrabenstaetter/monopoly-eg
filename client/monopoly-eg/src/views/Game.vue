@@ -10,10 +10,10 @@
           <div class="col-md-6">
             <div class="offers-container">
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
-                <div class="message">{{offer.sellerNickname}} vous propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
+                <div class="message">{{offer.buyerNickname}} vous propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
                 <div class="form">
                   <button v-on:click="offerAccept(offer.offerID)">Accepter</button>
-                  <button>Refuser</button>
+                  <button v-on:click="discardOffer(offer.offerID)">Refuser</button>
                 </div>
               </div>
             </div>
@@ -341,13 +341,13 @@ export default {
       },
       offers: [
         {
-          sellerNickname: "Moi",
+          buyerNickname: "Moi",
           propertyName: "blabla",
           price: 100,
           offerID: 1
         },
         {
-          sellerNickname: "Moi2",
+          buyerNickname: "Moi2",
           propertyName: "une autre rue",
           price: 200,
           offerID: 2
@@ -447,8 +447,20 @@ export default {
       this.discardTurnNotif(notifIndex);
     },
 
+    discardOffer(offerID) {
+        for (const i in this.offers) {
+            if (this.offers[i].offerID == offerID) {
+                this.offers.splice(i, 1);
+                return;
+            }
+        }
+    },
+
     offerAccept(offerID) {
-      alert('offer accept' + offerID);
+      this.socket.emit('gameOfferAcceptReq', { offerID: parseInt(offerID) });
+      console.log('gameOfferAcceptReq');
+      this.discardOffer(offerID);
+      // [A FAIRE] CHANGER COULEUR DRAPEAU
     },
 
     sendBid(bidID) {
@@ -971,6 +983,25 @@ export default {
             // Simple texte d'annonce
             this.$set(player, 'failure', true);
         }
+    });
+
+    // On a reçue une offre d'achat
+    this.socket.on("gameOfferReceiveRes", (res) => {
+        this.offers.push({
+          buyerNickname: this.idToNick(res.makerID),
+          propertyName: this.getPropertyById(res.propertyID).name,
+          price: res.price,
+          offerID: res.offerID
+        });
+        // addPurchaseOffer(res.offerID, idToNick(res.makerID), idToNick(res.receiverID), getPropertyById(res.propertyID).name, res.price);
+    });
+
+
+    this.socket.on("gameOfferAcceptRes", (res) => {
+        if (res.error === 0)
+            console.log("gameOfferAcceptRes")
+        else
+            this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
     });
 
     // Fin de partie
