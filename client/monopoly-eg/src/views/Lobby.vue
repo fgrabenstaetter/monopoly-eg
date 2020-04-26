@@ -128,7 +128,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="avatar">Avatar <small>(JPG, Max 1Mo, format carré de préférence)</small></label>
-                                    <input type="file" class="form-control-file" id="avatar">
+                                    <input type="file" class="form-control-file" id="avatar" @change="processAvatar($event)">
                                 </div>
                                 <button v-if="editProfile.loading" type="submit" class="btn btn-primary" disabled>Chargement...</button>
                                 <button v-else type="submit" class="btn btn-primary">Enregistrer</button>
@@ -209,6 +209,9 @@ import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
 import GameSettingsModal from '../components/GameSettingsModal';
 import $ from 'jquery';
+// import * as SocketIOFileUpload from '../../public/assets/js/socketio-file-upload.min.js';
+import * as SocketIOFileUpload from 'socketio-file-upload';
+// var SocketIOFileUpload = require('socketio-file-upload');
 
 export default {
     name: 'Lobby',
@@ -238,6 +241,7 @@ export default {
                 email: '',
                 password: ''
             },
+            siofu: null, // File upload (avatar) handler
             loading: false,
             players: [],
             friends: [],
@@ -447,6 +451,14 @@ export default {
         updateProfile() {
             this.editProfile.loading = true;
             this.socket.emit('lobbyUpdateProfileReq', this.editProfile);
+
+            if (this.editProfile.avatar && this.siofu)
+                this.siofu.submitFiles([this.editProfile.avatar]);
+        },
+
+        processAvatar(event) {
+            if (typeof event.target.files[0] !== 'undefined')
+                this.editProfile.avatar = event.target.files[0];
         }
     },
     beforeDestroy() {
@@ -712,8 +724,6 @@ export default {
         });
 
         this.socket.on('lobbyUserNicknameUpdatedRes', (res) => {
-            console.log('lobbyUserNicknameUpdatedRes');
-            console.log(res);
             for (const i in this.players) {
                 if (this.players[i].id == res.id) {
                     this.$set(this.players[i], 'nickname', res.nickname);
@@ -729,9 +739,56 @@ export default {
             }
         });
 
+        /****** GESTION AVATAR ******/
+        this.siofu = new SocketIOFileUpload(this.socket);
+
+        this.siofu.addEventListener("error", (event) => {
+            if (event.code === 0)
+                this.$parent.toast('Erreur avatar : image trop lourde (> 1Mo)', 'danger', 3);
+        });
+
+        this.socket.on('lobbyUserAvatarUpdatedRes', (res) => {
+            console.log('lobbyUserAvatarUpdatedRes');
+            console.log(res);
+            const d = new Date();
+            const timeCacheRefresh = d.getTime();
+            const imgPath = this.$store.getters.serverUrl + res.path;
+            const imgPathCache = imgPath + '?' + timeCacheRefresh;
+            const playerID = res.id;
+
+            if (playerID == this.loggedUser.id) {
+                this.$store.dispatch('updateAvatar', {
+                    avatarPath: imgPath
+                });
+            }
+            
+            for (const i in this.players) {
+                if (this.players[i].id == playerID) {
+                    this.$set(this.players[i], 'avatar', imgPathCache);
+                    break;
+                }
+            }
+
+            for (const i in this.friends) {
+                if (this.friends[i].id == playerID) {
+                    this.$set(this.friends[i], 'avatar', imgPathCache);
+                    break;
+                }
+            }
+        });
+
+        this.socket.on('lobbyUpdateAvatarRes', (res) => {
+            console.log('lobbyUpdateAvatarRes');
+            console.log(res);
+            if (res.error !== 0)
+                this.$parent.toast(res.status, 'danger', 3);
+        });
+
+
         $('.modal').on('shown.bs.modal', function() {
             $(this).find('input').first().focus();
         });
+
 
         console.log("LOBBY READY REQ");
         this.socket.emit('lobbyReadyReq');

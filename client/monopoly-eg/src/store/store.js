@@ -34,6 +34,11 @@ export const store = new Vuex.Store({
         const user = state.loggedUser;
         localStorage.setItem('loggedUser', JSON.stringify(user));
       },
+      avatarUpdated (state, data) {
+        state.loggedUser.avatar = data.avatarPath;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
+      },
       settingsUpdated (state, data) {
         state.loggedUser.settings = data;
         const user = state.loggedUser;
@@ -50,6 +55,9 @@ export const store = new Vuex.Store({
       },
       updateProfile ({ commit }, data) {
         commit('profileUpdated', data);
+      },
+      updateAvatar ({ commit }, data) {
+        commit('avatarUpdated', data);
       },
       updateSettings ({ commit }, data) {
         commit('settingsUpdated', data);

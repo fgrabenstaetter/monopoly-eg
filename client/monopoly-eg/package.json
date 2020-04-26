@@ -27,6 +27,7 @@
     "odometer": "^0.4.8",
     "popper.js": "^1.16.1",
     "socket.io-client": "^2.3.0",
+    "socketio-file-upload": "^0.7.0",
     "three": "^0.115.0",
     "three-gltf-loader-wtower": "^1.112.2",
     "vue": "^2.6.11",
