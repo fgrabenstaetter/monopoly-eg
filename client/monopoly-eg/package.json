@@ -58,7 +58,7 @@
     "vue-template-compiler": "^2.6.11"
   },
   "vuese": {
-      "genType": "docute",
-      "title": "Monopoly EG - Client Documentation"
+    "genType": "docute",
+    "title": "Monopoly EG - Client Documentation"
   }
 }
