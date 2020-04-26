@@ -209,10 +209,13 @@ import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
 import GameSettingsModal from '../components/GameSettingsModal';
 import $ from 'jquery';
-// import * as SocketIOFileUpload from '../../public/assets/js/socketio-file-upload.min.js';
 import * as SocketIOFileUpload from 'socketio-file-upload';
-// var SocketIOFileUpload = require('socketio-file-upload');
 
+/**
+ * @vuese
+ * @group Vues
+ * Vue lobby
+ */
 export default {
     name: 'Lobby',
     components: {
@@ -501,7 +504,7 @@ export default {
 
 
         this.socket.on('lobbyCreatedRes', (res) => {
-            console.log('lobbyCreatedRes: ' + Object.keys(res));
+            console.log('=== LOBBY CREATED RES');
             this.hostID = this.loggedUser.id;
             this.nbPlayers = res.targetUsersNb;
             this.players = [this.loggedUser];
@@ -509,8 +512,7 @@ export default {
         });
 
         this.socket.on('lobbyJoinedRes', (res) => {
-            console.log("===");
-            console.log("LOBBY JOINED RES");
+            console.log("=== LOBBY JOINED RES");
             console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;

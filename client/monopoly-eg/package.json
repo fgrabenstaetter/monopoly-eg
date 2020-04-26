@@ -56,5 +56,9 @@
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-electron-builder": "~1.4.6",
     "vue-template-compiler": "^2.6.11"
+  },
+  "vuese": {
+      "genType": "docute",
+      "title": "Monopoly EG - Client Documentation"
   }
 }
