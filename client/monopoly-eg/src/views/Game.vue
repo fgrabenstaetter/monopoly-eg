@@ -9,6 +9,7 @@
         <div class="row">
           <div class="col-md-6">
             <div class="offers-container">
+
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
                 <div class="message">{{offer.sellerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
                 <div class="form">
@@ -16,6 +17,7 @@
                   <button v-on:click="discardOffer(offer.offerID)">Refuser</button>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -215,14 +217,27 @@
 
       <!-- Popup d'Enchères -->
       <div id="bid-popup-container">
+
         <div v-for="bid in bids" :key="bid.bidID" class="bid-popup">
           <div class="bid-form">
-            <div class="content">Une enchère est lancée pour {{bid.propertyName}}</div>
-            <div class="bid-input">
-              <input type="text" placeholder="Prix">€
-              <button disabled='disabled' class="bid-validation" v-on:click="sendBid(bid.bidID)">Enchérir</button>
-              <button class="bid-cancel" v-on:click="rejectBid(bid.bidID)">Passer</button>
+            <div v-if="!bid.launcherNickname" class="content">
+                Une enchère est lancée pour {{bid.propertyName}}
             </div>
+            <div v-else class="content">
+                {{bid.launcherNickname}} lance une enchère pour {{bid.propertyName}}. Prix de départ : {{bid.startingPrice}}
+            </div>
+            
+            <form @submit.prevent="sendBid(bid)">
+                <div class="bid-input">
+                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" placeholder="Prix">€
+                    <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
+                    <button :disabled="bid.disabled" class="bid-cancel" v-on:click="rejectBid(bid)">Passer</button>
+                </div>
+            </form>
+          </div>
+
+          <div v-if="bid.textContent" class="mt-2" style="color:#fff;font-size: 13px;font-weight: bold;text-align:left;width:100%;">
+            Résultat : {{bid.textContent}}
           </div>
         </div>
       </div>
@@ -353,16 +368,7 @@ export default {
           offerID: 2
         }
       ],
-      bids: [
-        {
-          propertyName: "Test",
-          bidID: 1
-        },
-        {
-          propertyName: "Test2",
-          bidID: 2
-        }
-      ]
+      bids: []
     };
   },
   computed: {
@@ -463,12 +469,19 @@ export default {
       // [A FAIRE] CHANGER COULEUR DRAPEAU
     },
 
-    sendBid(bidID) {
-      alert('sendBid' + bidID);
+    sendBid(bid) {
+      if (bid.myPrice < bid.startingPrice) {
+        this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
+        return;
+      }
+    
+      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: parseInt(bid.myPrice) });
+      this.$set(bid, 'disabled', true);
     },
 
-    rejectBid(bidID) {
-      alert('rejectBid' + bidID);
+    rejectBid(bid) {
+      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: 0 });
+      this.$set(bid, 'disabled', true);
     },
 
     playMusic() {
@@ -985,7 +998,7 @@ export default {
         }
     });
 
-    // On a reçue une offre d'achat
+    // On a reçu une offre d'achat
     this.socket.on("gameOfferReceiveRes", (res) => {
         this.offers.push({
           buyerNickname: this.idToNick(res.makerID),
@@ -996,12 +1009,88 @@ export default {
         // addPurchaseOffer(res.offerID, idToNick(res.makerID), idToNick(res.receiverID), getPropertyById(res.propertyID).name, res.price);
     });
 
-
     this.socket.on("gameOfferAcceptRes", (res) => {
         if (res.error === 0)
             console.log("gameOfferAcceptRes")
         else
             this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
+    });
+
+    // Ouverture d'une enchère ou nouvelle enchère d'un joueur
+    this.socket.on('gameBidRes', (res) => {
+        console.log('gameBidRes');
+
+        // Premier message uniquement
+        if (res.playerID == null) {
+
+            // La propriété appartient déjà à quelqu'un
+            if (res.propertyOwnerId) {
+                const propertyOwner = this.getPlayerById(res.propertyOwnerId);
+                if (!propertyOwner) return;
+
+                this.bids.push({
+                    launcherNickname: propertyOwner.nickname,
+                    startingPrice: 0,
+                    disabled: false,
+                    myPrice: '',
+                    propertyName: res.text,
+                    textContent: "",
+                    bidID: res.bidID
+                });
+                // openBidPopup(res.bidID, 'undefined', res.text, 0);
+            } else { // Enchère automatique (par de launcher)
+                this.bids.push({
+                    launcherNickname: null,
+                    startingPrice: res.price,
+                    disabled: false,
+                    myPrice: '',
+                    propertyName: res.text,
+                    textContent: "",
+                    bidID: res.bidID
+                });
+                // openBidPopup(res.bidID, playerNick, res.text, res.price);
+            }
+        }
+    });
+
+    // Fin d'une enchère
+    this.socket.on('gameBidEndedRes', (res) => {
+        console.log('gameBidEndedRes');
+        let bid;
+        let bidIndex;
+        for (const i in this.bids) {
+            if (this.bids[i].bidID == res.bidID) {
+                bid = this.bids[i];
+                bidIndex = i;
+                break;
+            }
+        }
+        
+        if (!bid) return;
+
+        this.$set(bid, 'disabled', true);
+
+        if (res.playerID == null) {
+            this.$set(bid, 'textContent', 'Le terrain n\'a pas été acheté...');
+        } else {
+            let winner = this.getPlayerById(res.playerID);
+            if (!winner) return;
+
+            this.$set(bid, 'textContent', `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`);
+            let property = this.getPropertyById(res.propertyID);
+            
+            property.ownerID = res.playerID;
+            winner.properties.push(property);
+
+            const cell = this.getCellByProperty(property);
+            gameboard.loaderFlag(`d${cell.id}`, winner.color);
+
+            this.$set(winner, 'money', res.playerMoney);
+        }
+
+        setTimeout(() => {
+            this.bids.splice(bidIndex, 1);
+        }, 5000);
     });
 
     // Fin de partie
