@@ -58,7 +58,6 @@ class Lobby {
         if (ind === -1)
             return;
 
-        this.GLOBAL.network.lobbyUserStopListening(user, this);
         this.users.splice(ind, 1);
 
         if (this.users.length === 0) {
@@ -81,6 +80,8 @@ class Lobby {
                 status: err.status
             });
         }
+
+        this.GLOBAL.network.lobbyUserStopListening(user, this);
     }
 
     /**
