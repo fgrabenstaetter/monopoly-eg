@@ -28,6 +28,12 @@ export const store = new Vuex.Store({
         state.loggedUser = null;
         state.isLoggedIn = false;
       },
+      profileUpdated (state, data) {
+        state.loggedUser.nickname = data.nickname;
+        state.loggedUser.email = data.email;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
+      },
       settingsUpdated (state, data) {
         state.loggedUser.settings = data;
         const user = state.loggedUser;
@@ -41,6 +47,9 @@ export const store = new Vuex.Store({
       },
       logout ({ commit }) {
         commit('loggedOut');
+      },
+      updateProfile ({ commit }, data) {
+        commit('profileUpdated', data);
       },
       updateSettings ({ commit }, data) {
         commit('settingsUpdated', data);

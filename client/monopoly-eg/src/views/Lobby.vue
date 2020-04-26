@@ -113,24 +113,25 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="user-settings" class="text-left">
+                            <form @submit.prevent="updateProfile" class="text-left">
                                 <div class="form-group">
                                     <label>Pseudo</label>
-                                    <input type="text" class="form-control" name="nickname" autocomplete="off" required>
+                                    <input v-model="editProfile.nickname" type="text" class="form-control" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Adresse email</label>
-                                    <input type="email" class="form-control" name="email" autocomplete="off" required>
+                                    <input v-model="editProfile.email" type="email" class="form-control" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Nouveau mot de passe</label>
-                                    <input type="password" class="form-control" name="password" autocomplete="off">
+                                    <input v-model="editProfile.password" type="password" class="form-control" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="avatar">Avatar <small>(JPG, Max 1Mo, format carré de préférence)</small></label>
                                     <input type="file" class="form-control-file" id="avatar">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                <button v-if="editProfile.loading" type="submit" class="btn btn-primary" disabled>Chargement...</button>
+                                <button v-else type="submit" class="btn btn-primary">Enregistrer</button>
                             </form>
                         </div>
                     </div>
@@ -207,6 +208,7 @@ import io from 'socket.io-client';
 import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
 import GameSettingsModal from '../components/GameSettingsModal';
+import $ from 'jquery';
 
 export default {
     name: 'Lobby',
@@ -230,6 +232,11 @@ export default {
             },
             addFriendForm: {
                 nickname: ""
+            },
+            editProfile: {
+                nickname: '',
+                email: '',
+                password: ''
             },
             loading: false,
             players: [],
@@ -435,6 +442,11 @@ export default {
         setSfxLevel(level) {
             for (let [key] of Object.entries(this.audio.sfx))
                 key.volume(level / 100);
+        },
+
+        updateProfile() {
+            this.editProfile.loading = true;
+            this.socket.emit('lobbyUpdateProfileReq', this.editProfile);
         }
     },
     beforeDestroy() {
@@ -444,6 +456,9 @@ export default {
     mounted() {
         this.playMusic();
         this.loadSfx();
+
+        this.editProfile.nickname = this.loggedUser.nickname;
+        this.editProfile.email = this.loggedUser.email;
 
         console.log(this.loggedUser);
         console.log(this.socket);
@@ -621,7 +636,7 @@ export default {
         this.socket.on('lobbyFriendInvitationSendRes', (res) => {
             if (res.error === 0) {
                 this.$parent.toast('Invitation envoyée', 'success', 3);
-                // $('#addFriendModal').modal('hide');
+                $('#addFriendModal').modal('hide');
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
@@ -674,6 +689,48 @@ export default {
                 this.$router.push('Game');
                 this.loading = false;
             }, 1000);
+        });
+
+
+        // Update du profil
+        this.socket.on('lobbyUpdateProfileRes', (res) => {
+            if (res.error !== 0) {
+                this.$parent.toast(res.status, 'danger', 5);
+            } else {
+                if (res.user) {
+                    this.$store.dispatch('updateProfile', {
+                        nickname: res.user.nickname,
+                        email: res.user.email
+                    });
+                }
+
+                this.$parent.toast('Profil mis à jour', 'success', 3);
+                $('#userSettingsModal').modal('hide');
+            }
+
+            this.editProfile.loading = false;
+        });
+
+        this.socket.on('lobbyUserNicknameUpdatedRes', (res) => {
+            console.log('lobbyUserNicknameUpdatedRes');
+            console.log(res);
+            for (const i in this.players) {
+                if (this.players[i].id == res.id) {
+                    this.$set(this.players[i], 'nickname', res.nickname);
+                    break;
+                }
+            }
+
+            for (const i in this.friends) {
+                if (this.friends[i].id == res.id) {
+                    this.$set(this.friends[i], 'nickname', res.nickname);
+                    break;
+                }
+            }
+        });
+
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('input').first().focus();
         });
 
         console.log("LOBBY READY REQ");
