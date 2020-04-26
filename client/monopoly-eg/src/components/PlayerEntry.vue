@@ -158,6 +158,7 @@
                 <div v-if="remainingPublicCompanyProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingPublicCompanyProperties >= 2" class="blank-property"></div>
             </div>
+            <div class="houses-total-price">1 200€</div>
             <button class="houses-validation-btn">Terminer</button>
         </div>
     </div>

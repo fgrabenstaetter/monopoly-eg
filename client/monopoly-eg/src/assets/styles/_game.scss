@@ -655,6 +655,19 @@
             }
           }
 
+          .houses-total-price {
+            position: absolute;
+            bottom: -17.5px;
+            border-radius: 17.5px;
+            right: 150px;
+            height: 35px;
+            background-color: white;
+            color: $blue;
+            font-family: 'LilitaOne', sans-serif;
+            padding: 6px 20px;
+            filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
+          }
+
           .houses-validation-btn {
             position: absolute;
             background-color: $blue;
@@ -699,6 +712,13 @@
               padding: 10px 5px;
               font-size: 10px;
               margin: 7px 20px;
+
+              &.selected {
+                padding: 6px 1px !important;
+                border: 4px solid blue !important;
+                background-color: rgb(169, 169, 255) !important;
+                color: blue !important;
+              }
             }
 
             &.blue,
