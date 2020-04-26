@@ -158,21 +158,7 @@
                 <div v-if="remainingPublicCompanyProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingPublicCompanyProperties >= 2" class="blank-property"></div>
             </div>
-            <!-- <div class="properties-container green">
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-            </div>
-            <div class="properties-container station">
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-            </div>
-            <div class="properties-container company">
-                <div class="blank-property"></div>
-                <div class="blank-property"></div>
-            </div> -->
+            <button class="houses-validation-btn">Terminer</button>
         </div>
     </div>
 </template>

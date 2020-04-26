@@ -655,6 +655,20 @@
             }
           }
 
+          .houses-validation-btn {
+            position: absolute;
+            background-color: $blue;
+            border: none;
+            height: 35px;
+            border-radius: 17.5px;
+            color: white;
+            right: 30px;
+            bottom: -17.5px;
+            padding: 4px 20px;
+            font-family: 'LilitaOne', sans-serif;
+            filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
+          }
+
           .properties-container {
             position: relative;
             display: flex;
@@ -801,7 +815,7 @@
                 text-align: center;
                 justify-content: center;
                 height: 60px;
-                border: grey 1px solid;
+                border: grey 4px solid;
 
                 &:before {
                   font-family: "Font Awesome 5 Free";
@@ -823,7 +837,7 @@
 
               .blank-property {
                 border-color: white;
-                border: grey 1px solid;
+                border: grey 4px solid;
               }
             }
 
