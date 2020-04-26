@@ -10,7 +10,7 @@
           <div class="col-md-6">
             <div class="offers-container">
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
-                <div class="message">{{offer.buyerNickname}} vous propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
+                <div class="message">{{offer.sellerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
                 <div class="form">
                   <button v-on:click="offerAccept(offer.offerID)">Accepter</button>
                   <button v-on:click="discardOffer(offer.offerID)">Refuser</button>
