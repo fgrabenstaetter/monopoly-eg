@@ -51,6 +51,7 @@
             :key="player.id"
             v-bind:player="player"
             v-bind:isCurrent="currentPlayerID == player.id"
+            v-bind:loggedUser="loggedUser"
           ></player-entry>
         </div>
       </div>

@@ -366,6 +366,7 @@ export default {
         acceptFriendInvitation(friendId, nickname) {
             this.socket.emit('lobbyFriendInvitationActionReq', { action: 1, nickname: nickname });
             this.deleteFriendInvitation(friendId);
+            this.friends = [];
             this.socket.emit('lobbyFriendListReq');
         },
         rejectFriendInvitation(friendId, nickname) {
@@ -600,7 +601,10 @@ export default {
 
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
-                this.socket.emit('lobbyReadyReq');
+                console.log("J'AI ETE KICK");
+                setTimeout(() => {
+                    this.socket.emit('lobbyReadyReq');
+                }, 2000);
                 return;
             }
 
