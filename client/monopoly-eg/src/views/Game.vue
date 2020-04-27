@@ -307,6 +307,14 @@ export default {
       return null;
     },
 
+    getPlayerPropertyById(player, propertyID) {
+        for (const i in player.properties) {
+            if (player.properties[i].id == propertyID)
+                return player.properties[i];
+        }
+        return null;
+    },
+
     getCellById(id) {
       for (const i in this.cells) {
         if (this.cells[i].id == id) return this.cells[i];
@@ -1000,6 +1008,70 @@ export default {
         setTimeout(() => {
             this.bids.splice(bidIndex, 1);
         }, 5000);
+    });
+
+
+
+    // Hypothèque Erreur
+    this.socket.on("gamePropertyMortgageRes", (res) => {
+        console.log("gamePropertyMortgageRes");
+        console.log(res);
+        if (res.error !== 0) {
+            this.$parent.toast(`Erreur hypothèque : ${res.status}`, 'danger', 4);
+        }
+    });
+
+    // Hypothèque OK
+    this.socket.on("gamePropertyMortgagedRes", (res) => {
+        console.log("gamePropertyMortgagedRes");
+        console.log(res);
+
+        const player = this.getPlayerById(res.playerID);
+        if (player) {
+            this.$set(player, 'money', res.playerMoney);
+            for (const i in res.properties) {
+                // Modifier "isMortgaged" dans la liste globale des propriétés
+                const property = this.getPropertyById(res.properties[i]);
+                this.$set(property, 'isMortgaged', true);
+
+                // Modifier "isMortgaged" dans la propriété de l'utilisateur
+                if (property.ownerID) {
+                    const playerProperty = this.getPlayerPropertyById(player, property.id);
+                    // const propertyOwner = this.getPlayerById(property.ownerID);
+                    if (playerProperty) {
+                        this.$set(playerProperty, 'isMortgaged', true);
+                    }
+                }
+
+                this.$parent.toast(`Propriété ${property.name} hypothéquée`, 'success', 4);
+            }
+        }
+    });
+
+    // Faire leverl'hypothèque ERREUR
+    this.socket.on("gamePropertyUnmortgageRes", (res) => {
+        console.log("gamePropertyUnmortgageRes");
+        console.log(res);
+        if (res.error !== 0) {
+            this.$parent.toast(`Erreur rachat hypothèque : ${res.status}`, 'danger', 4);
+        }
+    });
+
+    // Faire lever l'hypotheque OK
+    this.socket.on("gamePropertyUnmortgagedRes", (res) => {
+        const player = this.getPlayerById(res.playerID);
+        const property = this.getPropertyById(res.propertyID);
+
+        if (player && property) {
+            this.$set(player, 'money', res.playerMoney);
+            this.$set(property, 'isMortgaged', false);
+            this.$parent.toast(`Hypothèque levée pour ${property.name}`, 'success', 4);
+
+            const playerProperty = this.getPlayerPropertyById(player, property.id);
+            if (playerProperty) {
+                this.$set(playerProperty, 'isMortgaged', false);
+            }
+        }
     });
 
     // Fin de partie

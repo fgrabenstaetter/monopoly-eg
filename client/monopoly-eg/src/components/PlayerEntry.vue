@@ -389,9 +389,11 @@ export default {
         },
         mortgageProperty(propertyID) {
             alert(`Hypothéquer ${propertyID}`);
+            this.socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
         },
         rebuyProperty(propertyID) {
             alert(`Unmortgage ${propertyID}`);
+            this.socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
         }
         // getPropertiesByTypeColor(type, color) {
         //     // type : 'street', 'trainStation', 'publicCompany', ...
