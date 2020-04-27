@@ -274,11 +274,11 @@ var plateauDrapeaux = [
 ];
 
 
-function deleteCones(cones) {
+function deleteHypotheque(cones) {
 	scene.remove(window[cones]);
 }
 
-function loaderCones(cones) {
+function loaderHypotheque(cones) {
 	gltfLoader.load('models/hypotheque/' + cones + '.gltf', (gltf) => {
 		const root = gltf.scene;
 		window[cones] = gltf.scene;
