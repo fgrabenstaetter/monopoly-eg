@@ -1123,6 +1123,8 @@ class Network {
                 const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
                     err = Errors.BID.ENDED;
+                else if (bid.initialPropertyOwner && bid.initialPropertyOwner === player)
+                    err = Errors.BID.CANNOT_OVERBID_MY;
                 else {
                     const boundary = data.price - bid.amountAsked;
                     //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201

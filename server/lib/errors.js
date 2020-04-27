@@ -34,6 +34,10 @@ module.exports = Object.freeze({
         ONE_MANUAL_MAX: {
             code: 4,
             status: 'Une enchère manuelle est déjà en cours'
+        },
+        CANNOT_OVERBID_MY: {
+            code: 5,
+            status: 'Vous ne pouvez pas surenchérir votre propre enchère'
         }
     },
 
