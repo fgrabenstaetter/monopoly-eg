@@ -284,20 +284,7 @@ export default {
         background: null,
         sfx: {}
       },
-      offers: [
-        {
-          buyerNickname: "Moi",
-          propertyName: "blabla",
-          price: 100,
-          offerID: 1
-        },
-        {
-          buyerNickname: "Moi2",
-          propertyName: "une autre rue",
-          price: 200,
-          offerID: 2
-        }
-      ],
+      offers: [],
       bids: []
     };
   },
@@ -681,75 +668,86 @@ export default {
 
 
     // Données de reconnexion
-    this.socket.on('gameReconnectionRes', (data) => {
-        console.log(' --- RECONNEXION DATA');
-        console.log(data);
+    this.socket.on('gameReconnectionRes', (res) => {
+        console.log(' --- RECONNEXION res');
+        console.log(res);
+        console.log(res.players);
+        console.log(res.players[0]);
 
-        this.players = data.players;
-        this.cells = data.cells;
-        this.properties = data.properties;
-        this.gameEndTime = data.gameEndTime;
+        // this.players = Object.assign({}, res.players);
+        // this.players = Object.assign({}, res.players);
+        // this.players = res.players;
+        this.cells = res.cells;
+        this.properties = res.properties;
+        this.gameEndTime = res.gameEndTime;
 
-        // Génération de la liste de joueurs
-        this.players.forEach((player, index) => {
+        
+
+
+        for (const i in res.properties) {
+            res.properties[i].level = 0;
+            res.properties[i].ownerID = null;
+            res.properties[i].isMortgage = 0;
+            // this.properties[i].level = 0;
+            // this.properties[i].ownerID = null;
+            // if (this.properties[i].ownerID) {
+            //     console.log()
+            //     const player = this.getPlayerById(this.properties[i].ownerID);
+            //     if (player) {
+            //         console.log(`=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`);
+            //         player.properties.push(this.properties[i]);
+            //     }
+            // }
+        }
+
+        // // // Génération de la liste de joueurs
+        res.players.forEach((player, index) => {
+            let realPlayerProperties = [];
+
             gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
-            // player.properties = [];
-            this.$set(player, 'properties', []);
-        });
 
-        for (const i in this.properties) {
-            // this.properties[i].level = 0;
-            // this.properties[i].ownerID = null;
-            if (this.properties[i].ownerID) {
-                console.log()
-                const player = this.getPlayerById(this.properties[i].ownerID);
-                if (player) {
-                    console.log(`=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`);
-                    player.properties.push(this.properties[i]);
-                }
+            for (const i in player.properties) {
+              const propertyObj = this.getPropertyById(player.properties[i]);
+              console.log("=== PROPERTY OBJ ===");
+              console.log(propertyObj);
+              console.log("====================");
+              if (propertyObj) {
+                realPlayerProperties.push(propertyObj);
+                // this.$set(this.players[index].properties, i, propertyObj);
+                // this.$set(player.properties, i, propertyObj); // Ajout de la propriété au joueur
+
+                // const cell = this.getCellByProperty(propertyObj)
+                // gameboard.loaderFlag("d" + cell.id, player.color);
+
+              }
             }
-        }
 
-        data.players.forEach((player, index) => {
-            player.properties.forEach((playerProperty) => {
-                console.log("PROPERTY");
-                console.log(playerProperty);
-                let property = this.getPropertyById(playerProperty);
-                if (property) {
-                    property.ownerID = player.id;
-                    // MANQUE ACCÈS A LA COULEUR DU JOUEUR
-                    let cell = this.getCellByProperty(property)
-                    gameboard.loaderFlag("d" + cell.id, player.color);
-                    this.players[index].properties.push(property);
-                    // if (property.type == "publicCompany") {
-                    //     createProperty(player.id, 'company', property.name, property.id);
-                    // } else if (property.type == "trainStation") {
-                    //     createProperty(player.id, 'station', property.name, property.id);
-                    // } else {
-                    //     createProperty(player.id, property.color, property.name, property.id);
-                    // }
-                }
-            });
+            // console.log("=== REAL PLAYER PROPS ===");
+            // console.log(realPlayerProperties);
+            // // this.$set(player, 'properties', realPlayerProperties);
+            // player = Object.assign({}, player, {
+            //   properties: realPlayerProperties
+            // })
+
+            player.properties = realPlayerProperties;
+            this.players.push(player);
         });
 
-        data.chatMessages.forEach((msg) => {
-            this.$refs.chat.messages.push({
-                senderUserID: msg.playerID,
-                content: msg.text,
-                createdTime: msg.createdTime
-            });
-        });
+        // res.chatMessages.forEach((msg) => {
+        //     this.$refs.chat.messages.push({
+        //         senderUserID: msg.playerID,
+        //         content: msg.text,
+        //         createdTime: msg.createdTime
+        //     });
+        // });
 
-        /**
-         * Reste à gérer à la reconnexion :
-         * - bids
-         * - offers
-         * - couleur des cases pour celles déjà achetées
-         */
-
-        // hideLoaderOverlay();
+        // /**
+        //  * Reste à gérer à la reconnexion :
+        //  * - bids
+        //  * - offers
+        //  */
 
         this.$refs.actionBtn.progressInitialize();
 
@@ -930,13 +928,26 @@ export default {
 
     // On a reçu une offre d'achat
     this.socket.on("gameOfferReceiveRes", (res) => {
-        this.offers.push({
-          buyerNickname: this.idToNick(res.makerID),
-          propertyName: this.getPropertyById(res.propertyID).name,
-          price: res.price,
-          offerID: res.offerID
-        });
-        // addPurchaseOffer(res.offerID, idToNick(res.makerID), idToNick(res.receiverID), getPropertyById(res.propertyID).name, res.price);
+        const buyer = this.getPlayerById(res.makerID);
+        const receiver = this.getPlayerById(res.receiverID);
+        const property = this.getPropertyById(res.propertyID);
+
+        if (!buyer || !receiver || !property) return;
+        
+        if (receiver.id == this.loggedUser.id) {
+          this.offers.push({
+            buyerNickname: buyer.nickname,
+            propertyName: property.name,
+            price: res.price,
+            offerID: res.offerID
+          });
+        } else {
+          this.$refs.chat.messages.push({
+            senderUserID: -1,
+            content: `${buyer.nickname} propose à ${receiver.nickname} de lui acheter ${property.name} pour ${res.price}€ !`,
+            createdTime: new Date()
+          })
+        }
     });
 
     // Offre accpeptée check
@@ -964,6 +975,7 @@ export default {
 
             // La propriété appartient déjà à quelqu'un
             if (res.propertyOwnerId) {
+                console.log(res.propertyOwnerId + ' =?= ' + this.loggedUser.id);
                 if (res.propertyOwnerId == this.loggedUser.id) return;
 
                 const propertyOwner = this.getPlayerById(res.propertyOwnerId);
