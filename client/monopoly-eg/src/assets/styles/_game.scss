@@ -208,7 +208,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    z-index: 11000;
+    z-index: 60000;
 
     .bid-popup {
       display: flex;
@@ -551,11 +551,10 @@
   .top-bar {
     position: absolute;
     top: 0;
-    z-index: 100000;
+    z-index: 50000;
 
     .offers-container {
       margin: 10px;
-      z-index: 100000;
 
       .offer {
         background-color: rgba($color: black, $alpha: 0.7);
