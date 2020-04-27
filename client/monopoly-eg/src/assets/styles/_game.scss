@@ -551,10 +551,11 @@
   .top-bar {
     position: absolute;
     top: 0;
-    z-index: 10000;
+    z-index: 100000;
 
     .offers-container {
       margin: 10px;
+      z-index: 100000;
 
       .offer {
         background-color: rgba($color: black, $alpha: 0.7);
