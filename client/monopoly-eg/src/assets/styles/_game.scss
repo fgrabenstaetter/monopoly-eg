@@ -596,15 +596,18 @@
     position: absolute;
     top: 100px;
     left: 50%;
-    transform: translate(-50%, 0);
     z-index: 10000;
 
     .player-list {
-      width: max-content;
       height: 50vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      position: absolute;
+      left: 45px;
+      padding: 0;
+      width: max-content;
+      overflow: visible;
 
       .player-entry {
         margin-bottom: 10px;
