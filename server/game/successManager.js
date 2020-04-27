@@ -25,6 +25,7 @@ class SuccessManager {
 
             this.getPlayerAllSuccess(player, (success) => {
                 this.datas[key].completed = success;
+                console.log(' ___ succès de ' + player.nickname + ' : ' + success);
             });
         }
     }
@@ -48,9 +49,13 @@ class SuccessManager {
     }
 
     checkCompleted (successID, player) {
-        if (this.datas[player.id].completed.indexOf(successID) !== -1)
+        console.log(' ___ checkCompleted() player ' + player.nickname + ' succès ' + successID)
+        if (this.datas[player.id].completed.indexOf(successID) !== -1) {
+            console.log(' => déjà  completed ! ')
             return;
+        }
 
+        console.log(' => SAVE BDD');
         this.datas[player.id].completed.push(successID);
         this.save(player);
 
@@ -72,6 +77,9 @@ class SuccessManager {
         });
     }
 
+    /**
+     * Appelée après chaque action de tour (lancé de dés puis action correspondante
+     */
     check () {
         //use game.turnData pour les données du tour qui vient de s'achever
         const player = this.game.curPlayer;
@@ -82,14 +90,15 @@ class SuccessManager {
             if (this[succ.token](this.datas[key], player))
                 this.checkCompleted(succ.id, player);
         }
-        this.datas[key].turnNumber++;
     }
 
     update (obj, player) {
+        obj.turnNumber ++;
+
         if (this.game.turnData.canRollDiceAgain)
             obj.nbDoubles ++;
 
-        if (player.remainingTurnsInJail === 3)
+        if (player.remainingTurnsInJail === 4)
             obj.nbJailTimes ++;
 
         if (player.cellPos === 4)
@@ -127,7 +136,7 @@ class SuccessManager {
     }
 
     doubleAtBeg (obj, player) {
-        if (obj.turnNumber === 0 && this.game.turnData.nbDoubleDices !== 0)
+        if (obj.turnNumber === 1 && this.game.turnData.canRollDiceAgain)
             return true;
     }
 
@@ -175,6 +184,11 @@ class SuccessManager {
 
     escapeFromJailWithDouble (obj, player) {
         if (obj.isInJail !== player.isInPrison && this.game.turnData.nbDoubleDices !== 0)
+            return true;
+    }
+
+    goJailWith3doubles (obj, player) {
+        if (obj.nbDoubles === 3 && player.isInPrison)
             return true;
     }
 }

@@ -25,7 +25,7 @@ const Success = [{
 }, {
     id: 4,
     token: 'doubleAtBeg',
-    description: 'faire 1 double au début de la partie',
+    description: 'Faire 1 double au début de la partie',
     difficulty: 1,
     exp: 150
 }, {
@@ -66,10 +66,10 @@ const Success = [{
     exp: 610
 }, {
     id: 11,
-    token: 'wonBid',
-    description: 'Gagner au moins une enchère pendant une partie',
-    difficulty: 1,
-    exp: 120
+    token: 'goJailWith3doubles',
+    description: 'Aller en prison en faisant 3 double',
+    difficulty: 3,
+    exp: 590
 }];
 
 module.exports = Success;

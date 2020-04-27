@@ -51,6 +51,7 @@ class Bank {
      */
     addProperty (property) {
         property.owner = null;
+        property.isMortgaged = false;
         if (property.type === Constants.CELL_TYPE.STREET) {
             property.housesNb = 0;
             property.hasHostel = false;

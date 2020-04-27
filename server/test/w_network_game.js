@@ -746,7 +746,6 @@ describe('Network + Game', () => {
 
         // A Modifier lorsque l'event pour les succès sera prêt
         sock.on('gameActionRes', (data) => {
-            game.endTurn();
             assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
             assert.deepEqual(data.dicesRes, [3, 3]);
             assert.strictEqual(data.playerID, player.id);
@@ -780,9 +779,8 @@ describe('Network + Game', () => {
 
         // A Modifier lorsque l'event pour les succès sera prêt
         sock.on('gameActionRes', (data) => {
-            game.endTurn();
-            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
-            assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 1);
+            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 2);
+            assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 2);
             assert.deepEqual(data.dicesRes, [15, 15]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 10);
