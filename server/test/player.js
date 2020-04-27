@@ -61,7 +61,7 @@ describe("Player", function() {
         const player = new Player(user, 0);
         player.goPrison();
         assert.equal(true, player.isInPrison);
-        assert.equal(3, player.remainingTurnsInJail);
+        assert.equal(4, player.remainingTurnsInJail);
     });
 
     it("Le joueur possède maintenant la Rue du vieux marché aux poissons", function() {

@@ -98,7 +98,7 @@ class SuccessManager {
         if (this.game.turnData.canRollDiceAgain)
             obj.nbDoubles ++;
 
-        if (player.remainingTurnsInJail === 3)
+        if (player.remainingTurnsInJail === 4)
             obj.nbJailTimes ++;
 
         if (player.cellPos === 4)
@@ -188,7 +188,7 @@ class SuccessManager {
     }
 
     goJailWith3doubles (obj, player) {
-        if (this.game.turnData.nbDoubleDices === 3 && player.isInPrison)
+        if (obj.nbDoubles === 3 && player.isInPrison)
             return true;
     }
 }
