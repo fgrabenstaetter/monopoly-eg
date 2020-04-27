@@ -4,8 +4,7 @@
       <div class="background-container"></div>
 
       <div class="welcome-screen">
-          <router-link type="button" class="btn btn-primary stylized" to="/login">JOUER !</router-link>
-          <!-- <button type="button" onclick="router.navigate('/login'); return false;" class="btn btn-primary stylized">JOUER!</button> -->
+          <router-link type="button" class="btn btn-primary stylized" to="Login">JOUER !</router-link>
       </div>
     </div>
 
@@ -16,13 +15,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
-
-// export default {
-//   name: 'Home',
-//   components: {
-//     HelloWorld
-//   }
-// }
+export default {
+  name: 'Home'
+}
 </script>

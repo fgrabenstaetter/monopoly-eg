@@ -183,6 +183,7 @@ export default {
             'd39' : 'Plane39_0'
         },
 
+        renderer: null,
         scene: null,
         camera: null,
         gltfLoader: null,
@@ -205,11 +206,17 @@ export default {
         const W_HEIGHT = window.innerHeight;
         const W_WIDTH = window.innerWidth;
         const aspectRatio = WIDTH / HEIGHT;
-
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        
+        const renderer = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setViewport(0,0,W_WIDTH,W_HEIGHT);
         // renderer.setPixelRatio(pixelRatio);
         renderer.setSize(WIDTH, HEIGHT);
+
+        /**
+         * USER SETTINGS
+         */
+        this.refreshPlayerGraphicsQuality();
+        this.refreshPlayerAutoZoom();
 
         this.gltfLoader = new GLTFLoader();
         const dracoLoader = new DRACOLoader();
@@ -292,9 +299,31 @@ export default {
             requestAnimationFrame(render);
         }
         requestAnimationFrame(render);
+
+        // On indique que le plateau est chargé
+        this.$parent.gameReady();
   },
   methods: {
-      /**
+    /**
+     * Adapte la qualité des graphismes en fonctions des paramètres utilisateur
+     */
+    refreshPlayerGraphicsQuality() {
+        if (this.$parent.loggedUser.settings.graphicsQuality == 0)
+            this.renderer.setPixelRatio(0.5);
+        else if (this.$parent.loggedUser.settings.graphicsQuality == 2)
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+        else
+            this.renderer.setPixelRatio(1);
+    },
+
+    /**
+     * Adapte le zoom auto en fonction des paramètres utilisateur
+     */
+    refreshPlayerAutoZoom() {
+        this.zoomOnOff(!!this.$parent.loggedUser.settings.autoZoom);
+    },
+
+    /**
      * Supprime une maison
      * @param {int} Numero de case
      * @param {int} Numero de maison
@@ -364,7 +393,7 @@ export default {
      * @param {string} Nom de la couleur
      */
     loaderFlag(flag, colore) {
-        this.gltfLoader.load('models/drapeaux/' + flag + '.gltf', (gltf) => {
+        this.gltfLoader.load('/assets/models/drapeaux/' + flag + '.gltf', (gltf) => {
             // requestAnimationFrame(render);
             const root = gltf.scene;
             this.objs[flag] = gltf.scene;

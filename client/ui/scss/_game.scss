@@ -215,7 +215,7 @@
       border-radius: 20px;
       transition: transform 0.5s ease;
       margin: 10px auto;
-  
+
       .bid-form {
         display: flex;
         flex-direction: row;
@@ -233,12 +233,12 @@
           overflow: hidden;
           white-space: nowrap;
         }
-    
+
         .bid-input {
           display: flex;
           flex-direction: row;
           color: white;
-    
+
           input {
             flex-grow: 10;
             border: none;
@@ -249,7 +249,7 @@
             margin: 0 5px;
             color: black;
           }
-      
+
           button {
             flex-grow: 2;
             border: none;
@@ -268,7 +268,7 @@
             }
           }
         }
-      }        
+      }
 
       .bid-info {
         color: white;
@@ -313,7 +313,7 @@
           font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          display: inline-block;
+          display: block;
           font-style: normal;
           font-variant: normal;
           text-rendering: auto;
@@ -323,7 +323,6 @@
           margin: 0;
           font-size: 15px;
           color: black;
-          vertical-align: text-top;
           transform: translateX(-13px) translateY(2px);
         }
       }
@@ -333,7 +332,7 @@
           font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          display: inline-block;
+          display: block;
           font-style: normal;
           font-variant: normal;
           text-rendering: auto;
@@ -343,7 +342,6 @@
           margin: 0;
           font-size: 15px;
           color: white;
-          vertical-align: text-top;
           transform: translateX(-13px) translateY(2px);
         }
 
@@ -351,7 +349,7 @@
           font-family: "Font Awesome 5 Free";
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
-          display: inline-block;
+          display: block;
           font-style: normal;
           font-variant: normal;
           text-rendering: auto;
@@ -361,7 +359,6 @@
           margin: 0;
           font-size: 15px;
           color: white;
-          vertical-align: text-top;
           transform: translateX(-13px) translateY(1px);
         }
       }
@@ -551,10 +548,11 @@
               border-radius: 5px;
               padding: 10px 5px;
               font-size: 10px;
-              margin: 5px;
+              margin: 15px;
               background-color: transparent;
               border-width: 4px;
               border-style: solid;
+              height: 60px;
             }
 
             .property {
@@ -564,7 +562,23 @@
               border-radius: 5px;
               padding: 10px 5px;
               font-size: 10px;
-              margin: 5px;
+              margin: 15px;
+              height: 60px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              text-align: center;
+              justify-content: center;
+
+              button {
+                height: 20px;
+                width: 90px;
+                border: none;
+                border-radius: 10px;
+                background-color: rgba($color: black, $alpha: 0.5);
+                color: white;
+                margin: 2px auto;
+              }
             }
 
             &.blue,
@@ -680,13 +694,12 @@
                 padding: 10px;
                 text-align: center;
                 justify-content: center;
-                height: 60px;
 
-                &:before {
+                .property-name:before {
                   font-family: "Font Awesome 5 Free";
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
-                  display: inline-block;
+                  display: block;
                   font-style: normal;
                   font-variant: normal;
                   text-rendering: auto;
@@ -696,7 +709,6 @@
                   margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: black;
-                  vertical-align: text-top;
                 }
               }
 
@@ -718,11 +730,11 @@
                 justify-content: center;
                 height: 90px;
 
-                &.eau:before {
+                .property-name:before {
                   font-family: "Font Awesome 5 Free";
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
-                  display: inline-block;
+                  display: block;
                   font-style: normal;
                   font-variant: normal;
                   text-rendering: auto;
@@ -732,14 +744,13 @@
                   margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: white;
-                  vertical-align: text-top;
                 }
 
-                &.electricite:before {
+                .property-name:before {
                   font-family: "Font Awesome 5 Free";
                   -moz-osx-font-smoothing: grayscale;
                   -webkit-font-smoothing: antialiased;
-                  display: inline-block;
+                  display: block;
                   font-style: normal;
                   font-variant: normal;
                   text-rendering: auto;
@@ -749,7 +760,6 @@
                   margin: 0px auto 10px auto;
                   font-size: 14px;
                   color: white;
-                  vertical-align: text-top;
                 }
               }
               .blank-property {
@@ -916,7 +926,7 @@
               font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
-              display: inline-block;
+              display: block;
               font-style: normal;
               font-variant: normal;
               text-rendering: auto;
@@ -926,15 +936,13 @@
               margin-right: 10px;
               font-size: 15px;
               color: white;
-              vertical-align: text-top;
-              transform: translateX(-13px) translateY(2px);
             }
 
             &.electricite:before {
               font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
-              display: inline-block;
+              display: block;
               font-style: normal;
               font-variant: normal;
               text-rendering: auto;
@@ -944,8 +952,6 @@
               margin-right: 10px;
               font-size: 15px;
               color: white;
-              vertical-align: text-top;
-              transform: translateX(-13px) translateY(1px);
             }
           }
 
@@ -956,14 +962,13 @@
             .title {
               display: inline;
               position: relative;
-              left: -13px;
             }
 
             &:before {
               font-family: "Font Awesome 5 Free";
               -moz-osx-font-smoothing: grayscale;
               -webkit-font-smoothing: antialiased;
-              display: inline-block;
+              display: block;
               font-style: normal;
               font-variant: normal;
               text-rendering: auto;
@@ -973,8 +978,6 @@
               margin-right: 10px;
               font-size: 15px;
               color: black;
-              vertical-align: text-top;
-              transform: translateX(-13px) translateY(2px);
             }
           }
 
@@ -1111,7 +1114,6 @@
           font-weight: 900;
           content: "\f522";
           font-size: 15px;
-          vertical-align: text-top;
           transform: translateX(-13px) translateY(2px);
         }
 
@@ -1160,18 +1162,19 @@
     }
   }
 
-	.splash-text {
+  .splash-text {
     position: absolute;
-    top: 30%; left: 50%;
+    top: 30%;
+    left: 50%;
     transform: translate(-50%, -50%);
-		width: 500px;
-		color: white;
-		font-weight: 900;
-		font-size: 4.5em;
-		text-transform: uppercase;
-		font-family: "LilitaOne", sans-serif;
-		text-align: center;
-    text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    width: 500px;
+    color: white;
+    font-weight: 900;
+    font-size: 4.5em;
+    text-transform: uppercase;
+    font-family: "LilitaOne", sans-serif;
+    text-align: center;
+    text-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     line-height: 1.2;
 
@@ -1184,5 +1187,5 @@
       right: 0;
       z-index: 1;
     }
-	}
+  }
 }

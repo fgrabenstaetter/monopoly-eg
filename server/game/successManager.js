@@ -2,6 +2,8 @@ const Success                     = require('./../lib/success');
 const Constants                   = require('./../lib/constants');
 const Properties                  = require('./../lib/properties');
 const Street                      = require('./street');
+const TrainStation                = require('./trainStation');
+const PublicCompany               = require('./publicCompany');
 const { UserSchema, UserManager } = require('../models/user');
 
 class SuccessManager {
@@ -135,6 +137,32 @@ class SuccessManager {
     pay3TimesTaxes (obj, player) {
         if (obj.nbTaxesPaid >= 3)
             return true;
+    }
+
+    buy2companies (obj, player) {
+        const pComp1 = new PublicCompany(Properties.PUBLIC_COMPANY[0]);
+        const pComp2 = new PublicCompany(Properties.PUBLIC_COMPANY[1]);
+        const ind1 = player.properties.indexOf(pComp1);
+        const ind2 = player.properties.indexOf(pComp2);
+        if (ind1 !== -1 &&  ind2 !== -1)
+            return true;
+    }
+
+    buyAllTrainStations (obj, player) {
+        const tS1 = new TrainStation(Properties.TRAIN_STATION[0]);
+        const tS2 = new TrainStation(Properties.TRAIN_STATION[1]);
+        const tS3 = new TrainStation(Properties.TRAIN_STATION[2]);
+        const tS4 = new TrainStation(Properties.TRAIN_STATION[3]);
+        const ind1 = player.properties.indexOf(tS1);
+        const ind2 = player.properties.indexOf(tS2);
+        const ind3 = player.properties.indexOf(tS3);
+        const ind4 = player.properties.indexOf(tS4);
+        if (ind1 !== -1 && ind2 !== -1 && ind3 !== -1 && ind4 !== -1)
+            return true;
+    }
+
+    haveAmonopoly (obj, player) {
+        
     }
 }
 

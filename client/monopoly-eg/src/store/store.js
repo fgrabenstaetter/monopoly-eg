@@ -22,7 +22,27 @@ export const store = new Vuex.Store({
         state.pending = false;
       },
       loggedOut (state) {
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('loggedUser');
+        state.jwt = '';
+        state.loggedUser = null;
         state.isLoggedIn = false;
+      },
+      profileUpdated (state, data) {
+        state.loggedUser.nickname = data.nickname;
+        state.loggedUser.email = data.email;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
+      },
+      avatarUpdated (state, data) {
+        state.loggedUser.avatar = data.avatarPath;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
+      },
+      settingsUpdated (state, data) {
+        state.loggedUser.settings = data;
+        const user = state.loggedUser;
+        localStorage.setItem('loggedUser', JSON.stringify(user));
       }
     },
     actions: {
@@ -32,6 +52,15 @@ export const store = new Vuex.Store({
       },
       logout ({ commit }) {
         commit('loggedOut');
+      },
+      updateProfile ({ commit }, data) {
+        commit('profileUpdated', data);
+      },
+      updateAvatar ({ commit }, data) {
+        commit('avatarUpdated', data);
+      },
+      updateSettings ({ commit }, data) {
+        commit('settingsUpdated', data);
       }
     },
     getters: {

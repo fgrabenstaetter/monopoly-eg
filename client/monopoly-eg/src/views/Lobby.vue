@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <i class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
+                        <i v-on:click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
                     </div>
                 </div>
                 <div class="row">
@@ -82,7 +82,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <chat-io v-bind:socket="socket"></chat-io>
+                        <chat-io v-bind:socket="socket" ref="chat"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
                         <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
@@ -113,24 +113,25 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="user-settings" class="text-left">
+                            <form @submit.prevent="updateProfile" class="text-left">
                                 <div class="form-group">
                                     <label>Pseudo</label>
-                                    <input type="text" class="form-control" name="nickname" autocomplete="off" required>
+                                    <input v-model="editProfile.nickname" type="text" class="form-control" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Adresse email</label>
-                                    <input type="email" class="form-control" name="email" autocomplete="off" required>
+                                    <input v-model="editProfile.email" type="email" class="form-control" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Nouveau mot de passe</label>
-                                    <input type="password" class="form-control" name="password" autocomplete="off">
+                                    <input v-model="editProfile.password" type="password" class="form-control" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="avatar">Avatar <small>(JPG, Max 1Mo, format carré de préférence)</small></label>
-                                    <input type="file" class="form-control-file" id="avatar">
+                                    <input type="file" class="form-control-file" id="avatar" @change="processAvatar($event)">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                <button v-if="editProfile.loading" type="submit" class="btn btn-primary" disabled>Chargement...</button>
+                                <button v-else type="submit" class="btn btn-primary">Enregistrer</button>
                             </form>
                         </div>
                     </div>
@@ -186,62 +187,41 @@
         <div class="profile-overlay-container">
             <div class="profile-row">
                 <div class="username" data-id="">{{loggedUser.nickname}}</div>
-                <i style="display: none;color: #fff;cursor:pointer;" id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
+                <i id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
                 <img class="user-avatar" data-id="" :src="loggedUser.avatar">
                 <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
             </div>
         </div>
 
-            <div class="profile-modals-container">
-            <!-- Options -->
-            <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
-            aria-hidden="true" data-id="1">
-            <div class="modal-dialog animated bounceIn" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="optionsModalLabel">Options</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
-                            <span aria-hidden="true" style="cursor: pointer;">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul>
-                            <li>
-                                <span>Qualité graphique</span>
-                                <select id="graphics-quality" class="custom-select">
-                                    <option value="0">Bas</option>
-                                    <option value="1">Standard</option>
-                                    <option value="2">Élevé</option>
-                                </select>
-                            </li>
-                            <li>
-                                <span>Zoom automatique</span>
-                                <label class="switch">
-                                    <input id="auto-zoom" type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </li>
-                        </ul>
+        <!-- Game settings modal -->
+        <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
 
-                        <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-                        <button id="quit-game" class="btn btn-primary" href="#" role="button"
-                            style="background-color: red;">QUITTER LA PARTIE</button>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
+        <full-screen-loader v-if="loading"></full-screen-loader>
+    
     </div>
+
 </template>
 
 <script>
+import {Howl} from 'howler';
 import io from 'socket.io-client';
+import FullScreenLoader from '../components/FullScreenLoader';
 import ChatIO from '../components/ChatIO';
+import GameSettingsModal from '../components/GameSettingsModal';
+import $ from 'jquery';
+import * as SocketIOFileUpload from 'socketio-file-upload';
 
+/**
+ * @vuese
+ * @group Vues
+ * Vue lobby
+ */
 export default {
     name: 'Lobby',
     components: {
-        'chat-io': ChatIO
+        'full-screen-loader': FullScreenLoader,
+        'chat-io': ChatIO,
+        'game-settings-modal': GameSettingsModal
     },
     data() {
         return {
@@ -259,6 +239,13 @@ export default {
             addFriendForm: {
                 nickname: ""
             },
+            editProfile: {
+                nickname: '',
+                email: '',
+                password: ''
+            },
+            siofu: null, // File upload (avatar) handler
+            loading: false,
             players: [],
             friends: [],
             friendsInvitations: [],
@@ -267,15 +254,34 @@ export default {
             rightNbJ: false,
             gameTime: 'Illimité',
             nbPlayers: 0,
-            lobbyInvitations: []
+            lobbyInvitations: [],
+            audio: {
+                background: null,
+                sfx: {
+                    notification: null,
+                    userLeft: null,
+                    userJoined: null
+                }
+            }
+        }
+    },
+    watch: {
+        loggedUser() {
+            alert('changed');
         }
     },
     methods: {
         play() {
             if (this.hostID === this.loggedUser.id) {
-                this.socket.emit('lobbyPlayReq');
-                this.playBtn.loading = true;
-                this.playBtn.text = "CHARGEMENT...";
+                if (!this.playBtn.loading) {
+                    this.socket.emit('lobbyPlayReq');
+                    this.playBtn.loading = true;
+                    this.playBtn.text = 'CHARGEMENT...';    
+                } else {
+                    this.socket.emit('lobbyCancelPlayReq');
+                    this.playBtn.loading = false;
+                    this.playBtn.text = 'JOUER!';
+                }
             }
         },
         nickToId(nick) {
@@ -308,6 +314,10 @@ export default {
 
                 if (this.nbPlayers > 2) {
                     this.leftNbJ = true;
+                }
+
+                if (this.nbPlayers >= 8) {
+                    this.rightNbJ = false;
                 }
             }
         },
@@ -356,6 +366,7 @@ export default {
         acceptFriendInvitation(friendId, nickname) {
             this.socket.emit('lobbyFriendInvitationActionReq', { action: 1, nickname: nickname });
             this.deleteFriendInvitation(friendId);
+            this.friends = [];
             this.socket.emit('lobbyFriendListReq');
         },
         rejectFriendInvitation(friendId, nickname) {
@@ -390,9 +401,81 @@ export default {
             //         break;
             //     }
             // }
+        },
+
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('Home');
+        },
+
+        playMusic() {
+            this.audio.background = new Howl({
+                src: '/assets/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3',
+                volume: this.loggedUser.settings.musicLevel / 100,
+                autoplay: true,
+                loop: true
+            });
+        },
+
+        setMusicLevel(level) {
+            this.audio.background.volume(level / 100);
+        },
+
+        stopMusic() {
+            this.audio.background.fade(this.audio.background.volume(), 0, 500);
+            this.audio.background.stop();
+        },
+
+        loadSfx() {
+            this.audio.sfx.notification = new Howl({
+                src: ['/assets/audio/sfx/clearly.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+            });
+            this.audio.sfx.success = new Howl({
+                src: ['/assets/audio/sfx/hollow.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+            });
+            this.audio.sfx.error = new Howl({
+                src: ['/assets/audio/sfx/glitch-in-the-matrix.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+            });
+        },
+
+        setSfxLevel(level) {
+            for (let [key] of Object.entries(this.audio.sfx))
+                key.volume(level / 100);
+        },
+
+        updateProfile() {
+            this.editProfile.loading = true;
+            this.socket.emit('lobbyUpdateProfileReq', this.editProfile);
+
+            if (this.editProfile.avatar && this.siofu)
+                this.siofu.submitFiles([this.editProfile.avatar]);
+        },
+
+        processAvatar(event) {
+            if (typeof event.target.files[0] !== 'undefined')
+                this.editProfile.avatar = event.target.files[0];
         }
     },
-    created() {
+    beforeDestroy() {
+        this.stopMusic();
+        this.socket.disconnect();
+    },
+    mounted() {
+        this.playMusic();
+        this.loadSfx();
+
+        this.editProfile.nickname = this.loggedUser.nickname;
+        this.editProfile.email = this.loggedUser.email;
+
         console.log(this.loggedUser);
         console.log(this.socket);
 
@@ -422,7 +505,7 @@ export default {
 
 
         this.socket.on('lobbyCreatedRes', (res) => {
-            console.log('lobbyCreatedRes: ' + Object.keys(res));
+            console.log('=== LOBBY CREATED RES');
             this.hostID = this.loggedUser.id;
             this.nbPlayers = res.targetUsersNb;
             this.players = [this.loggedUser];
@@ -430,27 +513,23 @@ export default {
         });
 
         this.socket.on('lobbyJoinedRes', (res) => {
-            console.log("===");
-            console.log("LOBBY JOINED RES");
+            console.log("=== LOBBY JOINED RES");
             console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
-            // this.hostID = res.users[0].id;
+            this.hostID = res.users[0].id;
 
             for (const usr of res.users) {
                 usr.avatar = this.$store.getters.serverUrl + usr.avatar;
                 this.players.push(usr);
             }
 
-            console.log(this.hostID);
-            this.hostID = res.users[0].id;
-            console.log(this.hostID);
-
             this.leftNbJ = false;
             this.rightNbJ = false;
-            console.log("===");
-            // for (const mess of res.messages)
-            //     addMsg(mess.senderUserID, mess.content, mess.createdTime);
+            this.playBtn.disabled = true;
+
+            for (const mess of res.messages)
+                this.$refs.chat.messages.push(mess);
         });
 
 
@@ -488,13 +567,13 @@ export default {
 
         // récéption d'une demande d'ami
         this.socket.on('lobbyFriendInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.friendsInvitations.push({id: res.id, nickname: res.nickname});
         });
 
         //Invitation d'un amis pour rejoindre son lobby
         this.socket.on('lobbyInvitationReceivedRes', (res) => {
-            // notificationSfx.play();
+            this.audio.sfx.notification.play();
             this.lobbyInvitations.push({id: res.invitationID, friendNickname: res.senderFriendNickname});
         });
 
@@ -502,7 +581,7 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
-            // userJoinedSfx.play();
+            this.audio.sfx.success.play();
             
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
@@ -515,14 +594,17 @@ export default {
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
-            // userLeftSfx.play();
+            this.audio.sfx.error.play();
 
             console.log("LOBBY USER LEFT RES");
             console.log(res);
 
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
-                this.socket.emit('lobbyReadyReq');
+                console.log("J'AI ETE KICK");
+                setTimeout(() => {
+                    this.socket.emit('lobbyReadyReq');
+                }, 2000);
                 return;
             }
 
@@ -554,13 +636,14 @@ export default {
         this.socket.on('lobbyPlayRes', (res) => {
             if (res.error !== 0) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
-                this.playBtn.disabled = false;
+                this.playBtn.loading = false;
+                // this.playBtn.disabled = false;
                 this.playBtn.text = "JOUER!";
             }
         });
 
         this.socket.on('lobbyGameFoundRes', () => {
-            // lobbyMusic.fade(lobbyMusic.volume(), 0, 500);
+            this.stopMusic();
             setTimeout(() => {
                 this.$router.push('Game');
             }, 500);
@@ -570,10 +653,13 @@ export default {
         */
         this.socket.on('lobbyFriendInvitationSendRes', (res) => {
             if (res.error === 0) {
+                this.audio.sfx.success.play();
                 this.$parent.toast('Invitation envoyée', 'success', 3);
-                // $('#addFriendModal').modal('hide');
-            } else // hôte uniquement
+                $('#addFriendModal').modal('hide');
+            } else {
+                this.audio.sfx.error.play();
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+            }
         });
 
         this.socket.on("lobbyInvitationRes", (res) => {
@@ -594,12 +680,7 @@ export default {
             console.log("lobbyInvitationAcceptRes");
             console.log(res);
             if (res.error === 0) {
-
-                // this.socket.emit('disconnect');
-                setTimeout(() => {
-                    this.socket.emit('lobbyReadyReq');
-                }, 1000);
-                // this.$router.go();
+                this.socket.emit('lobbyReadyReq');
             } else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
@@ -618,6 +699,103 @@ export default {
                 console.log("lobbyKickRes")
             else // hôte uniquement
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+        });
+
+        // On peut se reconnecter à une partie en cours
+        this.socket.on('canReconnectToGame', () => {
+            this.loading = true;
+            this.socket.disconnect();
+
+            setTimeout(() => {
+                this.$router.push('Game');
+                this.loading = false;
+            }, 1000);
+        });
+
+
+        // Update du profil
+        this.socket.on('lobbyUpdateProfileRes', (res) => {
+            if (res.error !== 0) {
+                this.$parent.toast(res.status, 'danger', 5);
+            } else {
+                if (res.user) {
+                    this.$store.dispatch('updateProfile', {
+                        nickname: res.user.nickname,
+                        email: res.user.email
+                    });
+                }
+
+                this.$parent.toast('Profil mis à jour', 'success', 3);
+                $('#userSettingsModal').modal('hide');
+            }
+
+            this.editProfile.loading = false;
+        });
+
+        this.socket.on('lobbyUserNicknameUpdatedRes', (res) => {
+            for (const i in this.players) {
+                if (this.players[i].id == res.id) {
+                    this.$set(this.players[i], 'nickname', res.nickname);
+                    break;
+                }
+            }
+
+            for (const i in this.friends) {
+                if (this.friends[i].id == res.id) {
+                    this.$set(this.friends[i], 'nickname', res.nickname);
+                    break;
+                }
+            }
+        });
+
+        /****** GESTION AVATAR ******/
+        this.siofu = new SocketIOFileUpload(this.socket);
+
+        this.siofu.addEventListener("error", (event) => {
+            if (event.code === 0)
+                this.$parent.toast('Erreur avatar : image trop lourde (> 1Mo)', 'danger', 3);
+        });
+
+        this.socket.on('lobbyUserAvatarUpdatedRes', (res) => {
+            console.log('lobbyUserAvatarUpdatedRes');
+            console.log(res);
+            const d = new Date();
+            const timeCacheRefresh = d.getTime();
+            const imgPath = this.$store.getters.serverUrl + res.path;
+            const imgPathCache = imgPath + '?' + timeCacheRefresh;
+            const playerID = res.id;
+
+            if (playerID == this.loggedUser.id) {
+                this.$store.dispatch('updateAvatar', {
+                    avatarPath: imgPath
+                });
+            }
+            
+            for (const i in this.players) {
+                if (this.players[i].id == playerID) {
+                    this.$set(this.players[i], 'avatar', imgPathCache);
+                    break;
+                }
+            }
+
+            for (const i in this.friends) {
+                if (this.friends[i].id == playerID) {
+                    this.$set(this.friends[i], 'avatar', imgPathCache);
+                    break;
+                }
+            }
+        });
+
+        this.socket.on('lobbyUpdateAvatarRes', (res) => {
+            console.log('lobbyUpdateAvatarRes');
+            console.log(res);
+            if (res.error !== 0)
+                this.$parent.toast(res.status, 'danger', 3);
+        });
+
+
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('input').first().focus();
         });
 
 

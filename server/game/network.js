@@ -2,12 +2,12 @@ const Constants                   = require('../lib/constants');
 const Errors                      = require('../lib/errors');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
-const Matchmaking                 = require('./matchmaking');
 const { UserSchema, UserManager } = require('../models/user');
 const SocketIOFileUpload          = require("socketio-file-upload");
 const FileType                    = require('file-type');
 const fs                          = require('fs');
 const Success                     = require('../lib/success');
+const Lobby                       = require('./lobby');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -23,6 +23,49 @@ class Network {
         this.GLOBAL = GLOBAL;
     }
 
+    handleConnection (user, socket) {
+        console.log('[SOCKET] Utilisateur ' + user.id + ' (' + user.nickname + ') connecté');
+        user.socket = socket;
+
+        socket.on('disconnect', () => {
+            console.log('[SOCKET] Utilisateur ' + user.nickname + ' déconnecté');
+
+            // si il est dans un lobby, l'y supprimer
+            for (const lobby of this.GLOBAL.lobbies) {
+                if (lobby.userByID(user.id)) {
+                    lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
+                    return;
+                }
+            }
+
+            // si il est dans une partie de jeu, l'y déconnecter (PAS SUPPRIMER POUR RECONNEXION)
+            for (const game of this.GLOBAL.games) {
+                const player = game.playerByID(user.id);
+                if (player) {
+                    this.gamePlayerDisconnected(player, game);
+                    return;
+                }
+            }
+        });
+
+        // regarder si le joueur est dans une partie + !hasLeft
+        for (const game of this.GLOBAL.games) {
+            const player = game.playerByID(user.id);
+            if (player && !player.hasLeft) {
+                // le joueur est dans une partie !
+                if (!player.connected) // RECONNEXION
+                    this.gamePlayerReconnected(player, game);
+                else // ARRIVÉE DANS LE JEU DEPUIS LOBBY
+                    this.gamePlayerListen(player, game);
+                socket.emit('canReconnectToGame');
+                return;
+            }
+        }
+
+        // Mettre le user dans un nouveau Lobby
+        this.GLOBAL.lobbies.push(new Lobby(user, this.GLOBAL));
+    }
+
     /////////////////////
     // GENERAL METHODS //
     /////////////////////
@@ -30,7 +73,126 @@ class Network {
     lobbyUserListen(user, lobby) {
         user.socket.join(lobby.name);
 
-        // -- GESTION UPLOAD AVATAR
+        // Inviter / Rejoindre / Quitter
+        this.lobbyInvitationReq             (user, lobby);
+        this.lobbyInvitationAcceptReq       (user, lobby);
+        this.lobbyKickReq                   (user, lobby);
+
+        // Paramètres + Chat
+        this.lobbyUpdateProfile             (user, lobby);
+        this.lobbyChangeTargetUsersNbReq    (user, lobby);
+        this.lobbyChangeDurationReq         (user, lobby);
+        this.lobbyChatSendReq               (user, lobby);
+        this.lobbyPlayReq                   (user, lobby);
+        this.lobbyCancelPlayReq             (user, lobby);
+
+        // Amis
+        this.lobbyFriendListReq             (user, lobby);
+        this.lobbyRequestedFriendListReq    (user, lobby);
+        this.lobbyPendingFriendListReq      (user, lobby);
+        this.lobbyFriendInvitationSendReq   (user, lobby);
+        this.lobbyFriendInvitationActionReq (user, lobby);
+        // this.lobbyFriendDeleteReq(user, lobby);
+
+        // Paramètres + Succès
+        this.playerSettingsReq            (user);
+        this.playerSuccessReq             (user);
+        this.changeAvatarReq              (user);
+
+        user.socket.on('lobbyReadyReq', () => {
+            // réponse de création / rejoignage de lobby
+            this.lobbyNewUser(user, lobby);
+        });
+    }
+
+    lobbyUserStopListening(user, lobby) {
+        user.socket.leave(lobby.name);
+
+        // Inviter / Rejoindre / Quitter
+        user.socket.removeAllListeners('lobbyInvitationReq');
+        user.socket.removeAllListeners('lobbyInvitationAcceptReq');
+        user.socket.removeAllListeners('lobbyKickReq');
+
+        // Paramètres + Chat
+        user.socket.removeAllListeners('lobbyUpdateProfile');
+        user.socket.removeAllListeners('lobbyChangeTargetUsersNbReq');
+        user.socket.removeAllListeners('lobbyChangeDurationReq');
+        user.socket.removeAllListeners('lobbyChatSendReq');
+        user.socket.removeAllListeners('lobbyPlayReq');
+        user.socket.removeAllListeners('lobbyCancelPlayReq');
+
+        // Amis
+        user.socket.removeAllListeners('lobbyFriendListReq');
+        user.socket.removeAllListeners('lobbyRequestedFriendListReq');
+        user.socket.removeAllListeners('lobbyPendingFriendListReq');
+        user.socket.removeAllListeners('lobbyFriendInvitationSendReq');
+        user.socket.removeAllListeners('lobbyFriendInvitationActionReq');
+
+        // Paramètres + Succès
+        user.socket.removeAllListeners('playerSettingsReq');
+        user.socket.removeAllListeners('playerSuccessReq');
+        user.socket.removeAllListeners('changeAvatarReq');
+
+        user.socket.removeAllListeners('lobbyReadyReq');
+    }
+
+    gamePlayerListen (player, game) {
+        player.socket.join(game.name);
+
+        // Début/Fin + tour
+        this.gameReadyReq                 (player, game);
+        this.gameRollDiceReq              (player, game);
+        this.gameTurnEndReq               (player, game);
+
+        // Actions de tour asynchrones
+        this.gamePropertyBuyReq           (player, game);
+        this.gamePropertyUpgradeReq       (player, game);
+        this.gamePropertyMortgageReq      (player, game);
+        this.gamePlayerLeavingReq         (player, game);
+        this.gamePropertyUnmortgageReq    (player, game);
+
+        // Chat + offres et enchères
+        this.gameChatSendReq              (player, game);
+        this.gameOfferSendReq             (player, game);
+        this.gameOfferAcceptReq           (player, game);
+        this.gameOverbidReq               (player, game);
+
+        // Paramètres + Succès
+        this.playerSettingsReq            (player);
+        this.playerSuccessReq             (player);
+    }
+
+    gamePlayerStopListening (player, game) {
+        player.socket.leave(game.name);
+
+        // Début/Fin + tour
+        user.socket.removeAllListeners('gameReadyReq');
+        user.socket.removeAllListeners('gameRollDiceReq');
+        user.socket.removeAllListeners('gameTurnEndReq');
+
+        // Actions de tour asynchrones
+        user.socket.removeAllListeners('gamePropertyBuyReq');
+        user.socket.removeAllListeners('gamePropertyUpgradeReq');
+        user.socket.removeAllListeners('gamePropertyMortgageReq');
+        user.socket.removeAllListeners('gamePlayerLeavingReq');
+        user.socket.removeAllListeners('gamePropertyUnmortgageReq');
+
+        // Chat + removeAllListenersres et enchères
+        user.socket.removeAllListeners('gameChatSendReq');
+        user.socket.removeAllListeners('gameOfferSendReq');
+        user.socket.removeAllListeners('gameOfferAcceptReq');
+        user.socket.removeAllListeners('gameOverbidReq');
+
+        // Paramètres + Succès
+        user.socket.removeAllListeners('playerSettingsReq');
+        user.socket.removeAllListeners('playerSuccessReq');
+    }
+
+    //////////////////
+    // LOBBY EVENTS //
+    //////////////////
+
+    changeAvatarReq (user) {
         var uploader = new SocketIOFileUpload();
         uploader.dir = __dirname + '/../public/avatars';
         uploader.maxFileSize = 1 * 1000000; // 1Mo (taille en bytes)
@@ -43,7 +205,6 @@ class Network {
         };
 
         const currObj = this;
-
         // Do something when a file is saved:
         uploader.on("saved", function(event){
             (async () => {
@@ -75,69 +236,7 @@ class Network {
         });
 
         uploader.listen(user.socket);
-        // -- FIN GESTION UPLOAD AVATAR
-
-
-        // Inviter / Rejoindre / Quitter
-        this.lobbyInvitationReq             (user, lobby);
-        this.lobbyInvitationAcceptReq       (user, lobby);
-        this.lobbyKickReq                   (user, lobby);
-
-        // Paramètres + Chat
-        this.lobbyUpdateProfile             (user, lobby);
-        this.lobbyChangeTargetUsersNbReq    (user, lobby);
-        this.lobbyChangeDurationReq         (user, lobby);
-        this.lobbyChatSendReq               (user, lobby);
-        this.lobbyPlayReq                   (user, lobby);
-        this.lobbyCancelPlayReq             (user, lobby);
-
-        // Amis
-        this.lobbyFriendListReq             (user, lobby);
-        this.lobbyRequestedFriendListReq    (user, lobby);
-        this.lobbyPendingFriendListReq      (user, lobby);
-        this.lobbyFriendInvitationSendReq   (user, lobby);
-        this.lobbyFriendInvitationActionReq (user, lobby);
-        // this.lobbyFriendDeleteReq(user, lobby);
-
-        // Paramètres + Succès
-        this.playerSettingsReq            (user);
-        this.playerSuccessReq             (user);
-
-        user.socket.on('lobbyReadyReq', () => {
-            // réponse de création / rejoignage de lobby
-            this.lobbyNewUser(user, lobby);
-        });
     }
-
-    gamePlayerListen(player, game) {
-        player.socket.join(game.name);
-
-        // Début/Fin + tour
-        this.gameReadyReq                 (player, game);
-        this.gameRollDiceReq              (player, game);
-        this.gameTurnEndReq               (player, game);
-
-        // Actions de tour asynchrones
-        this.gamePropertyBuyReq           (player, game);
-        this.gamePropertyUpgradeReq       (player, game);
-        this.gamePropertyMortgageReq      (player, game);
-        this.gamePlayerLeavingReq         (player, game);
-        this.gamePropertyUnmortgageReq    (player, game);
-
-        // Chat + offres et enchères
-        this.gameChatSendReq              (player, game);
-        this.gameOfferSendReq             (player, game);
-        this.gameOfferAcceptReq           (player, game);
-        this.gameOverbidReq               (player, game);
-
-        // Paramètres + Succès
-        this.playerSettingsReq            (player);
-        this.playerSuccessReq             (player);
-    }
-
-    //////////////////
-    // LOBBY EVENTS //
-    //////////////////
 
     lobbyNewUser(user, lobby) {
 
@@ -192,7 +291,7 @@ class Network {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
 
-                if (!data.friendID)
+                if (data.friendID == null)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
                     err = Errors.FRIENDS.NOT_EXISTS;
@@ -359,7 +458,7 @@ class Network {
             let err = Errors.SUCCESS;
             let friendLobby = null;
 
-            if (!data || !data.invitationID)
+            if (!data || data.invitationID == null)
                 err = Errors.MISSING_FIELD;
             else {
                 const invitObj = lobby.delInvitation(parseInt(data.invitationID));
@@ -386,17 +485,15 @@ class Network {
                             const usr = lobby.userByID(user.id);
                             if (usr) {
                                 lobby.delUser(user);
-                                user.socket.leave(lobby.name);
+                                this.lobbyUserStopListening(user, lobby);
                                 break;
                             }
                         }
                     }
                 }
 
-                if (err.code === Errors.SUCCESS.code) {
+                if (err.code === Errors.SUCCESS.code)
                     friendLobby.addUser(user);
-                    friendLobby.invitedUsers.push(user);
-                }
 
                 user.socket.emit('lobbyInvitationAcceptRes', { error: err.code, status: err.status });
             }
@@ -408,7 +505,7 @@ class Network {
             let err = Errors.SUCCESS;
             let userToKick = null;
 
-            if (!data.userToKickID)
+            if (data.userToKickID == null)
                 err = Errors.MISSING_FIELD;
             else if (data.userToKickID === user.id)
                 err = Errors.UNKNOW;
@@ -418,10 +515,16 @@ class Network {
                     err = Errors.LOBBY.NOT_IN_LOBBY;
             }
 
-            if (err.code === Errors.SUCCESS.code)
-                lobby.delUser(userToKick, false); // lui envoie l'event socket lobbyUserLeftRes
+            if (err.code === Errors.SUCCESS.code) {
+                lobby.delUser(userToKick); // lui envoie l'event socket lobbyUserLeftRes
+            }
 
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
+
+            if (err.code === Errors.SUCCESS.code) {
+                // le remettre dans un nouveau lobby solo
+                this.GLOBAL.lobbies.push(new Lobby(user, this.GLOBAL));
+            }
         });
     }
 
@@ -526,7 +629,7 @@ class Network {
 
             if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
-            else if (Matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
+            else if (this.GLOBAL.matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
                 this.GLOBAL.matchmaking.delLobby(lobby);
@@ -909,7 +1012,7 @@ class Network {
         player.socket.on('gamePropertyUnmortgageReq', (data) => {
             let err = Errors.SUCCESS, prop;
 
-            if (!data.propertyID)
+            if (data.propertyID == null)
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
@@ -1221,7 +1324,8 @@ class Network {
     // Settings
     playerSettingsReq (user) {
         user.socket.on('playerSettingsReq', (data) => {
-            if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined')
+            if (typeof data.graphicsQuality === 'undefined' || typeof data.autoZoom === 'undefined'
+                || typeof data.musicLevel === 'undefined' || typeof data.sfxLevel === 'undefined')
                 return;
 
             UserSchema.findById(user.id, (error, userMongo) => {
@@ -1233,6 +1337,14 @@ class Network {
                 userMongo.settings.graphicsQuality = gQuality;
 
                 userMongo.settings.autoZoom = Boolean(data.autoZoom);
+
+                let musicLevel = parseInt(data.musicLevel);
+                musicLevel = (musicLevel >= 0 && musicLevel <= 100) ? musicLevel : 100;
+                userMongo.settings.musicLevel = musicLevel;
+
+                let sfxLevel = parseInt(data.sfxLevel);
+                sfxLevel = (sfxLevel >= 0 && sfxLevel <= 100) ? sfxLevel : 100;
+                userMongo.settings.sfxLevel = sfxLevel;
 
                 userMongo.save((err) => {
                     return;
