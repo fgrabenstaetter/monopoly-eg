@@ -162,7 +162,12 @@ class SuccessManager {
     }
 
     haveAmonopoly (obj, player) {
-        
+        const colors = Object.keys(Constants.STREET_COLOR);
+        for (const color of colors) {
+            if (player.colorMonopoly(color)) {
+                return true;
+            }
+        }
     }
 }
 
