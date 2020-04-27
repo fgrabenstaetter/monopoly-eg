@@ -488,7 +488,8 @@
         margin: 10px auto 0 auto;
       }
 
-      .sell-input, .buy-input {
+      .sell-input,
+      .buy-input {
         background-color: white;
         filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
         border-radius: 10px;
@@ -679,6 +680,56 @@
           flex-wrap: wrap;
           filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
 
+          &.edition {
+            .houses-total-price,
+            .houses-validation-btn {
+              display: block;
+            }
+
+            .properties-container {
+              &.company,
+              &.green,
+              &.yellow,
+              &.brown,
+              &.blue,
+              &.cyan,
+              &.purple,
+              &.red {
+                .property {
+                  color: rgba($color: white, $alpha: 0.6) !important;
+                  padding: 10px 30px !important;
+
+                  .houses-btn {
+                    background-color: $blue !important;
+                    color: white !important;
+                  }
+                }
+              }
+              &.station {
+                .property {
+                  padding: 15px 30px !important;
+                  color: rgba($color: black, $alpha: 0.6) !important;
+
+                  &::before {
+                    margin-bottom: 5px !important;
+                  }
+                }
+              }
+            }
+
+            .property {
+              .add-house,
+              .remove-house {
+                display: flex !important;
+                color: white !important;
+              }
+
+              .house-number {
+                display: flex !important;
+              }
+            }
+          }
+
           &.top {
             top: -20px;
           }
@@ -695,8 +746,11 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            width: 120px;
             margin: 0 auto;
+
+            .fa-pen {
+              font-size: 10px;
+            }
 
             .houses-btn {
               cursor: default;
@@ -711,6 +765,7 @@
           }
 
           .houses-total-price {
+            display: none;
             position: absolute;
             bottom: -17.5px;
             border-radius: 17.5px;
@@ -718,12 +773,13 @@
             height: 35px;
             background-color: white;
             color: $blue;
-            font-family: 'LilitaOne', sans-serif;
+            font-family: "LilitaOne", sans-serif;
             padding: 6px 20px;
             filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
           }
 
           .houses-validation-btn {
+            display: none;
             position: absolute;
             background-color: $blue;
             border: none;
@@ -733,7 +789,7 @@
             right: 30px;
             bottom: -17.5px;
             padding: 4px 20px;
-            font-family: 'LilitaOne', sans-serif;
+            font-family: "LilitaOne", sans-serif;
             filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
           }
 
@@ -767,12 +823,51 @@
               padding: 10px 5px;
               font-size: 10px;
               margin: 7px 20px;
+              position: relative;
+              min-height: 35px;
 
               &.selected {
                 padding: 6px 1px !important;
                 border: 4px solid blue !important;
                 background-color: rgb(169, 169, 255) !important;
                 color: blue !important;
+              }
+
+              .add-house,
+              .remove-house {
+                display: none;
+                position: absolute;
+                top: 0;
+                width: 60px;
+                height: calc(100% - 2.5px);
+                align-items: center;
+                padding: 0 10px;
+                font-size: 20px;
+              }
+
+              .add-house {
+                right: 0;
+                justify-content: flex-end;
+              }
+
+              .remove-house {
+                left: 0;
+                justify-content: flex-start;
+              }
+
+              .house-number {
+                display: none;
+                position: absolute;
+                color: $blue;
+                right: -15px;
+                top: 0;
+                height: 100%;
+                text-align: left;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-family: "LilitaOne", sans-serif;
               }
             }
 

@@ -9,8 +9,7 @@
         
         <div v-if="showProperties" class="popup top">
             <div class="houses-btn-container">
-                <button style="display: block;" class="houses-btn yellow"><i class="fas fa-home"></i>-</button>
-                <button style="display: block;" class="houses-btn yellow"><i class="fas fa-home"></i>+</button>
+                <button style="display: block;" class="houses-btn"><i class="fas fa-home"></i><i class="fa fa-pen"></i></button>
             </div>
             
             <div v-if="overviewCard" class="overview-card" style="display:block;">
@@ -89,7 +88,12 @@
 
             <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in yellowProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingYellowProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingYellowProperties >= 2" class="blank-property"></div>
@@ -97,7 +101,12 @@
             </div>
             <div v-if="remainingRedProperties < 3" style="display: block;" class="properties-container red">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in redProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingRedProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingRedProperties >= 2" class="blank-property"></div>
@@ -105,14 +114,24 @@
             </div>
             <div v-if="remainingBlueProperties < 2" style="display: block;" class="properties-container blue">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in blueProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingBlueProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingBlueProperties >= 2" class="blank-property"></div>
             </div>
             <div v-if="remainingOrangeProperties < 3" style="display: block;" class="properties-container orange">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in orangeProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingOrangeProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingOrangeProperties >= 2" class="blank-property"></div>
@@ -120,7 +139,12 @@
             </div>
             <div v-if="remainingPurpleProperties < 3" style="display: block;" class="properties-container purple">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in purpleProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingPurpleProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingPurpleProperties >= 2" class="blank-property"></div>
@@ -128,7 +152,12 @@
             </div>
             <div v-if="remainingBrownProperties < 3" style="display: block;" class="properties-container brown">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in brownProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingBrownProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingBrownProperties >= 2" class="blank-property"></div>
@@ -136,7 +165,12 @@
             </div>
             <div v-if="remainingCyanProperties < 3" style="display: block;" class="properties-container cyan">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in cyanProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingCyanProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingCyanProperties >= 2" class="blank-property"></div>
@@ -144,7 +178,12 @@
             </div>
             <div v-if="remainingGreenProperties < 3" style="display: block;" class="properties-container green">
                 <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in greenProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
+                    <div>
+                        {{prop.name}}
+                        <div class="add-house">+</div>
+                        <div class="remove-house">-</div>
+                        <div class="house-number">1</div>
+                    </div>
                 </div>
                 <div v-if="remainingGreenProperties >= 1" class="blank-property"></div>
                 <div v-if="remainingGreenProperties >= 2" class="blank-property"></div>
