@@ -479,6 +479,7 @@
     .options {
       width: 200px;
       position: relative;
+      z-index: 40000;
 
       button {
         border-radius: 17.5px;
@@ -497,6 +498,7 @@
         position: absolute;
         width: 200px;
         left: 220px;
+        z-index: 40000;
 
         label {
           font-size: 13px;
@@ -595,7 +597,7 @@
     top: 100px;
     left: 50%;
     transform: translate(-50%, 0);
-    z-index: 2;
+    z-index: 10000;
 
     .player-list {
       width: max-content;
