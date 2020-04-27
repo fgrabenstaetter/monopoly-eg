@@ -124,9 +124,10 @@ class Player {
      */
     delProperty (property) {
         const ind = this.properties.indexOf(property);
-        if (ind !== -1)
+        if (ind !== -1) {
             this.properties.splice(ind, 1);
-        property.owner = null;
+            property.owner = null;
+        }
     }
 
     /**

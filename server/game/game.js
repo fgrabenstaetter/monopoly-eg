@@ -542,10 +542,8 @@ class Game {
                     this.setTurnActionData(null, null,
                         'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
-            } // else => rien à faire
-            else if (!property.owner && this.curPlayer.money < buyingPrice) {
-                    const bid = new Bid(property, 0, this);
-            }
+            } else if (!property.owner && this.curPlayer.money < buyingPrice)
+                new Bid(property, 0, this);
         }
     }
 
@@ -683,7 +681,7 @@ class Game {
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
-                const bid = new Bid(curProp, 0, this);
+                new Bid(curProp, 0, this);
                 break;
         }
     }
