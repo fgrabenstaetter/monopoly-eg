@@ -3,11 +3,17 @@
         <div class="background-container"></div>
         <div class="lobby-ui-container">
             <div class="container">
-                <div class="row">
-                    <div class="col">
+                <div class="row profile-container">
+                    <div class="profile-row">
+                        <div class="username" data-id="">{{loggedUser.nickname}}</div>
+                        <i id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
+                        <img class="user-avatar" data-id="" :src="loggedUser.avatar">
+                        <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
                         <i v-on:click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
                     </div>
                 </div>
+            </div>
+            <div class="container lobby-top-row">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card box friendlist">
@@ -79,7 +85,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
+            <div class="container lobby-bottom-row">
                 <div class="row">
                     <div class="col-md-4">
                         <chat-io v-bind:socket="socket" ref="chat"></chat-io>
@@ -184,14 +190,7 @@
             </div>
 
         </div>
-        <div class="profile-overlay-container">
-            <div class="profile-row">
-                <div class="username" data-id="">{{loggedUser.nickname}}</div>
-                <i id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
-                <img class="user-avatar" data-id="" :src="loggedUser.avatar">
-                <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
-            </div>
-        </div>
+
 
         <!-- Game settings modal -->
         <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
