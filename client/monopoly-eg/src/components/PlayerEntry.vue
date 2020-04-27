@@ -67,9 +67,23 @@
                 </div>
                 <div class="options">
                     <button v-if="loggedUser.id == player.id" @click="sellProperty(overviewCard.id)" class="btn stylized">VENDRE</button>
+                    <div class="sell-input">
+                        <form>
+                            <label>Choisissez un montant de départ</label>
+                            <input type="text" placeholder="Votre montant...">
+                            <button class="btn">Vendre</button>
+                        </form>
+                    </div>
                     <button v-if="loggedUser.id == player.id && overviewCard.isMortgaged" @click="rebuyProperty(overviewCard.id)" class="btn stylized">RACHETER</button>
                     <button v-if="loggedUser.id == player.id && !overviewCard.isMortgaged" @click="mortgageProperty(overviewCard.id)" class="btn stylized">HYPOTHÉQUER</button>
                     <button v-if="loggedUser.id != player.id" @click="buyProperty(overviewCard.id)" class="btn stylized">ACHETER</button>
+                    <div class="buy-input">
+                        <form>
+                            <label>Choisissez un montant</label>
+                            <input type="text" placeholder="Votre montant...">
+                            <button class="btn">Acheter</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
