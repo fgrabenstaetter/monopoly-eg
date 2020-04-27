@@ -515,15 +515,12 @@ class Network {
                     err = Errors.LOBBY.NOT_IN_LOBBY;
             }
 
-            if (err.code === Errors.SUCCESS.code) {
-                lobby.delUser(userToKick); // lui envoie l'event socket lobbyUserLeftRes
-            }
-
             user.socket.emit('lobbyKickRes', { error: err.code, status: err.status });
 
             if (err.code === Errors.SUCCESS.code) {
+                lobby.delUser(userToKick); // lui envoie l'event socket lobbyUserLeftRes
                 // le remettre dans un nouveau lobby solo
-                this.GLOBAL.lobbies.push(new Lobby(user, this.GLOBAL));
+                this.GLOBAL.lobbies.push(new Lobby(userToKick, this.GLOBAL));
             }
         });
     }
