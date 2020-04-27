@@ -1494,4 +1494,78 @@
       z-index: 1;
     }
   }
+
+  .end-game-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30000;
+    background-color: white;
+    border-radius: 12px;
+    width: 300px;
+    font-family: 'LilitaOne', sans-serif;
+
+    .header {
+      margin: -25px auto 0 auto;
+      width: max-content;
+      background-color: rgb(7, 7, 126);
+      border-radius: 25px;
+      height: 50px;
+      padding: 12px 20px;
+      filter: drop-shadow(0 0 0.2rem rgb(3, 3, 100));
+
+      h5 {
+        font-size: 20px;
+        color: white;
+        font-family: "LilitaOne", sans-serif;
+      }
+    }
+
+    .content {
+      margin-top: 50px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .winner {
+        font-size: 30px;
+        font-family: "LilitaOne", sans-serif;
+        color: $orange;
+      }
+
+      .subtitle {
+        font-size: 20px;
+        margin-bottom: 40px;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        color: grey;
+        width: 200px;
+        font-size: 13px;
+        margin: 10px auto 0 auto;
+        font-family: 'Roboto', sans-serif;
+
+        .label {
+          text-align: left;
+        }
+
+        .value {
+          text-align: right;
+        }
+      }
+
+      button {
+        margin: 50px auto;
+        border-radius: 17.5px;
+        padding: 2px 20px;
+        height: 35px;
+        font-size: 15px;
+      }
+    }
+  }
 }

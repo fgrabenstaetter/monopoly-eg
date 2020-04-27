@@ -158,7 +158,24 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
-      
+      <div class="end-game-screen">
+        <div class="header">
+          <h5>Fin de la partie !</h5>
+        </div>
+        <div class="content">
+          <div class="winner">Unknown</div>
+          <div class="subtitle">a gagné la partie !</div>
+          <div class="info">
+            <div class="label">Temps de jeu</div>
+            <div class="value">13 minutes</div>
+          </div>
+          <div class="info">
+            <div class="label">Info</div>
+            <div class="value">Valeur</div>
+          </div>
+          <button class="btn stylized">Retourner au lobby</button>
+        </div>
+      </div>
 
       <!--
             <script>
