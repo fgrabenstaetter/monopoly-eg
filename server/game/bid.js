@@ -63,8 +63,10 @@ class Bid {
             return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
         }
 
-        this.amountAsked = amount;
-        this.player = player;
+        if (amount !== 0) {
+            this.amountAsked = amount;
+            this.player = player;
+        }
 
         if (this.property.owner !== this.initialPropertyOwner) {
             this.expired();
