@@ -156,6 +156,7 @@ class Network {
         this.gameOfferSendReq             (player, game);
         this.gameOfferAcceptReq           (player, game);
         this.gameOverbidReq               (player, game);
+        this.gameManualBidReq             (player, game);
 
         // Paramètres + Succès
         this.playerSettingsReq            (player);
@@ -182,6 +183,7 @@ class Network {
         user.socket.removeAllListeners('gameOfferSendReq');
         user.socket.removeAllListeners('gameOfferAcceptReq');
         user.socket.removeAllListeners('gameOverbidReq');
+        user.socket.removeAllListeners('gameManualBidReq');
 
         // Paramètres + Succès
         user.socket.removeAllListeners('playerSettingsReq');
