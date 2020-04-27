@@ -19,6 +19,7 @@ class SuccessManager {
                 nbJailTimes : 0,
                 turnNumber  : 0,
                 nbTaxesPaid : 0,
+                isInJail    : false,
                 completed   : []
             };
 
@@ -93,6 +94,8 @@ class SuccessManager {
 
         if (player.cellPos === 4)
             obj.nbTaxesPaid ++;
+
+        obj.isInJail = player.isInPrison;
     }
 
     make10Doubles (obj, player) {
@@ -168,6 +171,11 @@ class SuccessManager {
                 return true;
             }
         }
+    }
+
+    escapeFromJailWithDouble (obj, player) {
+        if (obj.isInJail !== player.isInPrison && this.game.turnData.nbDoubleDices !== 0)
+            return true;
     }
 }
 
