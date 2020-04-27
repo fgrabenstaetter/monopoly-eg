@@ -8,7 +8,7 @@
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
-            <div @click="openPropertiesEdition" class="houses-btn-container">
+            <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button style="display: block;" class="houses-btn"><i class="fas fa-home"></i><i class="fa fa-pen"></i></button>
             </div>
             
@@ -74,7 +74,7 @@
                         </form>
                     </div>
                     <button v-if="loggedUser.id == player.id && overviewCard.isMortgaged" @click="rebuyProperty(overviewCard.id)" class="btn stylized">RACHETER</button>
-                    <button v-if="loggedUser.id == player.id && !overviewCard.isMortgaged" @click="mortgageProperty(overviewCard.id)" class="btn stylized">HYPOTHÉQUER</button>
+                    <button v-if="loggedUser.id == player.id && isCurrent && !overviewCard.isMortgaged" @click="mortgageProperty(overviewCard.id)" class="btn stylized">HYPOTHÉQUER</button>
                     <button v-if="loggedUser.id != player.id" @click="toggleOverviewCardBuy" class="btn stylized">ACHETER</button>
                     <div v-if="loggedUser.id != player.id && overviewCardBuy.open" v-click-outside="closeOverviewCardBuy" class="buy-input">
                         <form @submit.prevent="buyProperty(overviewCard.id)">
@@ -86,128 +86,28 @@
                 </div>
             </div>
 
-            <div v-if="remainingYellowProperties < 3" style="display: block;" class="properties-container yellow">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in yellowProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
+            <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
+                <div v-if="remainingPropertiesByType(type) < type.totalNb" style="display: block;" class="properties-container" :class="type.cssClass ? type.cssClass : type.name">
+                    <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property">
+                        <div v-if="prop.type == 'street'">
+                            {{prop.name}}
+                            <div v-if="prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
+                            <div v-if="prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
+                            <div class="house-number">{{prop.level}}</div>
+                        </div>
+                        <div v-else>
+                            {{prop.name}}
+                        </div>
                     </div>
-                </div>
-                <div v-if="remainingYellowProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingYellowProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingYellowProperties >= 3" class="blank-property"></div>
+                    <div v-for="i in remainingPropertiesByType(type)" :key="typeIndex * i + i" class="blank-property"></div>
+                </div> 
             </div>
-            <div v-if="remainingRedProperties < 3" style="display: block;" class="properties-container red">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in redProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingRedProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingRedProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingRedProperties >= 3" class="blank-property"></div>
+
+            <div v-if="propertiesEdition.open">
+                <div class="houses-total-price">{{propertiesEdition.totalPrice}}€</div>
+                <button @click="submitPropertiesEdition" class="houses-validation-btn">Terminer</button>
+                <button @click="cancelPropertiesEdition" class="houses-cancel-btn">Annuler</button>
             </div>
-            <div v-if="remainingBlueProperties < 2" style="display: block;" class="properties-container blue">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in blueProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingBlueProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingBlueProperties >= 2" class="blank-property"></div>
-            </div>
-            <div v-if="remainingOrangeProperties < 3" style="display: block;" class="properties-container orange">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in orangeProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingOrangeProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingOrangeProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingOrangeProperties >= 3" class="blank-property"></div>
-            </div>
-            <div v-if="remainingPurpleProperties < 3" style="display: block;" class="properties-container purple">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in purpleProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingPurpleProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingPurpleProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingPurpleProperties >= 3" class="blank-property"></div>
-            </div>
-            <div v-if="remainingBrownProperties < 3" style="display: block;" class="properties-container brown">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in brownProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingBrownProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingBrownProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingBrownProperties >= 3" class="blank-property"></div>
-            </div>
-            <div v-if="remainingCyanProperties < 3" style="display: block;" class="properties-container cyan">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in cyanProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingCyanProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingCyanProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingCyanProperties >= 3" class="blank-property"></div>
-            </div>
-            <div v-if="remainingGreenProperties < 3" style="display: block;" class="properties-container green">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in greenProperties" :key="prop.id" class="property">
-                    <div>
-                        {{prop.name}}
-                        <div class="add-house">+</div>
-                        <div class="remove-house">-</div>
-                        <div class="house-number">1</div>
-                    </div>
-                </div>
-                <div v-if="remainingGreenProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingGreenProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingGreenProperties >= 3" class="blank-property"></div>
-            </div>
-            <div v-if="remainingTrainStationProperties < 4" style="display: block;" class="properties-container station">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in trainStationProperties" :key="prop.id" class="property">
-                    <div>{{prop.name}}</div>
-                </div>
-                <div v-if="remainingTrainStationProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingTrainStationProperties >= 2" class="blank-property"></div>
-                <div v-if="remainingTrainStationProperties >= 3" class="blank-property"></div>
-                <div v-if="remainingTrainStationProperties >= 4" class="blank-property"></div>
-            </div>
-            <div v-if="remainingPublicCompanyProperties < 2" style="display: block;" class="properties-container company">
-                <div @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" v-for="prop in publicCompanyProperties" :key="prop.id" class="property eau">
-                    <div>{{prop.name}}</div>
-                </div>
-                <div v-if="remainingPublicCompanyProperties >= 1" class="blank-property"></div>
-                <div v-if="remainingPublicCompanyProperties >= 2" class="blank-property"></div>
-            </div>
-            <div class="houses-total-price">1 200€</div>
-            <button class="houses-validation-btn">Terminer</button>
-            <button class="houses-cancel-btn">Annuler</button>
         </div>
     </div>
 </template>
@@ -241,6 +141,18 @@ export default {
     },
     data() {
         return {
+            propertiesTypes: [
+                { name: 'yellow', totalNb: 3 },
+                { name: 'red', totalNb: 3 },
+                { name: 'blue', totalNb: 2 },
+                { name: 'orange', totalNb: 3 },
+                { name: 'purple', totalNb: 3 },
+                { name: 'brown', totalNb: 3 },
+                { name: 'cyan', totalNb: 3 },
+                { name: 'green', totalNb: 3 },
+                { name: 'trainStation', totalNb: 4, cssClass: 'station' },
+                { name: 'publicCompany', totalNb: 2, cssClass: 'station' }
+            ],
             showProperties: false,
             overviewCard: false,
             overviewCardBuy: {
@@ -252,7 +164,9 @@ export default {
                 price: ''
             },
             propertiesEdition: {
-                open: false
+                open: false,
+                totalPrice: 0,
+                modifications: []
             }
         }
     },
@@ -434,6 +348,93 @@ export default {
         });
     },
     methods: {
+
+        propertiesByType(type) {
+            let res = [];
+            for (const i in this.player.properties) {
+                if (this.player.properties[i].type == type.name || this.player.properties[i].color == type.name)
+                    res.push(this.player.properties[i]);
+            }
+            return res;
+        },
+        remainingPropertiesByType(type) {
+            return (type.totalNb - this.propertiesByType(type).length);
+        },
+        submitPropertiesEdition() {
+            console.log("SUBMIT PROPERTIES EDITION");
+            console.log(this.propertiesEdition);
+        },
+        cancelPropertiesEdition() {
+            console.log("CANCEL PROPERTIES EDITION");
+            // Reset les données d'édition
+            this.propertiesEdition.totalPrice = 0;
+            for (const i in this.propertiesEdition.modifications) {
+                for (const j in this.player.properties) {
+                    if (this.propertiesEdition.modifications[i].propertyID == this.player.properties[j].id) {
+                        this.player.properties[j].level = this.propertiesEdition.modifications[i].oldLevel;
+                        continue;
+                    }
+                }
+            }
+            this.propertiesEdition.modifications = [];
+            this.propertiesEdition.open = false;
+        },
+        propertiesEditionRemovePropertyFromModifications(property) {
+            for (const i in this.propertiesEdition.modifications) {
+                if (this.propertiesEdition.modifications[i].propertyID == property.id) {
+                    this.propertiesEdition.modifications.splice(i, 1);
+                    return;
+                }
+            }
+        },
+        propertiesEditionGetPropertyModificationIndex(property) {
+            for (const i in this.propertiesEdition.modifications) {
+                if (this.propertiesEdition.modifications[i].propertyID == property.id)
+                    return i;
+            }
+        },
+        propertiesEditionAddHouse(property) {
+            if (property.level == 5) return;
+            let propertyIndex = this.propertiesEditionGetPropertyModificationIndex(property);
+            
+            property.level++;
+            if (propertyIndex != null) {
+                this.propertiesEdition.modifications[propertyIndex].level = property.level;
+            } else {
+                this.propertiesEdition.modifications.push({
+                    propertyID: property.id,
+                    oldLevel: property.level - 1,
+                    level: property.level
+                });
+            }
+
+            if (property.level == 5)
+                this.propertiesEdition.totalPrice += property.prices.hostel;
+            else
+                this.propertiesEdition.totalPrice += property.prices.house;
+        },
+        propertiesEditionRemoveHouse(property) {
+            if (property.level == 0) return;
+            let propertyIndex = this.propertiesEditionGetPropertyModificationIndex(property);
+
+            property.level--;
+            if (propertyIndex != null) {
+                this.propertiesEdition.modifications[propertyIndex].level = property.level;
+            } else {
+                this.propertiesEdition.modifications.push({
+                    propertyID: property.id,
+                    oldLevel: property.level + 1,
+                    level: property.level
+                });
+            }
+
+            if (property.level == 4)
+                this.propertiesEdition.totalPrice -= property.prices.hostel;
+            else
+                this.propertiesEdition.totalPrice -= property.prices.house;
+
+        },
+
         showPlayerProperties() {
             this.showProperties = true;
         },
@@ -499,7 +500,6 @@ export default {
             this.closeOverviewCardBuy();
         },
         mortgageProperty(propertyID) {
-            alert(`Hypothéquer ${propertyID}`);
             this.socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
         },
         rebuyProperty(propertyID) {
@@ -512,118 +512,6 @@ export default {
         //     let res = [];
         //     for (const i in this.player.properties)
         // }
-    },
-    computed: {
-        yellowProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'yellow')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingYellowProperties: function() {
-            return (3 - this.yellowProperties.length);
-        },
-        redProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'red')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingRedProperties: function() {
-            return (3 - this.redProperties.length);
-        },
-        blueProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'blue')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingBlueProperties: function() {
-            return (2 - this.blueProperties.length);
-        },
-        orangeProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'orange')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingOrangeProperties: function() {
-            return (3 - this.orangeProperties.length);
-        },
-        purpleProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'purple')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingPurpleProperties: function() {
-            return (3 - this.purpleProperties.length);
-        },
-        brownProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'brown')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingBrownProperties: function() {
-            return (3 - this.brownProperties.length);
-        },
-        cyanProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'cyan')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingCyanProperties: function() {
-            return (3 - this.cyanProperties.length);
-        },
-        greenProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].color == 'green')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingGreenProperties: function() {
-            return (3 - this.greenProperties.length);
-        },
-        trainStationProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].type == 'trainStation')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingTrainStationProperties: function() {
-            return (4 - this.redProperties.length);
-        },
-        publicCompanyProperties: function() {
-            let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].type == 'publicCompany')
-                    res.push(this.player.properties[i]);
-            }
-            return res;
-        },
-        remainingPublicCompanyProperties: function() {
-            return (2 - this.publicCompanyProperties.length);
-        }
     },
     directives: {
         ClickOutside

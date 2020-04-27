@@ -7,6 +7,8 @@
 |---|---|---|---|---|
 |player|-|`Object`|`true`|-|
 |isCurrent|-|`Boolean`|`false`|-|
+|loggedUser|-|`Object`|`true`|-|
+|socket|-|`Object`|`true`|-|
 
 <!-- @vuese:PlayerEntry:props:end -->
 

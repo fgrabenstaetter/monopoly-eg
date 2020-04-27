@@ -145,7 +145,7 @@
             </form>
           </div>
 
-          <div v-if="bid.textContent" class="mt-2" style="color:#fff;font-size: 13px;font-weight: bold;text-align:left;width:100%;">
+          <div v-if="bid.textContent" class="bid-info" style="color:#fff;font-size: 13px;font-weight: bold;text-align:left;width:100%;">
             Résultat : {{bid.textContent}}
           </div>
         </div>
@@ -527,14 +527,6 @@ export default {
           }
 
           this.turnNotifications.push(notification);
-        } else if (data.asyncRequestType == "canUpgrade") {
-          // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
-          // let level1Price = data.asyncRequestArgs[0];
-          // let level2Price = data.asyncRequestArgs[1];
-          // let level3Price = data.asyncRequestArgs[2];
-          // let level4Price = data.asyncRequestArgs[3];
-          // let level5price = data.asyncRequestArgs[4];
-          // createUpgradeCard(property.id, property.color, property.name, (currPlayer.id != ID));
         } else if (data.asyncRequestType == "shouldMortgage") {
           // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
           // let totalMoneyToHave = data.asyncRequestArgs[0];
@@ -972,6 +964,8 @@ export default {
 
             // La propriété appartient déjà à quelqu'un
             if (res.propertyOwnerId) {
+                if (res.propertyOwnerId == this.loggedUser.id) return;
+
                 const propertyOwner = this.getPlayerById(res.propertyOwnerId);
                 if (!propertyOwner) return;
 
@@ -984,7 +978,6 @@ export default {
                     textContent: "",
                     bidID: res.bidID
                 });
-                // openBidPopup(res.bidID, 'undefined', res.text, 0);
             } else { // Enchère automatique (par de launcher)
                 this.bids.push({
                     launcherNickname: null,
@@ -995,7 +988,6 @@ export default {
                     textContent: "",
                     bidID: res.bidID
                 });
-                // openBidPopup(res.bidID, playerNick, res.text, res.price);
             }
         }
     });
