@@ -1,18 +1,18 @@
 <template>
     <div v-click-outside="hidePlayerProperties" class="player-entry" :class="{current: isCurrent, disconnected: player.disconnected, failure: player.failure}">
-        <div v-on:click.stop="showPlayerProperties()" class="name">
+        <div v-on:click="showPlayerProperties()" class="name">
             {{player.nickname}}
             <span v-if="player.disconnected">(Déconnecté)</span>
         </div>
         
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
-        <div v-if="showProperties" class="popup top">
-            <div class="houses-btn-container">
+        <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
+            <div @click="openPropertiesEdition" class="houses-btn-container">
                 <button style="display: block;" class="houses-btn"><i class="fas fa-home"></i><i class="fa fa-pen"></i></button>
             </div>
             
-            <div v-if="overviewCard" class="overview-card" style="display:block;">
+            <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" style="display:block;">
                 <div class="header" :class="[overviewCard.color, (overviewCard.type == 'trainStation') ? 'station' : '', (overviewCard.type == 'publicCompany') ? 'company' : '']">
                     {{overviewCard.name}}
                 </div>
@@ -65,21 +65,21 @@
                     <div class="mortgage">Valeur de l'hypothèque : ?€</div>
                 </div>
                 <div class="options">
-                    <button v-if="loggedUser.id == player.id" @click="sellProperty(overviewCard.id)" class="btn stylized">VENDRE</button>
-                    <div class="sell-input">
-                        <form>
-                            <label>Choisissez un montant de départ</label>
-                            <input type="text" placeholder="Votre montant...">
+                    <button v-if="loggedUser.id == player.id" @click="toggleOverviewCardSell" class="btn stylized">VENDRE</button>
+                    <div v-if="loggedUser.id == player.id && overviewCardSell.open" v-click-outside="closeOverviewCardSell" class="sell-input">
+                        <form @submit.prevent="sellProperty(overviewCard.id)">
+                            <label>Montant de départ de l'enchère</label>
+                            <input v-model="overviewCardSell.price" ref="overviewCardSellPrice" type="text" placeholder="Votre montant...">
                             <button class="btn">Vendre</button>
                         </form>
                     </div>
                     <button v-if="loggedUser.id == player.id && overviewCard.isMortgaged" @click="rebuyProperty(overviewCard.id)" class="btn stylized">RACHETER</button>
                     <button v-if="loggedUser.id == player.id && !overviewCard.isMortgaged" @click="mortgageProperty(overviewCard.id)" class="btn stylized">HYPOTHÉQUER</button>
-                    <button v-if="loggedUser.id != player.id" @click="buyProperty(overviewCard.id)" class="btn stylized">ACHETER</button>
-                    <div class="buy-input">
-                        <form>
-                            <label>Choisissez un montant</label>
-                            <input type="text" placeholder="Votre montant...">
+                    <button v-if="loggedUser.id != player.id" @click="toggleOverviewCardBuy" class="btn stylized">ACHETER</button>
+                    <div v-if="loggedUser.id != player.id && overviewCardBuy.open" v-click-outside="closeOverviewCardBuy" class="buy-input">
+                        <form @submit.prevent="buyProperty(overviewCard.id)">
+                            <label>Quel est le montant de votre offre ?</label>
+                            <input v-model="overviewCardBuy.price" ref="overviewCardBuyPrice" type="text" placeholder="Votre montant...">
                             <button class="btn">Acheter</button>
                         </form>
                     </div>
@@ -241,7 +241,18 @@ export default {
     data() {
         return {
             showProperties: false,
-            overviewCard: false
+            overviewCard: false,
+            overviewCardBuy: {
+                open: false,
+                price: ''
+            },
+            overviewCardSell: {
+                open: false,
+                price: ''
+            },
+            propertiesEdition: {
+                open: false
+            }
         }
     },
     mounted() {
@@ -427,18 +438,64 @@ export default {
         },
         hidePlayerProperties() {
             this.showProperties = false;
+            this.hideOverviewCard();
         },
         displayOverviewCard(property) {
             this.overviewCard = property;
+            this.closeOverviewCardBuy();
+            this.closeOverviewCardSell();
         },
         hideOverviewCard() {
             this.overviewCard = false;
+            this.closeOverviewCardSell();
+            this.closeOverviewCardBuy();
+        },
+        openPropertiesEdition() {
+            this.propertiesEdition.open = true;
+        },
+        openOverviewCardSell() {
+            this.overviewCardSell.open = true;
+            this.overviewCardSell.price = '';
+            // this.$refs.overviewCardSellPrice.focus();
+        },
+        openOverviewCardBuy() {
+            this.overviewCardBuy.open = true;
+            this.overviewCardBuy.price = '';
+            // this.$refs.overviewCardBuyPrice.focus();
+        },
+        closeOverviewCardSell() {
+            this.overviewCardSell.open = false;
+            this.overviewCardSell.price = '';
+        },
+        closeOverviewCardBuy() {
+            this.overviewCardBuy.open = false;
+            this.overviewCardBuy.price = '';
+        },
+        closeOverviewCardBuySell() {
+            this.closeOverviewCardSell();
+            this.closeOverviewCardBuy();
+        },
+        toggleOverviewCardSell() {
+            if (this.overviewCardSell.open)
+                this.closeOverviewCardSell();
+            else
+                this.openOverviewCardSell();
+        },
+        toggleOverviewCardBuy() {
+            if (this.overviewCardBuy.open)
+                this.closeOverviewCardBuy();
+            else
+                this.openOverviewCardBuy();
         },
         sellProperty(propertyID) {
-            alert(`SELL PROPERTY ${propertyID}`);
+            this.socket.emit('gameManualBidReq', { propertyID: propertyID, initialPrice: this.overviewCardSell.price });
+            this.closeOverviewCardSell();
         },
         buyProperty(propertyID) {
-            alert(`OFFER FOR ${propertyID} - Price ? (modal)`);
+            console.log("buyProperty");
+            console.log({ receiverID: this.player.id, propertyID: propertyID, price: this.overviewCardBuy.price });
+            this.socket.emit('gameOfferSendReq', { receiverID: this.player.id, propertyID: propertyID, price: this.overviewCardBuy.price });
+            this.closeOverviewCardBuy();
         },
         mortgageProperty(propertyID) {
             alert(`Hypothéquer ${propertyID}`);

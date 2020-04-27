@@ -158,7 +158,7 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
-      <div class="end-game-screen">
+      <div v-if="0" class="end-game-screen">
         <div class="header">
           <h5>Fin de la partie !</h5>
         </div>
@@ -947,11 +947,20 @@ export default {
         // addPurchaseOffer(res.offerID, idToNick(res.makerID), idToNick(res.receiverID), getPropertyById(res.propertyID).name, res.price);
     });
 
+    // Offre accpeptée check
     this.socket.on("gameOfferAcceptRes", (res) => {
         if (res.error === 0)
             console.log("gameOfferAcceptRes")
         else
             this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
+    });
+
+    // Offre envoyée check
+    this.socket.on("gameOfferSendRes", (res) => {
+        if (res.error === 0)
+            console.log("gameOfferSendRes")
+        else // hôte uniquement
+            this.$parent.toast(`Erreur achat : ${res.status}`, 'danger', 5);
     });
 
     // Ouverture d'une enchère ou nouvelle enchère d'un joueur
@@ -1031,6 +1040,15 @@ export default {
         }, 5000);
     });
 
+
+    // Enchère manuelle erreur
+    this.socket.on("gameManualBidRes", (res) => {
+        console.log("gameManualBidRes");
+        console.log(res);
+        if (res.error !== 0) {
+            this.$parent.toast(`Erreur vente : ${res.status}`, 'danger', 4);
+        }
+    });
 
 
     // Hypothèque Erreur
