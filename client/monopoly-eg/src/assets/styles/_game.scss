@@ -686,6 +686,11 @@
               display: block;
             }
 
+            .houses-btn {
+              background-color: $blue !important;
+              color: white !important;
+            }
+
             .properties-container {
               &.company,
               &.green,
@@ -698,11 +703,6 @@
                 .property {
                   color: rgba($color: white, $alpha: 0.6) !important;
                   padding: 10px 30px !important;
-
-                  .houses-btn {
-                    background-color: $blue !important;
-                    color: white !important;
-                  }
                 }
               }
               &.station {
