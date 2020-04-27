@@ -30,7 +30,7 @@ class Game {
         this.id                       = id;
         this.GLOBAL                   = GLOBAL;
         this.players                  = [];
-        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes            = [2,2]; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells                    = Cells.new;
         this.chanceDeck               = new Deck(chanceCardsMeta);
         this.communityChestDeck       = new Deck(communityChestCardsMeta);
@@ -332,7 +332,6 @@ class Game {
 
         if (this.ended)
             return;
-        this.successManager.check();
 
         // si le joueur n'a pas lancé les dés ou n'a pas relancé après un double, le faire automatiquement puis réappeller cette méthode
         if (this.turnData.canRollDiceAgain) {
@@ -461,6 +460,8 @@ class Game {
 
         if (!this.curPlayer.isInPrison && oldPos > player.cellPos) // recevoir argent de la banque
             player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+
+        this.successManager.check();
     }
 
     //////////////////////////////

@@ -6,7 +6,7 @@
     </div> -->
     <router-view/>
 
-    <div v-if="toastContent" class="toast-notification" :class="toastClass">{{toastContent}}</div>
+    <div v-if="toastContent" v-html="toastContent" class="toast-notification" :class="toastClass">{{toastContent}}</div>
   </div>
 </template>
 

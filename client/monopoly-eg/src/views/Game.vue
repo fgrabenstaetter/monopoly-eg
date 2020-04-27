@@ -135,7 +135,7 @@
             <div v-else class="content">
                 {{bid.launcherNickname}} lance une enchère pour {{bid.propertyName}}. Prix de départ : {{bid.startingPrice}}
             </div>
-            
+
             <form @submit.prevent="sendBid(bid)">
                 <div class="bid-input">
                     <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" placeholder="Prix">€
@@ -178,7 +178,7 @@
                 createProperty("1", "station", "Université4", "7");
                 createProperty("1", "company", "Syndicat Des Eaux et de l'Assainissement", "7");
                 createProperty("1", "company", "Eléctricité de Strasbourg", "7");
-            
+
                 hideLoaderOverlay();
                 displayPropertyInfos(JSON.parse('{"id":0,"type":"company","name":"Eau","description":"Quelle magnifique rue !","color":"brown","prices":{"empty":60,"house":50,"hostel":250},"rentalPrices":{"empty":2,"house":[10,30,90,160],"hostel":250},"housesNb":0}'));
                 openBidPopup(1, "Nombeaucoupbeaucoupbeaucoupbeaucoupbeaucouptroplongcanerentrepas", "caaussic'estbeaucouptroplongmaisvraimentvraimenttroplongattentioncavadepasserjelesenscavadepassercavadepasserauttention");
@@ -395,7 +395,7 @@ export default {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
       }
-    
+
       this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: parseInt(bid.myPrice) });
       this.$set(bid, 'disabled', true);
     },
@@ -607,7 +607,7 @@ export default {
     this.socket.disconnect();
   },
   mounted() {
-    
+
     this.playMusic();
     this.loadSfx();
 
@@ -706,7 +706,7 @@ export default {
         data.players.forEach((player, index) => {
             player.properties.forEach((playerProperty) => {
                 console.log("PROPERTY");
-                console.log(playerProperty);    
+                console.log(playerProperty);
                 let property = this.getPropertyById(playerProperty);
                 if (property) {
                     property.ownerID = player.id;
@@ -986,7 +986,7 @@ export default {
                 break;
             }
         }
-        
+
         if (!bid) return;
 
         this.$set(bid, 'disabled', true);
@@ -999,7 +999,7 @@ export default {
 
             this.$set(bid, 'textContent', `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`);
             let property = this.getPropertyById(res.propertyID);
-            
+
             property.ownerID = res.playerID;
             winner.properties.push(property);
 
@@ -1119,6 +1119,23 @@ export default {
         }
     });
 
+    this.socket.on('gameSuccessCompletedRes', (data) => {
+        const html = `
+            <div style="display: flex; align-items: center;">
+                <i class="fas fa-trophy" style="font-size: 3em; color: orange; margin-right: 0.4em;"></i>
+                <div>
+                    <div style="font-size: 1.2em; margin-bottom: 0.6em;">
+                        <b>Succès validé </b>
+                        <div>` + data.description + `</div>
+                    </div>
+                    <i>Difficultée ` + data.difficulty + `/3</i><span style="margin-left: 2em; color:yellow; font-weight: bold">+ ` + data.exp + ` EXP
+                </div>
+            </div>
+        `;
+        setTimeout( () => {
+            this.$parent.toast(html,  'success', 10);
+        }, 5000);
+    });
   }
 };
 </script>

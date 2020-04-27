@@ -25,7 +25,7 @@ const Success = [{
 }, {
     id: 4,
     token: 'doubleAtBeg',
-    description: 'faire 1 double au début de la partie',
+    description: 'Faire 1 double au début de la partie',
     difficulty: 1,
     exp: 150
 }, {
