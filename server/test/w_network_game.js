@@ -350,6 +350,8 @@ describe('Network + Game', () => {
         else
             sock = clientSocket2;
 
+        let nb = 0;
+
         sock.on('gameActionRes', (data) => {
             assert.deepEqual(data.dicesRes, [1, 2]);
             assert.strictEqual(data.playerID, player.id);
@@ -358,13 +360,19 @@ describe('Network + Game', () => {
             assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
 
             sock.on('gamePropertyMortgageRes', (data) => {
-                assert.strictEqual(data.error, undefined);
+                assert.strictEqual(data.error, 0);
+                if (++ nb === 2)
+                    done();
+            });
+
+            sock.on('gamePropertyMortgagedRes', (data) => {
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
                 assert.strictEqual(data.playerMoney, 37);
                 assert.ok(data.message);
                 assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
-                done();
+                if (++ nb === 2)
+                    done();
             });
             sock.emit('gamePropertyMortgageReq', { properties: [prop.id] });
         });

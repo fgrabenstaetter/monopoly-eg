@@ -999,9 +999,7 @@ class Network {
                     err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
             }
 
-            if (err !== Errors.SUCCESS)
-                player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
-            // else => envoyé par game.playerAutoMortgage()
+            player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
         });
     }
 
