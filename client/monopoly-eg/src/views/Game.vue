@@ -1151,7 +1151,7 @@ export default {
         `;
         setTimeout( () => {
             this.$parent.toast(html,  'success', 10);
-        }, 5000);
+        }, 6e3);
     });
   }
 };

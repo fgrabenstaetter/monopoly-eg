@@ -1,4 +1,5 @@
-const Success = [{
+const Success = [
+{
     id: 0,
     token: 'make10Doubles',
     description: 'Faites un total de 10 doubles',
@@ -70,6 +71,12 @@ const Success = [{
     description: 'Aller en prison en faisant 3 double',
     difficulty: 3,
     exp: 590
+}, {
+    id: 12,
+    token: 'payDrunkennessPenalty',
+    description: 'Payez votre première amende d\'ivresse',
+    difficulty: 2,
+    exp: 236
 }];
 
 module.exports = Success;
