@@ -177,6 +177,11 @@ class SuccessManager {
         if (obj.isInJail !== player.isInPrison && this.game.turnData.nbDoubleDices !== 0)
             return true;
     }
+
+    goJailWith3doubles (obj, player) {
+        if (this.game.turnData.nbDoubleDices === 3 && player.isInPrison)
+            return true;
+    }
 }
 
 module.exports = SuccessManager;
