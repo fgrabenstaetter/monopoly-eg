@@ -362,3 +362,10 @@ $('#bid-popup-container').on('keyup', '.bid-input input', function (e) {
     else
         $(this).parent().find('.bid-validation').attr('disabled', false);
 });
+
+$('#bid-popup-container').on('keypress', '.bid-input input', function (e) {
+    if (e.which < 48 || e.which > 57)
+    {
+        e.preventDefault();
+    }
+});

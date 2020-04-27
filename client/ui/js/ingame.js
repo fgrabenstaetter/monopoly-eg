@@ -923,8 +923,6 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
     }
 
     $('.overview-card .content').html(htmlContent);
-    console.log("oeoaz");
-    console.log(property);
 }
 
 function populateStationOverviewCard(station, isMine, isMortgaged) {
