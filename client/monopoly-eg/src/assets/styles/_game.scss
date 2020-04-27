@@ -217,7 +217,7 @@
       z-index: 10;
       background-color: rgba($color: black, $alpha: 0.7);
       padding: 10px 20px;
-      border-radius: 20px;
+      border-radius: 10px;
       transition: transform 0.5s ease;
       margin: 10px auto;
 
@@ -560,7 +560,7 @@
         background-color: rgba($color: black, $alpha: 0.7);
         color: white;
         padding: 15px;
-        width: 400px;
+        width: 260px;
         font-size: 15px;
         border-radius: 10px;
         margin: 20px 0;
@@ -687,7 +687,8 @@
 
           &.edition {
             .houses-total-price,
-            .houses-validation-btn {
+            .houses-validation-btn,
+            .houses-cancel-btn {
               display: block;
             }
 
