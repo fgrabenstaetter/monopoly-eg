@@ -478,6 +478,7 @@
 
     .options {
       width: 200px;
+      position: relative;
 
       button {
         border-radius: 17.5px;
@@ -534,11 +535,11 @@
       }
 
       .sell-input {
-        bottom: -45px;
+        top: 0px;
       }
 
       .buy-input {
-        bottom: -30px;
+        top: 0px;
       }
     }
   }
