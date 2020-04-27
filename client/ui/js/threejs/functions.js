@@ -274,6 +274,19 @@ var plateauDrapeaux = [
 ];
 
 
+function deleteCones(cones) {
+	scene.remove(window[cones]);
+}
+
+function loaderCones(cones) {
+	gltfLoader.load('models/hypotheque/' + cones + '.gltf', (gltf) => {
+		const root = gltf.scene;
+		window[cones] = gltf.scene;
+		scene.add(root);
+	});
+}
+
+
 /**
  * Ajoute un pion à la case qu'on veut
  * @param {string} pawn Le nom du pion (Ex: 'moto')
