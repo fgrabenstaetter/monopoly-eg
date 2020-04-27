@@ -30,7 +30,7 @@ class Game {
         this.id                       = id;
         this.GLOBAL                   = GLOBAL;
         this.players                  = [];
-        this.forcedDiceRes            = [2,2]; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells                    = Cells.new;
         this.chanceDeck               = new Deck(chanceCardsMeta);
         this.communityChestDeck       = new Deck(communityChestCardsMeta);
