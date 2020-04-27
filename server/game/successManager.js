@@ -5,7 +5,7 @@ const Street                      = require('./street');
 const TrainStation                = require('./trainStation');
 const PublicCompany               = require('./publicCompany');
 const { UserSchema, UserManager } = require('../models/user');
-
+const chanceCardsMeta             = require('./../lib/chanceCards');
 class SuccessManager {
 
     constructor (game) {
@@ -174,7 +174,7 @@ class SuccessManager {
     }
 
     haveAmonopoly (obj, player) {
-        const colors = Object.keys(Constants.STREET_COLOR);
+        const colors = Object.values(Constants.STREET_COLOR);
         for (const color of colors) {
             if (player.colorMonopoly(color)) {
                 return true;
@@ -189,6 +189,16 @@ class SuccessManager {
 
     goJailWith3doubles (obj, player) {
         if (obj.nbDoubles === 3 && player.isInPrison)
+            return true;
+    }
+
+    payDrunkennessPenalty (obj, player) {
+        const drawChanceCards = this.game.chanceDeck.drawnCards;
+        if (drawChanceCards.length === 0)
+            return;
+
+        const targetCardDescription = chanceCardsMeta[1].description;
+        if (this.game.curCell.type === Constants.CELL_TYPE.CHANCE && drawChanceCards[drawChanceCards.length - 1].description === targetCardDescription)
             return true;
     }
 }
