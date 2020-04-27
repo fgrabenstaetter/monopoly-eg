@@ -771,7 +771,7 @@
             position: absolute;
             bottom: -17.5px;
             border-radius: 17.5px;
-            right: 150px;
+            right: 257px;
             height: 35px;
             background-color: white;
             color: $blue;
@@ -780,19 +780,27 @@
             filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
           }
 
-          .houses-validation-btn {
+          .houses-validation-btn, .houses-cancel-btn {
             display: none;
             position: absolute;
-            background-color: $blue;
             border: none;
             height: 35px;
             border-radius: 17.5px;
             color: white;
-            right: 30px;
             bottom: -17.5px;
             padding: 4px 20px;
             font-family: "LilitaOne", sans-serif;
             filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
+          }
+
+          .houses-validation-btn {
+            right: 140px;
+            background-color: $blue;
+          }
+
+          .houses-cancel-btn {
+            right: 30px;
+            background-color: red;
           }
 
           .properties-container {

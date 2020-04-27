@@ -207,6 +207,7 @@
             </div>
             <div class="houses-total-price">1 200€</div>
             <button class="houses-validation-btn">Terminer</button>
+            <button class="houses-cancel-btn">Annuler</button>
         </div>
     </div>
 </template>
