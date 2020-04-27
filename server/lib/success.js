@@ -58,6 +58,12 @@ const Success = [{
     description: 'Acheter toutes les cases d\'une même couleur',
     difficulty: 3,
     exp: 480
+}, {
+    id: 10,
+    token: 'escapeFromJailWithDouble',
+    description: 'Sortir de prison en faisant un double au lancé de dés',
+    difficulty: 3,
+    exp: 610
 }];
 
 module.exports = Success;
