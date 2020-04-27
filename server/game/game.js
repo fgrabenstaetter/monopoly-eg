@@ -775,7 +775,7 @@ class Game {
                 mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€';
             }
 
-            this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgageRes', {
+            this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
                 properties  : propertiesID,
                 playerID    : player.id,
                 playerMoney : player.money,

@@ -873,6 +873,18 @@
         * *Données:*
         ```javascript
         {
+            error: int,
+            status: string
+        }
+        ```
+
+* **Un joueur a hypothéqué une/des propriété(s)**
+    > Envoyé à tous les joueurs lorsque un joueur a hypothéqué une/des propriété(s)
+
+    * **Réponse:** gamePropertyMortgagedRes
+        * *Données:*
+        ```javascript
+        {
             properties: [int, ...], // liste des ID des propriétés hypothéquées
             playerID: int,
             playerMoney: int, // nouveau solde

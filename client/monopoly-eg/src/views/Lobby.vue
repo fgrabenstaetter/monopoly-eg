@@ -101,7 +101,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Edition du profil -->
             <div class="modal" id="userSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog animated bounceIn" role="document">
@@ -137,7 +137,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Ajouter un ami -->
             <div class="modal" id="addFriendModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog animated bounceIn" role="document">
@@ -159,7 +159,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Modal -->
             <div class="modal-container" id="modal">
                 <!--<div class="modal fade" id="Unknown67Modal" tabindex="-1" role="dialog" aria-labelledby="Unknown67ModalLabel" aria-hidden="true" data-id="1">
@@ -182,7 +182,7 @@
                     </div>
                 </div>-->
             </div>
-            
+
         </div>
         <div class="profile-overlay-container">
             <div class="profile-row">
@@ -197,7 +197,7 @@
         <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
 
         <full-screen-loader v-if="loading"></full-screen-loader>
-    
+
     </div>
 
 </template>
@@ -276,7 +276,7 @@ export default {
                 if (!this.playBtn.loading) {
                     this.socket.emit('lobbyPlayReq');
                     this.playBtn.loading = true;
-                    this.playBtn.text = 'CHARGEMENT...';    
+                    this.playBtn.text = 'CHARGEMENT...';
                 } else {
                     this.socket.emit('lobbyCancelPlayReq');
                     this.playBtn.loading = false;
@@ -301,7 +301,7 @@ export default {
                 && this.nbPlayers > 2 && this.nbPlayers > this.players.length) {
                 this.nbPlayers--;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
-                
+
                 if (this.nbPlayers === 2) {
                     this.leftNbJ = false;
                 }
@@ -582,7 +582,7 @@ export default {
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
             this.audio.sfx.success.play();
-            
+
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
 
@@ -602,9 +602,7 @@ export default {
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
                 console.log("J'AI ETE KICK");
-                setTimeout(() => {
-                    this.socket.emit('lobbyReadyReq');
-                }, 2000);
+                this.socket.emit('lobbyReadyReq');
                 return;
             }
 
@@ -770,7 +768,7 @@ export default {
                     avatarPath: imgPath
                 });
             }
-            
+
             for (const i in this.players) {
                 if (this.players[i].id == playerID) {
                     this.$set(this.players[i], 'avatar', imgPathCache);
@@ -804,4 +802,3 @@ export default {
     }
 }
 </script>
-
