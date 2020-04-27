@@ -483,7 +483,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {

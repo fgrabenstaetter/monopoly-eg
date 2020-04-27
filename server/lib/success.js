@@ -64,6 +64,12 @@ const Success = [{
     description: 'Sortir de prison en faisant un double au lancé de dés',
     difficulty: 3,
     exp: 610
+}, {
+    id: 11,
+    token: 'wonBid',
+    description: 'Gagner au moins une enchère pendant une partie',
+    difficulty: 1,
+    exp: 120
 }];
 
 module.exports = Success;
