@@ -919,7 +919,7 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
                         <div class="mortgage">Valeur de l'hypothèque : `+ property.prices.empty/2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((property.prices.empty/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((property.prices.empty/2)*1.1) + `€</div>`
     }
 
     $('.overview-card .content').html(htmlContent);
@@ -954,7 +954,7 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
                         <div class="mortgage">Valeur de l'hypothèque : `+ station.price/2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((station.price/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((station.price/2)*1.1) + `€</div>`
     }
 
     $('.overview-card .content').html(htmlContent);
@@ -983,7 +983,7 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
                         <div class="mortgage">Valeur de l'hypothèque : `+  publicCompany.price/2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ parseInt((publicCompany.price/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((publicCompany.price/2)*1.1) + `€</div>`
     }
     $('.overview-card .content').html(htmlContent);
 }
