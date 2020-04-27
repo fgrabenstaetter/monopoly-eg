@@ -49,9 +49,10 @@
           <player-entry
             v-for="player in players"
             :key="player.id"
-            v-bind:player="player"
-            v-bind:isCurrent="currentPlayerID == player.id"
-            v-bind:loggedUser="loggedUser"
+            :player="player"
+            :isCurrent="currentPlayerID == player.id"
+            :loggedUser="loggedUser"
+            :socket="socket"
           ></player-entry>
         </div>
       </div>
@@ -119,99 +120,6 @@
                 <action-button ref="actionBtn" v-once></action-button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Overview card -->
-      <div class="overview-card" data-id>
-        <div class="header"></div>
-        <div class="content"></div>
-        <div class="buy-button btn stylized" data-toggle="modal" data-target="#buyModal">ACHETER</div>
-        <div
-          class="sell-button btn stylized"
-          style="display: none;"
-          data-toggle="modal"
-          data-target="#sellModal"
-        >VENDRE</div>
-        <div class="mortgage-button btn stylized" style="display: none;">HYPOTHÉQUER</div>
-        <div class="buyback-button btn stylized" style="display: none;">RACHETER</div>
-      </div>
-
-      <div
-        class="modal"
-        id="buyModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="buyModalLabel"
-        aria-hidden="true"
-        data-id="1"
-      >
-        <div class="modal-dialog animated bounceIn" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="buyModalLabel">Proposer un prix</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form id="overviewCardBuyForm">
-              <div class="modal-body">
-                <div class="form-group">
-                  <input type="hidden" id="overviewCardBuyFormPropertyId" />
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="overviewCardBuyFormPrice"
-                    aria-describedby="helpId"
-                    placeholder="Votre prix ici..."
-                  />
-                </div>
-              </div>
-              <div class="modal-footer">
-                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                <button type="button" class="btn btn-primary send">Envoyer</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="modal"
-        id="sellModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="sellModalLabel"
-        aria-hidden="true"
-        data-id="1"
-      >
-        <div class="modal-dialog animated bounceIn" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="sellModalLabel">Proposer un prix</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form id="overviewCardSellForm">
-              <div class="modal-body">
-                <div class="form-group">
-                  <input type="hidden" id="overviewCardSellFormPropertyId" />
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="overviewCardSellFormPrice"
-                    aria-describedby="helpId"
-                    placeholder="Votre prix ici..."
-                  />
-                </div>
-              </div>
-              <div class="modal-footer">
-                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                <button type="button" class="btn btn-primary send">Envoyer</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>

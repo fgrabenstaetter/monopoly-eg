@@ -14,13 +14,7 @@
             </div>
             
             <div v-if="overviewCard" class="overview-card" style="display:block;">
-                <div v-if="overviewCard.type == 'street'" class="header" v-bind:class="overviewCard.color">
-                    {{overviewCard.name}}
-                </div>
-                <div v-if="overviewCard.type == 'trainStation'" class="header station" v-bind:class="overviewCard.color">
-                    {{overviewCard.name}}
-                </div>
-                <div v-if="overviewCard.type == 'publicCompany'" class="header company" v-bind:class="overviewCard.color">
+                <div class="header" :class="[overviewCard.color, (overviewCard.type == 'trainStation') ? 'station' : '', (overviewCard.type == 'publicCompany') ? 'company' : '']">
                     {{overviewCard.name}}
                 </div>
                 <div v-if="overviewCard.type == 'street'" class="content">
@@ -72,10 +66,10 @@
                     <div class="mortgage">Valeur de l'hypothèque : ?€</div>
                 </div>
                 <div class="options">
-                    <button class="btn stylized">VENDRE</button>
-                    <button class="btn stylized">RACHETER</button>
-                    <button class="btn stylized">HYPOTHÉQUER</button>
-                    <button class="btn stylized">ACHETER</button>
+                    <button v-if="loggedUser.id == player.id" @click="sellProperty(overviewCard.id)" class="btn stylized">VENDRE</button>
+                    <button v-if="loggedUser.id == player.id && overviewCard.isMortgaged" @click="rebuyProperty(overviewCard.id)" class="btn stylized">RACHETER</button>
+                    <button v-if="loggedUser.id == player.id && !overviewCard.isMortgaged" @click="mortgageProperty(overviewCard.id)" class="btn stylized">HYPOTHÉQUER</button>
+                    <button v-if="loggedUser.id != player.id" @click="buyProperty(overviewCard.id)" class="btn stylized">ACHETER</button>
                 </div>
             </div>
 
@@ -178,6 +172,14 @@ export default {
         isCurrent: {
             type: Boolean,
             default: false
+        },
+        loggedUser: {
+            type: Object,
+            required: true
+        },
+        socket: {
+            type: Object,
+            required: true
         }
     },
     components: {
@@ -378,6 +380,18 @@ export default {
         },
         hideOverviewCard() {
             this.overviewCard = false;
+        },
+        sellProperty(propertyID) {
+            alert(`SELL PROPERTY ${propertyID}`);
+        },
+        buyProperty(propertyID) {
+            alert(`OFFER FOR ${propertyID} - Price ? (modal)`);
+        },
+        mortgageProperty(propertyID) {
+            alert(`Hypothéquer ${propertyID}`);
+        },
+        rebuyProperty(propertyID) {
+            alert(`Unmortgage ${propertyID}`);
         }
         // getPropertiesByTypeColor(type, color) {
         //     // type : 'street', 'trainStation', 'publicCompany', ...
