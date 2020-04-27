@@ -154,7 +154,11 @@
       <!-- Dices -->
       <dices ref="dices" v-once></dices>
 
+      <!-- Slash text -->
       <splash-text ref="splashText" v-once></splash-text>
+
+      <!-- Ecran de fin -->
+      
 
       <!--
             <script>
