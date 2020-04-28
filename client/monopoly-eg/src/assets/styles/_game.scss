@@ -185,6 +185,8 @@
 
   // Options
   #optionsModal {
+    z-index: 100000;
+    
     .modal-body {
       display: flex;
       flex-direction: column;
