@@ -11,6 +11,7 @@ const Errors                  = require('./../lib/errors');
 const Bid                     = require('./bid');
 const SuccessManager          = require('./successManager');
 const activeGameSchema        = require('./../models/activeGame');
+const Lobby                   = require('./lobby');
 
 
 /**
@@ -90,9 +91,6 @@ class Game {
         this.checkEndInterval = setInterval( () => {
             if (this.checkEnd()) {
                 clearInterval(this.checkEndInterval);
-                clearTimeout(this.turnData.timeout);
-                clearTimeout(this.turnData.midTimeout);
-                clearTimeout(this.turnData.timeoutActionTimeout);
                 this.ended = true;
             }
         }, 2e3);
@@ -107,15 +105,31 @@ class Game {
     }
 
     delete() {
+        // mettre tous les joueurs dans un même nouveau lobby :)
+        let users = [];
+        for (const player of this.players) {
+            users.push(player.user);
+            this.GLOBAL.network.gamePlayerStopListening(player, this);
+        }
+
+        users.sort( (a, b) => {
+            return a.failure && b.failure ? 0 : a.failure ? 1 : -1;
+        });
+
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
+
         this.players = [];
         const ind = this.GLOBAL.games.indexOf(this);
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
 
         this.deleteGameState();
+        const newLobby = new Lobby(users[0], this.GLOBAL); // le vainqueur = hôte :)
+        this.GLOBAL.lobbies.push(newLobby);
+        for (let i = 1; i < users.length; i ++)
+            newLobby.addUser(users[i]);
     }
 
     get active () {
@@ -276,12 +290,10 @@ class Game {
             let winnerPlayer, winnerValue = 0;
             for (const pl of this.players) {
                 let sum = pl.money;
-                for  (const prop of pl.properties)
+                for (const prop of pl.properties)
                     sum += prop.value;
-                if (sum > winnerValue) {
-                    winnerValue = sum;
+                if (sum > winnerValue)
                     winnerPlayer = pl;
-                }
             }
 
             this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
@@ -289,6 +301,7 @@ class Game {
                 winnerID: winnerPlayer.id,
                 duration: Date.now() - this.startedTime
             });
+
             this.delete();
             return true;
 
@@ -308,6 +321,7 @@ class Game {
                     winnerID: winner.id,
                     duration: Date.now() - this.startedTime
                 });
+
                 this.delete();
                 return true;
             }

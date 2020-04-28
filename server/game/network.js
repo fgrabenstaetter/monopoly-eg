@@ -92,7 +92,7 @@ class Network {
         this.lobbyPendingFriendListReq      (user, lobby);
         this.lobbyFriendInvitationSendReq   (user, lobby);
         this.lobbyFriendInvitationActionReq (user, lobby);
-        // this.lobbyFriendDeleteReq(user, lobby);
+        // this.lobbyFriendDeleteReq        (user, lobby);
 
         // Paramètres + Succès
         this.playerSettingsReq            (user);
@@ -167,27 +167,27 @@ class Network {
         player.socket.leave(game.name);
 
         // Début/Fin + tour
-        user.socket.removeAllListeners('gameReadyReq');
-        user.socket.removeAllListeners('gameRollDiceReq');
-        user.socket.removeAllListeners('gameTurnEndReq');
+        player.socket.removeAllListeners('gameReadyReq');
+        player.socket.removeAllListeners('gameRollDiceReq');
+        player.socket.removeAllListeners('gameTurnEndReq');
 
         // Actions de tour asynchrones
-        user.socket.removeAllListeners('gamePropertyBuyReq');
-        user.socket.removeAllListeners('gamePropertyUpgradeReq');
-        user.socket.removeAllListeners('gamePropertyMortgageReq');
-        user.socket.removeAllListeners('gamePlayerLeavingReq');
-        user.socket.removeAllListeners('gamePropertyUnmortgageReq');
+        player.socket.removeAllListeners('gamePropertyBuyReq');
+        player.socket.removeAllListeners('gamePropertyUpgradeReq');
+        player.socket.removeAllListeners('gamePropertyMortgageReq');
+        player.socket.removeAllListeners('gamePlayerLeavingReq');
+        player.socket.removeAllListeners('gamePropertyUnmortgageReq');
 
         // Chat + removeAllListenersres et enchères
-        user.socket.removeAllListeners('gameChatSendReq');
-        user.socket.removeAllListeners('gameOfferSendReq');
-        user.socket.removeAllListeners('gameOfferAcceptReq');
-        user.socket.removeAllListeners('gameOverbidReq');
-        user.socket.removeAllListeners('gameManualBidReq');
+        player.socket.removeAllListeners('gameChatSendReq');
+        player.socket.removeAllListeners('gameOfferSendReq');
+        player.socket.removeAllListeners('gameOfferAcceptReq');
+        player.socket.removeAllListeners('gameOverbidReq');
+        player.socket.removeAllListeners('gameManualBidReq');
 
         // Paramètres + Succès
-        user.socket.removeAllListeners('playerSettingsReq');
-        user.socket.removeAllListeners('playerSuccessReq');
+        player.socket.removeAllListeners('playerSettingsReq');
+        player.socket.removeAllListeners('playerSuccessReq');
     }
 
     //////////////////
