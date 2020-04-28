@@ -749,7 +749,7 @@
             cellPos: int,
             turnEndTime: timestamp, // timestamp de fin de tour (ms)
             actionMessage: string, // message lié à l'action de tour
-            asyncRequestType: string ou null, // null | 'canBuy' | 'canUpgrade' | 'shouldMortgage'
+            asyncRequestType: string ou null, // null | 'canBuy' | 'shouldMortgage'
             asyncRequestArgs: array ou null, // selon asyncRequestType (voir plus bas)
             updateMoney:
             [
@@ -773,8 +773,6 @@
         ```javascript
         // Si asyncRequestType = canBuy
             [price]
-        // Si asyncRequestType = canUpgrade
-            [level1Price, level2Price, level3Price, level4price, level5price] // le prix d'amélioration CUMULÉ selon le niveau désiré, si niveau déjà aquis ou pas les moyens => vaut null
         // Si asyncRequestType = shouldMortgage
             [totalMoneyToHave] // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
         ```
@@ -836,14 +834,15 @@
         }
         ```
 
-- **Améliorer une propriété**
-    > Envoyer la requête uniquement si on veux améliorer sa propriété (maison(s) ou hotel)
+- **Améliorer une/des propriété(s)**
+    > Envoyer la requête uniquement si on veux améliorer une/des propriété(s) (maison(s) ou hotel)
 
     * **Requête:** gamePropertyUpgradeReq
         * *Données:*
         ```javascript
         {
-            level: int // niveau d'amélioration: 1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel
+            list: [ { propertyID: int, level: int }, ... ]
+            // level: 1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel
         }
         ```
 
@@ -851,10 +850,22 @@
         * *Données:*
         ```javascript
         {
-            propertyID: int,
-            level: int, // idem requête
+            error: int,
+            status: string
+        }
+        ```
+
+* **Un joueur a amélioré une/des propriété(s)**
+    > Reçu par tous les joueurs lorsqu'un joueur a amélioré une/des propriété(s)
+
+    * **Réponse:** gamePropertyUpgradedRes
+        * *Données:*
+        ```javascript
+        {
             playerID: int,
-            playerMoney: int // nouveau solde
+            playerMoney: int, // nouveau solde
+            bankMoney: int,
+            list: [ { propertyID: int, level: int } ] // voir gamePropertyUpgradeReq
         }
         ```
 
@@ -1086,23 +1097,6 @@
             propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
-
-- **Hypothéquer une propriété**
-
-    * **Requête:** gameMortgageReq
-        * *Données:*
-        ```javascript
-        {
-            propertyID: int
-        }
-        ```
-
-    * **Réponse:** gameMortgageRes
-        * *Données:*
-        ```javascript
-        null
-        ```
-
 - **Démarée une enchère manuelle**
     > = Démarrée une enchère pour vendre une de ses propriétés
 

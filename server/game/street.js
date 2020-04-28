@@ -76,53 +76,43 @@ class Street extends Property {
 
     /**
      * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
+     * Peut être augmenté ou diminué, les modifs de l'argent du joueur doivent déjà avoir été faites
      */
     upgrade (level) {
-        if (level === 5) {
-            this.housesNb = 0;
+        this.housesNb = 0;
+        this.hostel = false;
+        if (level === 5)
             this.hostel = true;
-        } else
+        else
             this.housesNb = level;
     }
 
     /**
      * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
-     * @return le prix cumulé pour avoir ce niveau d'amélioration
+     * @return la différence de prix pour avoir ce niveau d'amélioration (> 0 augmentation de l'amélioration, < 0 diminution de l'amélioration, == 0 même niveau)
      */
     upgradePrice (level) {
-        if (this.hostel)
-            return 0;
-
-        let price = 0;
-        if (level === 5)
-            price = this.prices.hostel + this.prices.house * 4;
-        else
-            price = this.prices.house * level;
-
-        return price - this.housesNb * this.prices.house;
+        return this.cumulatedUpgradePrice(level) - this.cumulatedUpgradePrice(this.curUpgradeLevel);
     }
-
 
     /**
-     * @return La liste des niveaux d'amélioration avec leur prix assez d'argent, ou null sinon (déjà ce niveau ou trop cher)
-     * Si un montant est donnée, il s'agit du montant cumulatif ! Exemple: aucune maison ni hotel, prix niveau 2 = prix niveau 1 + prix niveau 2
+     * @param level Le niveau d'amélioration désiré
+     * @return Le prix pour atteindre ce niveau depuis 0
      */
-    get availableUpgradeLevels () {
-        const canLevel1 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(1);
-        const canLevel2 = !this.hostel && this.housesNb <= 1  && this.owner.money >= this.upgradePrice(2);
-        const canLevel3 = !this.hostel && this.housesNb <= 2  && this.owner.money >= this.upgradePrice(3);
-        const canLevel4 = !this.hostel && this.housesNb <= 3  && this.owner.money >= this.upgradePrice(4);
-        const canLevel5 = !this.hostel && this.housesNb === 0 && this.owner.money >= this.upgradePrice(5);
-
-        let list = [];
-        list.push(canLevel1 ? this.upgradePrice(1) : null);
-        list.push(canLevel2 ? this.upgradePrice(2) : null);
-        list.push(canLevel3 ? this.upgradePrice(3) : null);
-        list.push(canLevel4 ? this.upgradePrice(4) : null);
-        list.push(canLevel5 ? this.upgradePrice(5) : null);
-
-        return list;
+    cumulatedUpgradePrice (level) {
+        if (level === 5)
+            return 4 * this.housePrice + this.hostelPrice;
+        else
+            return this.housePrice * level;
     }
+
+    get curUpgradeLevel () {
+        if (this.hostel)
+            return 5;
+        else
+            return this.housesNb;
+    }
+
 }
 
 module.exports = Street;

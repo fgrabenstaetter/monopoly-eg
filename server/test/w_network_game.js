@@ -1,17 +1,18 @@
-const ioClient    = require('socket.io-client');
-const assert      = require('assert')
-const app         = require('express')();
-const http        = require('http');
-const Constants   = require('../lib/constants');
-const Errors      = require('../lib/errors');
-const User        = require('../game/user');
-const Lobby       = require('../game/lobby');
-const Game        = require('../game/game');
-const Matchmaking = require('../game/matchmaking');
-const Network     = require('../game/network');
-const Properties  = require('../lib/properties');
-const Offer       = require('../game/offer');
-const Bid         = require('../game/bid');
+const ioClient       = require('socket.io-client');
+const assert         = require('assert')
+const app            = require('express')();
+const http           = require('http');
+const Constants      = require('../lib/constants');
+const Errors         = require('../lib/errors');
+const User           = require('../game/user');
+const Lobby          = require('../game/lobby');
+const Game           = require('../game/game');
+const Matchmaking    = require('../game/matchmaking');
+const Network        = require('../game/network');
+const Properties     = require('../lib/properties');
+const Offer          = require('../game/offer');
+const Bid            = require('../game/bid');
+const SuccessManager = require('../game/successManager');
 
 describe('Network + Game', () => {
     const port = 3002;
@@ -54,6 +55,7 @@ describe('Network + Game', () => {
         sock.emit('YES');
     });
 
+    SuccessManager.active = false; // désactiver la sauvegarde en bdd pour les tests
 
     beforeEach( (done) => {
         GLOBAL.lobbies = [];
@@ -192,7 +194,7 @@ describe('Network + Game', () => {
             assert.strictEqual(data.playerID, id);
             assert.strictEqual(data.cellPos, game.playerByID(id).cellPos);
             assert.notStrictEqual(data.actionMessage, undefined);
-            assert.notStrictEqual([null, 'canBuy', 'canUpgrade', 'shouldMortgage'].indexOf(data.asyncRequestType), -1);
+            assert.notStrictEqual([null, 'canBuy', 'shouldMortgage'].indexOf(data.asyncRequestType), -1);
             assert.notStrictEqual(data.asyncRequestArgs, undefined);
             assert.ok(data.updateMoney);
             assert.ok(data.extra);
@@ -256,28 +258,38 @@ describe('Network + Game', () => {
         game.bank.delProperty(property);
         game.curPlayer.addProperty(property);
 
+        const upPrice = property.upgradePrice(4);
+        const startPlayerMoney = player.money;
+        const startBankMoney = game.bank.money;
+
         let sock;
         if (player.user.socket === serverSocket)
             sock = clientSocket;
         else
             sock = clientSocket2;
 
+        let nb = 0;
+
         sock.on('gameActionRes', (data) => {
             assert.deepEqual(data.dicesRes, [1, 2]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 3);
-            assert.strictEqual(data.asyncRequestType, 'canUpgrade');
-            //assert.deepStrictEqual(data.asyncRequestArgs, Properties.STREET[1]);
 
-            sock.on('gamePropertyUpgradeRes', (data2) => {
-                assert.strictEqual(data2.error, undefined);
-                assert.strictEqual(data2.propertyID, game.curCell.property.id);
-                assert.strictEqual(data2.playerID, player.id);
-                //assert.strictEqual(data2.playerMoney, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY - 1200);
-                assert.strictEqual(data2.level, 3);
-                done();
+            sock.on('gamePropertyUpgradeRes', (data) => {
+                assert.strictEqual(data.error, 0);
+                if (++ nb === 2)
+                    done();
             });
-            sock.emit('gamePropertyUpgradeReq', { level: 3 });
+
+            sock.on('gamePropertyUpgradedRes', (data) => {
+                assert.strictEqual(data.playerID, player.id);
+                assert.strictEqual(data.playerMoney, startPlayerMoney - upPrice);
+                assert.strictEqual(data.bankMoney, startBankMoney + upPrice);
+                assert.deepStrictEqual(data.list, [ { propertyID: property.id, level: 4 } ]);
+                if (++ nb === 2)
+                    done();
+            });
+            sock.emit('gamePropertyUpgradeReq', { list: [ { propertyID: property.id, level: 4 } ] });
         });
 
         sock.on('gameRollDiceRes', (data) => {
@@ -785,48 +797,6 @@ describe('Network + Game', () => {
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 10);
             done();
-        });
-
-        sock.on('gameRollDiceRes', (data) => {
-            assert.strictEqual(data.error, Errors.SUCCESS.code);
-        });
-        sock.emit('gameRollDiceReq');
-    });
-
-    it('Le joueur construit un hôtel sur une de ses propriétés', (done) => {
-        const game = new Game(1, [user, user2], null, GLOBAL);
-        // démarrage manuel
-        for (const player of game.players)
-            player.isReady = true;
-        game.forcedDiceRes = [1, 2]; // => Properties.STREET[0]
-        game.start(true);
-        const player = game.curPlayer;
-        const property = game.cells[3].property;
-        game.bank.delProperty(property);
-        player.addProperty(property);
-
-        let sock;
-        if (player.user.socket === serverSocket)
-            sock = clientSocket;
-        else
-            sock = clientSocket2;
-
-        sock.on('gameActionRes', (data) => {
-            assert.deepEqual(data.dicesRes, [1, 2]);
-            assert.strictEqual(data.playerID, player.id);
-            assert.strictEqual(data.cellPos, 3);
-            assert.strictEqual(data.asyncRequestType, 'canUpgrade');
-            sock.on('gamePropertyUpgradeRes', (data2) => {
-                property.upgrade(data2.level);
-                game.successManager.check(game);
-                assert.strictEqual(data2.error, undefined);
-                assert.strictEqual(data2.propertyID, game.curCell.property.id);
-                assert.strictEqual(data2.playerID, player.id);
-                assert.notStrictEqual(game.successManager.datas[player.id], 0);
-                assert.strictEqual(data2.level, 5);
-                done();
-            });
-            sock.emit('gamePropertyUpgradeReq', { level: 5 });
         });
 
         sock.on('gameRollDiceRes', (data) => {

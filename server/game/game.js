@@ -508,17 +508,10 @@ class Game {
         if (property.isMortgaged)
             return; // rien à faire
 
-        if (property.owner === this.curPlayer) {
+        if (property.owner === this.curPlayer && property.type === Constants.PROPERTY_TYPE.STREET) {
             // Le joueur est tombé sur une de ses propriétés
-            if (property.type === Constants.PROPERTY_TYPE.STREET) {
-                const avUpgradeLevels = property.availableUpgradeLevels;
-                if (avUpgradeLevels !== [null, null, null, null, null])
-                    this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_UPGRADE, avUpgradeLevels,
-                        'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de sa propriété ' + property.name);
-                // else => ne peux pax améliorer => rien à faire
-            }
-            // else => rien à faire
-
+            this.setTurnActionData(null, null,
+                'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de ses propriétés');
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
@@ -606,23 +599,37 @@ class Game {
     }
 
     /**
-     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: un hôtel)
-     * @return true si succès, false sinon
+     * @param list Liste de { propertyID: int, level: int } avec level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
+     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou hypothéqué), 3 si pas assez d'argent
      */
-    asyncActionUpgradeProperty(level) {
-        const property = this.curCell.property;
-        if (!property || !property.owner || property.type !== Constants.PROPERTY_TYPE.STREET)
-            return false;
+    asyncActionUpgradeProperty(list) {
+        let sum = 0;
+        for (const row of list) {
+            if (row.propertyID == null || row.level == null || row.level < 0 || row.level > 5)
+                return 1;
+            let prop = this.curPlayer.propertyByID(row.propertyID);
+            if (!prop || prop.isMortgaged)
+                return 2;
 
-        const price = property.upgradePrice(level);
-        if (this.curPlayer.money < price)
-            return false;
+            sum += prop.upgradePrice(row.level);
+        }
 
-        this.curPlayer.loseMoney(price);
-        this.curCell.property.upgrade(level);
 
-        this.resetTurnActionData();
-        return true;
+        if (sum > 0) {
+            if (sum > this.curPlayer.money)
+                return 3;
+            this.curPlayer.loseMoney(sum);
+            this.bank.addMoney(sum);
+        } else {
+            this.curPlayer.addMoney(sum * -1);
+            this.bank.loseMoney(sum * -1);
+        }
+
+        // améliorer les propriétés
+        for (const row of list)
+            this.curPlayer.propertyByID(row.propertyID).upgrade(row.level);
+
+        return 0;
     }
 
     /**

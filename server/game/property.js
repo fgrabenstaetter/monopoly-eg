@@ -38,11 +38,11 @@ class Property { // classe abstraite
      * @return Le prix d'hypothéque de la compagnie
      */
     get mortgagePrice () {
-        return this.value / 2;
+        return Math.ceil(this.value / 2);
     }
 
     get unmortgagePrice () {
-        return this.mortgagePrice * 1.1;
+        return Math.ceil(this.mortgagePrice * 1.1);
     }
 
     mortgage (game) {
