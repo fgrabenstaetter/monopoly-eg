@@ -68,11 +68,15 @@
 
   @keyframes montgolfiereAnimation {
     0% {
-      transform: rotate(xx) translateX(250px) translateY(-250px);
+      transform: translateX(250px) translateY(-250px);
       transform-origin: -50% -50%;
     }
-    99% {
-      transform: translateX(300px) translateY(-200px);
+    50% {
+      transform: translateX(270px) translateY(-220px);
+      transform-origin: -50% -50%;
+    }
+    100% {
+      transform: translateX(250px) translateY(-250px);
       transform-origin: -50% -50%;
     }
   }
@@ -83,7 +87,7 @@
     left: 50%;
     transform: translate(calc(-50% + 300px), calc(-50% - 200px));
     z-index: 150;
-    animation: montgolfiereAnimation 10s infinite 0s ease;
+    animation: montgolfiereAnimation 12s infinite 0s ease;
   }
 
   #bus {
