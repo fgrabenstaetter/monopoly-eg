@@ -659,7 +659,9 @@ export default {
   },
   beforeDestroy() {
     this.stopMusic();
-    this.socket.disconnect();
+    this.socket.removeAllListeners();
+    console.log("REMOVE ALL LISTENERS FROM GAME");
+    // this.socket.disconnect();
   },
   mounted() {
 

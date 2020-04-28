@@ -467,6 +467,9 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
+        this.socket.removeAllListeners();
+
+        console.log("REMOVE ALL LISTENERS FROM LOBBY");
         // this.socket.disconnect();
     },
     mounted() {
@@ -676,7 +679,7 @@ export default {
         // On peut se reconnecter à une partie en cours
         this.socket.on('canReconnectToGame', () => {
             this.loading = true;
-            this.socket.disconnect();
+            // this.socket.disconnect();
 
             setTimeout(() => {
                 this.$router.push('Game');
