@@ -1,17 +1,18 @@
-const ioClient    = require('socket.io-client');
-const assert      = require('assert')
-const app         = require('express')();
-const http        = require('http');
-const Constants   = require('../lib/constants');
-const Errors      = require('../lib/errors');
-const User        = require('../game/user');
-const Lobby       = require('../game/lobby');
-const Game        = require('../game/game');
-const Matchmaking = require('../game/matchmaking');
-const Network     = require('../game/network');
-const Properties  = require('../lib/properties');
-const Offer       = require('../game/offer');
-const Bid         = require('../game/bid');
+const ioClient       = require('socket.io-client');
+const assert         = require('assert')
+const app            = require('express')();
+const http           = require('http');
+const Constants      = require('../lib/constants');
+const Errors         = require('../lib/errors');
+const User           = require('../game/user');
+const Lobby          = require('../game/lobby');
+const Game           = require('../game/game');
+const Matchmaking    = require('../game/matchmaking');
+const Network        = require('../game/network');
+const Properties     = require('../lib/properties');
+const Offer          = require('../game/offer');
+const Bid            = require('../game/bid');
+const SuccessManager = require('../game/successManager');
 
 describe('Network + Game', () => {
     const port = 3002;
@@ -54,6 +55,7 @@ describe('Network + Game', () => {
         sock.emit('YES');
     });
 
+    SuccessManager.active = false; // désactiver la sauvegarde en bdd pour les tests
 
     beforeEach( (done) => {
         GLOBAL.lobbies = [];

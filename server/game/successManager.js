@@ -6,7 +6,10 @@ const TrainStation                = require('./trainStation');
 const PublicCompany               = require('./publicCompany');
 const { UserSchema, UserManager } = require('../models/user');
 const chanceCardsMeta             = require('./../lib/chanceCards');
+
 class SuccessManager {
+
+    static active = true; // false pour les tests unitaires => pas de sauvegarde BDD
 
     constructor (game) {
         this.game = game;
@@ -39,6 +42,9 @@ class SuccessManager {
     }
 
     save (player) {
+        if (!SuccessManager.active)
+            return;
+
         UserSchema.findById(player.id, (err, usr) => {
             if (err || !usr)
                 return;
