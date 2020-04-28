@@ -117,6 +117,7 @@
             </div>
             <div class="row action-button-container">
               <div class="col-md-12 text-right">
+                <div class="sortie-parlement">Sortie du parlement</div>
                 <action-button ref="actionBtn" v-once></action-button>
               </div>
             </div>
