@@ -85,7 +85,7 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 236538,
+            "count" : 236540,
             "max" : [
                 44.4677848815918,
                 43.9400634765625,
@@ -101,13 +101,13 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 236538,
+            "count" : 236540,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 236538,
+            "count" : 236540,
             "type" : "VEC2"
         },
         {
@@ -120,28 +120,28 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 2838456,
+            "byteLength" : 2838480,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 2838456,
-            "byteOffset" : 2838456
+            "byteLength" : 2838480,
+            "byteOffset" : 2838480
         },
         {
             "buffer" : 0,
-            "byteLength" : 1892304,
-            "byteOffset" : 5676912
+            "byteLength" : 1892320,
+            "byteOffset" : 5676960
         },
         {
             "buffer" : 0,
             "byteLength" : 1761480,
-            "byteOffset" : 7569216
+            "byteOffset" : 7569280
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 9330696,
+            "byteLength" : 9330760,
             "uri" : "plateau.bin"
         }
     ]
