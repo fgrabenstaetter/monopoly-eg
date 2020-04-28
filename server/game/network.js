@@ -950,26 +950,29 @@ class Network {
     gamePropertyUpgradeReq(player, game) {
         player.socket.on('gamePropertyUpgradeReq', (data) => {
             let err = Errors.SUCCESS;
-            let propertyID;
 
-            if (!data.level)
+            if (!data.list)
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else if (game.curCell.isMortgaged)
-                err = Errors.GAME.PROPERTY_IS_MORTGAGED;
-            else if (!game.asyncActionUpgradeProperty(data.level)) // upgrade ici
-                err = Errors.UNKNOW;
+            else {
+                switch (game.asyncActionUpgradeProperty(data.list)) {
+                    case 1: err = Errors.UNKNOW; break;
+                    case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY; break;
+                    case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY; break;
+                }
+            }
 
             if (err === Errors.SUCCESS) {
-                this.io.to(game.name).emit('gamePropertyUpgradeRes', {
-                    propertyID  : game.curCell.property.id,
-                    level       : data.level,
+                this.io.to(game.name).emit('gamePropertyUpgradedRes', {
                     playerID    : player.id,
-                    playerMoney : player.money
+                    playerMoney : player.money,
+                    bankMoney   : game.bank.money,
+                    list        : data.list
                 });
-            } else
-                player.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
+            }
+
+            player.socket.emit('gamePropertyUpgradeRes', { error: err.code, status: err.status });
         });
     }
 

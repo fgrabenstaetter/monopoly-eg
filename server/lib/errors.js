@@ -206,6 +206,14 @@ module.exports = Object.freeze({
         ENDED: {
             code: 9,
             status: 'La partie est terminée'
+        },
+        UPGRADE_INVALID_PROPERTY: {
+            code: 10,
+            status: 'Une propriété invalide a été détectée'
+        },
+        UPGRADE_NOT_ENOUGH_MONEY: {
+            code: 11,
+            status: 'Vous n\'avez pas assez d\'argent pour effectuer l\'amélioration'
         }
     },
 
