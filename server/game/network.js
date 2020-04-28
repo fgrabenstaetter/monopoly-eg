@@ -292,7 +292,6 @@ class Network {
             user.getFriends((friends) => {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
-
                 if (data.friendID == null)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
@@ -631,9 +630,9 @@ class Network {
             else if (this.GLOBAL.matchmaking.queue[lobby.targetUsersNb - 2].indexOf(lobby) === -1)
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
+                lobby.open = true;
                 this.GLOBAL.matchmaking.delLobby(lobby);
-                lobby.close = false;
-                this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
+                this.GLOBAL.network.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
             if (err !== Errors.SUCCESS)
