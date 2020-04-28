@@ -467,7 +467,7 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
-        this.socket.disconnect();
+        // this.socket.disconnect();
     },
     mounted() {
         this.playMusic();
