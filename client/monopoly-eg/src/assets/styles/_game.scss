@@ -733,6 +733,16 @@
               .house-number {
                 display: flex !important;
               }
+
+              .mortgaged{
+                  width: 121px;
+                  border-bottom: 2px solid red;
+                  -webkit-transform:
+                    translateY(-6px)
+                    translateX(-7px)
+                    rotate(15deg);
+                  position: absolute;
+              }
             }
           }
 
