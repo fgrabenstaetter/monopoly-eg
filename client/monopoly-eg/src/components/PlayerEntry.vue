@@ -160,7 +160,7 @@ export default {
                 { name: 'cyan', totalNb: 3 },
                 { name: 'green', totalNb: 3 },
                 { name: 'trainStation', totalNb: 4, cssClass: 'station' },
-                { name: 'publicCompany', totalNb: 2, cssClass: 'station' }
+                { name: 'publicCompany', totalNb: 2, cssClass: 'company' }
             ],
             showProperties: false,
             overviewCard: false,
