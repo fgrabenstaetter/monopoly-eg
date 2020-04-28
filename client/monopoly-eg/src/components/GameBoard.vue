@@ -4,7 +4,6 @@
 
 <script>
 import * as THREE from 'three';
-// import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import TWEEN from '@tweenjs/tween.js';
@@ -207,7 +206,7 @@ export default {
         const W_WIDTH = window.innerWidth;
         const aspectRatio = WIDTH / HEIGHT;
         
-        const renderer = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+        const renderer = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         renderer.setViewport(0,0,W_WIDTH,W_HEIGHT);
         renderer.setSize(WIDTH, HEIGHT);
 
