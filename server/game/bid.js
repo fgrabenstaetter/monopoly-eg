@@ -73,9 +73,13 @@ class Bid {
             return false;
         }
 
+        let targetMaxLen = this.game.players.length;
+        if (this.initialPropertyOwner)
+            targetMaxLen --; // le créateur ne peux pas surenchérir
 
-        if (this.nBidsOnProperty.length === this.game.players.length)
+        if (this.nBidsOnProperty.length === targetMaxLen)
             this.expired();
+
         return true;
     }
 
