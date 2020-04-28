@@ -1008,8 +1008,8 @@ export default {
     });
 
     // Edition de mes propriétés check
-    this.ssocket.on('gamePropertyUpgradeRes', (res) => {
-      alert('gamePropertyUpgradeRes');
+    this.socket.on('gamePropertyUpgradeRes', (res) => {
+      // alert('gamePropertyUpgradeRes');
       if (res.error === 0)
         console.log('gamePropertyUpgradeRes OK');
       else
@@ -1018,7 +1018,7 @@ export default {
 
     // Edition des propriétés d'un joueur
     this.socket.on('gamePropertyUpgradedRes', (res) => {
-      alert('gamePropertyUpgradedRes');
+      // alert('gamePropertyUpgradedRes');
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
 

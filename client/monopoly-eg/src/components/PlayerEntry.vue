@@ -8,8 +8,8 @@
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
-            <div class="popup-title">Playername</div>
-            <img class="popup-pawn" src="/assets/ui/img/ui/montgolfiere.png">
+            <div class="popup-title">{{player.nickname}}</div>
+            <img class="popup-pawn" :src="playerPawnImgSrc">
 
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
@@ -20,6 +20,7 @@
                     {{overviewCard.name}}
                 </div>
                 <div v-if="overviewCard.type == 'street'" class="content">
+                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.prices.empty}}</div> -->
                     <div class="rent">{{overviewCard.rentalPrices.empty}}</div>
                     <div class="with-house">
                         <div>Avec 1 Maison</div>
@@ -43,9 +44,11 @@
                     </div>
                     <div class="house-price">Prix des Maisons {{overviewCard.prices.house}}€ chacune</div>
                     <div class="hotel-price">Prix d'un Hôtel {{overviewCard.prices.hostel}}€ plus 4 maisons</div>
-                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                    <div v-if="!overviewCard.isMortgaged" class="mortgage">Valeur de l'hypothèque : {{overviewCard.prices.empty/2}}€</div>
+                    <div v-else class="mortgage">Rachat de l'hypothèque : {{(overviewCard.prices.empty/2)+(overviewCard.prices.empty/2*0.1)}}€</div>
                 </div>
                 <div v-if="overviewCard.type == 'trainStation'" class="content">
+                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.price}}</div> -->
                     <div class="rent">{{overviewCard.rentalPrices[0]}}</div>
                     <div class="with-house">
                         <div>Si vous avez 2 Gares</div>
@@ -59,13 +62,16 @@
                         <div>Si vous avez 4 Gares</div>
                         <div>{{overviewCard.rentalPrices[3]}}</div>
                     </div>
-                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                    <div v-if="!overviewCard.isMortgaged" class="mortgage">Valeur de l'hypothèque : {{overviewCard.price/2}}€</div>
+                    <div v-else class="mortgage">Rachat de l'hypothèque : {{(overviewCard.price/2)+(overviewCard.price/2*0.1)}}€</div>
                 </div>
                 <div v-if="overviewCard.type == 'publicCompany'" class="content">
+                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.price}}</div> -->
                     <div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
                         le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                         le loyer est 10 fois le montant indiqué par les dés.</div>
-                    <div class="mortgage">Valeur de l'hypothèque : ?€</div>
+                    <div v-if="!overviewCard.isMortgaged" class="mortgage">Valeur de l'hypothèque : {{overviewCard.price/2}}€</div>
+                    <div v-else class="mortgage">Rachat de l'hypothèque : {{(overviewCard.price/2)+(overviewCard.price/2*0.1)}}€</div>
                 </div>
                 <div class="options">
                     <button v-if="loggedUser.id == player.id" @click="toggleOverviewCardSell" class="btn stylized">VENDRE</button>
@@ -359,6 +365,9 @@ export default {
                     propertiesObj.push(property);
             }
             return propertiesObj
+        },
+        playerPawnImgSrc() {
+            return `/assets/img/pawns/${this.$parent.CST.PAWNS[this.player.pawn]}.png`;
         }
     },
     methods: {
