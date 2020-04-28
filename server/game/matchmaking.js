@@ -47,12 +47,14 @@ class Matchmaking {
     /**
      * @param lobby L'objet correspondant au lobby à supprimer
      */
-    delLobby (lobby) {
+    delLobby (lobby, supLobby = true) {
         const index = lobby.targetUsersNb - 2;
-        if (this.queue[index].indexOf(lobby) !== -1) {
+        if (this.queue[index].indexOf(lobby) === -1)
+            return;
+
+        this.queue[index].splice(this.queue[index].indexOf(lobby), 1);
+        if (supLobby)
             lobby.delete();
-            this.queue[index].splice(this.queue[index].indexOf(lobby), 1);
-        }
     }
 
     /**

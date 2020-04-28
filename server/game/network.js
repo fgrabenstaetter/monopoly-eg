@@ -1,4 +1,5 @@
 const Constants                   = require('../lib/constants');
+
 const Errors                      = require('../lib/errors');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
@@ -631,7 +632,7 @@ class Network {
                 err = Errors.LOBBY.NOT_IN_MATCHMAKING;
             else {
                 lobby.open = true;
-                this.GLOBAL.matchmaking.delLobby(lobby);
+                this.GLOBAL.matchmaking.delLobby(lobby, false);
                 this.GLOBAL.network.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
