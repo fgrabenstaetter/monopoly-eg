@@ -17,7 +17,7 @@
         <img id="montgolfiere" src="../../../ui/img/ui/montgolfiere.png">
         <img id="bus" src="../../../ui/img/ui/bus.png">
         <img id="bateau" src="../../../ui/img/ui/bateau.png">
-        <router-link type="button" class="btn" to="Login">JOUER !</router-link>
+        <router-link class="btn" to="Login">JOUER !</router-link>
       </div>
     </div>
 

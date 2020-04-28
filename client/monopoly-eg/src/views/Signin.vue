@@ -13,7 +13,7 @@
                         <input v-model="form.email" type="email" class="form-control" placeholder="Email">
                         <input v-model="form.password" type="password" class="form-control" placeholder="Mot de passe">
                         <button type="submit" class="btn btn-primary">INSCRIPTION</button>
-                        <router-link type="button" class="btn btn-secondary" to="Login">ANNULER</router-link>
+                        <router-link class="btn btn-secondary" to="Login">ANNULER</router-link>
                     </form>
                 </div>
                 <a id="forgot-password" href="#">Mot de passe oublié ?</a>

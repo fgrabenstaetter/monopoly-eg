@@ -22,7 +22,7 @@
                 placeholder="Mot de passe"
               />
               <button type="submit" class="btn btn-primary">CONNEXION</button>
-              <router-link type="button" class="btn btn-secondary" to="Signin">INSCRIPTION</router-link>
+              <router-link class="btn btn-secondary" to="Signin">INSCRIPTION</router-link>
             </form>
           </div>
           <a id="forgot-password" href="#">Mot de passe oublié ?</a>
