@@ -449,7 +449,9 @@ export default {
      */
     gameReady() {
         // alert('board ready');
-        this.socket.emit('gameReadyReq');
+        setTimeout( () => {
+            this.socket.emit('gameReadyReq');
+        }, 600);
     },
 
     pushGameOfferReceive(offer) {
@@ -458,7 +460,7 @@ export default {
       const property = this.getPropertyById(offer.propertyID);
 
       if (!buyer || !receiver || !property) return;
-      
+
       if (receiver.id == this.loggedUser.id) {
         this.offers.push({
           buyerNickname: buyer.nickname,
@@ -1195,7 +1197,7 @@ export default {
             }
         }
     });
-    
+
 
     // Fin de partie
     this.socket.on('gameEndRes', (res) => {
@@ -1206,7 +1208,7 @@ export default {
         let gameTime = '';
         if (hours > 0)
           gameTime += `${hours}h `;
-        
+
         gameTime += `${minutes}min ${seconds}sec`;
 
         this.endGame = {

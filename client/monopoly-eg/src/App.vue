@@ -58,6 +58,12 @@ export default {
       socket.on('notLoggedRes', () => {
           this.$router.push('Login');
       });
+
+      socket.on('disconnect', () => {
+          setTimeout( () => {
+              socket.connect();
+          }, 400);
+      });
     }
   }
 }
