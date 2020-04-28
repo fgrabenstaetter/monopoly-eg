@@ -695,6 +695,8 @@
             .houses-btn {
               background-color: $blue !important;
               color: white !important;
+              display: flex;
+              flex-direction: row;
             }
 
             .properties-container {
@@ -754,19 +756,24 @@
             justify-content: space-between;
             margin: 0 auto;
 
-            .fa-pen {
-              font-size: 10px;
+            .fa-home {
+              margin-right: 5px;
             }
 
             .houses-btn {
               cursor: default;
-              width: 55px;
+              width: 80px;
               border: none;
               background: white;
               color: black;
               border-radius: 5px;
               margin-top: 10px;
               filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-family: 'LilitaOne', sans-serif;
+              line-height: 25px;
             }
           }
 
@@ -775,7 +782,7 @@
             position: absolute;
             bottom: -17.5px;
             border-radius: 17.5px;
-            right: 257px;
+            right: 147px;
             height: 35px;
             background-color: white;
             color: $blue;
@@ -788,23 +795,27 @@
             display: none;
             position: absolute;
             border: none;
-            height: 35px;
-            border-radius: 17.5px;
             color: white;
-            bottom: -17.5px;
             padding: 4px 20px;
             font-family: "LilitaOne", sans-serif;
             filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.3));
           }
 
           .houses-validation-btn {
-            right: 140px;
+            right: 30px;
             background-color: $blue;
+            bottom: -17.5px;
+            border-radius: 17.5px;
+            height: 35px;
           }
 
           .houses-cancel-btn {
-            right: 30px;
+            right: 130px;
             background-color: red;
+            top: -15px;
+            border-radius: 5px;
+            line-height: 25px;
+            padding: 1px 7px 2px 7px;
           }
 
           .properties-container {
@@ -1573,7 +1584,7 @@
         }
       }
 
-      button {
+      .btn {
         margin: 50px auto;
         border-radius: 17.5px;
         padding: 2px 20px;
