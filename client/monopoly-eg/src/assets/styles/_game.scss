@@ -186,7 +186,7 @@
   // Options
   #optionsModal {
     z-index: 100000;
-    
+
     .modal-body {
       display: flex;
       flex-direction: column;
@@ -563,7 +563,7 @@
         color: white;
         padding: 15px;
         width: 260px;
-        font-size: 15px;
+        font-size: 13px;
         border-radius: 10px;
         margin: 20px 0;
 
@@ -615,6 +615,26 @@
         margin-bottom: 10px;
         position: relative;
 
+        &.parlement:after {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f0a1";
+          margin-right: 10px;
+          font-size: 10px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 7px;
+          right: -17px;
+        }
+
         .name {
           font-size: 17px;
           font-weight: bold;
@@ -635,7 +655,7 @@
 
         .money {
           color: white;
-          font-size: 13px;
+          font-size: 15px;
           padding-left: 25px;
         }
 
@@ -687,6 +707,28 @@
           flex-wrap: wrap;
           filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
 
+          .popup-title {
+            position: absolute;
+            top: -25px;
+            left: 70px;
+            font-family: 'LilitaOne', sans-serif;
+            font-size: 25px;
+            height: 40px;
+            filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
+            color: white;
+            background-color: $blue;
+            padding: 1px 20px;
+            text-align: left;
+            border-radius: 20px;
+          }
+
+          .popup-pawn {
+            height: 40px;
+            position: absolute;
+            top: -25px;
+            left: 25px;
+          }
+
           &.edition {
             .houses-total-price,
             .houses-validation-btn,
@@ -736,6 +778,16 @@
 
               .house-number {
                 display: flex !important;
+              }
+
+              .mortgaged{
+                  width: 121px;
+                  border-bottom: 2px solid red;
+                  -webkit-transform:
+                    translateY(-6px)
+                    translateX(-7px)
+                    rotate(15deg);
+                  position: absolute;
               }
             }
           }
@@ -883,7 +935,7 @@
               }
 
               .house-number {
-                display: none;
+                display: flex;
                 position: absolute;
                 color: $blue;
                 right: -15px;
@@ -1378,6 +1430,19 @@
       }
     }
 
+    .sortie-parlement {
+      position: absolute;
+      right: 200px;
+      bottom: 0;
+      padding: 13px 20px;
+      background-color: $blue;
+      box-shadow: 0px 0px 0.75em rgba(0, 0, 0, 0.3);
+      height: 50px;
+      color: white;
+      font-family: 'LilitaOne', sans-serif;
+      border-radius: 5px;
+    }
+
     .action-button-container {
       display: flex;
       justify-content: flex-end;
@@ -1520,6 +1585,16 @@
       right: 0;
       z-index: 1;
     }
+  }
+
+  .end-game-background {
+    position: absolute;
+    z-index: 29000;
+    background-color: rgba($color: #000000, $alpha: 0.5);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
   }
 
   .end-game-screen {

@@ -8,6 +8,9 @@
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
+            <div class="popup-title">Playername</div>
+            <img class="popup-pawn" src="../../../ui/img/ui/montgolfiere.png">
+
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>

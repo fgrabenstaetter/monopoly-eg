@@ -117,6 +117,7 @@
             </div>
             <div class="row action-button-container">
               <div class="col-md-12 text-right">
+                <div class="sortie-parlement">Sortie du parlement</div>
                 <action-button ref="actionBtn" v-once></action-button>
               </div>
             </div>
@@ -158,6 +159,7 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
+      <div v-if="endGame" class="end-game-background"></div>
       <div v-if="endGame" class="end-game-screen">
         <div class="header">
           <h5>Fin de la partie !</h5>

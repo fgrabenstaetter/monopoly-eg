@@ -1,48 +1,66 @@
 <template>
-    <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
-        aria-hidden="true" data-id="1">
-        <div class="modal-dialog animated bounceIn" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="optionsModalLabel">Options</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
-                        <span aria-hidden="true" style="cursor: pointer;">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul>
-                        <li>
-                            <span>Qualité graphique</span>
-                            <select @change="updateUserSettings" v-model="userSettings.graphicsQuality" class="custom-select">
-                                <option value="0">Bas</option>
-                                <option value="1">Standard</option>
-                                <option value="2">Élevé</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span>Zoom automatique</span>
-                            <label class="switch">
-                                <input @change="updateUserSettings" v-model="userSettings.autoZoom" type="checkbox">
-                                <span class="slider"></span>
-                            </label>
-                        </li>
-                        <li style="flex-wrap:wrap;">
-                            <span>Musique</span>
-                            <input @change="updateUserSettings" v-model="userSettings.musicLevel" type="range" min="0" max="100" class="range-slider">
-                        </li>
-                        <li style="flex-wrap:wrap;">
-                            <span>Effets sonores</span>
-                            <input @change="updateUserSettings" v-model="userSettings.sfxLevel" type="range" min="0" max="100" class="range-slider">
-                        </li>
-                        <li style="flex-wrap:wrap;">
-                            <span>Temps de jeu</span>
-                            <span>???s</span>
-                        </li>
-                    </ul>
+    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+        <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
+            aria-hidden="true" data-id="1">
+            <div class="modal-dialog animated bounceIn" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="optionsModalLabel">Options</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                            <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul>
+                            <li>
+                                <span>Qualité graphique</span>
+                                <select @change="updateUserSettings" v-model="userSettings.graphicsQuality" class="custom-select">
+                                    <option value="0">Bas</option>
+                                    <option value="1">Standard</option>
+                                    <option value="2">Élevé</option>
+                                </select>
+                            </li>
+                            <li>
+                                <span>Zoom automatique</span>
+                                <label class="switch">
+                                    <input @change="updateUserSettings" v-model="userSettings.autoZoom" type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </li>
+                            <li style="flex-wrap:wrap;">
+                                <span>Musique</span>
+                                <input @change="updateUserSettings" v-model="userSettings.musicLevel" type="range" min="0" max="100" class="range-slider">
+                            </li>
+                            <li style="flex-wrap:wrap;">
+                                <span>Effets sonores</span>
+                                <input @change="updateUserSettings" v-model="userSettings.sfxLevel" type="range" min="0" max="100" class="range-slider">
+                            </li>
+                            <li style="flex-wrap:wrap;">
+                                <span>Temps de jeu</span>
+                                <span>???s</span>
+                            </li>
+                        </ul>
 
-                    <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
-                    <button v-if="env == 'game'" v-on:click="quitGame" class="btn btn-primary" href="#" role="button"
-                        style="background-color: red;">QUITTER LA PARTIE</button>
+                        <button class="btn btn-primary show-rules" href="#" role="button" aria-hidden="true" data-toggle="modal" data-target="#rulesModal">RÈGLES</button>
+                        <button v-if="env == 'game'" v-on:click="quitGame" class="btn btn-primary" href="#" role="button"
+                            style="background-color: red;">QUITTER LA PARTIE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalTitle" aria-hidden="true">
+            <div class="modal-dialog animated bounceIn" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ruleModalTitle">Règles</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Les règles ici... (la modale est scrollable)
+                    </div>
                 </div>
             </div>
         </div>

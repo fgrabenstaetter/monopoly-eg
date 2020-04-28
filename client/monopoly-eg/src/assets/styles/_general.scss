@@ -98,6 +98,12 @@ input {
   text-align: center;
   z-index: 30000 !important;
 
+  &#rulesModal {
+    .modal-content {
+      width: 500px !important;
+    }
+  }
+
   .modal-content {
     width: 350px;
     color: rgb(5, 5, 85);
