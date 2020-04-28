@@ -73,6 +73,7 @@ class Lobby {
 
         const inMM = this.GLOBAL.matchmaking.queue[this.targetUsersNb - 2].indexOf(this);
         if (inMM !== -1) {
+            this.open = true;
             let err = Errors.SUCCESS;
             this.GLOBAL.matchmaking.delLobby(this);
             this.GLOBAL.network.io.to(this.name).emit('lobbyCancelPlayRes', {
