@@ -269,11 +269,11 @@ export default {
             secure: true
       }),
       players: [
-        {
-          nickname: "",
-          money: 0,
-          properties: []
-        }
+        // {
+        //   nickname: "",
+        //   money: 0,
+        //   properties: []
+        // }
       ],
       cells: [],
       properties: [],
@@ -454,6 +454,63 @@ export default {
     gameReady() {
         // alert('board ready');
         this.socket.emit('gameReadyReq');
+    },
+
+    pushGameOfferReceive(offer) {
+      const buyer = this.getPlayerById(offer.makerID);
+      const receiver = this.getPlayerById(offer.receiverID);
+      const property = this.getPropertyById(offer.propertyID);
+
+      if (!buyer || !receiver || !property) return;
+      
+      if (receiver.id == this.loggedUser.id) {
+        this.offers.push({
+          buyerNickname: buyer.nickname,
+          propertyName: property.name,
+          price: offer.price,
+          offerID: offer.offerID
+        });
+      } else {
+        this.$refs.chat.messages.push({
+          senderUserID: -1,
+          content: `${buyer.nickname} propose à ${receiver.nickname} de lui acheter ${property.name} pour ${offer.price}€ !`,
+          createdTime: new Date()
+        })
+      }
+    },
+
+    pushGameBid(bid) {
+      // Premier message uniquement
+      if (bid.playerID == null) {
+        // La propriété appartient déjà à quelqu'un
+        if (bid.propertyOwnerID) {
+            console.log(bid.propertyOwnerID + ' =?= ' + this.loggedUser.id);
+            if (bid.propertyOwnerID == this.loggedUser.id) return;
+
+            const propertyOwner = this.getPlayerById(bid.propertyOwnerID);
+            if (!propertyOwner) return;
+
+            this.bids.push({
+                launcherNickname: propertyOwner.nickname,
+                startingPrice: 0,
+                disabled: false,
+                myPrice: '',
+                propertyName: bid.text,
+                textContent: "",
+                bidID: bid.bidID
+            });
+        } else { // Enchère automatique (par de launcher)
+            this.bids.push({
+                launcherNickname: null,
+                startingPrice: bid.price,
+                disabled: false,
+                myPrice: '',
+                propertyName: bid.text,
+                textContent: "",
+                bidID: bid.bidID
+            });
+        }
+      }
     },
 
     /**
@@ -671,83 +728,48 @@ export default {
     this.socket.on('gameReconnectionRes', (res) => {
         console.log(' --- RECONNEXION res');
         console.log(res);
-        console.log(res.players);
-        console.log(res.players[0]);
 
-        // this.players = Object.assign({}, res.players);
-        // this.players = Object.assign({}, res.players);
-        // this.players = res.players;
+        this.players = res.players;
         this.cells = res.cells;
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
 
-        
-
-
-        for (const i in res.properties) {
-            res.properties[i].level = 0;
-            res.properties[i].ownerID = null;
-            res.properties[i].isMortgage = 0;
-            // this.properties[i].level = 0;
-            // this.properties[i].ownerID = null;
-            // if (this.properties[i].ownerID) {
-            //     console.log()
-            //     const player = this.getPlayerById(this.properties[i].ownerID);
-            //     if (player) {
-            //         console.log(`=== PROPERTY ${this.properties[i].name} belongs to ${player.nickname}`);
-            //         player.properties.push(this.properties[i]);
-            //     }
-            // }
+        for (const i in this.properties) {
+            this.properties[i].level = 0;
+            this.properties[i].ownerID = null;
+            this.properties[i].isMortgage = 0;
         }
 
-        // // // Génération de la liste de joueurs
-        res.players.forEach((player, index) => {
-            let realPlayerProperties = [];
-
+        // Génération de la liste de joueurs
+        this.players.forEach((player, index) => {
             gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
 
             for (const i in player.properties) {
               const propertyObj = this.getPropertyById(player.properties[i]);
-              console.log("=== PROPERTY OBJ ===");
-              console.log(propertyObj);
-              console.log("====================");
-              if (propertyObj) {
-                realPlayerProperties.push(propertyObj);
-                // this.$set(this.players[index].properties, i, propertyObj);
-                // this.$set(player.properties, i, propertyObj); // Ajout de la propriété au joueur
-
-                // const cell = this.getCellByProperty(propertyObj)
-                // gameboard.loaderFlag("d" + cell.id, player.color);
-
-              }
+              const cell = this.getCellByProperty(propertyObj)
+              if (propertyObj && cell)
+                gameboard.loaderFlag("d" + cell.id, player.color);
             }
 
-            // console.log("=== REAL PLAYER PROPS ===");
-            // console.log(realPlayerProperties);
-            // // this.$set(player, 'properties', realPlayerProperties);
-            // player = Object.assign({}, player, {
-            //   properties: realPlayerProperties
-            // })
-
-            player.properties = realPlayerProperties;
-            this.players.push(player);
         });
 
-        // res.chatMessages.forEach((msg) => {
-        //     this.$refs.chat.messages.push({
-        //         senderUserID: msg.playerID,
-        //         content: msg.text,
-        //         createdTime: msg.createdTime
-        //     });
-        // });
+        res.chatMessages.forEach((msg) => {
+            this.$refs.chat.messages.push({
+                senderUserID: msg.playerID,
+                content: msg.text,
+                createdTime: msg.createdTime
+            });
+        });
 
-        // /**
-        //  * Reste à gérer à la reconnexion :
-        //  * - bids
-        //  * - offers
-        //  */
+        res.offers.forEach((offer) => {
+          this.pushGameOfferReceive(offer);
+        });
+
+        res.bids.forEach((bid) => {
+          this.pushGameBid(bid);
+        });
 
         this.$refs.actionBtn.progressInitialize();
 
@@ -854,8 +876,7 @@ export default {
         if (property && cell) {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
-            player.properties.push(property);
-            console.log(player.properties);
+            player.properties.push(property.id);
             gameboard.loaderFlag("d" + cell.id, player.color);
 
             if (data.playerMoney != player.money) {
@@ -928,26 +949,7 @@ export default {
 
     // On a reçu une offre d'achat
     this.socket.on("gameOfferReceiveRes", (res) => {
-        const buyer = this.getPlayerById(res.makerID);
-        const receiver = this.getPlayerById(res.receiverID);
-        const property = this.getPropertyById(res.propertyID);
-
-        if (!buyer || !receiver || !property) return;
-        
-        if (receiver.id == this.loggedUser.id) {
-          this.offers.push({
-            buyerNickname: buyer.nickname,
-            propertyName: property.name,
-            price: res.price,
-            offerID: res.offerID
-          });
-        } else {
-          this.$refs.chat.messages.push({
-            senderUserID: -1,
-            content: `${buyer.nickname} propose à ${receiver.nickname} de lui acheter ${property.name} pour ${res.price}€ !`,
-            createdTime: new Date()
-          })
-        }
+        this.pushGameOfferReceive(res);
     });
 
     // Offre accpeptée check
@@ -970,38 +972,7 @@ export default {
     this.socket.on('gameBidRes', (res) => {
         console.log('gameBidRes');
 
-        // Premier message uniquement
-        if (res.playerID == null) {
-
-            // La propriété appartient déjà à quelqu'un
-            if (res.propertyOwnerId) {
-                console.log(res.propertyOwnerId + ' =?= ' + this.loggedUser.id);
-                if (res.propertyOwnerId == this.loggedUser.id) return;
-
-                const propertyOwner = this.getPlayerById(res.propertyOwnerId);
-                if (!propertyOwner) return;
-
-                this.bids.push({
-                    launcherNickname: propertyOwner.nickname,
-                    startingPrice: 0,
-                    disabled: false,
-                    myPrice: '',
-                    propertyName: res.text,
-                    textContent: "",
-                    bidID: res.bidID
-                });
-            } else { // Enchère automatique (par de launcher)
-                this.bids.push({
-                    launcherNickname: null,
-                    startingPrice: res.price,
-                    disabled: false,
-                    myPrice: '',
-                    propertyName: res.text,
-                    textContent: "",
-                    bidID: res.bidID
-                });
-            }
-        }
+        this.pushGameBid(res);
     });
 
     // Fin d'une enchère
@@ -1031,7 +1002,7 @@ export default {
             let property = this.getPropertyById(res.propertyID);
 
             property.ownerID = res.playerID;
-            winner.properties.push(property);
+            winner.properties.push(property.id);
 
             const cell = this.getCellByProperty(property);
             gameboard.loaderFlag(`d${cell.id}`, winner.color);

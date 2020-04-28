@@ -172,7 +172,7 @@ export default {
     },
     mounted() {
         this.popupItem = this.$el;
-        this.player.properties = [];
+        // this.player.properties = [];
 
         // this.player.properties.push({
         //     "id": 1,
@@ -347,13 +347,24 @@ export default {
         //     "isMortgage": 0
         // });
     },
+    computed: {
+        playerPropertiesObj() {
+            let propertiesObj = [];
+            for (const i in this.player.properties) {
+                const property = this.$parent.getPropertyById(this.player.properties[i]);
+                if (property)
+                    propertiesObj.push(property);
+            }
+            return propertiesObj
+        }
+    },
     methods: {
 
         propertiesByType(type) {
             let res = [];
-            for (const i in this.player.properties) {
-                if (this.player.properties[i].type == type.name || this.player.properties[i].color == type.name)
-                    res.push(this.player.properties[i]);
+            for (const i in this.playerPropertiesObj) {
+                if (this.playerPropertiesObj[i].type == type.name || this.playerPropertiesObj[i].color == type.name)
+                    res.push(this.playerPropertiesObj[i]);
             }
             return res;
         },
@@ -370,9 +381,9 @@ export default {
             // Reset les données d'édition
             this.propertiesEdition.totalPrice = 0;
             for (const i in this.propertiesEdition.modifications) {
-                for (const j in this.player.properties) {
-                    if (this.propertiesEdition.modifications[i].propertyID == this.player.properties[j].id) {
-                        this.player.properties[j].level = this.propertiesEdition.modifications[i].oldLevel;
+                for (const j in this.playerPropertiesObj) {
+                    if (this.propertiesEdition.modifications[i].propertyID == this.playerPropertiesObj[j].id) {
+                        this.playerPropertiesObj[j].level = this.propertiesEdition.modifications[i].oldLevel;
                         continue;
                     }
                 }
@@ -511,7 +522,7 @@ export default {
         //     // type : 'street', 'trainStation', 'publicCompany', ...
         //     // color : 'red', 'yellow', ...
         //     let res = [];
-        //     for (const i in this.player.properties)
+        //     for (const i in this.playerPropertiesObj)
         // }
     },
     directives: {
