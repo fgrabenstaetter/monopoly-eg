@@ -1086,23 +1086,6 @@
             propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
-
-- **Hypothéquer une propriété**
-
-    * **Requête:** gameMortgageReq
-        * *Données:*
-        ```javascript
-        {
-            propertyID: int
-        }
-        ```
-
-    * **Réponse:** gameMortgageRes
-        * *Données:*
-        ```javascript
-        null
-        ```
-
 - **Démarée une enchère manuelle**
     > = Démarrée une enchère pour vendre une de ses propriétés
 
