@@ -775,10 +775,6 @@
                 display: flex !important;
                 color: white !important;
               }
-
-              .house-number {
-                display: flex !important;
-              }
             }
           }
 
@@ -925,7 +921,7 @@
               }
 
               .house-number {
-                display: none;
+                display: flex;
                 position: absolute;
                 color: $blue;
                 right: -15px;
