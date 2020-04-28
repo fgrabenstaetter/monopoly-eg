@@ -669,7 +669,7 @@ export default {
 
 
     this.$parent.initSocketConnexion(this.socket);
-    
+
     this.socket.on('gameStartedRes', (data) => {
 
         this.players = data.players;
@@ -951,6 +951,129 @@ export default {
             console.log("gameOfferSendRes")
         else // hôte uniquement
             this.$parent.toast(`Erreur achat : ${res.status}`, 'danger', 5);
+    });
+
+    // Offre (d'achat) terminée
+    this.socket.on('gameOfferFinishedRes', (res) => {
+      const buyer = this.getPlayerById(res.makerID);
+      const property = this.getPropertyById(res.propertyID);
+
+      if (!buyer || !property) return;
+
+      if (res.receiverID == null) { // Offre a expiré
+        // Si on a reçu cette offre, on la supprime + notification
+        if (this.offers.length) {
+          for (const i in this.offers) {
+            if (this.offers[i].offerID == res.offerID) {
+              this.offers.splice(i, 1);
+              this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
+              break;
+            }
+          }
+        }
+      } else {
+        const receiver = this.getPlayerById(res.receiverID);
+        if (!receiver) return;
+
+        // Transfert argent
+        this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
+        this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+
+        // Transfert propriétés
+        for (const i in receiver.properties) {
+          if (receiver.properties[i].id == property.id) {
+            receiver.properties.splice(i, 1);
+            break;
+          }
+        }
+        property.ownerID = buyer.id;
+        buyer.properties.push(property.id);
+
+        // Notifications de réussite
+        if (buyer.id == this.loggedUser.id) {
+          this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} !`, 'success', 4);
+        } else if (receiver.id == this.loggedUser.id) {
+          this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
+        }
+
+        this.$refs.chat.messages.push({
+            senderUserID: -1,
+            content: `${buyer.nickname} a acheté ${property.name} à ${receiver.nickname} pour ${res.price} !`,
+            createdTime: new Date()
+        });
+      }
+
+    });
+
+    // Edition de mes propriétés check
+    this.ssocket.on('gamePropertyUpgradeRes', (res) => {
+      alert('gamePropertyUpgradeRes');
+      if (res.error === 0)
+        console.log('gamePropertyUpgradeRes OK');
+      else
+        this.$parent.toast(`Erreur : ${res.status}`, 'danger', 4);
+    });
+
+    // Edition des propriétés d'un joueur
+    this.socket.on('gamePropertyUpgradedRes', (res) => {
+      alert('gamePropertyUpgradedRes');
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
+
+      this.$set(player, 'money', res.playerMoney);
+
+      for (const i in res.list) {
+        const edit = res.list[i]; // { propertyID: int, level: int }
+        const property = this.getPropertyById(edit.propertyID);
+        const cell = this.getCellByProperty(property);
+        if (!property || !cell) continue;
+
+        const oldLevel = property.level;
+        this.$set(property, 'level', edit.level); // Nouveau level
+
+        // Màj des maisons sur le plateau 3D
+        if (property.level > oldLevel) {
+          // Amélioration
+          if (property.level == 1) {
+              console.log("Construire 1 maisons case " + cell.id);
+              gameboard.loaderhouseProperty(cell.id, 1);
+          } else if (property.level == 2) {
+              console.log("Construire 2 maisons case " + cell.id);
+              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+
+              gameboard.loaderhouseProperty(cell.id, 2);
+          } else if (property.level == 3) {
+              console.log("Construire 3 maisons case " + cell.id);
+              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+
+              if (oldLevel < 2) gameboard.loaderhouseProperty(cell.id, 2);
+
+              gameboard.loaderhouseProperty(cell.id, 3);
+          } else if (property.level == 4) {
+              console.log("Construire 4 maisons case " + cell.id);
+              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+
+              if (oldLevel < 2) gameboard.loaderhouseProperty(cell.id, 2);
+
+              if (oldLevel < 3) gameboard.loaderhouseProperty(cell.id, 3);
+
+              gameboard.loaderhouseProperty(cell.id, 4);
+          } else if (property.level == 5) {
+              console.log("Construire un hôtel case " + cell.id);
+              for (const k in oldLevel) {
+                gameboard.deleteHouse(cell.id, k+1);
+              }
+              gameboard.loaderHotelProperty(cell.id);
+          }
+        }
+
+        // gameboard.loaderHouseProperty(nbcase, nhouse);
+        // gameboard.loaderHotelProperty(ncase)
+
+        // gameboard.deleteHouse(ncase, nhouse)
+
+        // gameboard.deleteHotel(ncase);
+      }
     });
 
     // Ouverture d'une enchère ou nouvelle enchère d'un joueur

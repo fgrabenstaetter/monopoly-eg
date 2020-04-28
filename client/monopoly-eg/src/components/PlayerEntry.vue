@@ -372,9 +372,16 @@ export default {
             return (type.totalNb - this.propertiesByType(type).length);
         },
         submitPropertiesEdition() {
-            alert('Implémentation à finir (attente modifications côté serveur');
             console.log("SUBMIT PROPERTIES EDITION");
-            console.log(this.propertiesEdition);
+            let list = [];
+            for (const i in this.propertiesEdition.modifications) {
+                list.push({
+                    propertyID: this.propertiesEdition.modifications[i].propertyID,
+                    level: this.propertiesEdition.modifications[i].level
+                });
+            }
+            console.log(list);
+            this.socket.emit('gamePropertyUpgradeReq', { list: list });
         },
         cancelPropertiesEdition() {
             console.log("CANCEL PROPERTIES EDITION");
