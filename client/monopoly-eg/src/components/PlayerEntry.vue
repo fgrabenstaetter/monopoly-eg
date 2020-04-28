@@ -9,7 +9,7 @@
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
-                <button style="display: block;" class="houses-btn"><i class="fas fa-home"></i><i class="fa fa-pen"></i></button>
+                <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
             
             <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" style="display:block;">

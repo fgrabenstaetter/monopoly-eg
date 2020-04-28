@@ -18,7 +18,25 @@
         <img id="bus" src="../../../ui/img/ui/bus.png">
         <img id="bateau" src="../../../ui/img/ui/bateau.png">
         <router-link class="btn" to="Login">JOUER !</router-link>
+        <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
+    </div>
+
+    <div class="modal" id="creditsModal" tabindex="-1" role="dialog" aria-labelledby="creditsModalLabel"
+        aria-hidden="true" data-id="1">
+        <div class="modal-dialog animated bounceIn" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="creditsModalLabel">Crédits</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Blablabla...
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="resolution-overlay-container">

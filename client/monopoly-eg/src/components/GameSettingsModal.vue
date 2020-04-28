@@ -34,6 +34,10 @@
                             <span>Effets sonores</span>
                             <input @change="updateUserSettings" v-model="userSettings.sfxLevel" type="range" min="0" max="100" class="range-slider">
                         </li>
+                        <li style="flex-wrap:wrap;">
+                            <span>Temps de jeu</span>
+                            <span>???s</span>
+                        </li>
                     </ul>
 
                     <button class="btn btn-primary show-rules" href="#" role="button">RÈGLES</button>
