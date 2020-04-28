@@ -207,9 +207,8 @@ export default {
         const W_WIDTH = window.innerWidth;
         const aspectRatio = WIDTH / HEIGHT;
         
-        const renderer = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        const renderer = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
         renderer.setViewport(0,0,W_WIDTH,W_HEIGHT);
-        // renderer.setPixelRatio(pixelRatio);
         renderer.setSize(WIDTH, HEIGHT);
 
         /**
