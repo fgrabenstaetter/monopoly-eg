@@ -186,7 +186,7 @@
   // Options
   #optionsModal {
     z-index: 100000;
-    
+
     .modal-body {
       display: flex;
       flex-direction: column;
@@ -686,6 +686,28 @@
           flex-direction: row;
           flex-wrap: wrap;
           filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
+
+          .popup-title {
+            position: absolute;
+            top: -25px;
+            left: 70px;
+            font-family: 'LilitaOne', sans-serif;
+            font-size: 25px;
+            height: 40px;
+            filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
+            color: white;
+            background-color: $blue;
+            padding: 1px 20px;
+            text-align: left;
+            border-radius: 20px;
+          }
+
+          .popup-pawn {
+            height: 40px;
+            position: absolute;
+            top: -25px;
+            left: 25px;
+          }
 
           &.edition {
             .houses-total-price,
