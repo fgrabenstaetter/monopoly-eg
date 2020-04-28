@@ -20,7 +20,7 @@
                     {{overviewCard.name}}
                 </div>
                 <div v-if="overviewCard.type == 'street'" class="content">
-                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.prices.empty}}</div> -->
+                    <div class="base-price">PRIX D'ORIGINE {{overviewCard.prices.empty}}€</div>
                     <div class="rent">{{overviewCard.rentalPrices.empty}}</div>
                     <div class="with-house">
                         <div>Avec 1 Maison</div>
