@@ -8,8 +8,11 @@
         <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
+            <div class="popup-title">Playername</div>
+            <img class="popup-pawn" src="../../../ui/img/ui/montgolfiere.png">
+
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
-                <button style="display: block;" class="houses-btn"><i class="fas fa-home"></i><i class="fa fa-pen"></i></button>
+                <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
             
             <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" style="display:block;">
@@ -372,9 +375,16 @@ export default {
             return (type.totalNb - this.propertiesByType(type).length);
         },
         submitPropertiesEdition() {
-            alert('Implémentation à finir (attente modifications côté serveur');
             console.log("SUBMIT PROPERTIES EDITION");
-            console.log(this.propertiesEdition);
+            let list = [];
+            for (const i in this.propertiesEdition.modifications) {
+                list.push({
+                    propertyID: this.propertiesEdition.modifications[i].propertyID,
+                    level: this.propertiesEdition.modifications[i].level
+                });
+            }
+            console.log(list);
+            this.socket.emit('gamePropertyUpgradeReq', { list: list });
         },
         cancelPropertiesEdition() {
             console.log("CANCEL PROPERTIES EDITION");
