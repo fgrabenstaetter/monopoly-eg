@@ -1066,6 +1066,8 @@ class Network {
                      (data.propertyID === -1 && recvr.nbJailEscapeCards === 0) ||
                      (data.propertyID >= 0 && !(prop = recvr.propertyByID(data.propertyID))))
                 err = Errors.UNKNOW;
+            else if (data.price > player.money)
+                err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else if (recvr.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else {
