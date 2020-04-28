@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none;">
         <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
             aria-hidden="true" data-id="1">
             <div class="modal-dialog animated bounceIn" role="document">
