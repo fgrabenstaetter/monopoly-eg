@@ -615,6 +615,26 @@
         margin-bottom: 10px;
         position: relative;
 
+        &.parlement:after {
+          font-family: "Font Awesome 5 Free";
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          display: inline-block;
+          font-style: normal;
+          font-variant: normal;
+          text-rendering: auto;
+          line-height: 1;
+          font-weight: 900;
+          content: "\f0a1";
+          margin-right: 10px;
+          font-size: 10px;
+          color: white;
+          vertical-align: text-top;
+          position: absolute;
+          top: 7px;
+          right: -17px;
+        }
+
         .name {
           font-size: 17px;
           font-weight: bold;
