@@ -158,6 +158,7 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
+      <div v-if="endGame" class="end-game-background"></div>
       <div v-if="endGame" class="end-game-screen">
         <div class="header">
           <h5>Fin de la partie !</h5>
