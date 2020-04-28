@@ -158,22 +158,22 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
-      <div v-if="0" class="end-game-screen">
+      <div v-if="endGame" class="end-game-screen">
         <div class="header">
           <h5>Fin de la partie !</h5>
         </div>
         <div class="content">
-          <div class="winner">Unknown</div>
+          <div class="winner">{{endGame.winnerNickname}}</div>
           <div class="subtitle">a gagné la partie !</div>
           <div class="info">
             <div class="label">Temps de jeu</div>
-            <div class="value">13 minutes</div>
+            <div class="value">{{endGame.gameTime}}</div>
           </div>
           <div class="info">
             <div class="label">Info</div>
             <div class="value">Valeur</div>
           </div>
-          <button class="btn stylized">Retourner au lobby</button>
+          <router-link to="/Lobby" class="btn stylized">Revenir au lobby</router-link>
         </div>
       </div>
 
@@ -206,7 +206,7 @@
     <full-screen-loader v-if="loading"></full-screen-loader>
 
     <!-- Game settings modal -->
-    <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="game"></game-settings-modal>
+    <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="game" ref="gameSettings"></game-settings-modal>
   </div>
 </template>
 
@@ -222,7 +222,6 @@ import ChatIO from "../components/ChatIO";
 import SplashText from "../components/SplashText";
 import { Howl } from "howler";
 import "odometer/themes/odometer-theme-default.css";
-// import JQuery from 'jquery'
 
 export default {
   name: "Game",
@@ -268,13 +267,7 @@ export default {
             path: "/socket.io",
             secure: true
       }),
-      players: [
-        // {
-        //   nickname: "",
-        //   money: 0,
-        //   properties: []
-        // }
-      ],
+      players: [],
       cells: [],
       properties: [],
       gameEndTime: null,
@@ -285,7 +278,8 @@ export default {
         sfx: {}
       },
       offers: [],
-      bids: []
+      bids: [],
+      endGame: false
     };
   },
   computed: {
@@ -484,16 +478,13 @@ export default {
       if (bid.playerID == null) {
         // La propriété appartient déjà à quelqu'un
         if (bid.propertyOwnerID) {
-            console.log(bid.propertyOwnerID + ' =?= ' + this.loggedUser.id);
-            if (bid.propertyOwnerID == this.loggedUser.id) return;
-
             const propertyOwner = this.getPlayerById(bid.propertyOwnerID);
             if (!propertyOwner) return;
 
             this.bids.push({
                 launcherNickname: propertyOwner.nickname,
-                startingPrice: 0,
-                disabled: false,
+                startingPrice: bid.price,
+                disabled: (bid.propertyOwnerID == this.loggedUser.id),
                 myPrice: '',
                 propertyName: bid.text,
                 textContent: "",
@@ -502,7 +493,7 @@ export default {
         } else { // Enchère automatique (par de launcher)
             this.bids.push({
                 launcherNickname: null,
-                startingPrice: bid.price,
+                startingPrice: 0,
                 disabled: false,
                 myPrice: '',
                 propertyName: bid.text,
@@ -519,8 +510,14 @@ export default {
     quitGame() {
       this.socket.emit("gamePlayerLeavingReq");
       this.socket.on("gamePlayerLeavingRes", res => {
-        if (res.error === 0) this.$router.push("Lobby");
-        else this.$parent.toast(res.status, "danger", 5);
+        if (res.error === 0) {
+          this.$refs.gameSettings.closeModal();
+          setTimeout(() => {
+            this.$router.push("Lobby");
+          }, 800);
+        } else {
+          this.$parent.toast(res.status, "danger", 5);
+        }
       });
     },
 
@@ -650,6 +647,7 @@ export default {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
 
+      // cannot read isInJail of undefined
       if (currPlayer.isInJail) currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
 
       console.log("=== fin gameActionRes ===");
@@ -971,7 +969,6 @@ export default {
     // Ouverture d'une enchère ou nouvelle enchère d'un joueur
     this.socket.on('gameBidRes', (res) => {
         console.log('gameBidRes');
-
         this.pushGameBid(res);
     });
 
@@ -1016,13 +1013,12 @@ export default {
     });
 
 
-    // Enchère manuelle erreur
-    this.socket.on("gameManualBidRes", (res) => {
-        console.log("gameManualBidRes");
-        console.log(res);
-        if (res.error !== 0) {
-            this.$parent.toast(`Erreur vente : ${res.status}`, 'danger', 4);
-        }
+    // Enchère manuelle check
+    this.socket.on('gameManualBidRes', (res) => {
+      if (res.error === 0)
+        this.$parent.toast('Enchère créée !', 'success', 3);
+      else
+        this.$parent.toast(`Erreur lors de la création de l'enchère : ${res.status}`, 'danger', 5);
     });
 
 
@@ -1087,25 +1083,28 @@ export default {
             }
         }
     });
+    
 
     // Fin de partie
     this.socket.on('gameEndRes', (res) => {
-        if (this.loading) return;
+      let seconds = Math.floor((res.duration / 1000) % 60),
+          minutes = Math.floor((res.duration / (1000 * 60)) % 60),
+          hours = Math.floor((res.duration / (1000 * 60 * 60)) % 24);
 
-        const winner = this.getPlayerById(res.winnerID);
-        const type = res.type; // 'failure' (dernier en vie) ou 'timeout'
-        const duration = res.duration * 1.66667e-5; // durée totale du jeu en minutes
+        let gameTime = '';
+        if (hours > 0)
+          gameTime += `${hours}h `;
+        
+        gameTime += `${minutes}min ${seconds}sec`;
 
-        alert('Fin de la partie (' + type + ') après ' + duration + ' minutes de jeu');
-        alert(winner.nickname + ' a gagné, félicitations !');
-        this.stopMusic();
-
-        setTimeout(() => {
-            this.$router.push('Lobby');
-        }, 500);
+        this.endGame = {
+          winnerNickname: this.idToNick(res.winnerID),
+          gameTime: gameTime,
+          endType: res.type // 'failure' (dernier en vie) ou 'timeout'
+        }
     });
 
-    // Un joueur quitte la prtie
+    // Un joueur quitte la partie
     this.socket.on('gamePlayerHasLeftRes', (res) => {
         if (this.loading) return;
 

@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import $ from 'jquery';
+
 export default {
     name: 'GameSettingsModal',
     props: {
@@ -95,8 +97,12 @@ export default {
             // Refresh volume en direct
             this.$parent.setMusicLevel(this.userSettings.musicLevel);
         },
+        closeModal() {
+            $('#optionsModal').modal('hide');
+        },
         quitGame() {
-            this.$parent.quitGame();
+            if (typeof this.$parent.quitGame === 'function')
+                this.$parent.quitGame();
         }
     }
 }
