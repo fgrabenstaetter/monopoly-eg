@@ -32,6 +32,32 @@ export default {
       setTimeout(() => {
         this.toastContent = "";
       }, time * 1000);
+    },
+
+    initSocketConnexion(socket) {
+      socket.io.on('connect_error', () => {
+          this.toast('Impossible de se connecter au serveur de sockets...', 'danger', 5);
+          this.$router.push('Login');
+
+      });
+
+      socket.on('error', (err) => {
+          if (err.type == 'UnauthorizedError' || err.code == 'invalid_token') {
+              this.toast('Le token a expiré', 'danger', 5);
+              this.$router.push('Login');
+          }
+      });
+
+      socket.on('unauthorized', (err) => {
+          if (err.data.type == 'UnauthorizedError' || err.data.code == 'invalid_token') {
+              this.toast('Le token a expiré (token invalide)', 'danger', 5);
+              this.$router.push('Login');
+          }
+      });
+
+      socket.on('notLoggedRes', () => {
+          this.$router.push('Login');
+      });
     }
   }
 }

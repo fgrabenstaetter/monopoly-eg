@@ -667,22 +667,9 @@ export default {
     this.players = [];
     const gameboard = this.$refs.gameboard;
 
-    console.log(gameboard);
 
-    // setInterval(() => {
-    //     this.players[0].money += 100;
-    //     this.$set(this.players, 0, this.players[0]);
-    // }, 1000);
-
-    // gameboard.loaderPawn('montgolfiere', 0);
-    // gameboard.loaderPawn('boat', 0);
-
-    // setTimeout(() => {
-    //     gameboard.movement('boat', 5, () => {
-    //         gameboard.movement('montgolfiere', 10, () => {});
-    //     });
-    // }, 3000)
-
+    this.$parent.initSocketConnexion(this.socket);
+    
     this.socket.on('gameStartedRes', (data) => {
 
         this.players = data.players;

@@ -373,6 +373,7 @@ export default {
             this.deleteFriendInvitation(friendId);
         },
         inviteFriendInLobby(id) {
+            
             this.socket.emit("lobbyInvitationReq", { friendID: id });
         },
         kickPlayerFromLobby(id) {
@@ -475,33 +476,7 @@ export default {
         this.editProfile.nickname = this.loggedUser.nickname;
         this.editProfile.email = this.loggedUser.email;
 
-        console.log(this.loggedUser);
-        console.log(this.socket);
-
-        this.socket.io.on('connect_error', () => {
-            this.$parent.toast('Impossible de se connecter au serveur de sockets...', 'danger', 5);
-            this.$router.push('Login');
-        });
-
-        this.socket.on('error', (error) => {
-            if (error.type == 'UnauthorizedError' || error.code == 'invalid_token') {
-                // redirect user to login page perhaps?
-                this.$parent.toast('Le token a expiré', 'danger', 5);
-                this.$router.push('Login');
-            }
-        });
-
-        this.socket.on('unauthorized', (error) => {
-            if (error.data.type == 'UnauthorizedError' || error.data.code == 'invalid_token') {
-                this.$parent.toast('Le token a expiré (token invalide)', 'danger', 5);
-                this.$router.push('Login');
-            }
-        });
-
-        this.socket.on('notLoggedRes', () => {
-            this.$router.push('Login');
-        });
-
+        this.$parent.initSocketConnexion(this.socket);
 
         this.socket.on('lobbyCreatedRes', (res) => {
             console.log('=== LOBBY CREATED RES');
