@@ -13,10 +13,10 @@
             </div>
           </div>
         </div>
-        <img id="logo" src="../../../ui/img/ui/logo.png">
-        <img id="montgolfiere" src="../../../ui/img/ui/montgolfiere.png">
-        <img id="bus" src="../../../ui/img/ui/bus.png">
-        <img id="bateau" src="../../../ui/img/ui/bateau.png">
+        <img id="logo" src="/assets/img/ui/logo.png">
+        <img id="montgolfiere" src="/assets/img/ui/montgolfiere.png">
+        <img id="bus" src="/assets/img/ui/bus.png">
+        <img id="bateau" src="/assets/img/ui/bateau.png">
         <router-link class="btn" to="Login">JOUER !</router-link>
         <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
