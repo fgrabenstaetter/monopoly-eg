@@ -298,10 +298,6 @@
     width: 400px;
     filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
 
-    @media (max-width: 1199.98px) {
-      transform: translate(400px, -50%);
-    }
-
     .header,
     .content {
       width: 200px;
