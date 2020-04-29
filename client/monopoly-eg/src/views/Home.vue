@@ -17,7 +17,7 @@
         <img id="montgolfiere" src="/assets/img/ui/montgolfiere.png">
         <img id="bus" src="/assets/img/ui/bus.png">
         <img id="bateau" src="/assets/img/ui/bateau.png">
-        <router-link class="btn" to="Login">JOUER !</router-link>
+        <router-link class="btn" to="/login">JOUER !</router-link>
         <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
     </div>

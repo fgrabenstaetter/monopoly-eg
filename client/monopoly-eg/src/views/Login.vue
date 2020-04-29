@@ -22,7 +22,7 @@
                 placeholder="Mot de passe"
               />
               <button type="submit" class="btn btn-primary">CONNEXION</button>
-              <router-link class="btn btn-secondary" to="Signin">INSCRIPTION</router-link>
+              <router-link class="btn btn-secondary" to="/signin">INSCRIPTION</router-link>
             </form>
           </div>
           <a id="forgot-password" href="#">Mot de passe oublié ?</a>
@@ -51,7 +51,7 @@ export default {
           delete res.user._id;
           this.$store.dispatch("login", {jwt: res.token, user: res.user})
           .then(() => {
-            this.$router.push('Lobby');
+            this.$router.push('/lobby');
           });
         })
         .catch(err => {

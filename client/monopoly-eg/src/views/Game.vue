@@ -186,7 +186,7 @@
             <div class="label">Info</div>
             <div class="value">Valeur</div>
           </div>
-          <router-link to="/Lobby" class="btn stylized">Revenir au lobby</router-link>
+          <router-link to="/lobby" class="btn stylized">Revenir au lobby</router-link>
         </div>
       </div>
 

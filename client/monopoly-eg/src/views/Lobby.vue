@@ -425,8 +425,10 @@ export default {
         },
 
         logout() {
-            this.$store.dispatch('logout');
-            this.$router.push('Home');
+            this.$store.dispatch('logout')
+            .then(() => {
+                this.$router.push('/');
+            });
         },
 
         playMusic() {
@@ -660,7 +662,7 @@ export default {
         this.socket.on('lobbyGameFoundRes', () => {
             this.stopMusic();
             setTimeout(() => {
-                this.$router.push('Game');
+                this.$router.push('/game');
             }, 500);
         });
 
@@ -722,7 +724,7 @@ export default {
             // this.socket.disconnect();
 
             setTimeout(() => {
-                this.$router.push('Game');
+                this.$router.push('/game');
                 this.loading = false;
             }, 1000);
         });

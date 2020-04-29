@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
     <router-view/>
 
     <div v-if="toastContent" v-html="toastContent" class="toast-notification" :class="toastClass">{{toastContent}}</div>
@@ -37,26 +33,26 @@ export default {
     initSocketConnexion(socket) {
       socket.io.on('connect_error', () => {
           this.toast('Impossible de se connecter au serveur de sockets...', 'danger', 5);
-          this.$router.push('Login');
+          this.$router.push('/login');
 
       });
 
       socket.on('error', (err) => {
           if (err.type == 'UnauthorizedError' || err.code == 'invalid_token') {
               this.toast('Le token a expiré', 'danger', 5);
-              this.$router.push('Login');
+              this.$router.push('/login');
           }
       });
 
       socket.on('unauthorized', (err) => {
           if (err.data.type == 'UnauthorizedError' || err.data.code == 'invalid_token') {
               this.toast('Le token a expiré (token invalide)', 'danger', 5);
-              this.$router.push('Login');
+              this.$router.push('/login');
           }
       });
 
       socket.on('notLoggedRes', () => {
-          this.$router.push('Login');
+          this.$router.push('/login');
       });
 
       socket.on('disconnect', () => {

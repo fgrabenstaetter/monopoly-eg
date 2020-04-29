@@ -45,9 +45,16 @@ router.beforeEach((to, from, next) => {
   console.log(from);
   console.log(to);
   console.log(store.getters.isLoggedIn);
+  
+  const unrestrictedRoutes = ['Home', 'Login', 'Signin'];
 
-  if (to.name !== 'Home' && to.name !== 'Login' && to.name !== 'Signin' && !store.getters.isLoggedIn) next('Login')
-  else next()
+  if (!unrestrictedRoutes.includes(to.name) && !store.getters.isLoggedIn) {
+    console.log("REDIRECT LOGIN");
+    next('Login');
+  } else {
+    console.log("ROUTER OKOK");
+    next();
+  }
 })
 
 export default router
