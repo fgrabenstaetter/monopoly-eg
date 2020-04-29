@@ -726,11 +726,8 @@ export default {
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
 
-        for (const i in this.properties) {
-            this.properties[i].level = 0;
+        for (const i in this.properties)
             this.properties[i].ownerID = null;
-            this.properties[i].isMortgage = 0;
-        }
 
         // Génération de la liste de joueurs
         this.players.forEach((player, index) => {
@@ -744,17 +741,22 @@ export default {
               if (propertyObj && cell)
                 gameboard.loaderFlag("d" + cell.id, player.color);
 
-                if (propertyObj.level == 5) {
-                  gameboard.loaderHotelProperty(cell.id);
-                } else {
-                  if (propertyObj.level >= 1)
-                    gameboard.loaderHouseProperty(cell.id, 1);
-                  if (propertyObj.level >= 2)
-                    gameboard.loaderHouseProperty(cell.id, 2);
-                  if (propertyObj.level >= 3)
-                    gameboard.loaderHouseProperty(cell.id, 3);
-                  if (propertyObj.level >= 4)
-                    gameboard.loaderHouseProperty(cell.id, 4);
+                console.log("PROPERTY");
+                console.log(propertyObj);
+                console.log("========");
+                if (propertyObj.level == 0) {
+                  if (propertyObj.level == 5) {
+                    gameboard.loaderHotelProperty(cell.id);
+                  } else {
+                    if (propertyObj.level >= 1)
+                      gameboard.loaderHouseProperty(cell.id, 1);
+                    if (propertyObj.level >= 2)
+                      gameboard.loaderHouseProperty(cell.id, 2);
+                    if (propertyObj.level >= 3)
+                      gameboard.loaderHouseProperty(cell.id, 3);
+                    if (propertyObj.level >= 4)
+                      gameboard.loaderHouseProperty(cell.id, 4);
+                  }
                 }
             }
         });
