@@ -262,6 +262,7 @@
          ```
 
     * **Réponse:** lobbyPlayRes
+        > Si succès, envoyé à tout le monde, sinon (erreur) envoyée seulement à l'émetteur
         * *Données:*
         ```javascript
         {
