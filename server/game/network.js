@@ -1124,7 +1124,7 @@ class Network {
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (player.money < data.price)
-                Errors.BID.NOT_ENOUGH_MONEY;
+                err = Errors.BID.NOT_ENOUGH_MONEY;
             else {
                 const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
