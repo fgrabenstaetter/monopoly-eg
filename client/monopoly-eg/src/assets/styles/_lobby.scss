@@ -177,11 +177,6 @@
           }
         }
 
-        .friend-entry {
-          .friends-avatar {
-          }
-        }
-
         .group-entry {
           display: block;
           position: relative;
@@ -416,6 +411,7 @@
             width: 110px;
             margin: 0 10px 10px 10px;
             padding: 0;
+            border-radius: 14px;
           }
 
           .btn-primary {
