@@ -24,12 +24,12 @@
 
     <div class="modal" id="creditsModal" tabindex="-1" role="dialog" aria-labelledby="creditsModalLabel"
         aria-hidden="true" data-id="1">
-        <div class="modal-dialog animated bounceIn" role="document">
+        <div class="modal-dialog modal-xl animated bounceIn" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="creditsModalLabel">Crédits</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="cursor: pointer;">
-                        <span aria-hidden="true" style="cursor: pointer;">&times;</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">

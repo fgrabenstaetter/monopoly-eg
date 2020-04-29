@@ -487,12 +487,6 @@ export default {
           price: offer.price,
           offerID: offer.offerID
         });
-      } else {
-        this.$refs.chat.messages.push({
-          senderUserID: -1,
-          content: `${buyer.nickname} propose à ${receiver.nickname} de lui acheter ${property.name} pour ${offer.price}€ !`,
-          createdTime: new Date()
-        })
       }
     },
 
@@ -1058,14 +1052,7 @@ export default {
         } else if (receiver.id == this.loggedUser.id) {
           this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
         }
-
-        this.$refs.chat.messages.push({
-            senderUserID: -1,
-            content: `${buyer.nickname} a acheté ${property.name} à ${receiver.nickname} pour ${res.price}€ !`,
-            createdTime: new Date()
-        });
       }
-
     });
 
     // Edition de mes propriétés check

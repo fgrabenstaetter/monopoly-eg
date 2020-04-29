@@ -104,26 +104,41 @@ input.range-slider {
 /***********/
 .modal {
   text-align: center;
-  z-index: 30000 !important;
+  z-index: 100000 !important;
 
   &#rulesModal {
-    .modal-content {
-      width: 500px !important;
+    .modal-body {
+      font-family: "Roboto", sans-serif;
+    }
+  }
+
+  &#optionsModal,
+  &#userSettingsModal {
+    .modal-body {
+      font-size: 18px;
     }
   }
 
   .modal-content {
-    width: 350px;
     color: rgb(5, 5, 85);
     background: white;
-    text-transform: uppercase;
     font-family: "LilitaOne", sans-serif;
     text-align: center;
-    font-size: 12ox;
+    font-size: 14px;
     border-radius: 12px;
     padding: 20px;
 
-    input, select {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: bold;
+    }
+
+    input,
+    select {
       font-family: "Roboto", sans-serif;
       font-size: 14px;
     }
@@ -131,6 +146,7 @@ input.range-slider {
     .modal-header {
       // border-bottom: 2px solid #fd8000;
       border-bottom: 0;
+      font-family: "LilitaOne", sans-serif;
 
       .modal-title {
         font-size: 20px;
@@ -169,7 +185,7 @@ input.range-slider {
         margin: 0;
         padding: 0;
       }
-  
+
       ul li {
         display: flex;
         justify-content: space-between;
@@ -187,7 +203,7 @@ input.range-slider {
   }
 }
 
-@media screen and (min-width: 768px) { 
+@media screen and (min-width: 768px) {
   .modal:before {
     display: inline-block;
     vertical-align: middle;
@@ -215,7 +231,7 @@ input.range-slider {
   width: 60px;
   height: 34px;
 
-  input { 
+  input {
     opacity: 0;
     width: 0;
     height: 0;
@@ -228,8 +244,8 @@ input.range-slider {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
     border-radius: 34px;
   }
 
@@ -241,19 +257,19 @@ input.range-slider {
     left: 4px;
     bottom: 4px;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
     border-radius: 50%;
   }
-  
+
   input:checked + .slider {
-    background-color: #0269D9;
+    background-color: #0269d9;
   }
 
   input:focus + .slider {
-    box-shadow: 0 0 1px #0269D9;
+    box-shadow: 0 0 1px #0269d9;
   }
-  
+
   input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);

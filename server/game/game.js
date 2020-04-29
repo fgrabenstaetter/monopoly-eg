@@ -464,12 +464,21 @@ class Game {
                 break;
 
             case Constants.CELL_TYPE.OTHER:
-                break;
                 if (this.curPlayer.cellPos === 30) {
                     this.curPlayer.moveAbsolute(10);
-                    //Perdre l'argent gagné au passage de la case départ
+                    // Perdre l'argent gagné au passage de la case départ
                     this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+                } else {
+                    let mess;
+                    switch (this.curPlayer.cellPos) {
+                        case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
+                            break;
+                        default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                    }
+
+                    this.setTurnActionData(null, null, mess);
                 }
+                break;
         }
 
         this.successManager.check();
@@ -488,12 +497,12 @@ class Game {
     turnPlayerAlreadyInPrison(diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
             if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
-                this.curPlayer.nbJailEscapeCards--;
+                this.curPlayer.nbJailEscapeCards --;
                 this.curPlayer.quitPrison();
             } else if (diceRes[0] === diceRes[1])
                 this.curPlayer.quitPrison();
             else {
-                this.curPlayer.remainingTurnsInJail--;
+                this.curPlayer.remainingTurnsInJail --;
                 if (this.curPlayer.remainingTurnsInJail > 0)
                     this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
@@ -522,7 +531,7 @@ class Game {
         if (property.owner === this.curPlayer && property.type === Constants.PROPERTY_TYPE.STREET) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' considère l\'amélioration de ses propriétés');
+                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 

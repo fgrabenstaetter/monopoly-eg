@@ -55,27 +55,26 @@ class Bid {
         if (this.nBidsOnProperty.indexOf(player.id) === -1)
             this.nBidsOnProperty.push(player.id);
 
+        let targetMaxLen = this.game.players.length;
+        if (this.initialPropertyOwner)
+            targetMaxLen --; // le créateur ne peux pas surenchérir
+
         if (amount <= this.amountAsked) {
             // return false;
-            if (this.nBidsOnProperty.length === this.game.players.length)
+            if (this.nBidsOnProperty.length === targetMaxLen)
                 this.expired();
 
             return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
         }
 
-        if (amount !== 0) {
-            this.amountAsked = amount;
-            this.player = player;
-        }
+        this.amountAsked = amount;
+        this.player = player;
 
         if (this.property.owner !== this.initialPropertyOwner) {
             this.expired();
             return false;
         }
 
-        let targetMaxLen = this.game.players.length;
-        if (this.initialPropertyOwner)
-            targetMaxLen --; // le créateur ne peux pas surenchérir
 
         if (this.nBidsOnProperty.length === targetMaxLen)
             this.expired();

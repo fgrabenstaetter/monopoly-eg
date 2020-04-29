@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none;">
+    <div>
         <div class="modal" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel"
             aria-hidden="true" data-id="1">
             <div class="modal-dialog animated bounceIn" role="document">
@@ -50,7 +50,7 @@
         </div>
 
         <div class="modal" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalTitle" aria-hidden="true">
-            <div class="modal-dialog animated bounceIn" role="document">
+            <div class="modal-dialog modal-xl animated bounceIn" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ruleModalTitle">Règles</h5>
