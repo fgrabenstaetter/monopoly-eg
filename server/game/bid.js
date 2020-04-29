@@ -55,6 +55,10 @@ class Bid {
         if (this.nBidsOnProperty.indexOf(player.id) === -1)
             this.nBidsOnProperty.push(player.id);
 
+        let targetMaxLen = this.game.players.length;
+        if (this.initialPropertyOwner)
+            targetMaxLen --; // le créateur ne peux pas surenchérir
+
         if (amount <= this.amountAsked) {
             // return false;
             if (this.nBidsOnProperty.length === this.game.players.length)
@@ -73,9 +77,6 @@ class Bid {
             return false;
         }
 
-        let targetMaxLen = this.game.players.length;
-        if (this.initialPropertyOwner)
-            targetMaxLen --; // le créateur ne peux pas surenchérir
 
         if (this.nBidsOnProperty.length === targetMaxLen)
             this.expired();
