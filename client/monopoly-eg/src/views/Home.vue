@@ -33,7 +33,62 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    Blablabla...
+                  <h1>CREDITS</h1>
+
+                      <h2>Licence</h2>
+                      <p>
+                          Ce jeu est une adaptation du jeu Monopoly publié par Hasbro et a été créé dans le cadre pédagogique
+                          d'un projet intégrateur de troisième année de licence d'informatique à l'UFR maths info de Strasbourg. 
+                      </p>
+
+                      <h2>L'équipe Monopoly EG</h2>
+                          <h3>Le serveur</h3>
+                              <p>
+                                  François GRABENSTAETTER<br>
+                                  Danyl EL-KABIR<br>
+                                  Dorin GUTU<br>
+                                  Boris FLESCH<br>
+                              </p>
+                          <h3>La modélisation</h3>
+                              <p>
+                                  Florian FALKNER<br>
+                                  Xavier FARGEAS<br>
+                                  Côme FRAPPE---VIALATOUX<br>
+                                  Benjamin FREELING<br>
+                                  Edouard GU<br>
+                              </p>
+                          <h3>Le Plateau</h3>
+                              <p>
+                                  Florian FALKNER<br>
+                                  Xavier FARGEAS<br>
+                                  Boris FLESCH<br>
+                              </p>
+                          <h3>Le coté client</h3>
+                              <p>
+                                  Matthias FOYER<br>
+                                  Edouard GU<br>
+                                  Côme FRAPPE---VIALATOUX<br>
+                                  Benjamin FREELING<br>
+                                  Boris FLESCH<br>
+                              </p>
+                          <h3>La musique</h3>
+                              <p>
+                                  Edouard GU<br>
+                                  Boris FLESCH<br>
+                              </p>
+                      <h2>Remerciements</h2>
+                          <p>
+                              Merci à Alicia pour nous avoir prêté une version matérielle du jeu à maintes reprises!<br>
+                              Merci à toute l'équipe pour avoir été solidaire, active et surtout sympathique car c'est toujours
+                              un plaisir que de travailler dans la bonne humeur!<br>
+                              Merci à Bobo qui a été un chef d'équipe formidable malgré quelques pulsions tyraniques.
+                              Et Merci à vous d'avoir joué à notre jeu!
+                          </p>
+                      <h2>Contacts</h2>
+                          <p>
+                              boris.flesch@gmail.com
+                          </p>
+
                 </div>
             </div>
         </div>
