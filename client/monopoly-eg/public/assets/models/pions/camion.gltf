@@ -15,17 +15,17 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Cube.006",
+            "name" : "Cube",
             "rotation" : [
                 0,
+                0.7071068286895752,
                 -0.7071067094802856,
-                -0.7071068286895752,
-                -5.760116295050466e-08
+                -1.1520233300643667e-07
             ],
             "scale" : [
-                0.02622099593281746,
-                0.026221005246043205,
-                0.026221005246043205
+                0.026220999658107758,
+                0.026220999658107758,
+                0.026220999658107758
             ]
         }
     ],
@@ -37,20 +37,20 @@
                 0,
                 0
             ],
-            "name" : "Pions",
+            "name" : "Material.002",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0,
                     "texCoord" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.75
+                "roughnessFactor" : 1
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "Cube.065",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -80,29 +80,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 37771,
+            "count" : 35514,
             "max" : [
-                1.5290162563323975,
-                3.919847011566162,
-                3.4044525623321533
+                1.6823234558105469,
+                5.841108798980713,
+                -0.011968612670898438
             ],
             "min" : [
-                -1.5438416004180908,
-                -5.392133712768555,
-                0.01597648859024048
+                -1.7025132179260254,
+                -4.416289806365967,
+                -3.744466781616211
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 37771,
+            "count" : 35514,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 37771,
+            "count" : 35514,
             "type" : "VEC2"
         },
         {
@@ -115,28 +115,28 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 453252,
+            "byteLength" : 426168,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 453252,
-            "byteOffset" : 453252
+            "byteLength" : 426168,
+            "byteOffset" : 426168
         },
         {
             "buffer" : 0,
-            "byteLength" : 302168,
-            "byteOffset" : 906504
+            "byteLength" : 284112,
+            "byteOffset" : 852336
         },
         {
             "buffer" : 0,
             "byteLength" : 81552,
-            "byteOffset" : 1208672
+            "byteOffset" : 1136448
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1290224,
+            "byteLength" : 1218000,
             "uri" : "camion.bin"
         }
     ]

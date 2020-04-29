@@ -15,17 +15,17 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Tracteur.001",
+            "name" : "Tracteur",
             "rotation" : [
-                -0.7071065902709961,
+                0.7071068286895752,
                 0,
                 0,
-                0.7071069478988647
+                0.7071067094802856
             ],
             "scale" : [
                 0.02722836285829544,
-                0.027228370308876038,
-                0.027228370308876038
+                0.02722836658358574,
+                0.02722836658358574
             ]
         }
     ],
@@ -37,20 +37,20 @@
                 0,
                 0
             ],
-            "name" : "Pions",
+            "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0,
                     "texCoord" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.75
+                "roughnessFactor" : 1
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "Cube.063",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -80,29 +80,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 18054,
+            "count" : 17335,
             "max" : [
-                2.31609845161438,
-                3.5797934532165527,
-                5.7082695960998535
+                1.652542233467102,
+                2.4260549545288086,
+                0.0035120248794555664
             ],
             "min" : [
-                -2.2964861392974854,
-                -3.369387149810791,
-                0.052979230880737305
+                -1.654563307762146,
+                -2.5563302040100098,
+                -4.051187038421631
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 18054,
+            "count" : 17335,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 18054,
+            "count" : 17335,
             "type" : "VEC2"
         },
         {
@@ -115,28 +115,28 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 216648,
+            "byteLength" : 208020,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 216648,
-            "byteOffset" : 216648
+            "byteLength" : 208020,
+            "byteOffset" : 208020
         },
         {
             "buffer" : 0,
-            "byteLength" : 144432,
-            "byteOffset" : 433296
+            "byteLength" : 138680,
+            "byteOffset" : 416040
         },
         {
             "buffer" : 0,
             "byteLength" : 37872,
-            "byteOffset" : 577728
+            "byteOffset" : 554720
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 615600,
+            "byteLength" : 592592,
             "uri" : "tracteur.bin"
         }
     ]

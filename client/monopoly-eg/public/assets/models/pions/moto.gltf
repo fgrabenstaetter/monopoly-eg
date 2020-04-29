@@ -15,17 +15,17 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Plane.002",
+            "name" : "Plane",
             "rotation" : [
-                -0.7071066498756409,
-                0.70710688829422,
                 0,
-                2.6429596289290203e-08
+                0,
+                -0.7071067690849304,
+                0.7071068286895752
             ],
             "scale" : [
-                0.0035424381494522095,
-                0.003542437218129635,
-                0.0035424374509602785
+                0.0035424360539764166,
+                0.0035424360539764166,
+                0.0035424360539764166
             ]
         }
     ],
@@ -37,20 +37,20 @@
                 0,
                 0
             ],
-            "name" : "Pions",
+            "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0,
                     "texCoord" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.75
+                "roughnessFactor" : 1
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "Plane.004",
+            "name" : "Plane",
             "primitives" : [
                 {
                     "attributes" : {
@@ -80,63 +80,63 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 17145,
+            "count" : 12226,
             "max" : [
                 -0.3174934387207031,
-                10.231765747070312,
-                32.06727600097656
+                10.231771469116211,
+                30.103004455566406
             ],
             "min" : [
                 -47.182926177978516,
-                -10.231771469116211,
-                -30.103004455566406
+                -10.231765747070312,
+                -32.06727600097656
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 17145,
+            "count" : 12226,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 17145,
+            "count" : 12226,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 18570,
+            "count" : 18618,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 205740,
+            "byteLength" : 146712,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 205740,
-            "byteOffset" : 205740
+            "byteLength" : 146712,
+            "byteOffset" : 146712
         },
         {
             "buffer" : 0,
-            "byteLength" : 137160,
-            "byteOffset" : 411480
+            "byteLength" : 97808,
+            "byteOffset" : 293424
         },
         {
             "buffer" : 0,
-            "byteLength" : 37140,
-            "byteOffset" : 548640
+            "byteLength" : 37236,
+            "byteOffset" : 391232
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 585780,
+            "byteLength" : 428468,
             "uri" : "moto.bin"
         }
     ]

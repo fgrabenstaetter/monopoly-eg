@@ -15,17 +15,11 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "bus.001",
-            "rotation" : [
-                1,
-                0,
-                0,
-                -1.3435885648505064e-07
-            ],
+            "name" : "bus",
             "scale" : [
                 0.0564139299094677,
-                0.056414008140563965,
-                0.056414008140563965
+                0.05641400068998337,
+                0.05641400068998337
             ]
         }
     ],
@@ -37,20 +31,20 @@
                 0,
                 0
             ],
-            "name" : "Pions",
+            "name" : "Material.003",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0,
                     "texCoord" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.75
+                "roughnessFactor" : 1
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "Plane.005",
+            "name" : "Plane",
             "primitives" : [
                 {
                     "attributes" : {
@@ -80,29 +74,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 6551,
+            "count" : 4638,
             "max" : [
-                1.0113255977630615,
-                -0.028615713119506836,
-                2.727602243423462
+                0.9247981309890747,
+                1.5902808904647827,
+                1.8365873098373413
             ],
             "min" : [
-                -1.0113683938980103,
-                -1.67134428024292,
-                -2.0248830318450928
+                -0.9247981309890747,
+                0.0881335660815239,
+                -2.509190559387207
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 6551,
+            "count" : 4638,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 6551,
+            "count" : 4638,
             "type" : "VEC2"
         },
         {
@@ -115,28 +109,28 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 78612,
+            "byteLength" : 55656,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 78612,
-            "byteOffset" : 78612
+            "byteLength" : 55656,
+            "byteOffset" : 55656
         },
         {
             "buffer" : 0,
-            "byteLength" : 52408,
-            "byteOffset" : 157224
+            "byteLength" : 37104,
+            "byteOffset" : 111312
         },
         {
             "buffer" : 0,
             "byteLength" : 14760,
-            "byteOffset" : 209632
+            "byteOffset" : 148416
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 224392,
+            "byteLength" : 163176,
             "uri" : "schoolbus.bin"
         }
     ]

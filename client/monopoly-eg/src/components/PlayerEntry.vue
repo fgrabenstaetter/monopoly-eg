@@ -120,7 +120,7 @@
 
             <!-- Cartes bonus -->
             <div class="bonus-container" v-if="player.nbJailEscapeCards > 0">
-                <div class="bonus">Carte(s) « Sortir du parlement » ({{player.nbJailEscapeCards}})</div>
+                <div class="bonus">« Sortir du parlement » ({{player.nbJailEscapeCards}})</div>
             </div>
         </div>
     </div>
@@ -274,10 +274,17 @@ export default {
                 });
             }
 
-            if (property.level == 5)
-                this.propertiesEdition.totalPrice += property.prices.hostel;
-            else
-                this.propertiesEdition.totalPrice += property.prices.house;
+            if (property.level > property.oldLevel) {
+                if (property.level == 5)
+                    this.propertiesEdition.totalPrice += property.prices.hostel;
+                else
+                    this.propertiesEdition.totalPrice += property.prices.house;
+            } else {
+                if (property.level == 5)
+                    this.propertiesEdition.totalPrice += property.prices.hostel / 2;
+                else
+                    this.propertiesEdition.totalPrice += property.prices.house / 2;
+            }
         },
         propertiesEditionRemoveHouse(property) {
             if (property.level == 0) return;
@@ -294,10 +301,17 @@ export default {
                 });
             }
 
-            if (property.level == 4)
-                this.propertiesEdition.totalPrice -= property.prices.hostel;
-            else
-                this.propertiesEdition.totalPrice -= property.prices.house;
+            if (property.level > property.oldLevel) {
+                if (property.level == 4)
+                    this.propertiesEdition.totalPrice -= property.prices.hostel;
+                else
+                    this.propertiesEdition.totalPrice -= property.prices.house;
+            } else {
+                if (property.level == 4)
+                    this.propertiesEdition.totalPrice -= property.prices.hostel / 2;
+                else
+                    this.propertiesEdition.totalPrice -= property.prices.house / 2;
+            }
 
         },
 

@@ -15,11 +15,17 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "montgolfiere.001",
+            "name" : "montgolfiere",
+            "rotation" : [
+                0.7071068286895752,
+                0,
+                0,
+                0.7071067094802856
+            ],
             "scale" : [
                 0.03211095184087753,
-                0.03211095929145813,
-                0.03211095929145813
+                0.03211095556616783,
+                0.03211095556616783
             ]
         }
     ],
@@ -31,20 +37,20 @@
                 0,
                 0
             ],
-            "name" : "Pions",
+            "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0,
                     "texCoord" : 0
                 },
                 "metallicFactor" : 0,
-                "roughnessFactor" : 0.75
+                "roughnessFactor" : 1
             }
         }
     ],
     "meshes" : [
         {
-            "name" : "Cube.067",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -74,29 +80,29 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 5892,
+            "count" : 5782,
             "max" : [
-                2.1649749279022217,
-                6.899349212646484,
-                2.1432502269744873
+                1.6954352855682373,
+                1.676443338394165,
+                -0.8192275166511536
             ],
             "min" : [
-                -2.114333391189575,
-                -0.012911319732666016,
-                -2.1360585689544678
+                -1.6448400020599365,
+                -1.663832187652588,
+                -6.214691162109375
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 5892,
+            "count" : 5782,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 5892,
+            "count" : 5782,
             "type" : "VEC2"
         },
         {
@@ -109,28 +115,28 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 70704,
+            "byteLength" : 69384,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 70704,
-            "byteOffset" : 70704
+            "byteLength" : 69384,
+            "byteOffset" : 69384
         },
         {
             "buffer" : 0,
-            "byteLength" : 47136,
-            "byteOffset" : 141408
+            "byteLength" : 46256,
+            "byteOffset" : 138768
         },
         {
             "buffer" : 0,
             "byteLength" : 15864,
-            "byteOffset" : 188544
+            "byteOffset" : 185024
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 204408,
+            "byteLength" : 200888,
             "uri" : "montgolfiere.bin"
         }
     ]

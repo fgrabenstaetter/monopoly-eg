@@ -42,6 +42,14 @@ input {
   -ms-user-select: initial; /* Internet Explorer/Edge */
 }
 
+input.range-slider {
+  cursor: default;
+}
+
+.open-settings {
+  cursor: pointer;
+}
+
 .btn {
   height: 35px;
   border-radius: 17.5px;

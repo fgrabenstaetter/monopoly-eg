@@ -405,6 +405,18 @@ export default {
         });
     },
 
+    deleteHypotheque(cell) {
+        this.scene.remove(this.objs[`hyp${cell}`]);
+    },
+
+    loaderHypotheque(cell) {
+        this.gltfLoader.load(`/assets/models/hypotheque/hyp${cell}.gltf`, (gltf) => {
+            const root = gltf.scene;
+            this.objs[`hyp${cell}`] = gltf.scene;
+            this.scene.add(root);
+        });
+    },
+
     /**
      * Ajoute un pion à la case qu'on veut
      * @param {string} pawn Le nom du pion (Ex: 'moto')

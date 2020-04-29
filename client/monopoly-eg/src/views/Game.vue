@@ -120,7 +120,7 @@
             <div class="row action-button-container">
               <div class="col-md-12 text-right">
                 <div
-                  v-if="imCurrentPlayer && getPlayerById(currentPlayerID).isInJail && getPlayerById(currentPlayerID).nbJailEscapeCards > 0"
+                  v-if="true || imCurrentPlayer && getPlayerById(currentPlayerID).isInJail && getPlayerById(currentPlayerID).nbJailEscapeCards > 0"
                   class="sortie-parlement"
                   >Utiliser mon bonus « Sortir du parlement »
                 </div>
@@ -399,6 +399,8 @@ export default {
     },
 
     sendBid(bid) {
+      if (!bid.myPrice) return;
+      
       if (bid.myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
@@ -630,7 +632,7 @@ export default {
                 this.CST.PAWNS[currPlayer.pawn],
                 this.CST.CELL_PRISON
               );
-              return this.gameActionResAfterSecondMovement(data, currPlayer);
+              return this.gameActionResAfterSecondMovement(data);
             }, 1000);
           }, 1000);
         }
@@ -642,25 +644,22 @@ export default {
           cellPos2.toString(),
           () => {
             currPlayer.cellPos = cellPos2;
-            this.gameActionResAfterSecondMovement(data, currPlayer);
+            this.gameActionResAfterSecondMovement(data);
           }
         );
       } else {
-        this.gameActionResAfterSecondMovement(data, currPlayer);
+        this.gameActionResAfterSecondMovement(data);
       }
     },
 
     /**
      * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
      * @param data Données de gameActionRes
-     * @param currPlayer Joueur actuel
      */
-    gameActionResAfterSecondMovement(data, currPlayer) {
+    gameActionResAfterSecondMovement(data) {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
-
-      if (currPlayer.isInJail) currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
-
+      
       console.log("=== fin gameActionRes ===");
     }
   },
@@ -760,6 +759,9 @@ export default {
                   if (propertyObj.level >= 4)
                     gameboard.loaderHouseProperty(cell.id, 4);
                 }
+
+                if (propertyObj.isMortgaged)
+                  gameboard.loaderHypotheque(cell.id);
             }
         });
 
@@ -834,9 +836,13 @@ export default {
                 this.$refs.actionBtn.progressSetStateRelancer();
         }
 
-        if (currPlayer.isInJail && currPlayer.isInJail > 3) { // Sortie de prison
-            this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
-            currPlayer.isInJail = false;
+        if (currPlayer.isInJail) {
+          if (currPlayer.isInJail > 3) { // Sortie de prison
+              this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
+              currPlayer.isInJail = false;
+          } else {
+            currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
+          }
         }
 
         const totalDices = data.dicesRes[0] + data.dicesRes[1];
@@ -1179,24 +1185,22 @@ export default {
         console.log(res);
 
         const player = this.getPlayerById(res.playerID);
-        if (player) {
-            this.$set(player, 'money', res.playerMoney);
-            for (const i in res.properties) {
-                // Modifier "isMortgaged" dans la liste globale des propriétés
-                const property = this.getPropertyById(res.properties[i]);
-                this.$set(property, 'isMortgaged', true);
+        if (!player) return;
+      
+        this.$set(player, 'money', res.playerMoney);
+        for (const i in res.properties) {
+            const property = this.getPropertyById(res.properties[i]);
+            const cell = this.getCellByProperty(property);
+            if (!property || ! cell) continue;
 
-                // Modifier "isMortgaged" dans la propriété de l'utilisateur
-                if (property.ownerID) {
-                    const playerProperty = this.getPlayerPropertyById(player, property.id);
-                    // const propertyOwner = this.getPlayerById(property.ownerID);
-                    if (playerProperty) {
-                        this.$set(playerProperty, 'isMortgaged', true);
-                    }
-                }
+            // Modifier "isMortgaged" dans la liste globale des propriétés
+            this.$set(property, 'isMortgaged', true);
 
-                this.$parent.toast(`Propriété ${property.name} hypothéquée`, 'success', 4);
-            }
+            // Cône plateau
+            gameboard.loaderHypotheque(cell.id);
+
+            if (player.id == this.loggedUser.id)
+              this.$parent.toast(`Propriété ${property.name} hypothéquée`, 'success', 4);
         }
     });
 
@@ -1213,17 +1217,17 @@ export default {
     this.socket.on("gamePropertyUnmortgagedRes", (res) => {
         const player = this.getPlayerById(res.playerID);
         const property = this.getPropertyById(res.propertyID);
+        const cell = this.getCellByProperty(property);
 
-        if (player && property) {
-            this.$set(player, 'money', res.playerMoney);
-            this.$set(property, 'isMortgaged', false);
-            this.$parent.toast(`Hypothèque levée pour ${property.name}`, 'success', 4);
+        if (!player || !property || !cell) return;
 
-            const playerProperty = this.getPlayerPropertyById(player, property.id);
-            if (playerProperty) {
-                this.$set(playerProperty, 'isMortgaged', false);
-            }
-        }
+        this.$set(player, 'money', res.playerMoney);
+        this.$set(property, 'isMortgaged', false);
+
+        gameboard.deleteHypotheque(cell.id);
+
+        if (player.id == this.loggedUser.id)
+          this.$parent.toast(`Hypothèque levée pour ${property.name}`, 'success', 4);
     });
 
 
