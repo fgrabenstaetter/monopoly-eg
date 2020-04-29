@@ -281,7 +281,7 @@ class Game {
      * @return true si la partie est finie, false sinon
      */
     checkEnd () {
-        const gameTimeout = this.forcedEndTime && this.forcedEndTime >= Date.now();
+        const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
         if (gameTimeout) {
             // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
             let winnerPlayer, winnerValue = 0;

@@ -409,7 +409,7 @@ export default {
 
     sendBid(bid) {
       if (!bid.myPrice) return;
-      
+
       if (bid.myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
@@ -470,7 +470,7 @@ export default {
         setTimeout(() => {
           console.log('gameReadyReq');
           this.socket.emit('gameReadyReq');
-        }, 2000);
+        }, 1000);
     },
 
     pushGameOfferReceive(offer) {
@@ -668,7 +668,7 @@ export default {
     gameActionResAfterSecondMovement(data) {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
-      
+
       console.log("=== fin gameActionRes ===");
     }
   },
@@ -678,7 +678,7 @@ export default {
     console.log("REMOVE ALL LISTENERS FROM GAME");
     this.socket.disconnect();
   },
-  mounted() { 
+  mounted() {
     this.gameMounted = true;
 
     this.playMusic();
@@ -1217,7 +1217,7 @@ export default {
 
         const player = this.getPlayerById(res.playerID);
         if (!player) return;
-      
+
         this.$set(player, 'money', res.playerMoney);
         for (const i in res.properties) {
             const property = this.getPropertyById(res.properties[i]);
