@@ -11,7 +11,7 @@
             <div class="offers-container">
 
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
-                <div class="message">{{offer.sellerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
+                <div class="message">{{offer.buyerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
                 <div class="form">
                   <button v-on:click="offerAccept(offer.offerID)">Accepter</button>
                   <button v-on:click="discardOffer(offer.offerID)">Refuser</button>
@@ -409,13 +409,17 @@ export default {
 
     sendBid(bid) {
       if (!bid.myPrice) return;
+      const myPrice = parseInt(bid.myPrice);
 
-      if (bid.myPrice < bid.startingPrice) {
+      if (myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
+        return;
+      } else if (myPrice > player.money) {
+        this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
         return;
       }
 
-      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: parseInt(bid.myPrice) });
+      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: parseInt(myPrice) });
       this.$set(bid, 'disabled', true);
     },
 
@@ -636,8 +640,8 @@ export default {
                 this.CST.CELL_PRISON
               );
               return this.gameActionResAfterSecondMovement(data);
-            }, 1000);
-          }, 1000);
+            }, 800);
+          }, 800);
         }
       }
 
@@ -856,8 +860,9 @@ export default {
         }
 
         if (currPlayer.isInJail) {
-          if (currPlayer.isInJail > 3) { // Sortie de prison
-              this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
+          if (currPlayer.isInJail >= 3) { // Sortie de prison
+              if (currPlayer.id == this.loggedUser.id)
+                this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
               currPlayer.isInJail = false;
           } else {
             this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
@@ -928,18 +933,6 @@ export default {
 
             // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
             this.turnNotifications = [];
-            // $('.notification-container')
-            //     .find('.notification.sale[data-property-id="' + property.id + '"] .btn-primary')
-            //     .animate({ zoom: '130%' }, 250, function () {
-            //         $(this).animate({ zoom: '100%' }, 250, function () {
-            //             setTimeout(function () {
-            //                 $('.notification-container').find('.notification.sale[data-property-id="' + property.id + '"]').fadeOut('fast', () => {
-            //                     $(this).remove();
-            //                 });
-            //             }, 300);
-            //         });
-            //     });
-
         }
     });
 
@@ -1030,7 +1023,8 @@ export default {
         }
       } else {
         const receiver = this.getPlayerById(res.receiverID);
-        if (!receiver) return;
+        const cell = this.getCellByProperty(property);
+        if (!receiver || !cell) return;
 
         // Transfert argent
         this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
@@ -1045,6 +1039,10 @@ export default {
         }
         property.ownerID = buyer.id;
         buyer.properties.push(property.id);
+
+        // Transfert de drapeau
+        gameboard.deleteFlag(`d${cell.id}`);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
 
         // Notifications de réussite
         if (buyer.id == this.loggedUser.id) {

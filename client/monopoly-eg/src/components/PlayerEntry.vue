@@ -48,7 +48,7 @@
                     <div v-else class="mortgage">Rachat de l'hypothèque : {{(overviewCard.prices.empty/2)+(overviewCard.prices.empty/2*0.1)}}€</div>
                 </div>
                 <div v-if="overviewCard.type == 'trainStation'" class="content">
-                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.price}}</div> -->
+                    <div class="base-price">PRIX D'ORIGINE {{overviewCard.price}}€</div>
                     <div class="rent">{{overviewCard.rentalPrices[0]}}</div>
                     <div class="with-house">
                         <div>Si vous avez 2 Gares</div>
@@ -66,7 +66,7 @@
                     <div v-else class="mortgage">Rachat de l'hypothèque : {{(overviewCard.price/2)+(overviewCard.price/2*0.1)}}€</div>
                 </div>
                 <div v-if="overviewCard.type == 'publicCompany'" class="content">
-                    <!-- <div class="">PRIX D'ORIGINE {{overviewCard.price}}</div> -->
+                    <div class="base-price">PRIX D'ORIGINE {{overviewCard.price}}€</div>
                     <div class="company-description">Si l'on possède UNE carte de compagnie de Service Public,
                         le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                         le loyer est 10 fois le montant indiqué par les dés.</div>
