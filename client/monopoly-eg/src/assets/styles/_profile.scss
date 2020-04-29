@@ -36,7 +36,6 @@
     background-color: rgba($color: black, $alpha: 0.3);
     color: white;
     border-radius: 100%;
-    cursor: pointer;
   }
 
   img {
@@ -51,7 +50,7 @@
     transform: translateX(-10px);
     font-size: 15px;
     color: rgba($color: white, $alpha: 0.3) !important;
-  
+
     &:hover {
       color: white !important;
     }
@@ -66,7 +65,7 @@
     background-color: rgba(204, 11, 11, 0.671);
     color: white;
     border-radius: 100%;
-    cursor: pointer;
+
     margin-left: 8px;
   }
 }

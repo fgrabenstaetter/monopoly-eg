@@ -98,7 +98,6 @@
             padding: 2px 5px;
             font-size: 12px;
             color: black;
-            cursor: pointer;
             display: inline-block;
             background-color: white;
           }
@@ -110,7 +109,7 @@
             padding: 2px 5px;
             font-size: 12px;
             color: black;
-            cursor: pointer;
+
             display: inline-block;
             background-color: rgba($color: white, $alpha: 0.7);
           }
@@ -170,7 +169,6 @@
             padding: 2px 5px;
             font-size: 12px;
             color: rgba($color: white, $alpha: 0.6);
-            cursor: pointer;
           }
 
           .friend-action:hover {
@@ -181,7 +179,6 @@
 
         .friend-entry {
           .friends-avatar {
-            cursor: pointer;
           }
         }
 
@@ -210,7 +207,6 @@
           }
 
           .friend-action {
-            cursor: pointer;
             color: white;
             border: 0;
             position: absolute;
@@ -251,7 +247,7 @@
           padding: 2px 5px;
           font-size: 12px;
           color: rgba($color: white, $alpha: 0.6);
-          cursor: pointer;
+
           max-width: 160px;
         }
 
@@ -316,7 +312,6 @@
             text-align: center;
             padding-top: 10px;
             border: solid 2px white;
-            cursor: pointer;
           }
         }
       }
