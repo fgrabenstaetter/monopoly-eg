@@ -31,6 +31,16 @@ class Offer {
         this.amount   = amount;
         this.game.offers.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.OFFER_EXPIRE_AFTER);
+
+        // message à tous les joueurs
+        const propertyName = this.property ? this.property.name : 'une carte sortie de prison';
+        const text = this.maker.nickname + ' propose à ' + this.receiver.nickname + ' de lui acheter ' + propertyName + ' pour ' + this.amount + '€ !';
+        const mess = this.game.chat.addMessage(null, text);
+        this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
+            playerID    : -1,
+            text        : mess.text,
+            createdTime : mess.createdTime
+        });
     }
 
     expired () {
@@ -68,6 +78,16 @@ class Offer {
 
         this.maker.loseMoney(this.amount);
         this.receiver.addMoney(this.amount);
+
+        // message à tous les joueurs
+        const propertyName = this.property ? 'la propriété ' + this.property.name : 'une carte sortie de prison';
+        const text = this.maker.nickname + ' a acheté ' + propertyName + ' de ' + this.receiver.nickname + ' pour ' + this.amount + '€ !';
+        const mess = this.game.chat.addMessage(null, text);
+        this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
+            playerID    : -1,
+            text        : mess.text,
+            createdTime : mess.createdTime
+        });
 
         return true;
     }
