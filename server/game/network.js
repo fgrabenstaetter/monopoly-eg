@@ -1125,7 +1125,7 @@ class Network {
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (!(offer = Offer.offerByID(game, data.offerID)) || offer.receiver !== player)
                 err = Errors.UNKNOW;
-            else if (offer.receiver.money < offer.amount)
+            else if (offer.maker.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else {
                 if (!offer.accept())
