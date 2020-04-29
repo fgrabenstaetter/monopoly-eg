@@ -112,10 +112,6 @@ class Game {
             this.GLOBAL.network.gamePlayerStopListening(player, this);
         }
 
-        users.sort( (a, b) => {
-            return a.failure && b.failure ? 0 : a.failure ? 1 : -1;
-        });
-
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
@@ -125,11 +121,12 @@ class Game {
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
 
+        for (const user of users) {
+            const newLobby = new Lobby(user, this.GLOBAL);
+            this.GLOBAL.lobbies.push(newLobby);
+        }
+
         this.deleteGameState();
-        const newLobby = new Lobby(users[0], this.GLOBAL); // le vainqueur = hôte :)
-        this.GLOBAL.lobbies.push(newLobby);
-        for (let i = 1; i < users.length; i ++)
-            newLobby.addUser(users[i]);
     }
 
     get active () {
