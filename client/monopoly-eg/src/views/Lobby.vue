@@ -22,7 +22,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="friendBar" placeholder="Rechercher un ami...">
+                                    <input v-model="searchFriends" type="text" class="form-control" placeholder="Rechercher un ami...">
                                     <i class="fa fa-search"></i>
                                 </div>
                                 <div class="friends-entries-container">
@@ -35,9 +35,9 @@
                                     </div>
                                     <div id="friendList">
                                         <div v-for="friend in friends" :key="friend.id" class="friend-entry">
-                                            <img class="friends-avatar" :src="friend.avatar" data-toggle="modal" data-target="#` + name + `Modal" />
-                                            <div class="friends-name">{{friend.nickname}}</div>
-                                            <div class="friend-action" v-on:click="inviteFriendInLobby(friend.id)">inviter</div>
+                                            <img v-if="friend.showInSearch" class="friends-avatar" :src="friend.avatar" data-toggle="modal" data-target="#` + name + `Modal" />
+                                            <div v-if="friend.showInSearch" class="friends-name">{{friend.nickname}}</div>
+                                            <div v-if="friend.showInSearch" class="friend-action" v-on:click="inviteFriendInLobby(friend.id)">inviter</div>
                                         </div>
                                     </div>
                                 </div>
@@ -256,6 +256,7 @@ export default {
             gameTime: 'Illimité',
             nbPlayers: 0,
             lobbyInvitations: [],
+            searchFriends: '',
             audio: {
                 background: null,
                 sfx: {
@@ -267,8 +268,9 @@ export default {
         }
     },
     watch: {
-        loggedUser() {
-            alert('changed');
+        searchFriends() {
+            for (const friend of this.friends)
+                friend.showInSearch = friend.nickname.includes(this.searchFriends);
         }
     },
     methods: {
@@ -584,6 +586,7 @@ export default {
 
             for (const i in res.friends) {
                 res.friends[i].avatar = this.$store.getters.serverUrl + res.friends[i].avatar
+                res.friends[i].showInSearch = true;
                 this.friends.push(res.friends[i]);
             }
         })
