@@ -15,7 +15,7 @@
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
             
-            <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" style="display:block;">
+            <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" :class="{'mortgaged': overviewCard.isMortgaged}" style="display:block;">
                 <div class="header" :class="[overviewCard.color, (overviewCard.type == 'trainStation') ? 'station' : '', (overviewCard.type == 'publicCompany') ? 'company' : '']">
                     {{overviewCard.name}}
                 </div>
@@ -97,7 +97,7 @@
 
             <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
                 <div v-if="remainingPropertiesByType(type) < type.totalNb" style="display: block;" class="properties-container" :class="type.cssClass ? type.cssClass : type.name">
-                    <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property">
+                    <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property" :class="{'mortgaged': prop.isMortgaged}">
                         <div v-if="prop.type == 'street'">
                             {{prop.name}}
                             <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
