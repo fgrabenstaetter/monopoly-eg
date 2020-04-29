@@ -79,7 +79,7 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
-                        <button class="btn btn-primary" v-on:click="discardTurnNotif(index)">OK</button>
+                        <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button>
                       </div>
                     </div>
                   </div>
@@ -103,10 +103,12 @@
                         </div>
                         <button
                           class="btn btn-primary accept"
+                          v-if="imCurrentPlayer"
                           v-on:click="saleCardBuyProperty(index)"
                         >ACHETER</button>
                         <button
                           class="btn btn-secondary reject"
+                          v-if="imCurrentPlayer"
                           v-on:click="saleCardReject(index)"
                         >NE RIEN FAIRE</button>
                       </div>
@@ -741,22 +743,17 @@ export default {
               if (propertyObj && cell)
                 gameboard.loaderFlag("d" + cell.id, player.color);
 
-                console.log("PROPERTY");
-                console.log(propertyObj);
-                console.log("========");
-                if (propertyObj.level == 0) {
-                  if (propertyObj.level == 5) {
-                    gameboard.loaderHotelProperty(cell.id);
-                  } else {
-                    if (propertyObj.level >= 1)
-                      gameboard.loaderHouseProperty(cell.id, 1);
-                    if (propertyObj.level >= 2)
-                      gameboard.loaderHouseProperty(cell.id, 2);
-                    if (propertyObj.level >= 3)
-                      gameboard.loaderHouseProperty(cell.id, 3);
-                    if (propertyObj.level >= 4)
-                      gameboard.loaderHouseProperty(cell.id, 4);
-                  }
+                if (propertyObj.level == 5) {
+                  gameboard.loaderHotelProperty(cell.id);
+                } else if (propertyObj.level != 0) {
+                  if (propertyObj.level >= 1)
+                    gameboard.loaderHouseProperty(cell.id, 1);
+                  if (propertyObj.level >= 2)
+                    gameboard.loaderHouseProperty(cell.id, 2);
+                  if (propertyObj.level >= 3)
+                    gameboard.loaderHouseProperty(cell.id, 3);
+                  if (propertyObj.level >= 4)
+                    gameboard.loaderHouseProperty(cell.id, 4);
                 }
             }
         });
@@ -832,8 +829,10 @@ export default {
                 this.$refs.actionBtn.progressSetStateRelancer();
         }
 
-        if (currPlayer.isInJail && currPlayer.isInJail > 3)
+        if (currPlayer.isInJail && currPlayer.isInJail > 3) { // Sortie de prison
+            this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
             currPlayer.isInJail = false;
+        }
 
         const totalDices = data.dicesRes[0] + data.dicesRes[1];
         console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
@@ -1019,7 +1018,7 @@ export default {
 
         this.$refs.chat.messages.push({
             senderUserID: -1,
-            content: `${buyer.nickname} a acheté ${property.name} à ${receiver.nickname} pour ${res.price} !`,
+            content: `${buyer.nickname} a acheté ${property.name} à ${receiver.nickname} pour ${res.price}€ !`,
             createdTime: new Date()
         });
       }

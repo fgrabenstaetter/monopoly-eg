@@ -100,9 +100,9 @@
                     <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property">
                         <div v-if="prop.type == 'street'">
                             {{prop.name}}
-                            <div v-if="prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
-                            <div v-if="prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
-                            <div class="house-number">{{prop.level}}</div>
+                            <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
+                            <div v-if="remainingPropertiesByType(type) == 0 && prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
+                            <div v-if="prop.level > 0" class="house-number">{{prop.level}}</div>
                         </div>
                         <div v-else>
                             {{prop.name}}
@@ -156,7 +156,7 @@ export default {
                 { name: 'blue', totalNb: 2 },
                 { name: 'orange', totalNb: 3 },
                 { name: 'purple', totalNb: 3 },
-                { name: 'brown', totalNb: 3 },
+                { name: 'brown', totalNb: 2 },
                 { name: 'cyan', totalNb: 3 },
                 { name: 'green', totalNb: 3 },
                 { name: 'trainStation', totalNb: 4, cssClass: 'station' },
@@ -181,180 +181,6 @@ export default {
     },
     mounted() {
         this.popupItem = this.$el;
-        // this.player.properties = [];
-
-        // this.player.properties.push({
-        //     "id": 1,
-        //     "type": "street",
-        //     "name": "Rue des tonneliers",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "brown",
-        //     "prices": {
-        //         "empty": 60,
-        //         "house": 50,
-        //         "hostel": 250
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 4,
-        //         "house": [
-        //             20,
-        //             60,
-        //             180,
-        //             320
-        //         ],
-        //         "hostel": 450
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 2,
-        //     "type": "trainStation",
-        //     "name": "Homme de Fer",
-        //     "description": "Quelle magnifique gare !",
-        //     "price": 200,
-        //     "rentalPrices": [
-        //         25,
-        //         50,
-        //         100,
-        //         200
-        //     ],
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 3,
-        //     "type": "street",
-        //     "name": "Faubourg de Saverne",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "cyan",
-        //     "prices": {
-        //         "empty": 100,
-        //         "house": 50,
-        //         "hostel": 250
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 6,
-        //         "house": [
-        //             30,
-        //             90,
-        //             270,
-        //             400
-        //         ],
-        //         "hostel": 550
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 14,
-        //     "type": "street",
-        //     "name": "Allée de la Robertsau",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "red",
-        //     "prices": {
-        //         "empty": 220,
-        //         "house": 150,
-        //         "hostel": 750
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 18,
-        //         "house": [
-        //             90,
-        //             250,
-        //             700,
-        //             875
-        //         ],
-        //         "hostel": 1050
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 19,
-        //     "type": "street",
-        //     "name": "Rue de Rome",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "yellow",
-        //     "prices": {
-        //         "empty": 260,
-        //         "house": 150,
-        //         "hostel": 750
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 22,
-        //         "house": [
-        //             110,
-        //             330,
-        //             800,
-        //             975
-        //         ],
-        //         "hostel": 1150
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 20,
-        //     "type": "street",
-        //     "name": "Rue de Rome",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "yellow",
-        //     "prices": {
-        //         "empty": 260,
-        //         "house": 150,
-        //         "hostel": 750
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 22,
-        //         "house": [
-        //             110,
-        //             330,
-        //             800,
-        //             975
-        //         ],
-        //         "hostel": 1150
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
-
-        // this.player.properties.push({
-        //     "id": 21,
-        //     "type": "street",
-        //     "name": "Rue de Rome",
-        //     "description": "Quelle magnifique rue !",
-        //     "color": "yellow",
-        //     "prices": {
-        //         "empty": 260,
-        //         "house": 150,
-        //         "hostel": 750
-        //     },
-        //     "rentalPrices": {
-        //         "empty": 22,
-        //         "house": [
-        //             110,
-        //             330,
-        //             800,
-        //             975
-        //         ],
-        //         "hostel": 1150
-        //     },
-        //     "level": 0,
-        //     "ownerID": null,
-        //     "isMortgage": 0
-        // });
     },
     computed: {
         playerPropertiesObj() {
@@ -392,9 +218,11 @@ export default {
                 });
             }
 
+            console.log(list);
+
             this.socket.emit('gamePropertyUpgradeReq', { list: list });
 
-            this.cancelPropertiesEdition(); // [A FAIRE] -> Les remettres à jour à réception de 'gamePropertyUpgradedRes'
+            this.cancelPropertiesEdition();
         },
         cancelPropertiesEdition() {
             console.log("CANCEL PROPERTIES EDITION");
@@ -536,15 +364,8 @@ export default {
             this.socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
         },
         rebuyProperty(propertyID) {
-            alert(`Unmortgage ${propertyID}`);
             this.socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
         }
-        // getPropertiesByTypeColor(type, color) {
-        //     // type : 'street', 'trainStation', 'publicCompany', ...
-        //     // color : 'red', 'yellow', ...
-        //     let res = [];
-        //     for (const i in this.playerPropertiesObj)
-        // }
     },
     directives: {
         ClickOutside
