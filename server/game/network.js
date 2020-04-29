@@ -960,6 +960,7 @@ class Network {
                     case 1: err = Errors.UNKNOW; break;
                     case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY; break;
                     case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY; break;
+                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY; break;
                 }
             }
 

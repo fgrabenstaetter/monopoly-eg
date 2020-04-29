@@ -168,7 +168,7 @@ class Player {
                 total ++;
         }
 
-        return nb === total;
+        return nb === total && nb > 0;
     }
 
     /**
