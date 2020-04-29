@@ -725,6 +725,7 @@ class Network {
 
     gameReadyReq(player, game) {
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE DÉBUT');
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -1226,6 +1227,7 @@ class Network {
         }, 400);
 
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE RECONNEXION');
             let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {
