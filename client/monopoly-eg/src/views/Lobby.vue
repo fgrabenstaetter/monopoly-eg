@@ -275,7 +275,7 @@ export default {
                 if (!this.playBtn.loading) {
                     this.socket.emit('lobbyPlayReq');
                     this.playBtn.loading = true;
-                    this.playBtn.text = 'CHARGEMENT...';
+                    this.playBtn.text = 'ANNULER ...';
                 } else {
                     this.socket.emit('lobbyCancelPlayReq');
                     this.playBtn.loading = false;
