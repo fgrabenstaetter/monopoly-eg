@@ -102,8 +102,12 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(calc(-50% - 150px), calc(-50% + 150px));
+    transform: translate(calc(-50% - 180px), calc(-50% + 150px));
     z-index: 150;
+
+    @media (max-height: 790px) {
+      transform: translate(calc(-50% - 230px), calc(-50% + 150px));;
+    }
   }
 
   .btn {
