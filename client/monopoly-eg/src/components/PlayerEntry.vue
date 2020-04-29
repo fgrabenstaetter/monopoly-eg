@@ -384,7 +384,6 @@ export default {
             return (type.totalNb - this.propertiesByType(type).length);
         },
         submitPropertiesEdition() {
-            console.log("SUBMIT PROPERTIES EDITION");
             let list = [];
             for (const i in this.propertiesEdition.modifications) {
                 list.push({
@@ -392,8 +391,10 @@ export default {
                     level: this.propertiesEdition.modifications[i].level
                 });
             }
-            console.log(list);
+
             this.socket.emit('gamePropertyUpgradeReq', { list: list });
+
+            this.cancelPropertiesEdition(); // [A FAIRE] -> Les remettres à jour à réception de 'gamePropertyUpgradedRes'
         },
         cancelPropertiesEdition() {
             console.log("CANCEL PROPERTIES EDITION");
@@ -408,6 +409,7 @@ export default {
                 }
             }
             this.propertiesEdition.modifications = [];
+            this.propertiesEdition.totalPrice = 0;
             this.propertiesEdition.open = false;
         },
         propertiesEditionRemovePropertyFromModifications(property) {

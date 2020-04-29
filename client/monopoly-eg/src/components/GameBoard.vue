@@ -462,7 +462,7 @@ export default {
      * @param {string} houseProperty  Nom de la maison (Ex: M3_1_2)
      */
     housePropertyL(houseProperty) {
-        this.gltfLoader.load('models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
+        this.gltfLoader.load('/assets/models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
             const root = gltf.scene;
             this.objs[houseProperty] = gltf.scene;
             this.scene.add(root);
@@ -483,7 +483,7 @@ export default {
      * @param {string} hotelPropriete Nom de l'hôtel (Ex: H1_2)
      */
     hotelPropertyL(hotelPropriete) {
-        this.gltfLoader.load('models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
+        this.gltfLoader.load('/assets/models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
             const root = gltf.scene;
             this.objs[hotelPropriete] = gltf.scene;
             this.scene.add(root);
