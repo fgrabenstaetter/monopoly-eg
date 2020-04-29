@@ -214,6 +214,10 @@ module.exports = Object.freeze({
         UPGRADE_NOT_ENOUGH_MONEY: {
             code: 11,
             status: 'Vous n\'avez pas assez d\'argent pour effectuer l\'amélioration'
+        },
+        UPGRADE_NOT_MONOPOLY: {
+            code: 12,
+            status: 'Une propriété dont vous n\'avez pas le monopole de couleur a été détectée'
         }
     },
 

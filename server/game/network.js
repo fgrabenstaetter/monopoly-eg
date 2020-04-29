@@ -25,6 +25,9 @@ class Network {
     }
 
     handleConnection (user, socket) {
+        if (user.socket) // ancien socket toujours connecté, lui signaler
+            user.socket.emit('notLoggedRes');
+
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
         user.socket = socket;
 
@@ -725,6 +728,7 @@ class Network {
 
     gameReadyReq(player, game) {
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE DÉBUT');
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -959,6 +963,7 @@ class Network {
                     case 1: err = Errors.UNKNOW; break;
                     case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY; break;
                     case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY; break;
+                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY; break;
                 }
             }
 
@@ -1122,7 +1127,7 @@ class Network {
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (player.money < data.price)
-                Errors.BID.NOT_ENOUGH_MONEY;
+                err = Errors.BID.NOT_ENOUGH_MONEY;
             else {
                 const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
@@ -1226,6 +1231,7 @@ class Network {
         }, 400);
 
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE RECONNEXION');
             let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {
@@ -1267,8 +1273,7 @@ class Network {
                             propertyData.color        = cell.property.color;
                             propertyData.prices       = cell.property.prices;
                             propertyData.rentalPrices = cell.property.rentalPrices;
-                            propertyData.housesNb     = cell.property.housesNb;
-                            propertyData.hasHostel    = cell.property.hasHostel;
+                            propertyData.level        = cell.property.curUpgradeLevel;
                             break;
 
                         case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
