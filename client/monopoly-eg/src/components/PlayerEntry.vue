@@ -11,11 +11,6 @@
             <div class="popup-title">{{player.nickname}}</div>
             <img class="popup-pawn" :src="playerPawnImgSrc">
 
-            <!-- Cartes bonus -->
-            <div class="bonus-container">
-                <div class="bonus">Sortie du parlement</div>
-            </div>
-
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
@@ -121,6 +116,11 @@
                 <div class="houses-total-price">{{propertiesEdition.totalPrice}}€</div>
                 <button @click="submitPropertiesEdition" class="houses-validation-btn">Terminer</button>
                 <button @click="cancelPropertiesEdition" class="houses-cancel-btn">Annuler</button>
+            </div>
+
+            <!-- Cartes bonus -->
+            <div class="bonus-container" v-if="player.nbJailEscapeCards > 0">
+                <div class="bonus">Carte(s) « Sortir du parlement » ({{player.nbJailEscapeCards}})</div>
             </div>
         </div>
     </div>
