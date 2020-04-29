@@ -109,19 +109,19 @@
                         <button
                           class="btn btn-secondary reject"
                           v-if="imCurrentPlayer"
-                          v-on:click="saleCardReject(index)"
+                          v-on:click="discardTurnNotif(index)"
                         >NE RIEN FAIRE</button>
                       </div>
                     </div>
                   </div>
 
-                  <div id="sortie-parlement" class="card notification">
+                  <div v-if="notif.type == 'bonusJail'" class="card notification">
                     <div class="card-body" :class="{'no-header': !notif.title}">
                       <div class="col-md-12 text-center value">
-                        <p>Voulez-vous utiliser votre bonus "Sortir du Parlement" ?</p>
+                        <p>Voulez-vous utiliser votre bonus « Sortir du Parlement » ?</p>
                       </div>
-                      <button class="btn btn-primary accept-btn">Oui</button>
-                      <button class="btn btn-primary deny-btn">Non</button>
+                      <button v-if="imCurrentPlayer" @click="acceptUseBonusJail(index)" class="btn btn-primary accept-btn">Oui</button>
+                      <button v-if="imCurrentPlayer" @click="discardTurnNotif(index)" class="btn btn-primary deny-btn">Non</button>
                     </div>
                   </div>
                 </div>
@@ -129,11 +129,6 @@
             </div>
             <div class="row action-button-container">
               <div class="col-md-12 text-right">
-                <div
-                  v-if="true || imCurrentPlayer && getPlayerById(currentPlayerID).isInJail && getPlayerById(currentPlayerID).nbJailEscapeCards > 0"
-                  class="sortie-parlement"
-                  >Utiliser mon bonus « Sortir du parlement »
-                </div>
                 <action-button ref="actionBtn" v-once></action-button>
               </div>
             </div>
@@ -292,6 +287,7 @@ export default {
       gameEndTime: null,
       turnNotifications: [],
       currentPlayerID: 0,
+      useBonusJail: false,
       audio: {
         background: null,
         sfx: {}
@@ -368,7 +364,8 @@ export default {
     gameRollDiceReq() {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications = [];
-      this.socket.emit("gameRollDiceReq");
+      this.socket.emit("gameRollDiceReq", { useExitJailCard: this.useBonusJail });
+      this.useBonusJail = false;
     },
 
     gameTurnEndReq() {
@@ -387,8 +384,8 @@ export default {
       this.turnNotifications.splice(notifIndex, 1);
     },
 
-    saleCardReject(notifIndex) {
-      if (!this.imCurrentPlayer) return;
+    acceptUseBonusJail(notifIndex) {
+      this.useBonusJail = true;
       this.discardTurnNotif(notifIndex);
     },
 
@@ -851,6 +848,7 @@ export default {
               this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
               currPlayer.isInJail = false;
           } else {
+            this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
             currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
           }
         }
@@ -878,6 +876,12 @@ export default {
                 this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
             }
         });
+    });
+
+    this.socket.on('gameRollDiceReq', (err) => {
+      if (err.code !== 0) {
+        this.$parent.toast(`Erreur : ${err.status}`, 'danger', 5);
+      }
     });
 
 
