@@ -1334,13 +1334,14 @@ class Network {
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 5 - player.remainingTurnsInJail : false
+                isInJail     : player.isInPrison ? 5 - player.remainingTurnsInJail : false,
+                turnPlayerID : game.curPlayer ? game.curPlayer.id : null,
+                turnEndTime  : game.turnData.endTime
             });
 
             if (game.startedTime) { // partie commencée
                 if (game.networkLastGameActionRes) // il y a déjà eu une action de tour
                     player.socket.emit('gameActionRes', game.networkLastGameActionRes);
-                player.socket.emit('gameTurnRes', { playerID: player.id, turnEndTime: game.turnData.endTime });
             }
         });
     }
