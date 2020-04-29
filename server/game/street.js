@@ -90,9 +90,14 @@ class Street extends Property {
     /**
      * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
      * @return la différence de prix pour avoir ce niveau d'amélioration (> 0 augmentation de l'amélioration, < 0 diminution de l'amélioration, == 0 même niveau)
+     * Si diminution du niveau d'amélioration, l'argent gagné par le joueur est / 2 (prix de vente maison/hotel = prix d'achat / 2)
      */
     upgradePrice (level) {
-        return this.cumulatedUpgradePrice(level) - this.cumulatedUpgradePrice(this.curUpgradeLevel);
+        let money = this.cumulatedUpgradePrice(level) - this.cumulatedUpgradePrice(this.curUpgradeLevel);
+        if (money < 0)
+            money /= 2;
+
+        return money;
     }
 
     /**

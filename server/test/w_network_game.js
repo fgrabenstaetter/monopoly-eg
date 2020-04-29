@@ -351,13 +351,12 @@ describe('Network + Game', () => {
         const property = game.cells[3].property;
         game.bank.delProperty(property);
         player2.addProperty(property);
-        property.housesNb = 2; // rental price = 320
+        property.housesNb = 2; // rental price = 60
         // propriété de player2 qu'il va hypothéquer pour pouvoir payer
-        const prop = game.cells[6].property;
+        const prop = game.cells[6].property; // mortgage price = 50
         game.bank.delProperty(prop);
         player.addProperty(prop);
-        prop.housesNb = 1; // mortgage price = 80
-        player.money = 22; // avec l'hypothèque il aura 302 => il devra lui rester 2$ après hypothèque forcée
+        player.money = 22;
 
         let sock;
         if (player.user.socket === serverSocket)
@@ -383,7 +382,7 @@ describe('Network + Game', () => {
             sock.on('gamePropertyMortgagedRes', (data) => {
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
-                assert.strictEqual(data.playerMoney, 37);
+                assert.strictEqual(data.playerMoney, 12);
                 assert.ok(data.message);
                 assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
                 if (++ nb === 2)

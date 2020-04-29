@@ -53,6 +53,9 @@ class Property { // classe abstraite
         this.owner.addMoney(this.mortgagePrice);
         this.isMortgaged = true;
 
+        if (this.type === Constants.PROPERTY_TYPE.STREET)
+            this.upgrade(0);
+
         return true;
     }
 
