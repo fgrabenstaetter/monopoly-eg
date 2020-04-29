@@ -231,7 +231,7 @@ export default {
                         secure: true
                     }),
             playBtn: {
-                text: "JOUER!",
+                text: "JOUER !",
                 loading: false,
                 disabled: true
             },
@@ -274,15 +274,10 @@ export default {
     methods: {
         play() {
             if (this.hostID === this.loggedUser.id) {
-                if (!this.playBtn.loading) {
+                if (!this.playBtn.loading)
                     this.socket.emit('lobbyPlayReq');
-                    this.playBtn.loading = true;
-                    this.playBtn.text = 'ANNULER ...';
-                } else {
+                else
                     this.socket.emit('lobbyCancelPlayReq');
-                    this.playBtn.loading = false;
-                    this.playBtn.text = 'JOUER!';
-                }
             }
         },
         nickToId(nick) {
@@ -540,7 +535,39 @@ export default {
                 this.$refs.chat.messages.push(mess);
         });
 
+        // JOUER / ANNULER / PARTIE TROUVÉE
+        this.socket.on('lobbyPlayRes', (res) => {
+            if (res.error) {
+                this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+                this.playBtn.loading = false;
+                this.playBtn.text = 'JOUER !';
+            } else {
+                this.playBtn.loading = true;
+                if (this.hostID === this.loggedUser.id)
+                    this.playBtn.text = 'ANNULER ...';
+                else
+                    this.playBtn.text = 'RECHERCHE ...';
+            }
+        });
 
+        this.socket.on('lobbyCancelPlayRes', (res) => {
+            if (!res.error)
+                this.playBtn.text = 'JOUER !';
+
+            if (res.error)
+                this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+            else {
+                this.playBtn.loading = false;
+                this.playBtn.text = 'JOUER !';
+            }
+        });
+
+        this.socket.on('lobbyGameFoundRes', () => {
+            this.stopMusic();
+            setTimeout(() => {
+                this.$router.push('Game');
+            }, 500);
+        });
 
 
         /** Système de gestion d'amis
@@ -646,22 +673,6 @@ export default {
                 this.gameTime = '1 h';
             else
                 this.gameTime = 'Illimité'
-        });
-
-        this.socket.on('lobbyPlayRes', (res) => {
-            if (res.error !== 0) {
-                this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
-                this.playBtn.loading = false;
-                // this.playBtn.disabled = false;
-                this.playBtn.text = "JOUER!";
-            }
-        });
-
-        this.socket.on('lobbyGameFoundRes', () => {
-            this.stopMusic();
-            setTimeout(() => {
-                this.$router.push('Game');
-            }, 500);
         });
 
         /**Vérifications des Res asynchrones
