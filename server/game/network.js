@@ -25,6 +25,9 @@ class Network {
     }
 
     handleConnection (user, socket) {
+        if (user.socket) // ancien socket toujours connecté, lui signaler
+            user.socket.emit('notLoggedRes');
+
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
         user.socket = socket;
 
