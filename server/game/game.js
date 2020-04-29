@@ -590,18 +590,18 @@ class Game {
     // = Méthodes uniquement appelées par Network après requête du joueur du tour actuel
 
     /**
-     * @return true si succès, false sinon
+     * @return 0 succès, 1 propriété invalide, 2 propriété déjà achetée, 3 pas assez d'argent pour acheter
      */
     asyncActionBuyProperty() {
         const property = this.curCell.property;
         if (!property)
-            return Errors.BUY_PROPERTY.NOT_EXISTS;
+            return 1;
         else if (property.owner)
-            return Errors.BUY_PROPERTY.ALREADY_SOLD;
+            return 2;
 
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
         if (this.curPlayer.money < price)
-            return Errors.BUY_PROPERTY.NOT_ENOUGH_MONEY;
+            return 3;
 
         this.curPlayer.loseMoney(price);
         this.bank.addMoney(price);
@@ -609,7 +609,7 @@ class Game {
         this.curPlayer.addProperty(property);
 
         this.resetTurnActionData();
-        return Errors.SUCCESS;
+        return 0;
     }
 
     /**
