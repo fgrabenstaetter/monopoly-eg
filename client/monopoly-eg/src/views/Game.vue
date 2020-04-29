@@ -740,6 +740,7 @@ export default {
         this.cells = res.cells;
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
+        this.currentPlayerID = res.turnPlayerID;
 
         if (this.gameEndTime) {
           this.gameRemainingTime = this.gameEndTime - Date.now();
