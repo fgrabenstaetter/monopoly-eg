@@ -25,8 +25,11 @@ class Network {
     }
 
     handleConnection (user, socket) {
-        if (user.socket) // ancien socket toujours connecté, lui signaler
+        if (user.socket) {
+            // ancien socket toujours connecté, lui signaler
             user.socket.emit('notLoggedRes');
+            console.log('[SOCKET] Ancien socket de ' + user.nickname + ' trouvé => envoi de notLoggedRes à ce dernier');
+        }
 
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
         user.socket = socket;
@@ -994,21 +997,18 @@ class Network {
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
             else {
-                let valid = true;
                 for (const id of data.properties) {
                     const prop = player.propertyByID(id);
-                    if (!prop) {
+                    if (!prop)
                         err = Errors.UNKNOW;
-                        valid = false;
-                        break;
-                    } else if (prop.isMortgaged) {
+                    else if (prop.isMortgaged)
                         err = Errors.GAME.PROPERTY_IS_MORTGAGED;
-                        valid = false;
+
+                    if (err !== Errors.SUCCESS)
                         break;
-                    }
                 }
 
-                if (valid && !game.asyncActionManualMortgage(data.properties)) // hypothécation ici
+                if (err === Errors.SUCCESS && !game.asyncActionManualMortgage(data.properties)) // hypothécation ici
                     err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
             }
 

@@ -14,11 +14,11 @@ class Bid {
 
     static delBid (bid) {
         const ind = bid.game.bids.indexOf(bid);
-        if (ind === -1) {
-            if (bid.manual)
-                bid.game.alreadyOneManualBid = false;
+        if (ind === -1)
             return false;
-        }
+        if (bid.manual)
+            bid.game.alreadyOneManualBid = false;
+
         bid.game.bids.splice(ind, 1);
         return true;
     }

@@ -114,6 +114,16 @@
                       </div>
                     </div>
                   </div>
+
+                  <div id="sortie-parlement" class="card notification">
+                    <div class="card-body" :class="{'no-header': !notif.title}">
+                      <div class="col-md-12 text-center value">
+                        <p>Voulez-vous utiliser votre bonus "Sortir du Parlement" ?</p>
+                      </div>
+                      <button class="btn btn-primary accept-btn">Oui</button>
+                      <button class="btn btn-primary deny-btn">Non</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

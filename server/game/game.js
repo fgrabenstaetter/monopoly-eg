@@ -638,8 +638,9 @@ class Game {
             this.curPlayer.loseMoney(sum);
             this.bank.addMoney(sum);
         } else {
-            this.curPlayer.addMoney(sum * -1);
-            this.bank.loseMoney(sum * -1);
+            const toGain = sum * -1;
+            this.curPlayer.addMoney(toGain);
+            this.bank.loseMoney(toGain);
         }
 
         // améliorer les propriétés
