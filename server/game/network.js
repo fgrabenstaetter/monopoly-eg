@@ -1270,8 +1270,7 @@ class Network {
                             propertyData.color        = cell.property.color;
                             propertyData.prices       = cell.property.prices;
                             propertyData.rentalPrices = cell.property.rentalPrices;
-                            propertyData.housesNb     = cell.property.housesNb;
-                            propertyData.hasHostel    = cell.property.hasHostel;
+                            propertyData.level        = cell.property.curUpgradeLevel;
                             break;
 
                         case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
