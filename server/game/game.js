@@ -442,9 +442,6 @@ class Game {
     }
 
     makeTurnAfterMove(diceRes, player, oldPos) {
-        if (!this.curPlayer.isInPrison && oldPos > player.cellPos) // recevoir argent de la banque
-            player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-
         switch (this.curCell.type) {
             case Constants.CELL_TYPE.GOPRISON:
                 this.turnPlayerGoPrisonCell();
@@ -474,6 +471,9 @@ class Game {
                     this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
                 }
         }
+
+        if (!this.curPlayer.isInPrison && oldPos > player.cellPos) // recevoir argent de la banque
+            player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
 
         this.successManager.check();
     }

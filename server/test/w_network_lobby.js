@@ -244,26 +244,28 @@ describe('Network + Lobby', () => {
 
         clientSocket.on('lobbyChangeDurationRes', (data) => {
             assert.strictEqual(data.error, 0);
-            if (++ nb === 6) done();
+            if (++ nb === 2) done();
         });
 
         clientSocket.on('lobbyDurationChangedRes', (data) => {
             assert.strictEqual(data.newDuration, 30);
-            assert.strictEqual(lobby.gameDuration, 30);
-            if (++ nb === 6) done();
+            assert.strictEqual(lobby2.gameDuration, 30);
+            console.log('TOTO');
+            console.log(lobby);
+            if (++ nb === 2) done();
         });
 
         clientSocket.emit('lobbyChangeDurationReq', { newDuration: 30 });
 
         clientSocket2.on('lobbyChangeDurationRes', (data) => {
             assert.strictEqual(data.error, 0);
-            if (++ nb === 6) done();
+            if (++ nb === 2) done();
         });
 
         clientSocket2.on('lobbyDurationChangedRes', (data) => {
             assert.strictEqual(data.newDuration, 60);
             assert.strictEqual(lobby2.gameDuration, 60);
-            if (++ nb === 6) done();
+            if (++ nb === 2) done();
         });
 
         clientSocket2.emit('lobbyChangeDurationReq', { newDuration: 60 });
@@ -273,7 +275,7 @@ describe('Network + Lobby', () => {
             sock.on('lobbyPlayRes', (data) => {
                 assert.strictEqual(data.error, 0);
                 GLOBAL.matchmaking.checkLaunch();
-                if (++ nb === 6) done();
+                if (++ nb === 4) done();
             });
             //console.log(GLOBAL.lobbies);
 
@@ -287,7 +289,7 @@ describe('Network + Lobby', () => {
                 assert.notStrictEqual(game.playerByID(user.id), null);
                 assert.notStrictEqual(game.playerByID(user2.id), null);
 
-                if (++ nb === 6)
+                if (++ nb === 4)
                     done();
             });
 
