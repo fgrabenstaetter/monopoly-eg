@@ -107,14 +107,14 @@ input.range-slider {
   z-index: 100000 !important;
 
   &#rulesModal {
-    .modal-content {
+    .modal-body {
       font-family: "Roboto", sans-serif;
     }
   }
 
   &#optionsModal,
   &#userSettingsModal {
-    .modal-content {
+    .modal-body {
       font-size: 18px;
     }
   }
