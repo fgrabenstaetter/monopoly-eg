@@ -299,8 +299,8 @@ class Network {
             user.getFriends((friends) => {
                 let err = Errors.SUCCESS;
                 let friendUser = null;
-                data.friendID = parseInt(data.friendID);
-                if (data.friendID == null || isNaN(data.friendID))
+
+                if (!data || data.friendID == null)
                     err = Errors.MISSING_FIELD;
                 else if (friends.indexOf(data.friendID) === -1)
                     err = Errors.FRIENDS.NOT_EXISTS;
@@ -466,11 +466,13 @@ class Network {
         user.socket.on('lobbyInvitationAcceptReq', (data) => {
             let err = Errors.SUCCESS;
             let friendLobby = null;
-            data.invitationID = parseInt(data.invitationID);
-            if (!data || data.invitationID == null || isNaN(data.invitationID))
+            if (data)
+                data.invitationID = parseInt(data.invitationID);
+
+            if (!data || isNaN(data.invitationID))
                 err = Errors.MISSING_FIELD;
             else {
-                const invitObj = lobby.delInvitation(parseInt(data.invitationID));
+                const invitObj = lobby.delInvitation(data.invitationID);
                 if (!invitObj)
                     err = Errors.LOBBY.INVITATION_NOT_EXISTS;
                 else if (invitObj.toUserID !== user.id)
@@ -513,8 +515,8 @@ class Network {
         user.socket.on('lobbyKickReq', (data) => {
             let err = Errors.SUCCESS;
             let userToKick = null;
-            data.userToKickID = parseInt(data.userToKickID);
-            if (data.userToKickID == null || isNaN(data.userToKickID))
+
+            if (!data || data.userToKickID == null)
                 err = Errors.MISSING_FIELD;
             else if (data.userToKickID === user.id)
                 err = Errors.UNKNOW;
@@ -559,8 +561,10 @@ class Network {
     lobbyChangeTargetUsersNbReq(user, lobby) {
         user.socket.on('lobbyChangeTargetUsersNbReq', (data) => {
             let err = Errors.SUCCESS;
-            data.nb = parseInt(data.nb);
-            if (!data.nb || isNaN(data.nb))
+            if (data)
+                data.nb = parseInt(data.nb);
+
+            if (!data || isNaN(data.nb))
                 err = Errors.MISSING_FIELD;
             else if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
@@ -576,8 +580,10 @@ class Network {
     lobbyChangeDurationReq (user, lobby) {
         user.socket.on('lobbyChangeDurationReq', (data) => {
             let err = Errors.SUCCESS;
-            data.newDuration = parseInt(data.newDuration);
-            if (data.newDuration === undefined || isNaN(data.newDuration))
+            if (data)
+                data.newDuration !== null ? data.newDuration = parseInt(data.newDuration) : null;
+
+            if (!data || isNaN(data.newDuration))
                 err = Errors.MISSING_FIELD;
             else if (!lobby.changeDuration(data.newDuration))
                 err = Errors.LOBBY.WRONG_DURATION;
@@ -595,7 +601,7 @@ class Network {
         user.socket.on('lobbyChatSendReq', (data) => {
             let err = Errors.SUCCESS;
 
-            if (!data.content)
+            if (!data || !data.content)
                 err = Errors.MISSING_FIELD;
             else
                 this.lobbySendMessage(lobby, user, data.content);
@@ -966,7 +972,7 @@ class Network {
         player.socket.on('gamePropertyUpgradeReq', (data) => {
             let err = Errors.SUCCESS;
 
-            if (!data.list)
+            if (!data || !data.list)
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
@@ -997,7 +1003,7 @@ class Network {
             let err = Errors.SUCCESS;
             let propertyID;
 
-            if (!data.properties)
+            if (!data || !data.properties)
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
@@ -1024,8 +1030,10 @@ class Network {
     gamePropertyUnmortgageReq(player, game) {
         player.socket.on('gamePropertyUnmortgageReq', (data) => {
             let err = Errors.SUCCESS, prop;
-            data.propertyID = parseInt(data.propertyID);
-            if (data.propertyID == null || isNaN(data.propertyID))
+            if (data)
+                data.propertyID = parseInt(data.propertyID);
+
+            if (!data || isNaN(data.propertyID))
                 err = Errors.MISSING_FIELD;
             else if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
@@ -1053,7 +1061,8 @@ class Network {
     gameChatSendReq(player, game) {
         player.socket.on('gameChatSendReq', (data) => {
             let err = Errors.SUCCESS;
-            if (!data.text)
+
+            if (!data || !data.text)
                 err = Errors.MISSING_FIELD;
             else if (!game.allPlayersReady)
                 err = Errors.GAME.NOT_STARTED;
@@ -1073,11 +1082,13 @@ class Network {
 
     gameOfferSendReq(player, game) {
         player.socket.on('gameOfferSendReq', (data) => {
-            data.price = parseInt(data.price);
-            data.receiverID = parseInt(data.receiverID);
-            data.propertyID = parseInt(data.propertyID);
+            if (data) {
+                data.price = parseInt(data.price);
+                data.propertyID = parseInt(data.propertyID);
+            }
+
             let err = Errors.SUCCESS, recvr, prop;
-            if (data.receiverID == null || data.propertyID == null || !data.price || isNaN(data.price) || isNaN(data.propertyID) || isNaN(data.receiverID))
+            if (!data || data.receiverID == null || isNaN(data.price) || isNaN(data.propertyID))
                 err = Errors.MISSING_FIELD;
             else if (!(recvr = game.playerByID(data.receiverID)) ||
                      (data.propertyID === -1 && recvr.nbJailEscapeCards === 0) ||
@@ -1105,8 +1116,10 @@ class Network {
     gameOfferAcceptReq(player, game) {
         player.socket.on('gameOfferAcceptReq', (data) => {
             let err = Errors.SUCCESS, offer;
-            data.offerID = parseInt(data.offerID);
-            if (data.offerID == null || isNaN(data.offerID))
+            if (data)
+                data.offerID = parseInt(data.offerID);
+
+            if (!data || isNaN(data.offerID))
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
@@ -1134,10 +1147,13 @@ class Network {
 
     gameOverbidReq(player, game) {
         player.socket.on('gameOverbidReq', (data) => {
-            data.price = parseInt(data.price);
-            data.bidID = parseInt(data.bidID);
+            if (data) {
+                data.price = parseInt(data.price);
+                data.bidID = parseInt(data.bidID);
+            }
+
             let err = Errors.SUCCESS;
-            if (data.price == null || data.bidID == null || isNaN(data.price) || isNaN(data.bidID))
+            if (!data || isNaN(data.price) || isNaN(data.bidID))
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
@@ -1177,9 +1193,12 @@ class Network {
     gameManualBidReq (player, game) {
         player.socket.on('gameManualBidReq', (data) => {
             let err = Errors.SUCCESS, prop;
-            data.initialPrice = parseInt(data.initialPrice);
-            data.propertyID = parseInt(data.propertyID);
-            if (data.propertyID == null || data.initialPrice == null || isNaN(data.initialPrice) || isNaN(data.propertyID))
+            if (data) {
+                data.initialPrice = parseInt(data.initialPrice);
+                data.propertyID = parseInt(data.propertyID);
+            }
+
+            if (!data || isNaN(data.initialPrice) || isNaN(data.propertyID))
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
