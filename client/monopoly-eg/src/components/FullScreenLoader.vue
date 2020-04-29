@@ -30,6 +30,11 @@
 </template>
 
 <script>
+/**
+ * @vuese
+ * @group Components
+ * Ecran de chargement prenant toute la taille de la fenêtre
+ */
 export default {
     name: 'FullScreenLoader'
 }
