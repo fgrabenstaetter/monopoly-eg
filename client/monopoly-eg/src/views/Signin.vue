@@ -24,14 +24,29 @@
 </template>
 
 <script>
+/**
+ * @vuese
+ * @group Views
+ * Ecran d'inscription
+ */
 export default {
   name: "Signin",
   data() {
     return {
-      form: {}
+      // @vuese
+      // Données du formulaire d'inscription ('nickname', 'email' et 'password')
+      form: {
+        nickname: '',
+        email: '',
+        password: ''
+      }
     };
   },
   methods: {
+    /**
+     * @vuese
+     * Inscrit l'utilisateur en envoyant les données du formulaire à l'API. Si inscription réussie, redirection vers /login.
+     */
     signin() {
       this.$http
         .post(`${this.$store.state.apiUrl}/register`, this.form)

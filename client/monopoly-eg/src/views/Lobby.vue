@@ -212,8 +212,8 @@ import * as SocketIOFileUpload from 'socketio-file-upload';
 
 /**
  * @vuese
- * @group Vues
- * Vue lobby
+ * @group Views
+ * Ecran de lobby : profil du joueur, gestion des amis, paramètres de la partie, matchmaking, etc.
  */
 export default {
     name: 'Lobby',

@@ -104,6 +104,11 @@
 </template>
 
 <script>
+/**
+ * @vuese
+ * @group Views
+ * Page d'accueil du jeu (logo et bouton "Jouer")
+ */
 export default {
   name: "Home"
 };

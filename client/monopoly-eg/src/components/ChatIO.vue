@@ -25,13 +25,22 @@
 <script>
 import {Howl} from 'howler'
 
+/**
+ * @vuese
+ * @group Components
+ * Chat du jeu (utilisé dans le lobby et dans le jeu)
+ */
 export default {
     name: 'ChatIO',
     props: {
+        // @vuese
+        // socket utilisé pour l'envoi de messages
         socket: {
             type: Object,
             required: true
         },
+        // @vuese
+        // Environnement dans lequel est utilisé le chat : 'lobby' ou 'game'
         env: {
             type: String,
             default: 'lobby'
@@ -39,8 +48,12 @@ export default {
     },
     data() {
         return {
+            // @vuese
+            // Messages du chat
             messages: [],
+            // Valeur de l'entrée textuelle (nouveau message)
             msg: '',
+            // Elements audio du chat (i.e. son de notification)
             audio: {
                 sfx: {
                     newMessage: null
@@ -49,6 +62,10 @@ export default {
         }
     },
     methods: {
+        /**
+         * @vuese
+         * Envoi le contenu du nouveau message au serveur et vide la zone de saisie ('msg')
+         */
         postMsg() {
             if (this.env === 'lobby')
                 this.socket.emit('lobbyChatSendReq', { content: this.msg });
@@ -57,10 +74,20 @@ export default {
             
             this.msg = '';
         },
+
+        /**
+         * @vuese
+         * Descend au bas de la zone de chat (pour afficher les derniers messages reçus)
+         */
         scrollToBottom() {
             const element = this.$el.querySelector("#msgChat");
             element.scrollTop = element.scrollHeight;
         },
+
+        /**
+         * @vuese
+         * Charge les effets sonores du chat
+         */
         loadSfx() {
             this.audio.sfx.newMessage = new Howl({
                 src: ['/assets/audio/sfx/when.mp3'],

@@ -33,14 +33,28 @@
 </template>
 
 <script>
+/**
+ * @vuese
+ * @group Views
+ * Ecran de connexion
+ */
 export default {
   name: "Login",
   data() {
     return {
-      form: {}
+      // @vuese
+      // Données du formulaire de connexion ('nickname' et 'password')
+      form: {
+        nickname: '',
+        password: ''
+      }
     };
   },
   methods: {
+    /**
+     * @vuese
+     * Connecte l'utilisateur en envoyant les données du formulaire de connexion à l'API. Si connexion réussie, redirection vers /lobby.
+     */
     login() {
       this.$http
         .post(`${this.$store.state.apiUrl}/login`, this.form)
