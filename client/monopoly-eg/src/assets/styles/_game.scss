@@ -298,6 +298,22 @@
     width: 400px;
     filter: drop-shadow(0 0 0.75rem rgba($color: black, $alpha: 0.6));
 
+    &.mortgaged:after{
+      content: "HYPOTHÉQUÉ";
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+      width: 165px;
+      height: 52.5px;
+      border: 2px red solid;
+      border-radius: 5px;
+      transform: rotate(10deg);
+      position: absolute;
+      padding: 11px;
+      top: 150px;
+      left: 50px;
+    }
+
     .header,
     .content {
       width: 200px;
@@ -797,16 +813,6 @@
               .house-number {
                 display: flex !important;
               }
-
-              .mortgaged{
-                  width: 121px;
-                  border-bottom: 2px solid red;
-                  -webkit-transform:
-                    translateY(-6px)
-                    translateX(-7px)
-                    rotate(15deg);
-                  position: absolute;
-              }
             }
           }
 
@@ -922,6 +928,22 @@
               margin: 7px 20px;
               position: relative;
               min-height: 35px;
+
+              &.mortgaged:after{
+                content: "HYPOTHÉQUÉ";
+                color: red;
+                font-size: 12px;
+                font-weight: bold;
+                width: 110px;
+                height: 35px;
+                border: 2px red solid;
+                border-radius: 5px;
+                transform: rotate(20deg);
+                position: absolute;
+                padding: 6.5px;
+                top: 8px;
+                left: 1px;
+              }
 
               &.selected {
                 padding: 6px 1px !important;
