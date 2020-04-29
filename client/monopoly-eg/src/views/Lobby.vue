@@ -677,7 +677,6 @@ export default {
                 this.gameTime = 'Illimité'
         });
 
-<<<<<<< HEAD
         this.socket.on('lobbyPlayRes', (res) => {
             if (res.error !== 0) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
@@ -694,8 +693,6 @@ export default {
             }, 500);
         });
 
-=======
->>>>>>> 166550c1b2673ee1bfafc701a3a6870d8023197a
         /**Vérifications des Res asynchrones
         */
         this.socket.on('lobbyFriendInvitationSendRes', (res) => {
