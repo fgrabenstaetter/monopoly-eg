@@ -404,7 +404,6 @@ export default {
       this.socket.emit('gameOfferAcceptReq', { offerID: parseInt(offerID) });
       console.log('gameOfferAcceptReq');
       this.discardOffer(offerID);
-      // [A FAIRE] CHANGER COULEUR DRAPEAU
     },
 
     sendBid(bid) {
@@ -414,7 +413,7 @@ export default {
       if (myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
-      } else if (myPrice > player.money) {
+      } else if (myPrice > this.player.money) {
         this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
         return;
       }
