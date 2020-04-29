@@ -11,6 +11,11 @@
             <div class="popup-title">{{player.nickname}}</div>
             <img class="popup-pawn" :src="playerPawnImgSrc">
 
+            <!-- Cartes bonus -->
+            <div class="bonus-container">
+                <div class="bonus">Sortie du parlement</div>
+            </div>
+
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
