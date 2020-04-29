@@ -129,7 +129,11 @@
             </div>
             <div class="row action-button-container">
               <div class="col-md-12 text-right">
-                <div class="sortie-parlement">Sortie du parlement</div>
+                <div
+                  v-if="imCurrentPlayer && getPlayerById(currentPlayerID).isInJail && getPlayerById(currentPlayerID).nbJailEscapeCards > 0"
+                  class="sortie-parlement"
+                  >Utiliser mon bonus « Sortir du parlement »
+                </div>
                 <action-button ref="actionBtn" v-once></action-button>
               </div>
             </div>
@@ -712,6 +716,7 @@ export default {
         data.players.forEach((player, index) => {
             // Champs par défaut du joueur
             // player.properties = [];
+            this.$set(player, 'nbJailEscapeCards', 0);
             this.$set(player, 'properties', []);
             this.$set(player, 'money', data.playersMoney);
             // player.money = data.playersMoney;
