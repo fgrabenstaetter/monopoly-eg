@@ -285,6 +285,8 @@ export default {
       cells: [],
       properties: [],
       gameEndTime: null,
+      gameRemainingTime: null,
+      gameTimer: null,
       turnNotifications: [],
       currentPlayerID: 0,
       useBonusJail: false,
@@ -738,6 +740,21 @@ export default {
         this.cells = res.cells;
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
+
+        if (this.gameEndTime) {
+          this.gameRemainingTime = this.gameEndTime - Date.now();
+          if (!this.gameTimer) {
+            this.gameTimer = setInterval(() => {
+              if (this.gameRemainingTime > 0) {
+                this.gameRemainingTime--;
+              } else {
+                clearInterval(this.gameTimer);
+                this.reset();
+              }
+            }, 1000)
+          }
+        }
+
 
         for (const i in this.properties)
             this.properties[i].ownerID = null;
