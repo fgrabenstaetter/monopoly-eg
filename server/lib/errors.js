@@ -218,20 +218,13 @@ module.exports = Object.freeze({
         UPGRADE_NOT_MONOPOLY: {
             code: 12,
             status: 'Une propriété dont vous n\'avez pas le monopole de couleur a été détectée'
-        }
-    },
-
-    BUY_PROPERTY: {
-        NOT_EXISTS: {
-            code: 1,
-            status: 'Cette propriété n\'existe pas'
         },
-        ALREADY_SOLD: {
-            code: 2,
-            status: 'Cette propriété a déjà été vendue'
+        PROPERTY_ALREADY_SOLD: {
+            code: 13,
+            status: 'Cette propriété a déjà été achetée'
         },
-        NOT_ENOUGH_MONEY: {
-            code: 3,
+        NOT_ENOUGH_FOR_BUY: {
+            code: 14,
             status: 'Vous n\'avez pas assez d\'argent pour acheter cette propriété'
         }
     }

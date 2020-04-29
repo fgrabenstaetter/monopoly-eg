@@ -68,9 +68,9 @@
                             <div class="card-body pl-3 pr-3 pt-3 pb-3">
                                 <div class="game-time-container">
                                     <div class="game-time-selector">
-                                        <button class="arrow-left" v-on:click="leftGameTimeClick"></button>
+                                        <button v-if="leftGameTime" class="arrow-left" v-on:click="leftGameTimeClick"></button>
                                         <div id="gameTime">{{gameTime}}</div>
-                                        <button class="arrow-right" v-on:click="rightGameTimeClick"></button>
+                                        <button v-if="rightGameTime" class="arrow-right" v-on:click="rightGameTimeClick"></button>
                                     </div>
                                 </div>
                                 <div class="nb-joueurs-container">
@@ -275,7 +275,7 @@ export default {
                 if (!this.playBtn.loading) {
                     this.socket.emit('lobbyPlayReq');
                     this.playBtn.loading = true;
-                    this.playBtn.text = 'CHARGEMENT...';
+                    this.playBtn.text = 'ANNULER ...';
                 } else {
                     this.socket.emit('lobbyCancelPlayReq');
                     this.playBtn.loading = false;
@@ -321,18 +321,36 @@ export default {
             }
         },
         leftGameTimeClick() {
-            if (this.gameTime === '1 h')
+            this.leftGameTime = true;
+            this.rightGameTime = true;
+            let dur;
+
+            if (this.gameTime === '1 h') {
                 this.gameTime = '30 min'
-            else if (this.gameTime === 'Illimité')
+                this.leftGameTime = false;
+                dur = 30;
+            } else if (this.gameTime === 'Illimité') {
                 this.gameTime = '1 h';
-            console.log('SOCKET GAMETIME');
+                dur = 60;
+            }
+
+            this.socket.emit('lobbyChangeDurationReq' , { newDuration: dur });
         },
         rightGameTimeClick() {
-            if (this.gameTime === '1 h')
+            this.leftGameTime = true;
+            this.rightGameTime = true;
+            let dur;
+
+            if (this.gameTime === '1 h') {
                 this.gameTime = 'Illimité';
-            else if (this.gameTime === '30 min')
+                this.rightGameTime = false;
+                dur = null;
+            } else if (this.gameTime === '30 min') {
                 this.gameTime = '1 h';
-            console.log('SOCKET GAMETIME');
+                dur = 60;
+            }
+
+            this.socket.emit('lobbyChangeDurationReq' , { newDuration: dur });
         },
         deleteLobbyInvitation(id) {
             for (const i in this.lobbyInvitations) {
@@ -373,7 +391,7 @@ export default {
             this.deleteFriendInvitation(friendId);
         },
         inviteFriendInLobby(id) {
-            
+
             this.socket.emit("lobbyInvitationReq", { friendID: id });
         },
         kickPlayerFromLobby(id) {
@@ -383,6 +401,7 @@ export default {
         imHost() {
             this.leftNbJ = true;
             this.rightNbJ = true;
+            this.leftGameTime = true;
             if (this.nbPlayers === 2 || this.nbPlayers === this.players.length)
                 this.leftNbJ = false;
             if (this.nbPlayers === 8)
@@ -486,6 +505,7 @@ export default {
             this.hostID = this.loggedUser.id;
             this.nbPlayers = res.targetUsersNb;
             this.players = [this.loggedUser];
+
             this.imHost();
         });
 
@@ -503,7 +523,16 @@ export default {
 
             this.leftNbJ = false;
             this.rightNbJ = false;
+            this.leftGameTime = false;
+            this.rightGameTime = false;
             this.playBtn.disabled = true;
+
+            if (res.duration === 30)
+                this.gameTime = '30 min';
+            else if (res.duration === 60)
+                this.gameTime = '1 h';
+            else
+                this.gameTime = 'Illimité';
 
             for (const mess of res.messages)
                 this.$refs.chat.messages.push(mess);
@@ -606,6 +635,15 @@ export default {
             this.nbPlayers = res.nb;
             // if (hostID === ID)
             //     updateNbUsersArrows();
+        });
+
+        this.socket.on('lobbyDurationChangedRes', (res) => {
+            if (res.newDuration === 30)
+                this.gameTime = '30 min';
+            else if (res.newDuration === 60)
+                this.gameTime = '1 h';
+            else
+                this.gameTime = 'Illimité'
         });
 
         this.socket.on('lobbyPlayRes', (res) => {
