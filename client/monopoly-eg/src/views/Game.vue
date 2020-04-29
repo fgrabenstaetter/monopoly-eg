@@ -236,6 +236,11 @@ import SplashText from "../components/SplashText";
 import { Howl } from "howler";
 import "odometer/themes/odometer-theme-default.css";
 
+/**
+ * @vuese
+ * @group Views
+ * Ecran de jeu dans lequel se déroule une partie (contenant HUD, plateau, chat, etc.)
+ */
 export default {
   name: "Game",
   components: {
@@ -250,7 +255,11 @@ export default {
   },
   data() {
     return {
+      // @vuese
+      // Indique si le jeu a été 'mounted' (écran chargé) par Vue
       gameMounted: false,
+      // @vuese
+      // Constantes du jeu (pions, couleurs des joueurs, etc.)
       CST: {
         PAWNS: [
           "tracteur",
@@ -274,28 +283,60 @@ export default {
         ],
         CELL_PRISON: 10
       },
+      // @vuese
+      // Affiche l'écran de chargement
       loading: true,
+      // @vuese
+      // Utilisateur connecté (chargé depuis le store Vuex)
       loggedUser: this.$store.getters.loggedUser,
+      // @vuese
+      // socket client utilisé pour les communications
       socket: io.connect(this.$store.getters.serverUrl, {
             query: "token=" + this.$store.getters.jwt,
             path: "/socket.io",
             secure: true
       }),
+      // @vuese
+      // Liste des joueurs dans la partie (envoyée par le serveur)
       players: [],
+      // @vuese
+      // Liste des cellules du plateau de jeu (envoyée par le serveur)
       cells: [],
+      // @vuese
+      // Liste des propriétés du plateau de jeu (envoyée par le serveur)
       properties: [],
+      // @vuese
+      // Timestamp de fin de la partie (envoyé par le serveur)
       gameEndTime: null,
+      // @vuese
+      // Temps restant avant la fin de la partie
       gameRemainingTime: null,
+      // @vuese
+      // Timer (contenant un setInterval()) de la partie
       gameTimer: null,
+      // @vuese
+      // Notifications du tour en cours (apparaissent sur la droite de l'écran)
       turnNotifications: [],
+      // @vuese
+      // Identifiant du joueur courant
       currentPlayerID: 0,
+      // @vuese
+      // Flag indiquant si l'on souhaite utiliser notre carte bonus "Sortir du parlement" lors du prochain lancé de dés
       useBonusJail: false,
+      // @vuese
+      // Liste des offres d'achat reçues de la part d'autres joueurs
+      offers: [],
+      // @vuese
+      // Liste d'enchères en cours
+      bids: [],
+      // @vuese
+      // Ressources audio du jeu
       audio: {
         background: null,
         sfx: {}
       },
-      offers: [],
-      bids: [],
+      // @vuese
+      // Indique si la partie est terminée (affiche l'écran de fin si true)
       endGame: false
     };
   },
@@ -305,6 +346,11 @@ export default {
     }
   },
   methods: {
+    /**
+     * @vuese
+     * Récupère l'ID d'un joueur à partir de son pseudo (null si non trouvé)
+     * @arg Le pseudo du joueur
+     */
     nickToId(nick) {
       for (const i in this.players) {
         if (this.players[i].nickname == nick) return this.players[i].id;
@@ -312,6 +358,11 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Récupère le pseudo d'un joueur à partir de son ID (null si non trouvé)
+     * @arg L'ID du joueur
+     */
     idToNick(id) {
       for (const i in this.players) {
         if (this.players[i].id == id) return this.players[i].nickname;
@@ -319,6 +370,11 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Récupère un objet 'player' (joueur) à partir de son ID (null si non trouvé)
+     * @arg L'ID du joueur
+     */
     getPlayerById(id) {
       for (const i in this.players) {
         if (this.players[i].id == id) return this.players[i];
@@ -326,14 +382,11 @@ export default {
       return null;
     },
 
-    getPlayerPropertyById(player, propertyID) {
-        for (const i in player.properties) {
-            if (player.properties[i].id == propertyID)
-                return player.properties[i];
-        }
-        return null;
-    },
-
+    /**
+     * @vuese
+     * Récupère un objet 'cell' (case du plateau) à partir de son ID (null si non trouvé)
+     * @arg L'ID de la case
+     */
     getCellById(id) {
       for (const i in this.cells) {
         if (this.cells[i].id == id) return this.cells[i];
@@ -341,6 +394,11 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Récupère un objet 'property' (propriété) à partir de son ID (null si non trouvé)
+     * @arg L'ID de la propriété
+     */
     getPropertyById(id) {
       for (const i in this.properties) {
         if (this.properties[i].id == id) return this.properties[i];
@@ -348,6 +406,11 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Récupère un objet 'property' (propriété) à partir de l'ID d'une 'cell' (case du plateau) (null si non trouvé)
+     * @arg L'ID de la case dont on souhaite récupérer la propriété "associée"
+     */
     getPropertyByCellId(cellId) {
       let cell = this.getCellById(cellId);
       for (const i in this.properties) {
@@ -356,6 +419,11 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Récupère un objet 'cell' (case du plateau) à partir d'une 'property' (propriété)
+     * @arg La propriété dont on souhaite récupérer la case
+     */
     getCellByProperty(property) {
       for (const i in this.cells) {
         if (this.cells[i].propertyID == property.id) return this.cells[i];
@@ -363,6 +431,10 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Envoie une requête de lancement de dés
+     */
     gameRollDiceReq() {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications = [];
@@ -370,27 +442,51 @@ export default {
       this.useBonusJail = false;
     },
 
+    /**
+     * @vuese
+     * Signale la fin de notre tour de jeu (pour pouvoir manuellement passer la main au joueur suivant)
+     */
     gameTurnEndReq() {
       if (!this.imCurrentPlayer) return;
       this.socket.emit("gameTurnEndReq");
     },
 
+    /**
+     * @vuese
+     * Supprime une notification de tour ('turn notification') de la liste des notifications (et donc du HUD)
+     * @arg L'index de la notification à supprimer
+     */
     discardTurnNotif(index) {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications.splice(index, 1);
     },
 
+    /**
+     * @vuese
+     * Envoi une requête d'achat (après être tombé sur la case d'un terrain vierge) et supprime la notification associée
+     * @arg L'index de la notification concernée
+     */
     saleCardBuyProperty(notifIndex) {
       if (!this.imCurrentPlayer) return;
       this.socket.emit("gamePropertyBuyReq");
       this.turnNotifications.splice(notifIndex, 1);
     },
 
+    /**
+     * @vuese
+     * Indique que l'on utilisera notre carte bonus "Sortir du parlement" au prochain lancement de dés
+     * @arg L'index de la notification concernée (qui sera supprimée)
+     */
     acceptUseBonusJail(notifIndex) {
       this.useBonusJail = true;
       this.discardTurnNotif(notifIndex);
     },
 
+    /**
+     * @vuese
+     * Efface une offre d'achat faite par un autre joueur (sans l'accepter)
+     * @arg L'ID de l'offre concernée (et non pas l'index !)
+     */
     discardOffer(offerID) {
         for (const i in this.offers) {
             if (this.offers[i].offerID == offerID) {
@@ -400,12 +496,22 @@ export default {
         }
     },
 
+    /**
+     * @vuese
+     * Accepte une offre d'achat faite par un autre joueur et supprime la notification associée
+     * @arg L'ID de l'offre concernée
+     */
     offerAccept(offerID) {
       this.socket.emit('gameOfferAcceptReq', { offerID: parseInt(offerID) });
       console.log('gameOfferAcceptReq');
       this.discardOffer(offerID);
     },
 
+    /**
+     * @vuese
+     * Envoi notre participation à une enchère en cours
+     * @arg L'objet 'bid' contenant l'enchère à laquelle on participe
+     */
     sendBid(bid) {
       if (!bid.myPrice) return;
       const myPrice = parseInt(bid.myPrice);
@@ -422,11 +528,20 @@ export default {
       this.$set(bid, 'disabled', true);
     },
 
+    /**
+     * @vuese
+     * Rejette la participation à une enchère ("passer" l'enchère) et envoie une participation à 0€ au serveur
+     * @arg L'objet 'bid' contenant l'enchère que l'on souhaite passer
+     */
     rejectBid(bid) {
       this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: 0 });
       this.$set(bid, 'disabled', true);
     },
 
+    /**
+     * @vuese
+     * Lance la musique de fond du jeu
+     */
     playMusic() {
       this.audio.background = new Howl({
         src:
@@ -437,15 +552,28 @@ export default {
       });
     },
 
+    /**
+     * @vuese
+     * Modifie le volume de la musique
+     * @arg Pourcentage du volume (entier de 0 à 100)
+     */
     setMusicLevel(level) {
         this.audio.background.volume(level / 100);
     },
 
+    /**
+     * @vuese
+     * Coupe la musique de fond (en fondu)
+     */
     stopMusic() {
       this.audio.background.fade(this.audio.background.volume(), 0, 500);
       this.audio.background.stop();
     },
 
+    /**
+     * @vuese
+     * Précharge tous les effets sonores (SFX) du jeu
+     */
     loadSfx() {
       this.audio.sfx.rollDices = new Howl({
         src: ["/assets/audio/sfx/shake-and-roll-dice-soundbible.mp3"],
@@ -461,13 +589,19 @@ export default {
       });
     },
 
+    /**
+     * @vuese
+     * Modifie le volume des effets sonores
+     * @arg Pourcentage du volume (entier de 0 à 100)
+     */
     setSfxLevel(level) {
         for (let [key] of Object.entries(this.audio.sfx))
             key.volume(level / 100);
     },
 
     /**
-     * Indique au serveur que l'on est prêt à commencer la partie côté client
+     * @vuese
+     * Indique au serveur que l'on est prêt à commencer la partie côté client (et donc à recevoir les sockets du serveur)
      */
     gameReady() {
         setTimeout(() => {
@@ -476,6 +610,11 @@ export default {
         }, 1000);
     },
 
+    /**
+     * @vuese
+     * Ajoute une offre d'achat à notre liste
+     * @arg L'offre à ajouter (objet 'offer')
+     */
     pushGameOfferReceive(offer) {
       const buyer = this.getPlayerById(offer.makerID);
       const receiver = this.getPlayerById(offer.receiverID);
@@ -493,6 +632,11 @@ export default {
       }
     },
 
+    /**
+     * @vuese
+     * Ajoute une enchère à notre liste
+     * @arg Enchère à ajouter (objet 'bid')
+     */
     pushGameBid(bid) {
       // Premier message uniquement
       if (bid.playerID == null) {
@@ -525,7 +669,8 @@ export default {
     },
 
     /**
-     * Quitter volontairement la partie
+     * @vuese
+     * Quitte volontairement la partie et de manière définitive (en le signalant au serveur)
      */
     quitGame() {
       this.socket.emit("gamePlayerLeavingReq");
@@ -533,7 +678,7 @@ export default {
         if (res.error === 0) {
           this.$refs.gameSettings.closeModal();
           setTimeout(() => {
-            this.$router.push("Lobby");
+            this.$router.push("/lobby");
           }, 800);
         } else {
           this.$parent.toast(res.status, "danger", 5);
@@ -542,10 +687,9 @@ export default {
     },
 
     /**
+     * @vuese
      * Continue le tour de jeu (gameActionRes) après le premier déplacement
-     * @param data Données de gameActionRes
-     * @param currPlayer Joueur courant
-     * @param cellPos2 Position #2 (le cas échéant)
+     * @arg data : données de gameActionRes ; currPlayer : joueur courant ; cellPos2 : position #2 (le cas échéant)
      */
     gameActionResAfterFirstMovement(data, currPlayer, cellPos2) {
       // Mise à jour des soldes (le cas échéant)
@@ -659,8 +803,9 @@ export default {
     },
 
     /**
+     * @vuese
      * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
-     * @param data Données de gameActionRes
+     * @arg Données de 'gameActionRes'
      */
     gameActionResAfterSecondMovement(data) {
       if (data.playerID === this.loggedUser.id)
