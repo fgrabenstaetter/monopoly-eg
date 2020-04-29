@@ -251,6 +251,8 @@ export default {
             hostID: null,
             leftNbJ: false,
             rightNbJ: false,
+            leftGameTime: true,
+            rightGameTime: true,
             gameTime: 'Illimité',
             nbPlayers: 0,
             lobbyInvitations: [],
