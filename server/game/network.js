@@ -25,6 +25,9 @@ class Network {
     }
 
     handleConnection (user, socket) {
+        if (user.socket) // ancien socket toujours connecté, lui signaler
+            user.socket.emit('notLoggedRes');
+
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
         user.socket = socket;
 
@@ -931,8 +934,13 @@ class Network {
 
             if (player !== game.curPlayer)
                 err = Errors.GAME.NOT_MY_TURN;
-            else
-                err = game.asyncActionBuyProperty();
+            else {
+                switch (game.asyncActionBuyProperty()) {
+                    case 1: err = Errors.UNKNOW; break;
+                    case 2: err = Errors.GAME.PROPERTY_ALREADY_SOLD; break;
+                    case 3: err = Errors.GAME.NOT_ENOUGH_FOR_BUY; break;
+                }
+            }
 
             if (err === Errors.SUCCESS) {
                 this.io.to(game.name).emit('gamePropertyBuyRes', {
@@ -941,9 +949,8 @@ class Network {
                     playerMoney : player.money,
                     bankMoney   : game.bank.money
                 });
-            } else {
+            } else
                 player.socket.emit('gamePropertyBuyRes', { error: err.code, status: err.status });
-            }
         });
     }
 
@@ -1124,7 +1131,7 @@ class Network {
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (player.money < data.price)
-                Errors.BID.NOT_ENOUGH_MONEY;
+                err = Errors.BID.NOT_ENOUGH_MONEY;
             else {
                 const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
@@ -1270,8 +1277,7 @@ class Network {
                             propertyData.color        = cell.property.color;
                             propertyData.prices       = cell.property.prices;
                             propertyData.rentalPrices = cell.property.rentalPrices;
-                            propertyData.housesNb     = cell.property.housesNb;
-                            propertyData.hasHostel    = cell.property.hasHostel;
+                            propertyData.level        = cell.property.curUpgradeLevel;
                             break;
 
                         case Constants.PROPERTY_TYPE.PUBLIC_COMPANY:
