@@ -258,6 +258,9 @@ describe('Network + Game', () => {
         game.bank.delProperty(property);
         game.curPlayer.addProperty(property);
 
+        // ajout de toutes les prop de la meme couleur pour avoir le monopole
+        game.curPlayer.addProperty(game.cells[1].property);
+
         const upPrice = property.upgradePrice(4);
         const startPlayerMoney = player.money;
         const startBankMoney = game.bank.money;

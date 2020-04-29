@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="container-fluid players-list-container pl-5 pr-5">
-        <div class="player-list">
+        <div class="player-list" v-if="gameMounted">
           <player-entry
             v-for="player in players"
             :key="player.id"
@@ -59,7 +59,7 @@
       <div class="container-fluid bottom-container pl-5 pr-5" style="z-index: 10;">
         <div class="row">
           <div class="col-md-4">
-            <chat-io v-bind:socket="socket" env="game" ref="chat"></chat-io>
+            <chat-io v-if="gameMounted" v-bind:socket="socket" env="game" ref="chat"></chat-io>
           </div>
           <div class="col-md-4"></div>
           <div class="col-md-4">
@@ -208,7 +208,7 @@
     <full-screen-loader v-if="loading"></full-screen-loader>
 
     <!-- Game settings modal -->
-    <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="game" ref="gameSettings"></game-settings-modal>
+    <game-settings-modal v-if="gameMounted" :socket="socket" :loggedUser="loggedUser" env="game" ref="gameSettings"></game-settings-modal>
   </div>
 </template>
 
@@ -239,6 +239,7 @@ export default {
   },
   data() {
     return {
+      gameMounted: false,
       CST: {
         PAWNS: [
           "tracteur",
@@ -350,6 +351,7 @@ export default {
 
     gameRollDiceReq() {
       if (!this.imCurrentPlayer) return;
+      this.turnNotifications = [];
       this.socket.emit("gameRollDiceReq");
     },
 
@@ -448,8 +450,10 @@ export default {
      * Indique au serveur que l'on est prêt à commencer la partie côté client
      */
     gameReady() {
-        // alert('board ready');
-        this.socket.emit('gameReadyReq');
+        setTimeout(() => {
+          console.log('gameReadyReq');
+          this.socket.emit('gameReadyReq');
+        }, 2000);
     },
 
     pushGameOfferReceive(offer) {
@@ -458,7 +462,7 @@ export default {
       const property = this.getPropertyById(offer.propertyID);
 
       if (!buyer || !receiver || !property) return;
-      
+
       if (receiver.id == this.loggedUser.id) {
         this.offers.push({
           buyerNickname: buyer.nickname,
@@ -620,7 +624,7 @@ export default {
                 this.CST.PAWNS[currPlayer.pawn],
                 this.CST.CELL_PRISON
               );
-              return this.gameActionResAfterSecondMovement(data);
+              return this.gameActionResAfterSecondMovement(data, currPlayer);
             }, 1000);
           }, 1000);
         }
@@ -649,7 +653,6 @@ export default {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
 
-      // cannot read isInJail of undefined
       if (currPlayer.isInJail) currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
 
       console.log("=== fin gameActionRes ===");
@@ -657,14 +660,16 @@ export default {
   },
   beforeDestroy() {
     this.stopMusic();
+    this.socket.removeAllListeners();
+    console.log("REMOVE ALL LISTENERS FROM GAME");
     this.socket.disconnect();
   },
-  mounted() {
+  mounted() { 
+    this.gameMounted = true;
 
     this.playMusic();
     this.loadSfx();
 
-    // let $ = JQuery
     this.loading = false; // DEBUG
     this.players = [];
     const gameboard = this.$refs.gameboard;
@@ -738,8 +743,20 @@ export default {
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
                 gameboard.loaderFlag("d" + cell.id, player.color);
-            }
 
+                if (propertyObj.level == 5) {
+                  gameboard.loaderHotelProperty(cell.id);
+                } else {
+                  if (propertyObj.level >= 1)
+                    gameboard.loaderHouseProperty(cell.id, 1);
+                  if (propertyObj.level >= 2)
+                    gameboard.loaderHouseProperty(cell.id, 2);
+                  if (propertyObj.level >= 3)
+                    gameboard.loaderHouseProperty(cell.id, 3);
+                  if (propertyObj.level >= 4)
+                    gameboard.loaderHouseProperty(cell.id, 4);
+                }
+            }
         });
 
         res.chatMessages.forEach((msg) => {
@@ -983,7 +1000,7 @@ export default {
 
         // Transfert propriétés
         for (const i in receiver.properties) {
-          if (receiver.properties[i].id == property.id) {
+          if (receiver.properties[i] == property.id) {
             receiver.properties.splice(i, 1);
             break;
           }
@@ -1010,6 +1027,7 @@ export default {
     // Edition de mes propriétés check
     this.socket.on('gamePropertyUpgradeRes', (res) => {
       // alert('gamePropertyUpgradeRes');
+      console.log(res);
       if (res.error === 0)
         console.log('gamePropertyUpgradeRes OK');
       else
@@ -1019,6 +1037,8 @@ export default {
     // Edition des propriétés d'un joueur
     this.socket.on('gamePropertyUpgradedRes', (res) => {
       // alert('gamePropertyUpgradedRes');
+      console.log('gamePropertyUpgradedRes');
+      console.log(res);
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
 
@@ -1037,32 +1057,24 @@ export default {
         if (property.level > oldLevel) {
           // Amélioration
           if (property.level == 1) {
-              console.log("Construire 1 maisons case " + cell.id);
-              gameboard.loaderhouseProperty(cell.id, 1);
+              gameboard.loaderHouseProperty(cell.id, 1);
           } else if (property.level == 2) {
-              console.log("Construire 2 maisons case " + cell.id);
-              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
 
-              gameboard.loaderhouseProperty(cell.id, 2);
+              gameboard.loaderHouseProperty(cell.id, 2);
           } else if (property.level == 3) {
-              console.log("Construire 3 maisons case " + cell.id);
-              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
+              if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
 
-              if (oldLevel < 2) gameboard.loaderhouseProperty(cell.id, 2);
-
-              gameboard.loaderhouseProperty(cell.id, 3);
+              gameboard.loaderHouseProperty(cell.id, 3);
           } else if (property.level == 4) {
-              console.log("Construire 4 maisons case " + cell.id);
-              if (oldLevel < 1) gameboard.loaderhouseProperty(cell.id, 1);
+              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
+              if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
+              if (oldLevel < 3) gameboard.loaderHouseProperty(cell.id, 3);
 
-              if (oldLevel < 2) gameboard.loaderhouseProperty(cell.id, 2);
-
-              if (oldLevel < 3) gameboard.loaderhouseProperty(cell.id, 3);
-
-              gameboard.loaderhouseProperty(cell.id, 4);
+              gameboard.loaderHouseProperty(cell.id, 4);
           } else if (property.level == 5) {
-              console.log("Construire un hôtel case " + cell.id);
-              for (const k in oldLevel) {
+              for (let k = 0; k < oldLevel; k++) {
                 gameboard.deleteHouse(cell.id, k+1);
               }
               gameboard.loaderHotelProperty(cell.id);
@@ -1104,19 +1116,31 @@ export default {
         if (res.playerID == null) {
             this.$set(bid, 'textContent', 'Le terrain n\'a pas été acheté...');
         } else {
-            let winner = this.getPlayerById(res.playerID);
-            if (!winner) return;
-
-            this.$set(bid, 'textContent', `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`);
-            let property = this.getPropertyById(res.propertyID);
-
-            property.ownerID = res.playerID;
-            winner.properties.push(property.id);
-
+            const property = this.getPropertyById(res.propertyID);
             const cell = this.getCellByProperty(property);
-            gameboard.loaderFlag(`d${cell.id}`, winner.color);
 
-            this.$set(winner, 'money', res.playerMoney);
+            if (!property || !cell) return;
+
+            // Suppression de la propriété de l'ancien propriétaire (le cas échéant)
+            if (res.propertyOldOwnerID) {
+              const oldOwner = this.getPlayerById(res.propertyOldOwnerID);
+              const propertyIndex = oldOwner.properties.indexOf(property.id);
+              if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
+              gameboard.deleteFlag(`d${cell.id}`);
+            }
+
+            // Attribution du propriété au vainqueur de l'enchère
+            const winner = this.getPlayerById(res.playerID);
+            if (winner) {
+              this.$set(bid, 'textContent', `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`);
+
+              property.ownerID = res.playerID;
+              winner.properties.push(property.id);
+
+              gameboard.loaderFlag(`d${cell.id}`, winner.color);
+
+              this.$set(winner, 'money', res.playerMoney);
+            }
         }
 
         setTimeout(() => {
@@ -1195,7 +1219,7 @@ export default {
             }
         }
     });
-    
+
 
     // Fin de partie
     this.socket.on('gameEndRes', (res) => {
@@ -1206,7 +1230,7 @@ export default {
         let gameTime = '';
         if (hours > 0)
           gameTime += `${hours}h `;
-        
+
         gameTime += `${minutes}min ${seconds}sec`;
 
         this.endGame = {

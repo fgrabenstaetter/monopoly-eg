@@ -25,7 +25,7 @@ class Network {
     }
 
     handleConnection (user, socket) {
-        console.log('[SOCKET] Utilisateur ' + user.id + ' (' + user.nickname + ') connecté');
+        console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
         user.socket = socket;
 
         socket.on('disconnect', () => {
@@ -56,7 +56,7 @@ class Network {
                 // le joueur est dans une partie !
                 if (!player.connected) // RECONNEXION
                     this.gamePlayerReconnected(player, game);
-                else // ARRIVÉE DANS LE JEU DEPUIS LOBBY
+                else // support lobby => jeu avec nouveau socket
                     this.gamePlayerListen(player, game);
                 socket.emit('canReconnectToGame');
                 return;
@@ -711,9 +711,8 @@ class Network {
                     return;
                 }
 
-                for (let i = 0; i < friendsObj.length; i++) {
+                for (let i = 0; i < friendsObj.length; i++)
                     friends.push({ id: friendsObj[i].friend._id, nickname: friendsObj[i].friend.nickname });
-                }
 
                 user.socket.emit('lobbyPendingFriendListRes', { friends: friends });
             });
@@ -726,6 +725,7 @@ class Network {
 
     gameReadyReq(player, game) {
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE DÉBUT');
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -960,6 +960,7 @@ class Network {
                     case 1: err = Errors.UNKNOW; break;
                     case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY; break;
                     case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY; break;
+                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY; break;
                 }
             }
 
@@ -1067,6 +1068,8 @@ class Network {
                      (data.propertyID === -1 && recvr.nbJailEscapeCards === 0) ||
                      (data.propertyID >= 0 && !(prop = recvr.propertyByID(data.propertyID))))
                 err = Errors.UNKNOW;
+            else if (data.price > player.money)
+                err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else if (recvr.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else {
@@ -1199,6 +1202,7 @@ class Network {
     gamePlayerDisconnected (player, game) {
         if (!game.allPlayersReady)
             return;
+
         console.log(player.nickname + ' s\'est déconnecté du jeu !');
         player.connected = false;
         this.io.to(game.name).emit('gamePlayerDisconnectedRes', { playerID: player.id });
@@ -1207,12 +1211,24 @@ class Network {
     gamePlayerReconnected (player, game) {
         if (!game.allPlayersReady)
             return;
-        console.log(player.nickname + ' s\'est reconnecté au jeu !');
-        player.connected = true;
-        this.gamePlayerListen(player, game);
-        player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+
+        const oldSock = player.socket;
+
+        setTimeout( () => {
+            if (player.socket !== oldSock || !player.socket.connected) {
+                console.log('Reconnexion au jeu trop rapide, déconnexion du socket')
+                player.socket.disconnect();
+                return;
+            }
+
+            console.log(player.nickname + ' s\'est reconnecté au jeu !');
+            player.connected = true;
+            this.gamePlayerListen(player, game);
+            player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
+        }, 400);
 
         player.socket.on('gameReadyReq', () => {
+            console.log(' -- READY REQ DE RECONNEXION');
             let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {

@@ -467,6 +467,9 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
+        this.socket.removeAllListeners();
+
+        console.log("REMOVE ALL LISTENERS FROM LOBBY");
         // this.socket.disconnect();
     },
     mounted() {

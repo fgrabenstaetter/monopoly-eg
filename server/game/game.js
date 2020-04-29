@@ -614,7 +614,7 @@ class Game {
 
     /**
      * @param list Liste de { propertyID: int, level: int } avec level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
-     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou hypothéqué), 3 si pas assez d'argent
+     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou hypothéquée, ou pas une STREET), 3 si pas assez d'argent, 4 si le joueur n'a pas le monopole pour une propriété
      */
     asyncActionUpgradeProperty(list) {
         let sum = 0;
@@ -622,8 +622,11 @@ class Game {
             if (row.propertyID == null || row.level == null || row.level < 0 || row.level > 5)
                 return 1;
             let prop = this.curPlayer.propertyByID(row.propertyID);
-            if (!prop || prop.isMortgaged)
+
+            if (!prop || prop.type !== Constants.PROPERTY_TYPE.STREET || prop.isMortgaged)
                 return 2;
+            else if (!this.curPlayer.colorMonopoly(prop.color))
+                return 4;
 
             sum += prop.upgradePrice(row.level);
         }
