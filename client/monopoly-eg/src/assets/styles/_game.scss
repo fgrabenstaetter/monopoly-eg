@@ -786,7 +786,7 @@
               font-size: 10px;
               margin: 7px 10px;
               position: relative;
-              height: 33px;
+              min-height: 33px;
               background-color: $blue;
               color: white;
             }
@@ -1501,19 +1501,16 @@
       }
     }
 
-    .sortie-parlement {
-      position: absolute;
-      right: 200px;
-      bottom: 0;
-      padding: 13px 20px;
-      background-color: $blue;
-      box-shadow: 0px 0px 0.75em rgba(0, 0, 0, 0.3);
-      height: 50px;
-      color: white;
-      font-family: "LilitaOne", sans-serif;
-      border-radius: 5px;
-      width: 180px;
-      text-align: center;
+    #sortie-parlement {
+      .col-md-12 {
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      .deny-btn {
+        background-color: rgba($color: black, $alpha: 0.3);
+      }
     }
 
     .action-button-container {
