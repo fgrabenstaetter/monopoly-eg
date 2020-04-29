@@ -623,10 +623,13 @@ class Network {
                 err = Errors.UNKNOW; // n'est pas l'hôte
             else if (!lobby.open)
                 err = Errors.LOBBY.CLOSED;
-            else
+            else {
                 lobby.searchGame();
+                this.io.to(lobby.name).emit('lobbyPlayRes', { error: err.code, status: err.status });
+            }
 
-            user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
+            if (err !== Errors.SUCCESS)
+                user.socket.emit('lobbyPlayRes', { error: err.code, status: err.status });
         });
     }
 
@@ -641,7 +644,7 @@ class Network {
             else {
                 lobby.open = true;
                 this.GLOBAL.matchmaking.delLobby(lobby, false);
-                this.GLOBAL.network.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
+                this.io.to(lobby.name).emit('lobbyCancelPlayRes', { error: err.code, status: err.status });
             }
 
             if (err !== Errors.SUCCESS)
@@ -1200,7 +1203,7 @@ class Network {
             player.hasLeft = true;
 
             player.socket.emit('gamePlayerLeavingRes', { error: err.code, status: err.status });
-            this.GLOBAL.network.io.to(game.name).emit('gamePlayerHasLeftRes', {
+            this.io.to(game.name).emit('gamePlayerHasLeftRes', {
                 playerID: player.id
             });
 
