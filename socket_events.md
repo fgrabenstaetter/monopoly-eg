@@ -655,8 +655,6 @@
                 }, ...
             ],
             isInJail: int, // tour de prison du joueur ou false si pas en prison
-            turnPlayerID: int, // ou null si partie non encore commencée
-            turnEndTime: timestamp, // en ms (null si partie non encore commencée)
             cells: [], // voir gameStartedRes
             properties: [] // voir gameStartedRes et ligne ci-dessous (+ champ isMortgaged pour chaque propriété)
             // ATTENTION: si propriété == Street => l'objet contient aussi level (int de 0 à 5)
