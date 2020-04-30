@@ -18,6 +18,14 @@
         <img id="bus" src="/assets/img/ui/bus.png">
         <img id="bateau" src="/assets/img/ui/bateau.png">
         <router-link class="btn" to="/login">JOUER !</router-link>
+        <div id="download-box">
+          <p>Télécharger le client desktop</p>
+          <div id="platform-icons-container">
+            <a href="#"><i class="fab fa-apple"></i></a>
+            <a href="#"><i class="fab fa-linux"></i></a>
+            <a href="#"><i class="fab fa-windows"></i></a>
+          </div>
+        </div>
         <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
     </div>

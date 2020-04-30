@@ -339,7 +339,7 @@ class Game {
     }
 
     nextTurn() {
-        // si le joueur précédent n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+        // si le joueur n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         if (this.turnData.asyncRequestType != null)
             this.asyncActionExpired();
 
@@ -352,6 +352,7 @@ class Game {
             return;
         }
 
+        this.resetTurnActionData();
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
@@ -402,6 +403,10 @@ class Game {
     rollDice (useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
+
+        // si le joueur n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
+        if (this.turnData.asyncRequestType != null)
+            this.asyncActionExpired();
 
         this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();

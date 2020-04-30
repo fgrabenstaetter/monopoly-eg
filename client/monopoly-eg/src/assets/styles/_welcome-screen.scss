@@ -95,14 +95,14 @@
     transform: translate(calc(-50% - 180px), calc(-50% + 150px));
     z-index: 150;
 
-    @media (max-height: 790px) {
+    @media (max-height: 900px) {
       transform: translate(calc(-50% - 230px), calc(-50% + 150px));;
     }
   }
 
   .btn {
     position: absolute;
-    bottom: 10%;
+    bottom: 130px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 140px;
@@ -116,12 +116,42 @@
     box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.3);
   }
 
-  .credits {
+  #download-box {
     position: absolute;
-    bottom: 5%;
+    bottom: 25px;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 15px;
+    color: rgba($color: #FFFFFF, $alpha: 0.5);
+    
+    p {
+      font-size: 13px;
+      font-family: 'Roboto', sans-serif;
+      margin: 0 auto 10px auto;
+    }
+
+    #platform-icons-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+
+      a {
+        margin: 0 10px;
+      
+        &:hover {
+          color: white;
+        } 
+      }
+    }
+  }
+
+  .credits {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
     color: rgba($color: white, $alpha: 0.5);
     text-decoration: underline;
     cursor: pointer;

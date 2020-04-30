@@ -102,14 +102,14 @@ export default {
 
         if (this.env === 'lobby') {
             this.socket.on('lobbyChatReceiveRes', (mess) => {
-                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser._id) {
+                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
                     this.audio.sfx.newMessage.play();
                 }
                 this.messages.push(mess);
             });
         } else {
             this.socket.on('gameChatReceiveRes', (mess) => {
-                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser._id) {
+                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
                     this.audio.sfx.newMessage.play();
                 }
                 const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};

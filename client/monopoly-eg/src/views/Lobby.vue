@@ -747,7 +747,8 @@ export default {
             this.friends.push({
                 id: res.id,
                 nickname: res.nickname,
-                avatar: this.$store.getters.serverUrl + res.avatar
+                avatar: this.$store.getters.serverUrl + res.avatar,
+                showInSearch: true
             });
         });
 
