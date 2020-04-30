@@ -11,6 +11,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div v-if="env =='game'" class="mb-4">
+                            <span>Temps restant : {{$parent.gameRemainingTime}}</span>
+                            <span v-if="gameRemainingTime">{{gameRemainingTime}}</span>
+                            <span v-else>Illimité</span>
+                        </div>
                         <ul>
                             <li>
                                 <span>Qualité graphique</span>
@@ -34,10 +39,6 @@
                             <li style="flex-wrap:wrap;">
                                 <span>Effets sonores</span>
                                 <input @change="updateUserSettings" v-model="userSettings.sfxLevel" type="range" min="0" max="100" class="range-slider">
-                            </li>
-                            <li style="flex-wrap:wrap;">
-                                <span>Temps restant</span>
-                                <span>{{$parent.gameRemainingTime}}</span>
                             </li>
                         </ul>
 
@@ -291,6 +292,25 @@ export default {
     },
     mounted() {
         this.userSettings = this.loggedUser.settings;
+    },
+    computed: {
+        gameRemainingTime() {
+            if (this.env != 'game') return false;
+            if (this.$parent.gameRemainingTime == null) return false;
+            let timeMs = this.$parent.gameRemainingTime;
+
+            let seconds = Math.floor((timeMs / 1000) % 60),
+                minutes = Math.floor((timeMs / (1000 * 60)) % 60),
+                hours = Math.floor((timeMs / (1000 * 60 * 60)) % 24);
+
+            let gameTime = '';
+            if (hours > 0)
+                gameTime += `${hours}h `;
+
+            gameTime += `${minutes}min ${seconds}sec`;
+
+            return gameTime;
+        }
     },
     methods: {
         updateUserSettings() {

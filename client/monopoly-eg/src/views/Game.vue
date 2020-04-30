@@ -182,38 +182,9 @@
             <div class="label">Temps de jeu</div>
             <div class="value">{{endGame.gameTime}}</div>
           </div>
-          <div class="info">
-            <div class="label">Info</div>
-            <div class="value">Valeur</div>
-          </div>
           <router-link to="/lobby" class="btn stylized">Revenir au lobby</router-link>
         </div>
       </div>
-
-      <!--
-            <script>
-                const player = {
-                    id: 1,
-                    nickname: 'Michel',
-                    money: 1000
-                }
-                createPlayerEntry(player);
-                initProperty();
-                createProperty("1", "red", "Avenue", "1");
-                createProperty("1", "red", "Avenue2", "2");
-                createProperty("1", "red", "Avenue3", "3");
-                createProperty("1", "station", "Université", "8");
-                createProperty("1", "station", "Université2", "5");
-                createProperty("1", "station", "Université3", "6");
-                createProperty("1", "station", "Université4", "7");
-                createProperty("1", "company", "Syndicat Des Eaux et de l'Assainissement", "7");
-                createProperty("1", "company", "Eléctricité de Strasbourg", "7");
-
-                hideLoaderOverlay();
-                displayPropertyInfos(JSON.parse('{"id":0,"type":"company","name":"Eau","description":"Quelle magnifique rue !","color":"brown","prices":{"empty":60,"house":50,"hostel":250},"rentalPrices":{"empty":2,"house":[10,30,90,160],"hostel":250},"housesNb":0}'));
-                openBidPopup(1, "Nombeaucoupbeaucoupbeaucoupbeaucoupbeaucouptroplongcanerentrepas", "caaussic'estbeaucouptroplongmaisvraimentvraimenttroplongattentioncavadepasserjelesenscavadepassercavadepasserauttention");
-            </script>
-      -->
     </div>
 
     <full-screen-loader v-if="loading"></full-screen-loader>
@@ -893,7 +864,6 @@ export default {
         this.cells = res.cells;
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
-        this.currentPlayerID = res.turnPlayerID;
 
         if (this.gameEndTime) {
           this.gameRemainingTime = this.gameEndTime - Date.now();
