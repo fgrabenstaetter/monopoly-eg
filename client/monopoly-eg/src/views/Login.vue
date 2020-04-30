@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="background-container"></div>
+    
     <div class="login-ui-container">
       <div class="card">
         <div class="card-header">CONNECTEZ-VOUS</div>
@@ -27,6 +28,13 @@
           </div>
           <a id="forgot-password" href="#">Mot de passe oublié ?</a>
         </div>
+      </div>
+    </div>
+
+    <div class="resolution-overlay-container">
+      <div>
+        Oups... c'est petit ici
+        <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
       </div>
     </div>
   </div>

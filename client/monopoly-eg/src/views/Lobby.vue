@@ -191,6 +191,13 @@
 
         </div>
 
+        <!-- Resolution overlay -->
+        <div class="resolution-overlay-container">
+            <div>
+                Oups... c'est petit ici
+                <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
+            </div>
+        </div>
 
         <!-- Game settings modal -->
         <game-settings-modal :socket="socket" :loggedUser="loggedUser" env="lobby"></game-settings-modal>
