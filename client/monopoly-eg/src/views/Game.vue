@@ -150,7 +150,7 @@
 
             <form @submit.prevent="sendBid(bid)">
                 <div class="bid-input">
-                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" placeholder="Prix">€
+                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€
                     <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
                     <button :disabled="bid.disabled" class="bid-cancel" v-on:click="rejectBid(bid)">Passer</button>
                 </div>
@@ -804,6 +804,13 @@ export default {
         this.$refs.actionBtn.progressReset(false);
 
       console.log("=== fin gameActionRes ===");
+    },
+    
+    isNumber(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57)
+        evt.preventDefault();
     }
   },
   beforeDestroy() {
