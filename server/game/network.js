@@ -1269,9 +1269,10 @@ class Network {
 
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
-            let players = [], cells = [], properties = [],  chatMessages = [], bids = [], offers = [], playerProperties = [], cellsCounter = 0;
+            let players = [], cells = [], properties = [], chatMessages = [], bids = [], offers = [], cellsCounter = 0;
 
             for (const player of game.players) {
+                let playerProperties = [];
                 for (const prop of player.properties)
                     playerProperties.push(prop.id);
 

@@ -187,6 +187,14 @@
       </div>
     </div>
 
+    <!-- Resolution overlay -->
+    <div class="resolution-overlay-container">
+      <div>
+        Oups... c'est petit ici
+        <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
+      </div>
+    </div>
+
     <full-screen-loader v-if="loading"></full-screen-loader>
 
     <!-- Game settings modal -->

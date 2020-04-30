@@ -13,36 +13,77 @@ export default {
         }
     },
     methods: {
-        setDataLoadingTerminer() {
-            $('#timer').attr({ 'data-loading': 'TERMINER' });
-        },
+        /**
+         * @vuese
+         * Appel de la fonction d'initialisation du bouton
+         */
         progressInitialize() {
             $('#timer').progressInitialize();
         },
+        /**
+         * @vuese
+         * Remet le bouton a un etat cliquable
+         * @param hard determine s'il faut remettre le bouton à l'état initial ou pas
+         */
         progressReset(hard) {
             $('#timer').progressReset(hard);
         },
+        /**
+         * @vuese
+         * Commence le minuteur du duree de sec secondes
+         * @param sec la duree du minuteur
+         */
         progressStart(sec) {
             $('#timer').progressStart(sec);
         },
+        /**
+         * @vuese
+         * Termine le minuteur
+         */
         progressFinish() {
             $('#timer').progressFinish();
         },
+        /**
+         * @vuese
+         * Incremente le minuteur d'une valeur val donne
+         * @param val la valeur a incrementer
+         */
         progressIncrement(val) {
             $('#timer').progressIncrement(val);
         },
+        /**
+         * @vuese
+         * Changement du label de chargement à 'TERMINER'
+         */
         progressSetStateTerminer() {
             $('#timer').progressSetStateTerminer();
         },
+        /**
+         * @vuese
+         * Changement du label de chargement à 'RELANCER LES DES'
+         */
         progressSetStateRelancer() {
             $('#timer').progressSetStateRelancer();
         },
+        /**
+         * @vuese
+         * Change la position de la barre du minuteur à une valeur val donne
+         * @param val la valeur en pourcentage
+         */
         progressSet(val) {
             $('#timer').progressSet(val);
         },
+        /**
+         * @vuese
+         * Met en pause le minuteur 
+         */
         progressPause() {
             $('#timer').progressPause();
         },
+        /**
+         * @vuese
+         * Reprise du minuteur
+         */
         progressResume() {
             $('#timer').progressResume();
         }
@@ -56,86 +97,72 @@ export default {
         
         $('#timer').click(function (e) {
             e.preventDefault();
-            // This function will show a progress meter for
-            // the specified amount of time
+            // Si le label est sur 'RE/LANCER LES DES' desactive le click sur le bouton et appelle la fonction de lancer de des
             if ($(this).attr('data-loading') == 'LANCER LES DES' || $(this).attr('data-loading') == 'RELANCER LES DES') {
-                // socket lancer les dés
                 $(this).addClass('disabled');
                 _this.$parent.gameRollDiceReq();
             }
+            // Sinon il termine le minuteur
             else {
                 _this.$parent.gameTurnEndReq();
                 $(this).progressFinish();
             }
         });
 
-        // The progress meter functionality is available as a series of plugins.
-        // You can put this code in a separate file if you wish to keep things tidy.
-
         (function ($) {
             var isRunning = true;
-            // Creating a number of jQuery plugins that you can use to
-            // initialize and control the progress meters.
-
+            
+            // fonction qui initalise le bouton action
             $.fn.progressInitialize = function () {
-                // This function creates the necessary markup for the progress meter
-                // and sets up a few event listeners.
-
-                // Loop through all the buttons:
 
                 var button = $(this),
                     progress = 0;
 
-                // Add the data attributes if they are missing from the element.
-                // They are used by our CSS code to show the messages
+                //Ajout des attribut pour changer les labels lors des différentes phases du bouton
                 button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
                 button.addClass('disabled');
-                // Add the needed markup for the progress bar to the button
+
+                // Ajoute une bar de progression sur le bouton
                 var bar = $('<span class="tz-bar">').appendTo(button);
 
-                // The progress event tells the button to update the progress bar
+                // Evenement demandant la mise a jour de la barre de progression
                 button.on('progress', function (e, val, absolute, finish) {
 
                     if (!button.hasClass('in-progress')) {
 
-                        // This is the first progress event for the button (or the
-                        // first after it has finished in a previous run). Re-initialize
-                        // the progress and remove some classes that may be left.
-
+                        // Si le button n'a pas la class 'in-progress' on l'ajoute et on initialise la barre de progression
                         bar.show();
                         progress = 0;
                         button.removeClass('finished').addClass('in-progress')
                     }
 
-                    // val, absolute and finish are event data passed by the progressIncrement
-                    // and progressSet methods that you can see near the end of this file.
-
+                    // Si absolute alors la progress est egale a la valeur
                     if (absolute) {
                         progress = val;
                     }
+                    // Sinon on ajoute la valeur a la progression actuel
                     else {
                         progress += val;
                     }
-
+                    // Si progress depasse 100 on le remet a 100 
                     if (progress >= 100) {
                         progress = 100;
                     }
-
+                    // Si finish alors on remet la barre a 0 et on le cache
                     if (finish) {
-
                         button.removeClass('in-progress').addClass('finished');
                         bar.hide();
                         setProgress(0);
                     }
-
+                    // Met la barre de progression a la bonne valeur
                     setProgress(progress);
                 });
-
+                // Met la position de la barre du minuteur à une valeur val donne
                 function setProgress(percentage) {
                     bar.filter('.tz-bar').width(percentage + '%');
                 }
             };
-
+            // Reinitialise le bouton
             $.fn.progressReset = function (hard = true) {
                 var button = $(this);
                 if (button.hasClass('disabled')) {
@@ -145,45 +172,39 @@ export default {
                     button.attr({ 'data-loading': 'LANCER LES DES', 'data-finished': 'EN ATTENTE' });
                 }
             }
-            // progressStart simulates activity on the progress meter. Call it first,
-            // if the progress is going to take a long time to finish.
 
+            // Lance le minuteur
             $.fn.progressStart = function(time){
             var button = this.first();
 
+                // Evite d'avoir plusieurs interval en meme temps et redemare le minuteur
                 if(button.hasClass('in-progress')){
-                    // Don't start it a second time!
                     window.clearInterval(interval);
                     button.progressSet(0);
                 }
 
-                button.on('progress', function(){
-                    // last_progress = new Date().getTime();
-                });
-
-                // Every half a second check whether the progress
-                // has been incremented in the last two seconds
-
+                // Toute les 0,2 secondes remet a jour le minuteur
                 var interval = window.setInterval(function(){
+                    // Si le minuteur n'est pas en pause, incremente la barre de progression
                     if (isRunning) {
+                        // Si la barre de progression atteint la fin, on termine le minuteur
                         if($('.tz-bar').width() >= $('#controlButton').innerWidth())
                         {
                             button.trigger('progress-finish');
                             button.trigger('progress',[0, false, true]);
                         }
                         else{
-                            // There has been no activity for two seconds. Increment the progress
-                            // bar a little bit to show that something is happening
                             button.progressIncrement(100/(time/0.2));
                         }
                     }
                 }, 200);
-
+                // Supprime l'interval quand le minuteur se termine
                 button.on('progress-finish',function(){
                     window.clearInterval(interval);
                 });
             };
 
+            // Termine le minuteur
             $.fn.progressFinish = function(){
                 $(this).addClass('disabled');
                 $(this).attr({'data-loading': 'LANCER LES DES'});
@@ -192,21 +213,25 @@ export default {
                 $(this).trigger('progress',[0, false, true]);
             };
 
+            // Incremente la barre de progression
             $.fn.progressIncrement = function(val){
                 var button = this.first();
                 return button.trigger('progress',[val, false]);
             };
 
+            // Met le label de chargement à 'TERMINER'
             $.fn.progressSetStateTerminer = function(){
                 $(this).attr({'data-loading': 'TERMINER'});
                 return this;
             };
-
+            
+            // Met le label de chargement à 'RELANCER LES DES'
             $.fn.progressSetStateRelancer = function(){
                 $(this).attr({'data-loading': 'RELANCER LES DES'});
                 return this;
             };
 
+            // Met la barre de progression a une valeur donne
             $.fn.progressSet = function (val) {
                 // val = val;
                 console.log('set : ' + val);
@@ -218,10 +243,12 @@ export default {
                 return this.first().trigger('progress', [val, true, finish]);
             };
 
+            // Met le minuteur en pause
             $.fn.progressPause =  function(){
                 isRunning = false;
             };
 
+            // Reprise du minuteur
             $.fn.progressResume =  function(){
                 isRunning = true;
             };
