@@ -161,7 +161,7 @@ class Network {
         // Chat + offres et enchères
         this.gameChatSendReq              (player, game);
         this.gameOfferSendReq             (player, game);
-        this.gameOfferAcceptReq           (player, game);
+        this.gameOfferActionReq           (player, game);
         this.gameOverbidReq               (player, game);
         this.gameManualBidReq             (player, game);
 
@@ -188,7 +188,7 @@ class Network {
         // Chat + removeAllListenersres et enchères
         player.socket.removeAllListeners('gameChatSendReq');
         player.socket.removeAllListeners('gameOfferSendReq');
-        player.socket.removeAllListeners('gameOfferAcceptReq');
+        player.socket.removeAllListeners('gameOfferActionReq');
         player.socket.removeAllListeners('gameOverbidReq');
         player.socket.removeAllListeners('gameManualBidReq');
 
@@ -1113,13 +1113,13 @@ class Network {
         });
     }
 
-    gameOfferAcceptReq(player, game) {
-        player.socket.on('gameOfferAcceptReq', (data) => {
+    gameOfferActionReq(player, game) {
+        player.socket.on('gameOfferActionReq', (data) => {
             let err = Errors.SUCCESS, offer;
             if (data)
                 data.offerID = parseInt(data.offerID);
 
-            if (!data || isNaN(data.offerID))
+            if (!data || isNaN(data.offerID) || data.accept == null)
                 err = Errors.MISSING_FIELD;
             else if (player.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
@@ -1128,7 +1128,7 @@ class Network {
             else if (offer.maker.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else {
-                if (!offer.accept())
+                if ((data.accept && !offer.accept()) || !data.accept && !offer.expired())
                     err = Errors.UNKNOW;
                 else {
                     this.io.to(game.name).emit('gameOfferFinishedRes', {
@@ -1137,12 +1137,12 @@ class Network {
                         price      : offer.amount,
                         propertyID : offer.property ? offer.property.id : -1, // -1 => carte sortie de prison
                         makerID    : offer.maker.id,
-                        accepted   : true
+                        accepted   : data.accept
                     });
                 }
             }
 
-            player.socket.emit('gameOfferAcceptRes', { error: err.code, status: err.status });
+            player.socket.emit('gameOfferActionRes', { error: err.code, status: err.status });
         });
     }
 

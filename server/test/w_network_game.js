@@ -644,13 +644,14 @@ describe('Network + Game', () => {
                 if (++ nb === 4) done();
             });
 
-            sock2.on('gameOfferAcceptRes', (data) => {
+            sock2.on('gameOfferActionRes', (data) => {
                 assert.strictEqual(data.error, 0);
                 if (++ nb === 4) done();
             });
 
-            sock2.emit('gameOfferAcceptReq', {
-                offerID: nextOfferID
+            sock2.emit('gameOfferActionReq', {
+                offerID: nextOfferID,
+                accept: true
             });
         });
 
@@ -710,6 +711,7 @@ describe('Network + Game', () => {
                 assert.strictEqual(data.price, 456);
                 assert.strictEqual(data.propertyID, -1);
                 assert.strictEqual(data.makerID, player.id);
+                assert.strictEqual(data.accepted, true);
 
                 // tests sur game
                 assert.strictEqual(player2.money, Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + 456);
@@ -719,13 +721,14 @@ describe('Network + Game', () => {
                 if (++ nb === 4) done();
             });
 
-            sock2.on('gameOfferAcceptRes', (data) => {
+            sock2.on('gameOfferActionRes', (data) => {
                 assert.strictEqual(data.error, 0);
                 if (++ nb === 4) done();
             });
 
-            sock2.emit('gameOfferAcceptReq', {
-                offerID: nextOfferID
+            sock2.emit('gameOfferActionReq', {
+                offerID: nextOfferID,
+                accept: true
             });
         });
 

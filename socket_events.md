@@ -1014,17 +1014,18 @@
         }
         ```
 
-- **Accepter une proposition d'offre**
+- **Accepter/Refuser une proposition d'offre**
 
-    * **Requête:** gameOfferAcceptReq
+    * **Requête:** gameOfferActionReq
         * *Données:*
         ```javascript
         {
-            offerID: int
+            offerID: int,
+            accept: bool // true => accepter, false => refuser
         }
          ```
 
-    * **Réponse:** gameOfferAcceptRes
+    * **Réponse:** gameOfferActionRes
         * *Données:*
         ```javascript
         {
