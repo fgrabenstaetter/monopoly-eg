@@ -32,7 +32,7 @@ const Properties = {
 
     STREET: [
         {
-            name: 'Rue du vieux marché aux poissons',
+            name: 'Rue du Vieux Marché aux Poissons',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BROWN,
             prices: {
@@ -47,7 +47,7 @@ const Properties = {
             }
         },
         {
-            name: 'Rue des tonneliers',
+            name: 'Rue des Tonneliers',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BROWN,
             prices: {
@@ -227,7 +227,7 @@ const Properties = {
             }
         },
         {
-            name: 'Avenue de la forêt noire',
+            name: 'Avenue de la Forêt Noire',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.RED,
             prices: {
@@ -287,7 +287,7 @@ const Properties = {
             }
         },
         {
-            name: 'Rue des balayeurs',
+            name: 'Rue des Balayeurs',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
@@ -302,7 +302,7 @@ const Properties = {
             }
         },
         {
-            name: 'Rue Des Orphelins',
+            name: 'Rue des Orphelins',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
@@ -317,7 +317,7 @@ const Properties = {
             }
         },
         {
-            name: 'Rue de la première Armée',
+            name: 'Rue de la Première Armée',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
@@ -332,7 +332,7 @@ const Properties = {
             }
         },
         {
-            name: 'Rue des grandes Arcades',
+            name: 'Rue des Grandes Arcades',
             description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BLUE,
             prices: {
