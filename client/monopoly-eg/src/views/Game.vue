@@ -1342,7 +1342,7 @@ export default {
 
         if (player.id == this.loggedUser.id) {
           const autoStr = res.auto ? ' automatiquement' : '';
-          if (mortgagedPropertiesNames.length == 1) {
+          if (mortgagedPropertiesNames.length == 1) {
             this.$parent.toast(`Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`, 'success', 3);
           } else {
             this.$parent.toast(`Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(', ')}`, 'success', 5);

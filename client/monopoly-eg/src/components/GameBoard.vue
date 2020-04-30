@@ -8,6 +8,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import TWEEN from '@tweenjs/tween.js';
 
+/**
+ * @vuese
+ * @group Components
+ * Plateau du jeu (utilisé dans le jeu)
+ */
 export default {
   name: 'GameBoard',
   data() {
@@ -182,22 +187,31 @@ export default {
             'd39' : 'Plane39_0'
         },
 
+        // Variables pour le rendu de la scène
         renderer: null,
         scene: null,
         camera: null,
         gltfLoader: null,
 
+        // Variables pour le déplacement du pion
         varMovement: null,
         varCase: null,
         posPawn: null,
 
+        // Zoom par défaut à 1 - activé
         zoomOn: 1,
+        // Case d'arrivée du pion
         vdp: null,
 
+        // Tableau qui contiendra les pions
         objs: []
 
       }
   },
+    /**
+     * @vuese
+     * Paramètres pour le rendu de la scène, caméra, renderer, lumière
+     */
   mounted() {
         const canvas = document.querySelector('#c');
         const HEIGHT = canvas.clientHeight;
@@ -303,6 +317,7 @@ export default {
   },
   methods: {
     /**
+     * @vuese
      * Adapte la qualité des graphismes en fonctions des paramètres utilisateur
      */
     refreshPlayerGraphicsQuality() {
@@ -315,6 +330,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Adapte le zoom auto en fonction des paramètres utilisateur
      */
     refreshPlayerAutoZoom() {
@@ -322,6 +338,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime une maison
      * @param {int} Numero de case
      * @param {int} Numero de maison
@@ -332,6 +349,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime une maison (Auxiliaire)
      * @param {string} Numero de la maison
      */
@@ -340,6 +358,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime un hotel
      * @param {int} Numero de case
      */
@@ -349,6 +368,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime un hotel (Auxiliaire)
      * @param {string} Numero de l'hotel
      */
@@ -358,6 +378,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime un pion
      * @param {string} nom du pion
      */
@@ -368,6 +389,7 @@ export default {
 
 
     /**
+     * @vuese
      * Modifie la couleur du drapeau
      * @param {string} Nom du drapeau
      * @param {string} Nom de la couleur
@@ -378,6 +400,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Supprime un drapeau
      * @param {string} Nom du drapeau
      */
@@ -386,6 +409,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Ajoute un drapeau de la couleur du joueur sur la propriété
      * @param {string} Nom du drapeau
      * @param {string} Nom de la couleur
@@ -405,10 +429,20 @@ export default {
         });
     },
 
+    /**
+     * @vuese
+     * Efface l'hypothèque de la propriété
+     * @param {string} Cell de la case ('hyp1')
+     */
     deleteHypotheque(cell) {
         this.scene.remove(this.objs[`hyp${cell}`]);
     },
 
+    /**
+     * @vuese
+     * Charge l'hypothèque pour la propriété
+     * @param {string} Cell de la case ('hyp1')
+     */
     loaderHypotheque(cell) {
         this.gltfLoader.load(`/assets/models/hypotheque/hyp${cell}.gltf`, (gltf) => {
             const root = gltf.scene;
@@ -418,6 +452,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Ajoute un pion à la case qu'on veut
      * @param {string} pawn Le nom du pion (Ex: 'moto')
      * @param {int} vdp Un entier entre [0-39]
@@ -457,6 +492,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Fonction auxiliaire - Charge une maison à la case spécifiée
      * @param {int} ncase Chiffre de la case
      * @param {int} nhouse Entier entre [1-4]. 1 -> met la case en bas à droite de la case
@@ -470,6 +506,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Fonction prinicpale - Charge une maison à la case spécifiée
      * @param {string} houseProperty  Nom de la maison (Ex: M3_1_2)
      */
@@ -482,6 +519,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Fonction auxiliaire - Charge un hôtel à la case spécifiée
      * @param {int} ncase Chiffre de la case 
      */
@@ -491,6 +529,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Fonction principale - Charge un hôtel à la case spécifiée
      * @param {string} hotelPropriete Nom de l'hôtel (Ex: H1_2)
      */
@@ -503,6 +542,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Active ou désactive le zoom sur le plateau
      * @param {int} number Entier entre [0-1]. 0 pour désactiver le zoom et 1 pour l'activer
      */
@@ -510,6 +550,14 @@ export default {
         this.zoomOn = number;
     },
 
+    /**
+     * @vuese
+     * Animation pour le déplacement des pions
+     * @param {int} pawn Nom du pion
+     * @param {int} vectorToAnimate La position du pion
+     * @param {int} target Les coordonnées de la case d'arrivée
+     * @param {int} options Options - Callback
+     */
     /* Animates a Vector3 to the target */
     animateVector3(pawn, vectorToAnimate, target, options){
         options = options || {};
@@ -531,71 +579,93 @@ export default {
                     pawn.rotateY(Math.PI / -2);
                     if (_this.vdp >= 11 && _this.vdp <= 20) {
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);
-                        _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
                     } else if (_this.vdp == 0 || _this.vdp == 1 || _this.vdp == 39 || _this.vdp == 24 || _this.vdp == 21) {
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[20], options);
-                        _this.tweenCamera(_this.tabCases[20], 3140);
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[20], 3140);
                     }
-                } else if (pawn.position.x.toFixed(2) == 0.34 && (pawn.position.z.toFixed(2) == 0.33 || 
-                            pawn.position.z.toFixed(2) == 0.34)) {
-                    pawn.rotateY(Math.PI / -2);
-                    if (_this.vdp >= 21 && _this.vdp <= 30) {
-                        _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);	
-                        _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
-                    } else if (_this.vdp == 0 || _this.vdp == 1 || _this.vdp == 39 || _this.vdp == 31) {
-                        _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[30], options);
-                        _this.tweenCamera(_this.tabCases[30], 3140);
+                } else if ((pawn.position.x.toFixed(2) == 0.34 || (pawn.position.x.toFixed(2) == 0.33)) && 
+                            (pawn.position.z.toFixed(2) == 0.33 || pawn.position.z.toFixed(2) == 0.34)) {
+                    if (_this.vdp == 18) {
+                        pawn.rotateY(Math.PI / 2);
+                        _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
+                    } 
+                    if (_this.vdp != 18) {
+                        pawn.rotateY(Math.PI / -2);
+                        if (_this.vdp >= 21 && _this.vdp <= 30) {
+                            _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);
+                            if (_this.zoomOn == 1)	
+                               _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
+                        } else if (_this.vdp == 0 || _this.vdp == 1 || _this.vdp == 39 || _this.vdp == 31) {
+                            _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[30], options);
+                            if (_this.zoomOn == 1)
+                                _this.tweenCamera(_this.tabCases[30], 3140);
+                        }	
                     }
                 } else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 0.34) {
                     pawn.rotateY(Math.PI / -2);
                     if (_this.vdp >= 31 && _this.vdp <= 39) {
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);	
-                        _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
+                       if (_this.zoomOn == 1)
+                           _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
                     } else if (_this.vdp == 0 || _this.vdp == 1 || _this.vdp == 11 || _this.vdp == 15) {
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[0], options);
-                        _this.tweenCamera(_this.tabCases[0], 3140);				
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[0], 3140);				
                     }
                 } else if (pawn.position.x.toFixed(2) == 3.85 && pawn.position.z.toFixed(2) == 3.85) {
                     pawn.rotateY(Math.PI / -2);
                     if (_this.vdp >= 1 && _this.vdp <= 10) {
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[_this.vdp], options);		
-                        _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[_this.vdp], 3140);
                     } else if (_this.vdp == 24 || _this.vdp == 11 || _this.vdp == 15) {		
                         _this.animateVector3(pawn, vectorToAnimate, _this.tabCases[10], options);
-                        _this.tweenCamera(_this.tabCases[10], 3140);	
+                        if (_this.zoomOn == 1)
+                            _this.tweenCamera(_this.tabCases[10], 3140);	
                     }
                 }
-                if (_this.tabCases[_this.vdp].x.toFixed(2) == to.x.toFixed(2) && _this.tabCases[_this.vdp].z.toFixed(2) == to.z.toFixed(2)) {
+                if (_this.tabCases[_this.vdp].x.toFixed(2) == to.x.toFixed(2) &&
+                    _this.tabCases[_this.vdp].z.toFixed(2) == to.z.toFixed(2)) {
                     if (typeof options === 'function') options();	
                 }
                     
             });
 
         // start the tween
-
         tweenVector3.start();
-        //console.log(pawn.position.x.toFixed(2));
-        // console.log(pawn.position.z.toFixed(2));
-        // console.log(tabCases[vdp].x.toFixed(2));
-        // console.log(to.x.toFixed(2));
-        // console.log("coin");
-        // console.log(coin);
                 
         // return the tween in case we want to manipulate it later on
         return tweenVector3;
     },
 
+    /**
+     * @vuese
+     * Réplace la caméra au centre du plateau
+     * @param {string} position Les coordonnées de la case d'arrivée
+     * @param {int} time La durée du mouvement de la caméra
+     */
     test(position, time) {
         new TWEEN.Tween(this.camera.position).to(position, time).easing(TWEEN.Easing.Quadratic.InOut)
         .start();
     },
 
+    /**
+     * @vuese
+     * Déplace la caméra en suivant le pion et fait un zoom sur le pion
+     * @param {string} position Les coordonnées de la case d'arrivée
+     * @param {int} time La durée du mouvement de la caméra
+     */
     tweenCamera(position, time){
         const _this = this;
         new TWEEN.Tween(_this.camera.position).to(position, time).easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(function(){
             if (_this.zoomOn == 1) {
-                _this.camera.near = -0.5;
+                _this.camera.near = -5;
                 _this.camera.zoom = 1.5;
                 _this.camera.updateProjectionMatrix();
             }
@@ -612,6 +682,7 @@ export default {
     },
 
     /**
+     * @vuese
      * Déplace le pion sur le plateau
      * @param {string} pawn Le nom du pion (Ex: 'moto')
      * @param {int} vdp Un entier entre [0-39] 
@@ -628,170 +699,164 @@ export default {
             }
         }
 
-            if(this.vdp > this.posPawn && this.vdp < 10){
-                // route en bas
-                console.log("1");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140); 
-
-            } else if (this.vdp == 10 && this.posPawn < 10) {
-                // pour aller dans le coins en bas a gauche
-                console.log("2");
-                //movementAux(1, pawn, 10, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn == 10 && this.vdp > 10 && this.vdp < 20) {
-                // aller du coin en bas a gauche vers la route de gauche
-                console.log("3");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn >= 0 && this.posPawn < 10 && this.vdp > 10 && this.vdp < 22) {
-                // de la route en bas à la route à gauche
-                console.log("4");
-                //movementAux(1, pawn, 10, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[10], 3140);
-            } else if (this.posPawn > 10 && this.posPawn < 20 && this.vdp > 10 && this.vdp < 20) {
-                // route de gauche vers la route à gauche
-                console.log("5");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.vdp == 20 && this.posPawn < 20) {
-                // pour aller dans le coin en haut a gauche
-                console.log("6");
-                //movementAux(1, pawn, 20, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn == 20 && this.vdp > 20 && this.vdp < 30) { 
-                // aller du coin en haut a gauche vers la route d'en haut
-                console.log("7");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-                // changer en <= 31 avant c'était < 30
-            } else if (this.posPawn >= 10 && this.posPawn < 20 && this.vdp > 20 && this.vdp <= 31) { 
-                // de la route gauche à la route d'en haut
-                console.log("8");
-                //movementAux(1, pawn, 20, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[20], 3140);
-            } else if (this.posPawn > 20 && this.posPawn < 30 && this.vdp > 20 && this.vdp < 30) { 
-                // route d'en haut vers la route d'en haut
-                console.log("9");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.vdp == 30 && this.posPawn < 30) {
-                // pour aller dans le coin en haut a droite
-                console.log("10");
-                //movementAux(1, pawn, 30, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn == 30 && this.vdp > 30) {
-                // aller du coin en haut a droite vers la route a droite
-                console.log("11");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn >= 20 && this.posPawn < 30 && this.vdp > 30 && this.vdp <= 39) {
-                // de la route d'en haut à la route de droite
-                console.log("12");
-                //movementAux(1, pawn, 30, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[30], 3140);
-            } else if (this.posPawn > 30 && this.posPawn < 39 && this.vdp >= 31 && this.vdp <= 39) { 
-                // route de droite vers la route de droite
-                console.log("13");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp == 0) {
-                // pour aller dans le coin en bas à droite
-                console.log("14");
-                //movementAux(0, pawn, 0, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn == 0 && this.vdp > 0) {
-                // aller du coin en bas a droite vers la route d'en bas
-                console.log("15");
-                //movementAux(0, pawn, vdp, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[this.vdp], 3140);
-            } else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp >= 0 && this.vdp <= 11) {
-                // de la route de droite à la route d'en bas
-                console.log("16");
-                //movementAux(1, pawn, 0, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[0], 3140);
-            } else if (this.posPawn >= 20 && this.posPawn <= 30 && this.vdp >= 0 && this.vdp <= 10) {
-                // de la route en haut à la route d'en bas
-                console.log("17");
-                //movementAux(1, pawn, 30, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[30], 3140);
-            } else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 39) {
-                // de la route en bas à la route de droite case 39
-                console.log("18");
-                //movementAux(1, pawn, 10, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[10], 3140);
-            } else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 24) {
-                // de la route en bas à la route d'en haut case 24
-                console.log("19");
-                //movementAux(1, pawn, 10, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[10], 3140);
-            } else if ((this.posPawn == 2 || this.posPawn == 7) && (this.vdp == 0 || this.vdp == 1)) {
-                // de la route en bas à la case de départ
-                console.log("20");
-                //movementAux(1, pawn, 10, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[10], 3140);
-            } else if (this.posPawn == 22 && (this.vdp == 15 || this.vdp == 11)) {
-                // de la route en haut à la route de gauche case 11 ou case 15
-                console.log("21");
-                //movementAux(1, pawn, 30, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[30], 3140);
-            } else if ((this.posPawn == 36 || this.posPawn == 33) && (this.vdp == 24 || this.vdp == 15 || this.vdp == 11)) {
-                // de la route a droite à la route d'en haut case 24
-                console.log("22");
-                //movementAux(1, pawn, 0, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[0], 3140);
-            } else if (this.posPawn == 17 && (this.vdp == 0) || this.vdp == 1) {
-                // de la route a gauche à la case de départ
-                console.log("23");
-                //movementAux(1, pawn, 20, callback);
-                this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
-                if (this.zoomOn == 1)
-                    this.tweenCamera(this.tabCases[20], 3140);
-            }
+        if (this.posPawn == 7 && this.vdp == 3) {
+            // Reculez de 4 cases - carte chance
+			console.log("Reculez de 4 cases");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[3], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn == 22 && this.vdp == 18) {
+            // Reculez de 4 cases - carte chance
+			console.log("Reculez de 4 cases");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
+			if (this.zoomOn == 1)
+                this.tweenCamera(this.tabCases[20], 3140);
+        } else if (this.posPawn == 36 && this.vdp == 32) {
+            // Reculez de 4 cases - carte chance
+			console.log("Reculez de 4 cases");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[32], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.vdp > this.posPawn && this.vdp < 10){
+			// Déplacement sur la route d'en bas
+			console.log("1");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140); 
+		} else if (this.vdp == 10 && this.posPawn < 10) {
+			// Pour aller dans le coin en bas à gauche
+			console.log("2");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn == 10 && this.vdp > 10 && this.vdp < 20) {
+			// Du coin en bas à gauche vers la route gauche
+			console.log("3");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+        } else if (this.posPawn >= 0 && this.posPawn < 10 && this.vdp > 10 && this.vdp < 22) {
+			// De la route d'en bas à la route gauche
+			console.log("4");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[10], 3140);
+		} else if (this.posPawn > 10 && this.posPawn < 20 && this.vdp > 10 && this.vdp < 20) {
+			// Déplacement sur la route gauche
+			console.log("5");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.vdp == 20 && this.posPawn < 20) {
+			// Aller dans le coin en haut à gauche
+			console.log("6");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn == 20 && this.vdp > 20 && this.vdp < 30) { 
+			// Du coin en haut à gauche vers la route d'en haut
+			console.log("7");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn >= 10 && this.posPawn < 20 && this.vdp > 20 && this.vdp <= 31) { 
+			// De la route gauche à la route d'en haut
+			console.log("8");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[20], 3140);
+		} else if (this.posPawn > 20 && this.posPawn < 30 && this.vdp > 20 && this.vdp < 30) { 
+			// Déplacement sur la route d'en haut
+			console.log("9");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.vdp == 30 && this.posPawn < 30) {
+			// Aller dans le coin en haut à droite
+			console.log("10");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn == 30 && this.vdp > 30) {
+			// Du coin en haut à droite vers la route de droite
+			console.log("11");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn >= 20 && this.posPawn < 30 && this.vdp > 30 && this.vdp <= 39) {
+			// Route d'en haut à la route de droite
+			console.log("12");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[30], 3140);
+		} else if (this.posPawn > 30 && this.posPawn < 39 && this.vdp >= 31 && this.vdp <= 39) { 
+			// Déplacement sur la route de droite
+			console.log("13");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp == 0) {
+			// Aller dans le coin en bas à droite
+			console.log("14");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn == 0 && this.vdp > 0) {
+			// Du coin en bas à droite vers la route d'en bas
+			console.log("15");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[this.vdp], 3140);
+		} else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp >= 0 && this.vdp <= 11) {
+			// De la route de droite à la route d'en bas
+			console.log("16");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[0], 3140);
+		} else if (this.posPawn >= 20 && this.posPawn <= 30 && this.vdp >= 0 && this.vdp <= 10) {
+			// De la route en haut à la route d'en bas
+			console.log("17");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[30], 3140);
+		} else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 39) {
+			// De la route en bas à la route de droite - case 39
+			console.log("18");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[10], 3140);
+		} else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 24) {
+			// De la route en bas à la route d'en haut - case 24
+			console.log("19");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[10], 3140);
+		} else if ((this.posPawn == 2 || this.posPawn == 7) && (this.vdp == 0 || this.vdp == 1)) {
+			// De la route en bas à la case de départ
+			console.log("20");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[10], 3140);
+		} else if (this.posPawn == 22 && (this.vdp == 15 || this.vdp == 11)) {
+			// De la route en haut à la route de gauche - case 11 ou case 15
+			console.log("21");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[30], 3140);
+		} else if ((this.posPawn == 36 || this.posPawn == 33) && (this.vdp == 24 || this.vdp == 15 || this.vdp == 11)) {
+			// De la route a droite à la route d'en haut - case 24
+			console.log("22");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[0], 3140);
+		} else if (this.posPawn == 17 && (this.vdp == 0) || this.vdp == 1) {
+			// De la route à gauche à la case de départ
+			console.log("23");
+			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
+			if (this.zoomOn == 1)
+				this.tweenCamera(this.tabCases[20], 3140);
+		}
+            
     }
 
   }

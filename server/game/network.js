@@ -869,51 +869,47 @@ class Network {
             return;
         }
 
-        // ajouter carte chance/communauté si une a été tirée
-        const extra = {};
-        let cardToSend = null;
-        const tmpc = (cellPosSave + diceRes[0] + diceRes[1]) % 40;
-        const cellPosTmp = ((!player.isInPrison || (!wasInPrison && player.isInPrison)) && player.cellPos !== tmpc) ? tmpc : null;
+        // cellPosTmp + cartes chance/communauté
+        const extra             =  {};
+        const tmpCellPos        =  (cellPosSave + diceRes[0] + diceRes[1]) % 40;
 
-        if (cellPosTmp === null) {
-            if (game.curCell.type === Constants.CELL_TYPE.CHANCE) {
-                cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
+        const tmpCell           =  game.cells[tmpCellPos];
+        const tmpCellIsCard     =  [Constants.CELL_TYPE.CHANCE, Constants.CELL_TYPE.COMMUNITY].indexOf(tmpCell.type) !== -1;
+        const camePrisonShould  =  tmpCellIsCard || tmpCell.type === Constants.CELL_TYPE.GOPRISON;
+
+        const useTmpCell        =  ( (!player.isInPrison || (camePrisonShould && !wasInPrison && player.isInPrison) )
+                                    && player.cellPos !== tmpCellPos) ? true : false;
+
+        const cellToProcess     = useTmpCell ? tmpCell : game.curCell;
+
+        if (tmpCellIsCard) {
+            // carte chance / communauté à ajouter à la réponse socket
+            if (cellToProcess.type === Constants.CELL_TYPE.CHANCE) {
+                const drawnCards = game.chanceDeck.drawnCards;
+                const cardToSend = drawnCards[drawnCards.length - 1];
                 extra.newCard = {
                     type: 'chance',
                     description: cardToSend.description
                 }
-            }
-            else if (game.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
-                cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
-                extra.newCard = {
-                    type: 'community',
-                    description: cardToSend.description
-                }
-            }
-        }
-        else {
-            if (game.cells[cellPosTmp].type === Constants.CELL_TYPE.CHANCE) {
-                cardToSend = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-                extra.newCard = {
-                    type: 'chance',
-                    description: cardToSend.description
-                }
-            }
-            else if (game.cells[cellPosTmp].type === Constants.CELL_TYPE.COMMUNITY) {
-                cardToSend = game.communityChestDeck.drawnCards[game.communityChestDeck.drawnCards.length - 1];
+
+            } else if (cellToProcess.type === Constants.CELL_TYPE.COMMUNITY) {
+                const drawnCards = game.communityChestDeck.drawnCards;
+                const cardToSend = drawnCards[drawnCards.length - 1];
                 extra.newCard = {
                     type: 'community',
                     description: cardToSend.description
                 }
             }
 
-            // exécuter le nécéssaire pour la case sur laquelle on a été deplacé
-            game.makeTurnAfterMove(diceRes, player, tmpc);
+            if (useTmpCell && !player.isInPrison) {
+                // exécuter le nécéssaire pour la case sur laquelle on a été deplacé
+                game.makeTurnAfterMove(diceRes, player, tmpCellPos);
+            }
         }
 
         // calcul les modifs
         let updateMoneyList = [];
-        for (let i = 0; i < game.players.length; i++) {
+        for (let i = 0; i < game.players.length; i ++) {
             if (moneySav.length > i && game.players[i].money !== moneySav[i])
                 updateMoneyList.push({ playerID: game.players[i].id, money: game.players[i].money });
         }
@@ -927,7 +923,7 @@ class Network {
         const res = {
             dicesRes         : diceRes,
             playerID         : player.id,
-            cellPosTmp       : cellPosTmp,
+            cellPosTmp       : useTmpCell ? tmpCellPos : null,
             cellPos          : player.cellPos,
             turnEndTime      : game.turnData.endTime,
             actionMessage    : game.turnData.actionMessage,
@@ -1270,9 +1266,9 @@ class Network {
             player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
         }, 400);
 
+        let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
-            let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {
                 let playerProperties = [];
@@ -1365,19 +1361,25 @@ class Network {
                 duration     : game.maxDuration,
                 bankMoney    : game.bank.money,
                 chatMessages : chatMessages,
-                offers       : offers,
+                offers        : offers,
                 bids         : bids,
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 5 - player.remainingTurnsInJail : false,
-                turnPlayerID : game.curPlayer ? game.curPlayer.id : null,
-                turnEndTime  : game.turnData.endTime
+                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false
             });
 
             if (game.startedTime) { // partie commencée
                 if (game.networkLastGameActionRes) // il y a déjà eu une action de tour
                     player.socket.emit('gameActionRes', game.networkLastGameActionRes);
+
+                if (game.curPlayer === player) {
+                    player.socket.emit('gameTurnRes', {
+                        playerID         : game.curPlayer.id,
+                        turnEndTime      : game.turnData.endTime,
+                        canRollDiceAgain : game.canRollDiceAgain
+                    });
+                }
             }
         });
     }

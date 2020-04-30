@@ -363,7 +363,8 @@ class Game {
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime
+            turnEndTime: this.turnData.endTime,
+            canRollDiceAgain: true
         });
 
         if (!this.curPlayer.connected)
@@ -410,9 +411,11 @@ class Game {
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
         else if (diceRes[0] === diceRes[1]) {
             this.turnData.nbDoubleDices ++;
-            if (this.turnData.nbDoubleDices >= 3)
+            if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
-            else {
+                this.setTurnActionData(null, null,
+                    this.curPlayer.nickname + ' a fait 3 doubles, direction la prison ! (tour 1/3)');
+            } else {
                 this.turnData.canRollDiceAgain = true;
 
                 if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
@@ -466,14 +469,10 @@ class Game {
                 break;
 
             case Constants.CELL_TYPE.OTHER:
-                if (this.curPlayer.cellPos === 30) {
-                    this.curPlayer.moveAbsolute(10);
-                    // Perdre l'argent gagné au passage de la case départ
-                    this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-                } else {
+                if (!this.curPlayer.isInPrison) {
                     let mess;
-                    if (this.curPlayer.cellPos === 10 && !this.curPlayer.isInPrison)
-                        mess = this.curPlayer.nickname + ' rend visite à ses anciens compagnons compagnons de prison';
+                    if (this.curPlayer.cellPos === 10)
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de prison';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
@@ -510,7 +509,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail --;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -575,9 +574,15 @@ class Game {
     }
 
     turnPlayerGoPrisonCell() {
+        if (this.curPlayer.cellPos === 30) {
+            // Perdre l'argent gagné au passage de la case départ
+            this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+        }
+
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
+
     }
 
     turnPlayerTaxCell () {
