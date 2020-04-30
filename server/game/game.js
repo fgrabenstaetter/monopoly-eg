@@ -39,6 +39,8 @@ class Game {
         this.bank                     = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
         this.offers                   = [];
+        this.lastOffers               = []; // anti spam
+        // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
         this.bids                     = [];
         this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
         this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
@@ -470,10 +472,14 @@ class Game {
                     this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
                 } else {
                     let mess;
-                    switch (this.curPlayer.cellPos) {
-                        case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
-                            break;
-                        default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                    if (this.curPlayer.cellPos === 10 && !this.curPlayer.isInPrison)
+                        mess = this.curPlayer.nickname + ' rend visite à ses anciens compagnons compagnons de prison';
+                    else {
+                        switch (this.curPlayer.cellPos) {
+                            case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
+                                break;
+                            default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                        }
                     }
 
                     this.setTurnActionData(null, null, mess);

@@ -1099,6 +1099,8 @@ class Network {
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else if (recvr.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
+            else if (!Offer.canSend(player, recvr, game))
+                err = Errors.GAME.OFFER_LIMIT_REACHED;
             else {
                 const offer = new Offer(game, player, recvr, prop, data.price);
                 this.io.to(game.name).emit('gameOfferReceiveRes', {

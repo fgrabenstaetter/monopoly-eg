@@ -230,6 +230,10 @@ module.exports = Object.freeze({
         UPGRADE_PROPERTY_MORTGAGED: {
             code: 15,
             status: 'Une propriété hypothéquée a été détectée'
+        },
+        OFFER_LIMIT_REACHED: {
+            code: 16,
+            status: 'Vous ne pouvez pas envoyer autant d\'offres au même joueur si rapidement'
         }
     }
 });
