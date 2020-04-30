@@ -763,7 +763,9 @@ class Game {
         if (!moneyToObtain && !properties)
             return false;
 
+        let auto = false;
         if (!properties) { // vente automatique forcée (dans l'ordre)
+            auto = true;
             properties = [];
             for (const prop of properties) {
                 if (prop.isMortgaged)
@@ -819,7 +821,8 @@ class Game {
                 playerMoney : player.money,
                 bankMoney   : this.bank.money,
                 message     : mess,
-                rentalOwner : rentalOwner
+                rentalOwner : rentalOwner,
+                auto        : auto
             });
         }
     }

@@ -905,6 +905,7 @@
             playerMoney: int, // nouveau solde
             bankMoney: int,
             message: string, // message lié à l'hypothèque
+            auto: bool, // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
             rentalOwner: { // seulement si hypothèque forcée POUR PAYER UN LOYER (pas taxe), sinon null
                 id: int,
                 money: int // son nouveau solde
