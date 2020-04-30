@@ -12,16 +12,15 @@
                 type="text"
                 v-model="form.nickname"
                 class="form-control"
-                aria-describedby="helpId"
                 placeholder="Nom d'utilisateur"
-              />
+                autofocus
+              >
               <input
                 type="password"
                 v-model="form.password"
                 class="form-control"
-                aria-describedby="helpId"
                 placeholder="Mot de passe"
-              />
+              >
               <button type="submit" class="btn btn-primary">CONNEXION</button>
               <router-link class="btn btn-secondary" to="/signin">INSCRIPTION</router-link>
             </form>
@@ -81,6 +80,10 @@ export default {
             this.$parent.toast(err.response.data.status, 'danger', 5);
         });
     }
+  },
+  mounted() {
+    const input = document.querySelector('[autofocus]');
+    if (input) input.focus();
   }
 };
 </script>

@@ -827,9 +827,7 @@ export default {
   },
   beforeDestroy() {
     this.stopMusic();
-    this.socket.removeAllListeners();
-    console.log("REMOVE ALL LISTENERS FROM GAME");
-    this.socket.disconnect();
+    this.socket.close();
   },
   mounted() {
     this.gameMounted = true;
@@ -837,7 +835,7 @@ export default {
     this.playMusic();
     this.loadSfx();
 
-    this.loading = false; // DEBUG
+    // this.loading = false; // DEBUG
     this.players = [];
     const gameboard = this.$refs.gameboard;
 
@@ -1466,6 +1464,7 @@ export default {
             this.$parent.toast(html,  'success', 10);
         }, 6e3);
     });
+
   }
 };
 </script>
