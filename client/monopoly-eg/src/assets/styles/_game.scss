@@ -648,6 +648,7 @@
       .player-entry {
         margin-bottom: 10px;
         position: relative;
+        cursor: pointer;
 
         &.parlement:after {
           font-family: "Font Awesome 5 Free";
@@ -729,6 +730,7 @@
         }
 
         .popup {
+          cursor: default;
           position: absolute;
           background-color: $popup-background;
           padding: 30px;
@@ -868,7 +870,7 @@
             }
 
             .houses-btn {
-              cursor: default;
+              cursor: pointer;
               width: 80px;
               border: none;
               background: white;
