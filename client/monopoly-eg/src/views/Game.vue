@@ -312,7 +312,9 @@ export default {
       // Ressources audio du jeu
       audio: {
         background: null,
-        sfx: {}
+        sfx: {
+          buttonClick: null
+        }
       },
       // @vuese
       // Indique si la partie est terminée (affiche l'écran de fin si true)
@@ -436,6 +438,7 @@ export default {
      * @arg L'index de la notification à supprimer
      */
     discardTurnNotif(index) {
+      this.audio.sfx.buttonClick.play();
       if (!this.imCurrentPlayer) return;
       this.turnNotifications.splice(index, 1);
     },
@@ -481,6 +484,7 @@ export default {
      * @arg L'ID de l'offre concernée
      */
     rejectOffer(offerID) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: false });
       console.log('gameOfferActionReq reject');
       this.discardOffer(offerID);
@@ -492,6 +496,7 @@ export default {
      * @arg L'ID de l'offre concernée
      */
     offerAccept(offerID) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: true });
       console.log('gameOfferActionReq accept');
       this.discardOffer(offerID);
@@ -526,6 +531,7 @@ export default {
      * @arg L'objet 'bid' contenant l'enchère que l'on souhaite passer
      */
     rejectBid(bid) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: 0 });
       this.$set(bid, 'disabled', true);
     },
@@ -578,6 +584,12 @@ export default {
         autoplay: false,
         loop: false,
         volume: this.loggedUser.settings.sfxLevel /100
+      });
+      this.audio.sfx.buttonClick = new Howl({
+        src: ['/assets/audio/sfx/buttonClick.mp3'],
+        autoplay: false,
+        loop: false,
+        volume: this.loggedUser.settings.sfxLevel / 100
       });
     },
 
