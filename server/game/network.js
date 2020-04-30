@@ -1136,7 +1136,8 @@ class Network {
                         offerID    : offer.id,
                         price      : offer.amount,
                         propertyID : offer.property ? offer.property.id : -1, // -1 => carte sortie de prison
-                        makerID    : offer.maker.id
+                        makerID    : offer.maker.id,
+                        accepted   : true
                     });
                 }
             }

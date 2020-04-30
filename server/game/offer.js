@@ -48,11 +48,12 @@ class Offer {
             return false;
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameOfferFinishedRes', {
-            receiverID : null,
+            receiverID : this.receiver.id,
             offerID    : this.id,
             price      : this.amount,
             propertyID : this.property ? this.property.id : -1,
-            makerID    : this.maker.id
+            makerID    : this.maker.id,
+            accepted   : false
         });
 
         Offer.delOffer(this);

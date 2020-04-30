@@ -1040,11 +1040,12 @@
         * *Données:*
         ```javascript
         {
-            receiverID: int | null, // ID player qui a accepté d'acheter ou null si expirée sans qu'il accepte
+            receiverID: int,
             offerID: int,
             price: int,
             propertyID: int, // ID de la propriété ou -1 pour carte sortie de prison
-            makerID: int // ID player du créateur de l'offre => celui qui gagne la propriété / carte prison
+            makerID: int, // ID player du créateur de l'offre => celui qui gagne la propriété / carte prison
+            accepted: bool
         }
         ```
 
