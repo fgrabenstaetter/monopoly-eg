@@ -2,6 +2,13 @@
   <div id="app">
     <router-view/>
 
+    <div class="resolution-overlay-container">
+      <div>
+        Oups... c'est petit ici
+        <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
+      </div>
+    </div>
+    
     <div v-if="toastContent" v-html="toastContent" class="toast-notification" :class="toastClass">{{toastContent}}</div>
   </div>
 </template>

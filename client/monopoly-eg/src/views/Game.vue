@@ -1103,23 +1103,24 @@ export default {
         if (this.loading) return;
 
         console.log('gamePlayerFailureRes');
+        console.log(res);
 
         const player = this.getPlayerById(res.playerID);
-        if (player) {
-            this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
+        if (!player) return;
 
-            // Toutes les propriétés sont à nouveau à vendre
-            this.properties.forEach((property) => {
-                if (property.ownerID == player.id)
-                    property.ownerID = null;
-            });
+        this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
 
-            // Reset des propriétés du joueur
-            this.$set(player, 'properties', []);
+        // Toutes les propriétés sont à nouveau à vendre
+        this.properties.forEach((property) => {
+            if (property.ownerID == player.id)
+                property.ownerID = null;
+        });
 
-            // Simple texte d'annonce
-            this.$set(player, 'failure', true);
-        }
+        this.$set(player, 'properties', []);
+        this.$set(player, 'failure', true);
+
+        // Suppression du pion
+        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
     });
 
     // On a reçu une offre d'achat
@@ -1152,35 +1153,36 @@ export default {
 
       if (!buyer || !receiver || !property || !cell) return;
 
-      // Transfert argent
-      this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
-      this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+      if (res.accepted) {
+        // Transfert argent
+        this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
+        this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
 
-      // Transfert propriétés
-      for (const i in receiver.properties) {
-        if (receiver.properties[i] == property.id) {
-          receiver.properties.splice(i, 1);
-          break;
+        // Transfert propriétés
+        for (const i in receiver.properties) {
+          if (receiver.properties[i] == property.id) {
+            receiver.properties.splice(i, 1);
+            break;
+          }
         }
-      }
-      property.ownerID = buyer.id;
-      buyer.properties.push(property.id);
+        property.ownerID = buyer.id;
+        buyer.properties.push(property.id);
 
-      // Transfert de drapeau
-      gameboard.deleteFlag(`d${cell.id}`);
-      gameboard.loaderFlag(`d${cell.id}`, buyer.color);
+        // Transfert de drapeau
+        gameboard.deleteFlag(`d${cell.id}`);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
 
-      // Notifications
-      if (receiver.id == this.loggedUser.id) {
-        if (res.accepted) {
+        // Notifications
+        if (receiver.id == this.loggedUser.id) {
           this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
-        } else {
-          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
-        }
-      } else if (buyer.id == this.loggedUser.id) {
-        if (res.accepted) {
+        } else if (buyer.id == this.loggedUser.id) {
           this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} pour ${res.price}€`, 'success', 5);
-        } else {
+        }
+      } else {
+        // Notifications (de refus)
+        if (receiver.id == this.loggedUser.id) {
+          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
+        } else if (buyer.id == this.loggedUser.id) {
           this.$parent.toast(`${receiver.nickname} n'a pas accepté de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
           // this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
         }
