@@ -38,7 +38,7 @@ class Offer {
         let can = true;
         let obj = game.lastOffers[sender.id][receiver.id];
 
-        if (obj.length > 1) { // non vide et possibilité de SPAM
+        if (obj.length >= periodMaxNb) { // non vide et possibilité de SPAM
             if (Date.now() - obj[periodMaxNb - 1] < period) // SPAM LIMIT
                 can = false;
         }
