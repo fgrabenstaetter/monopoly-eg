@@ -484,7 +484,7 @@ export default {
 
     /**
      * @vuese
-     * Efface une offre d'achat faite par un autre joueur (sans l'accepter)
+     * Efface une offre d'achat faite par un autre joueur dans notre liste
      * @arg L'ID de l'offre concernée (et non pas l'index !)
      */
     discardOffer(offerID) {
@@ -498,12 +498,23 @@ export default {
 
     /**
      * @vuese
+     * Refuse une offre d'achat faite par un autre joueur
+     * @arg L'ID de l'offre concernée
+     */
+    rejectOffer(offerID) {
+      this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: false });
+      console.log('gameOfferActionReq reject');
+      this.discardOffer(offerID);
+    },
+
+    /**
+     * @vuese
      * Accepte une offre d'achat faite par un autre joueur et supprime la notification associée
      * @arg L'ID de l'offre concernée
      */
     offerAccept(offerID) {
-      this.socket.emit('gameOfferAcceptReq', { offerID: parseInt(offerID) });
-      console.log('gameOfferAcceptReq');
+      this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: true });
+      console.log('gameOfferActionReq accept');
       this.discardOffer(offerID);
     },
 
@@ -1132,9 +1143,9 @@ export default {
     });
 
     // Offre accpeptée check
-    this.socket.on("gameOfferAcceptRes", (res) => {
+    this.socket.on("gameOfferActionRes", (res) => {
         if (res.error === 0)
-            console.log("gameOfferAcceptRes")
+            console.log("gameOfferActionRes")
         else
             this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
     });
@@ -1150,49 +1161,43 @@ export default {
     // Offre (d'achat) terminée
     this.socket.on('gameOfferFinishedRes', (res) => {
       const buyer = this.getPlayerById(res.makerID);
+      const receiver =  this.getPlayerById(res.receiverID);
       const property = this.getPropertyById(res.propertyID);
+      const cell = this.getCellByProperty(property);
 
-      if (!buyer || !property) return;
+      if (!buyer || !receiver || !property || !cell) return;
 
-      if (res.receiverID == null) { // Offre a expiré
-        // Si on a reçu cette offre, on la supprime + notification
-        if (this.offers.length) {
-          for (const i in this.offers) {
-            if (this.offers[i].offerID == res.offerID) {
-              this.offers.splice(i, 1);
-              this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
-              break;
-            }
-          }
+      // Transfert argent
+      this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
+      this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+
+      // Transfert propriétés
+      for (const i in receiver.properties) {
+        if (receiver.properties[i] == property.id) {
+          receiver.properties.splice(i, 1);
+          break;
         }
-      } else {
-        const receiver = this.getPlayerById(res.receiverID);
-        const cell = this.getCellByProperty(property);
-        if (!receiver || !cell) return;
+      }
+      property.ownerID = buyer.id;
+      buyer.properties.push(property.id);
 
-        // Transfert argent
-        this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
-        this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+      // Transfert de drapeau
+      gameboard.deleteFlag(`d${cell.id}`);
+      gameboard.loaderFlag(`d${cell.id}`, buyer.color);
 
-        // Transfert propriétés
-        for (const i in receiver.properties) {
-          if (receiver.properties[i] == property.id) {
-            receiver.properties.splice(i, 1);
-            break;
-          }
-        }
-        property.ownerID = buyer.id;
-        buyer.properties.push(property.id);
-
-        // Transfert de drapeau
-        gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
-
-        // Notifications de réussite
-        if (buyer.id == this.loggedUser.id) {
-          this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} !`, 'success', 4);
-        } else if (receiver.id == this.loggedUser.id) {
+      // Notifications
+      if (receiver.id == this.loggedUser.id) {
+        if (res.accepted) {
           this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
+        } else {
+          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
+        }
+      } else if (buyer.id == this.loggedUser.id) {
+        if (res.accepted) {
+          this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} pour ${res.price}€`, 'success', 5);
+        } else {
+          this.$parent.toast(`${receiver.nickname} n'a pas accepté de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
+          // this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
         }
       }
     });
@@ -1349,6 +1354,7 @@ export default {
         if (!player) return;
 
         this.$set(player, 'money', res.playerMoney);
+        let mortgagedPropertiesNames = [];
         for (const i in res.properties) {
             const property = this.getPropertyById(res.properties[i]);
             const cell = this.getCellByProperty(property);
@@ -1360,8 +1366,17 @@ export default {
             // Cône plateau
             gameboard.loaderHypotheque(cell.id);
 
-            if (player.id == this.loggedUser.id)
-              this.$parent.toast(`Propriété ${property.name} hypothéquée`, 'success', 4);
+            // Ajout aux propriétés hypothéquées
+            mortgagedPropertiesNames.push(property.name);
+        }
+
+        if (player.id == this.loggedUser.id) {
+          const autoStr = res.auto ? ' automatiquement' : '';
+          if (mortgagedPropertiesNames.length == 1) {
+            this.$parent.toast(`Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`, 'success', 3);
+          } else {
+            this.$parent.toast(`Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(', ')}`, 'success', 5);
+          }
         }
     });
 
