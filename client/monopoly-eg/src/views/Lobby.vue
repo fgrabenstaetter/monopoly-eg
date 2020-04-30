@@ -35,7 +35,7 @@
                                     </div>
                                     <div id="friendList">
                                         <div v-for="friend in friends" :key="friend.id" class="friend-entry">
-                                            <img v-if="friend.showInSearch" class="friends-avatar" :src="friend.avatar" data-toggle="modal" data-target="#` + name + `Modal" />
+                                            <img v-if="friend.showInSearch" class="friends-avatar" :src="friend.avatar">
                                             <div v-if="friend.showInSearch" class="friends-name">{{friend.nickname}}</div>
                                             <div v-if="friend.showInSearch" class="friend-action" v-on:click="inviteFriendInLobby(friend.id)">inviter</div>
                                         </div>
@@ -269,7 +269,8 @@ export default {
                 sfx: {
                     notification: null,
                     userLeft: null,
-                    userJoined: null
+                    userJoined: null,
+                    buttonClick: null
                 }
             }
         }
@@ -282,6 +283,7 @@ export default {
     },
     methods: {
         play() {
+            this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id) {
                 if (!this.playBtn.loading)
                     this.socket.emit('lobbyPlayReq');
@@ -302,6 +304,7 @@ export default {
             }
         },
         leftNbJClick() {
+            this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id
                 && this.nbPlayers > 2 && this.nbPlayers > this.players.length) {
                 this.nbPlayers--;
@@ -313,6 +316,7 @@ export default {
             }
         },
         rightNbJClick() {
+            this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id && this.nbPlayers < 8) {
                 this.nbPlayers++;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
@@ -327,6 +331,7 @@ export default {
             }
         },
         leftGameTimeClick() {
+            this.audio.sfx.buttonClick.play();
             this.leftGameTime = true;
             this.rightGameTime = true;
             let dur;
@@ -343,6 +348,7 @@ export default {
             this.socket.emit('lobbyChangeDurationReq' , { newDuration: dur });
         },
         rightGameTimeClick() {
+            this.audio.sfx.buttonClick.play();
             this.leftGameTime = true;
             this.rightGameTime = true;
             let dur;
@@ -374,6 +380,7 @@ export default {
             this.deleteLobbyInvitation(id);
         },
         addFriend() {
+            this.audio.sfx.buttonClick.play();
             if (this.addFriendForm.nickname !== '') {
                 this.socket.emit('lobbyFriendInvitationSendReq', { nickname: this.addFriendForm.nickname });
                 this.addFriendForm.nickname = '';
@@ -387,17 +394,19 @@ export default {
             }
         },
         acceptFriendInvitation(friendId, nickname) {
+            this.audio.sfx.buttonClick.play();
             this.socket.emit('lobbyFriendInvitationActionReq', { action: 1, nickname: nickname });
             this.deleteFriendInvitation(friendId);
             this.friends = [];
             this.socket.emit('lobbyFriendListReq');
         },
         rejectFriendInvitation(friendId, nickname) {
+            this.audio.sfx.buttonClick.play();
             this.socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: nickname });
             this.deleteFriendInvitation(friendId);
         },
         inviteFriendInLobby(id) {
-
+            this.audio.sfx.buttonClick.play();
             this.socket.emit("lobbyInvitationReq", { friendID: id });
         },
         kickPlayerFromLobby(id) {
@@ -429,6 +438,7 @@ export default {
         },
 
         logout() {
+            this.audio.sfx.buttonClick.play();
             this.socket.close();
             this.$store.dispatch('logout').then(() => {
                 this.$router.push('/');
@@ -472,6 +482,12 @@ export default {
                 loop: false,
                 volume: this.loggedUser.settings.sfxLevel / 100
             });
+            this.audio.sfx.buttonClick = new Howl({
+                src: ['/assets/audio/sfx/buttonClick.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+            });
         },
 
         setSfxLevel(level) {
@@ -480,6 +496,7 @@ export default {
         },
 
         updateProfile() {
+            this.audio.sfx.buttonClick.play();
             this.editProfile.loading = true;
             this.socket.emit('lobbyUpdateProfileReq', this.editProfile);
 
@@ -490,6 +507,7 @@ export default {
         processAvatar(event) {
             if (typeof event.target.files[0] !== 'undefined')
                 this.editProfile.avatar = event.target.files[0];
+            this.audio.sfx.buttonClick.play();
         }
     },
     beforeDestroy() {
