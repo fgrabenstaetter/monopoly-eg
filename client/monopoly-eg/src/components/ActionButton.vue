@@ -8,9 +8,7 @@ import $ from 'jquery'
 export default {
     name: 'ActioButton',
     data() {
-        return {
-
-        }
+        return {}
     },
     methods: {
         /**
@@ -23,7 +21,7 @@ export default {
         /**
          * @vuese
          * Remet le bouton a un etat cliquable
-         * @param hard determine s'il faut remettre le bouton à l'état initial ou pas
+         * @arg hard determine s'il faut remettre le bouton à l'état initial ou pas
          */
         progressReset(hard) {
             $('#timer').progressReset(hard);
@@ -31,7 +29,7 @@ export default {
         /**
          * @vuese
          * Commence le minuteur du duree de sec secondes
-         * @param sec la duree du minuteur
+         * @arg sec la duree du minuteur
          */
         progressStart(sec) {
             $('#timer').progressStart(sec);
@@ -46,7 +44,7 @@ export default {
         /**
          * @vuese
          * Incremente le minuteur d'une valeur val donne
-         * @param val la valeur a incrementer
+         * @arg val la valeur a incrementer
          */
         progressIncrement(val) {
             $('#timer').progressIncrement(val);
@@ -68,7 +66,7 @@ export default {
         /**
          * @vuese
          * Change la position de la barre du minuteur à une valeur val donne
-         * @param val la valeur en pourcentage
+         * @arg val la valeur en pourcentage
          */
         progressSet(val) {
             $('#timer').progressSet(val);

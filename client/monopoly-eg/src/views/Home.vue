@@ -32,7 +32,7 @@
 
     <div class="modal" id="creditsModal" tabindex="-1" role="dialog" aria-labelledby="creditsModalLabel"
         aria-hidden="true" data-id="1">
-        <div class="modal-dialog modal-xl animated bounceIn" role="document">
+        <div class="modal-dialog modal-lg animated bounceIn" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="creditsModalLabel">Crédits</h5>
@@ -41,7 +41,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                  <h1>CREDITS</h1>
 
                       <h2>Licence</h2>
                       <p>

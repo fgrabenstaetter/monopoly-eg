@@ -51,7 +51,7 @@
         </div>
 
         <div class="modal" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-xl animated bounceIn" role="document">
+            <div class="modal-dialog modal-lg animated bounceIn" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="ruleModalTitle">Règles</h5>
@@ -60,7 +60,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <h1>Règles</h1>
                         <h2>But du jeu</h2>
                         <p>Être le seul joueur qui n'ait pas fait faillite</p>
                         <h2>Sommaire</h2>
