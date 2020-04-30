@@ -39,6 +39,8 @@ class Game {
         this.bank                     = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
         this.offers                   = [];
+        this.lastOffers               = []; // anti spam
+        // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
         this.bids                     = [];
         this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
         this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
@@ -470,10 +472,14 @@ class Game {
                     this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
                 } else {
                     let mess;
-                    switch (this.curPlayer.cellPos) {
-                        case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
-                            break;
-                        default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                    if (this.curPlayer.cellPos === 10 && !this.curPlayer.isInPrison)
+                        mess = this.curPlayer.nickname + ' rend visite à ses anciens compagnons compagnons de prison';
+                    else {
+                        switch (this.curPlayer.cellPos) {
+                            case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
+                                break;
+                            default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                        }
                     }
 
                     this.setTurnActionData(null, null, mess);
@@ -620,7 +626,7 @@ class Game {
 
     /**
      * @param list Liste de { propertyID: int, level: int } avec level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
-     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou hypothéquée, ou pas une STREET), 3 si pas assez d'argent, 4 si le joueur n'a pas le monopole pour une propriété
+     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou pas une STREET), 3 si pas assez d'argent, 4 si le joueur n'a pas le monopole pour une propriété, 5 si la propriété est hypothéquée
      */
     asyncActionUpgradeProperty(list) {
         let sum = 0;
@@ -629,8 +635,10 @@ class Game {
                 return 1;
             let prop = this.curPlayer.propertyByID(row.propertyID);
 
-            if (!prop || prop.type !== Constants.PROPERTY_TYPE.STREET || prop.isMortgaged)
+            if (!prop || prop.type !== Constants.PROPERTY_TYPE.STREET)
                 return 2;
+            else if (prop.isMortgaged)
+                return 5;
             else if (!this.curPlayer.colorMonopoly(prop.color))
                 return 4;
 
@@ -755,7 +763,9 @@ class Game {
         if (!moneyToObtain && !properties)
             return false;
 
+        let auto = false;
         if (!properties) { // vente automatique forcée (dans l'ordre)
+            auto = true;
             properties = [];
             for (const prop of properties) {
                 if (prop.isMortgaged)
@@ -811,7 +821,8 @@ class Game {
                 playerMoney : player.money,
                 bankMoney   : this.bank.money,
                 message     : mess,
-                rentalOwner : rentalOwner
+                rentalOwner : rentalOwner,
+                auto        : auto
             });
         }
     }

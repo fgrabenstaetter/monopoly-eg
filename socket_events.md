@@ -905,6 +905,7 @@
             playerMoney: int, // nouveau solde
             bankMoney: int,
             message: string, // message lié à l'hypothèque
+            auto: bool, // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
             rentalOwner: { // seulement si hypothèque forcée POUR PAYER UN LOYER (pas taxe), sinon null
                 id: int,
                 money: int // son nouveau solde
@@ -1014,17 +1015,18 @@
         }
         ```
 
-- **Accepter une proposition d'offre**
+- **Accepter/Refuser une proposition d'offre**
 
-    * **Requête:** gameOfferAcceptReq
+    * **Requête:** gameOfferActionReq
         * *Données:*
         ```javascript
         {
-            offerID: int
+            offerID: int,
+            accept: bool // true => accepter, false => refuser
         }
          ```
 
-    * **Réponse:** gameOfferAcceptRes
+    * **Réponse:** gameOfferActionRes
         * *Données:*
         ```javascript
         {
@@ -1040,11 +1042,12 @@
         * *Données:*
         ```javascript
         {
-            receiverID: int | null, // ID player qui a accepté d'acheter ou null si expirée sans qu'il accepte
+            receiverID: int,
             offerID: int,
             price: int,
             propertyID: int, // ID de la propriété ou -1 pour carte sortie de prison
-            makerID: int // ID player du créateur de l'offre => celui qui gagne la propriété / carte prison
+            makerID: int, // ID player du créateur de l'offre => celui qui gagne la propriété / carte prison
+            accepted: bool
         }
         ```
 
