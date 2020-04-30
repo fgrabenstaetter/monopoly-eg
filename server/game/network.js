@@ -1328,7 +1328,7 @@ class Network {
             // messages de chat
             for (const mess of game.chat.messages) {
                 chatMessages.push({
-                    playerID    : mess.sender.id ? mess.sender.id : -1,
+                    playerID    : mess.sender ? mess.sender.id : -1,
                     text        : mess.text,
                     createdTime : mess.createdTime
                 });
