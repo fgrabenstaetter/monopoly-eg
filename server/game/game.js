@@ -410,9 +410,11 @@ class Game {
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
         else if (diceRes[0] === diceRes[1]) {
             this.turnData.nbDoubleDices ++;
-            if (this.turnData.nbDoubleDices >= 3)
+            if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
-            else {
+                this.setTurnActionData(null, null,
+                    this.curPlayer.nickname + ' a fait 3 doubles, direction la prison ! (tour 1/3)');
+            } else {
                 this.turnData.canRollDiceAgain = true;
 
                 if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
@@ -506,7 +508,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail --;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {

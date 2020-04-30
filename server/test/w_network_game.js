@@ -449,80 +449,6 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
-    it('Test sur le retrait de carte chance/communauté', (done) => {
-        const game = new Game(1, [user, user2], null, GLOBAL);
-        // démarrage manuel
-        for (const player of game.players)
-            player.isReady = true;
-        game.forcedDiceRes = [3, 4]; // => Properties.STREET[0]
-        game.start(true);
-        const player = game.curPlayer;
-        const money = player.money;
-        let newMoney;
-
-        let sock;
-        if (player.user.socket === serverSocket)
-            sock = clientSocket;
-        else
-            sock = clientSocket2;
-
-        sock.on('gameActionRes', (data) => {
-            const savedCard = game.chanceDeck.drawnCards[game.chanceDeck.drawnCards.length - 1];
-            const receivedCard = data.extra.newCard;
-            if (data.cellPos === 7) {
-                assert.deepEqual(data.dicesRes, [3, 4]);
-                assert.strictEqual(data.playerID, player.id);
-                assert.strictEqual(data.cellPos, 7);
-                assert.strictEqual(data.asyncRequestType, null);
-
-                assert.strictEqual('chance', receivedCard.type);
-                assert.deepStrictEqual(receivedCard.description, savedCard.description);
-                switch (savedCard.effectType) {
-                    case 'loseMoney':
-                        newMoney = money - savedCard.effectArg1;
-                        assert.strictEqual(newMoney, player.money);
-                        break;
-
-                    case 'gainMoney':
-                        newMoney = money + savedCard.effectArg1;
-                        assert.strictEqual(newMoney, player.money);
-                        break;
-
-                    default:
-                        //NE RIEN FAIRE
-                        break;
-                }
-                done();
-            }
-            else if (data.cellPosTmp !== null) {
-                assert.deepEqual(data.dicesRes, [3, 4]);
-                assert.strictEqual(data.playerID, player.id);
-                //assert.strictEqual(data.asyncRequestType, 'canBuy');
-                assert.strictEqual('chance', receivedCard.type);
-                assert.deepStrictEqual(receivedCard.description, savedCard.description);
-                switch (savedCard.effectType) {
-                    case 'moveAbsolute':
-                        assert.strictEqual(player.cellPos, data.cellPos);
-                        break;
-
-                    case 'moveRelative':
-                        assert.strictEqual(player.cellPos, data.cellPos);
-                        break;
-
-                    default:
-                        //NE RIEN FAIRE
-                        break;
-                }
-                done();
-            }
-        });
-
-        sock.on('gameRollDiceRes', (data) => {
-            assert.strictEqual(data.error, Errors.SUCCESS.code);
-        });
-        sock.emit('gameRollDiceReq');
-    });
-
     it('Enchère créée + surrenchérissement', (done) => {
         const game = new Game(1, [user, user2], null, GLOBAL);
         // démarrage manuel
@@ -796,8 +722,8 @@ describe('Network + Game', () => {
 
         // A Modifier lorsque l'event pour les succès sera prêt
         sock.on('gameActionRes', (data) => {
-            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 2);
-            assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 2);
+            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
+            assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 1);
             assert.deepEqual(data.dicesRes, [15, 15]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 10);
