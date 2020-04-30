@@ -1266,9 +1266,9 @@ class Network {
             player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
         }, 400);
 
+        let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
-            let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
 
             for (const player of game.players) {
                 let playerProperties = [];
@@ -1361,7 +1361,7 @@ class Network {
                 duration     : game.maxDuration,
                 bankMoney    : game.bank.money,
                 chatMessages : chatMessages,
-                offers       : offers,
+                offers        : offers,
                 bids         : bids,
                 players      : players,
                 cells        : cells,
