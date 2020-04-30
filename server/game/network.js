@@ -1374,6 +1374,14 @@ class Network {
             if (game.startedTime) { // partie commencée
                 if (game.networkLastGameActionRes) // il y a déjà eu une action de tour
                     player.socket.emit('gameActionRes', game.networkLastGameActionRes);
+
+                if (game.curPlayer === player) {
+                    player.socket.emit('gameTurnRes', {
+                        playerID         : game.curPlayer.id,
+                        turnEndTime      : game.turnData.endTime,
+                        canRollDiceAgain : game.canRollDiceAgain
+                    });
+                }
             }
         });
     }

@@ -363,7 +363,8 @@ class Game {
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
             playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime
+            turnEndTime: this.turnData.endTime,
+            canRollDiceAgain: true
         });
 
         if (!this.curPlayer.connected)

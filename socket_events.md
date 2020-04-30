@@ -717,7 +717,8 @@
         ```javascript
         {
             turnEndTime: timestamp, // timestamp de fin forcée du tour (ms)
-            playerID: int
+            playerID: int,
+            canRollDiceAgain: bool // uniquement utile lors de la reconnexion
         }
         ```
 
