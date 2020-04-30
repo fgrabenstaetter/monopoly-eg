@@ -272,9 +272,10 @@ export default {
                     oldLevel: property.level - 1,
                     level: property.level
                 });
+                propertyIndex = this.propertiesEdition.modifications.length - 1;
             }
 
-            if (property.level > property.oldLevel) {
+            if (property.level > this.propertiesEdition.modifications[propertyIndex].oldLevel) {
                 if (property.level == 5)
                     this.propertiesEdition.totalPrice += property.prices.hostel;
                 else
@@ -299,9 +300,10 @@ export default {
                     oldLevel: property.level + 1,
                     level: property.level
                 });
+                propertyIndex = this.propertiesEdition.modifications.length - 1;
             }
 
-            if (property.level > property.oldLevel) {
+            if (property.level >= this.propertiesEdition.modifications[propertyIndex].oldLevel) {
                 if (property.level == 4)
                     this.propertiesEdition.totalPrice -= property.prices.hostel;
                 else

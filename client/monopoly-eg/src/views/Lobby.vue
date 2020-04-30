@@ -621,6 +621,10 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
+
+            console.log('lobbyUserJoinedRes');
+            console.log(res);
+
             this.audio.sfx.success.play();
 
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
