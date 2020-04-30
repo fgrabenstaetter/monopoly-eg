@@ -102,9 +102,9 @@ class Network {
         // this.lobbyFriendDeleteReq        (user, lobby);
 
         // Paramètres + Succès
-        this.playerSettingsReq            (user);
-        this.playerSuccessReq             (user);
-        this.changeAvatarReq              (user);
+        this.playerSettingsReq              (user);
+        this.playerSuccessReq               (user);
+        this.changeAvatarReq                (user);
 
         user.socket.on('lobbyReadyReq', () => {
             // réponse de création / rejoignage de lobby
@@ -147,27 +147,27 @@ class Network {
         player.socket.join(game.name);
 
         // Début/Fin + tour
-        this.gameReadyReq                 (player, game);
-        this.gameRollDiceReq              (player, game);
-        this.gameTurnEndReq               (player, game);
+        this.gameReadyReq              (player, game);
+        this.gameRollDiceReq           (player, game);
+        this.gameTurnEndReq            (player, game);
 
         // Actions de tour asynchrones
-        this.gamePropertyBuyReq           (player, game);
-        this.gamePropertyUpgradeReq       (player, game);
-        this.gamePropertyMortgageReq      (player, game);
-        this.gamePlayerLeavingReq         (player, game);
-        this.gamePropertyUnmortgageReq    (player, game);
+        this.gamePropertyBuyReq        (player, game);
+        this.gamePropertyUpgradeReq    (player, game);
+        this.gamePropertyMortgageReq   (player, game);
+        this.gamePlayerLeavingReq      (player, game);
+        this.gamePropertyUnmortgageReq (player, game);
 
         // Chat + offres et enchères
-        this.gameChatSendReq              (player, game);
-        this.gameOfferSendReq             (player, game);
-        this.gameOfferActionReq           (player, game);
-        this.gameOverbidReq               (player, game);
-        this.gameManualBidReq             (player, game);
+        this.gameChatSendReq           (player, game);
+        this.gameOfferSendReq          (player, game);
+        this.gameOfferActionReq        (player, game);
+        this.gameOverbidReq            (player, game);
+        this.gameManualBidReq          (player, game);
 
         // Paramètres + Succès
-        this.playerSettingsReq            (player);
-        this.playerSuccessReq             (player);
+        this.playerSettingsReq         (player);
+        this.playerSuccessReq          (player);
     }
 
     gamePlayerStopListening (player, game) {
@@ -950,9 +950,9 @@ class Network {
                 err = Errors.GAME.NOT_MY_TURN;
             else {
                 switch (game.asyncActionBuyProperty()) {
-                    case 1: err = Errors.UNKNOW; break;
-                    case 2: err = Errors.GAME.PROPERTY_ALREADY_SOLD; break;
-                    case 3: err = Errors.GAME.NOT_ENOUGH_FOR_BUY; break;
+                    case 1: err = Errors.UNKNOW;                     break ;
+                    case 2: err = Errors.GAME.PROPERTY_ALREADY_SOLD; break ;
+                    case 3: err = Errors.GAME.NOT_ENOUGH_FOR_BUY;    break ;
                 }
             }
 
@@ -978,10 +978,11 @@ class Network {
                 err = Errors.GAME.NOT_MY_TURN;
             else {
                 switch (game.asyncActionUpgradeProperty(data.list)) {
-                    case 1: err = Errors.UNKNOW; break;
-                    case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY; break;
-                    case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY; break;
-                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY; break;
+                    case 1: err = Errors.UNKNOW;                          break ;
+                    case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY;   break ;
+                    case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY;   break ;
+                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY;       break ;
+                    case 5: err = Errors.GAME.UPGRADE_PROPERTY_MORTGAGED; break ;
                 }
             }
 
@@ -1047,10 +1048,10 @@ class Network {
                 err = Errors.UNKNOW;
             else { // succès
                 this.io.to(game.name).emit('gamePropertyUnmortgagedRes', {
-                    playerID: player.id,
-                    propertyID: data.propertyID,
-                    playerMoney: player.money,
-                    bankMoney: game.bank.money
+                    playerID    : player.id,
+                    propertyID  : data.propertyID,
+                    playerMoney : player.money,
+                    bankMoney   : game.bank.money
                 });
             }
 
@@ -1298,11 +1299,11 @@ class Network {
                 // propriétés
                 if (cell.type === Constants.CELL_TYPE.PROPERTY) {
                     let propertyData = {
-                        id           : cell.property.id,
-                        type         : cell.property.type,
-                        name         : cell.property.name,
-                        description  : cell.property.description,
-                        isMortgaged  : cell.property.isMortgaged
+                        id          : cell.property.id,
+                        type        : cell.property.type,
+                        name        : cell.property.name,
+                        description : cell.property.description,
+                        isMortgaged : cell.property.isMortgaged
                     };
 
                     switch (cell.property.type) {

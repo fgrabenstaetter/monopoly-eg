@@ -226,6 +226,10 @@ module.exports = Object.freeze({
         NOT_ENOUGH_FOR_BUY: {
             code: 14,
             status: 'Vous n\'avez pas assez d\'argent pour acheter cette propriété'
+        },
+        UPGRADE_PROPERTY_MORTGAGED: {
+            code: 15,
+            status: 'Une propriété hypothéquée a été détectée'
         }
     }
 });
