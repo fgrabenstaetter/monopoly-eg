@@ -102,32 +102,44 @@ import $ from 'jquery'
 export default {
     name: 'Dices',
     methods: {
-        test() {
-            alert('ok')
-        },
 
+        /**
+         * @vuese Attends le nombre de millisecondes passé en paramètre
+         */
         sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         },
 
+        /**
+         * @vuese Renvoie un chiffre aléatoire entre min et max
+         */
         random(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
 
+        /**
+         * @vuese Affiche les dés
+         */
         async showDices() {
             $(".dice-container").css("display", "block");
             await this.sleep(200);
             $(".dice-container").css("opacity", "1");
         },
 
+        /**
+         * @vuese Cache les dés
+         */
         async hideDices() {
             $(".dice-container").css("opacity", "0");
             await this.sleep(200);
             $(".dice-container").css("display", "none");
         },
 
+        /**
+         * @vuese Fait tourner le dé de numéro dice pour afficher le chiffre number
+         */
         rotateDice(dice, number) {
             if (dice == 1) {
                 switch (number) {
@@ -179,6 +191,9 @@ export default {
             }
         },
 
+        /**
+         * @vuese Agrandit le dé dice
+         */
         scaleUpDice(dice) {
             if (dice == 1) {
                 $(".dice-container #view1").css("transform", "scale(0.7)");
@@ -188,6 +203,9 @@ export default {
             }
         },
 
+        /**
+         * @vuese Rétrécit le dé dice
+         */
         scaleDownDice(dice) {
             if (dice == 1) {
                 $(".dice-container #view1").css("transform", "scale(0.5)");
@@ -197,6 +215,10 @@ export default {
             }
         },
 
+        /**
+         * @vuese Simule un lancé pour un dé.
+         * Lance le dé dice (effectue des rotations aléatoires) puis l'arrête sur le chiffre number après rotations rotations
+         */
         async rollDice(dice, number, rotations) {
             var i;
             var lastNum = 1;
@@ -217,6 +239,11 @@ export default {
             await this.sleep(150);
         },
 
+        /**
+         * @vuese Simule un lancé réel avec les deux dés
+         * Affiche les dés ou les appelle au centre de l'écran s'il sont déjà affichés,
+         * les lance, les arrête sur les chiffres d1 et d2 et les déplace en haut à droite de l'écran
+         */
         async triggerDices(d1, d2, _callback) {
             const rotations = 6;
             if ($('.dice-container').css('top') == '50px') {
