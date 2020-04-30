@@ -1266,11 +1266,10 @@ class Network {
             player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
         }, 400);
 
-        let players = [], cells = [], properties = [],  chatMessages = [], bids = [], offers = [], playerProperties = [], cellsCounter = 0;
 
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
-            let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
+            let players = [], cells = [], properties = [],  chatMessages = [], bids = [], offers = [], playerProperties = [], cellsCounter = 0;
 
             for (const player of game.players) {
                 for (const prop of player.properties)
