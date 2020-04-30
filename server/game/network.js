@@ -1266,12 +1266,13 @@ class Network {
             player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
         }, 400);
 
-        let players = [], cells = [], properties = [],  chatMessages = [], bids = [], offers = [], playerProperties = [], cellsCounter = 0;
 
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
+            let players = [], cells = [], properties = [], chatMessages = [], bids = [], offers = [], cellsCounter = 0;
 
             for (const player of game.players) {
+                let playerProperties = [];
                 for (const prop of player.properties)
                     playerProperties.push(prop.id);
 
@@ -1328,7 +1329,7 @@ class Network {
             // messages de chat
             for (const mess of game.chat.messages) {
                 chatMessages.push({
-                    playerID    : mess.sender ? mess.sender : -1,
+                    playerID    : mess.sender ? mess.sender.id : -1,
                     text        : mess.text,
                     createdTime : mess.createdTime
                 });

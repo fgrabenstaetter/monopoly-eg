@@ -522,7 +522,7 @@ socket.on("gameOfferFinishedRes", (res) => {
     let owner = getPlayerById(res.receiverID);
     if (res.receiverID == null) {
         if (res.propertyID == -1)
-            toast("La proposition de " + buyer.nickname + " d'achat d'une carte sortie de prison à " + owner.nickname + " a été refusée", "neutral", 10);
+            toast("La proposition de " + buyer.nickname + " d'achat d'une carte fin de session du parlement à " + owner.nickname + " a été refusée", "neutral", 10);
         else {
             let propertyNick = getPropertyById(res.propertyID)
             toast("La propositoin d'achat de " + propertyNick + "a été refusée", "neutral", 10);
@@ -892,7 +892,7 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
     $('.overview-card .header').css("background-color", property.color);
     $('.overview-card .header').css("color", "white");
     let htmlContent;
-    if(!property.isMortgaged){
+    if (!property.isMortgaged) {
         htmlContent = `<div class="rent">` + property.rentalPrices.empty + `</div>
                         <div class="with-house">
                             <div>Avec 1 Maison</div>
@@ -916,10 +916,10 @@ function populateStreetOverviewCard(property, isMine, isMortgaged) {
                         </div>
                         <div class="house-price">Prix des Maisons `+ property.prices.house + `€ chacune</div>
                         <div class="hotel-price">Prix d'un Hôtel `+ property.prices.house + `€ plus 4 maisons</div>
-                        <div class="mortgage">Valeur de l'hypothèque : `+ property.prices.empty/2 + `€</div>`
+                        <div class="mortgage">Valeur de l'hypothèque : `+ property.prices.empty / 2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((property.prices.empty/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : ` + Math.round((property.prices.empty / 2) * 1.1) + `€</div>`
     }
 
     $('.overview-card .content').html(htmlContent);
@@ -949,10 +949,10 @@ function populateStationOverviewCard(station, isMine, isMortgaged) {
                             <div>Si vous avez 4 Gares</div>
                             <div>`+ station.rentalPrices[3] + `</div>
                         </div>
-                        <div class="mortgage">Valeur de l'hypothèque : `+ station.price/2 + `€</div>`
+                        <div class="mortgage">Valeur de l'hypothèque : `+ station.price / 2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((station.price/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : ` + Math.round((station.price / 2) * 1.1) + `€</div>`
     }
 
     $('.overview-card .content').html(htmlContent);
@@ -978,10 +978,10 @@ function populateCompanyOverviewCard(publicCompany, isMine, isMortgaged) {
                             le loyer est 4 fois le montant indiqué par les dés.<br><br>Si l'on possède les DEUX cartes de compagnie de Service Public,
                             le loyer est 10 fois le montant indiqué par les dés.</div>
                         <div class="rent">`+ publicCompany.price + `</div>
-                        <div class="mortgage">Valeur de l'hypothèque : `+  publicCompany.price/2 + `€</div>`
+                        <div class="mortgage">Valeur de l'hypothèque : `+ publicCompany.price / 2 + `€</div>`
     }
     else {
-        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : `+ Math.round((publicCompany.price/2)*1.1) + `€</div>`
+        htmlContent = `<div class="mortgage">Prix de rachat l'hypothèque : ` + Math.round((publicCompany.price / 2) * 1.1) + `€</div>`
     }
     $('.overview-card .content').html(htmlContent);
 }

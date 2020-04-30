@@ -150,7 +150,7 @@
 
             <form @submit.prevent="sendBid(bid)">
                 <div class="bid-input">
-                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" placeholder="Prix">€
+                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€
                     <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
                     <button :disabled="bid.disabled" class="bid-cancel" v-on:click="rejectBid(bid)">Passer</button>
                 </div>
@@ -184,6 +184,14 @@
           </div>
           <router-link to="/lobby" class="btn stylized">Revenir au lobby</router-link>
         </div>
+      </div>
+    </div>
+
+    <!-- Resolution overlay -->
+    <div class="resolution-overlay-container">
+      <div>
+        Oups... c'est petit ici
+        <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
       </div>
     </div>
 
@@ -497,11 +505,13 @@ export default {
     sendBid(bid) {
       if (!bid.myPrice) return;
       const myPrice = parseInt(bid.myPrice);
+      const myPlayer = this.getPlayerById(this.loggedUser.id);
+      if (!myPlayer) return;
 
       if (myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
-      } else if (myPrice > this.player.money) {
+      } else if (myPrice > myPlayer.money) {
         this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
         return;
       }
@@ -794,6 +804,13 @@ export default {
         this.$refs.actionBtn.progressReset(false);
 
       console.log("=== fin gameActionRes ===");
+    },
+    
+    isNumber(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57)
+        evt.preventDefault();
     }
   },
   beforeDestroy() {
