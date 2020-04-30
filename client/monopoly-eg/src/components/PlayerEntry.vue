@@ -16,7 +16,16 @@
             </div>
             
             <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" :class="{'mortgaged': overviewCard.isMortgaged}" style="display:block;">
-                <div class="header" :class="[overviewCard.color, (overviewCard.type == 'trainStation') ? 'station' : '', (overviewCard.type == 'publicCompany') ? 'company' : '']">
+                <div
+                    class="header"
+                    :class="[
+                            overviewCard.color,
+                            (overviewCard.type == 'trainStation') ? 'station' : '',
+                            (overviewCard.type == 'publicCompany') ? 'company' : '',
+                            (overviewCard.id == 7) ? 'electricite' : '',
+                            (overviewCard.id == 20) ? 'eau' : ''
+                        ]"
+                    >
                     {{overviewCard.name}}
                 </div>
                 <div v-if="overviewCard.type == 'street'" class="content">
