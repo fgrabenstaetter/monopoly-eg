@@ -466,14 +466,10 @@ class Game {
                 break;
 
             case Constants.CELL_TYPE.OTHER:
-                if (this.curPlayer.cellPos === 30) {
-                    this.curPlayer.moveAbsolute(10);
-                    // Perdre l'argent gagné au passage de la case départ
-                    this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-                } else {
+                if (!this.curPlayer.isInPrison) {
                     let mess;
-                    if (this.curPlayer.cellPos === 10 && !this.curPlayer.isInPrison)
-                        mess = this.curPlayer.nickname + ' rend visite à ses anciens compagnons compagnons de prison';
+                    if (this.curPlayer.cellPos === 10)
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de prison';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
@@ -575,9 +571,15 @@ class Game {
     }
 
     turnPlayerGoPrisonCell() {
+        if (this.curPlayer.cellPos === 30) {
+            // Perdre l'argent gagné au passage de la case départ
+            this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
+        }
+
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
+
     }
 
     turnPlayerTaxCell () {
