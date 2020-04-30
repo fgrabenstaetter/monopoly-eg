@@ -104,21 +104,25 @@
                 </div>
             </div>
 
-            <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
-                <div v-if="remainingPropertiesByType(type) < type.totalNb" style="display: block;" class="properties-container" :class="type.cssClass ? type.cssClass : type.name">
-                    <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property" :class="{'mortgaged': prop.isMortgaged}">
-                        <div v-if="prop.type == 'street'">
-                            {{prop.name}}
-                            <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
-                            <div v-if="remainingPropertiesByType(type) == 0 && prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
-                            <div v-if="prop.level > 0" class="house-number">{{prop.level}}</div>
+            <div v-if="player.properties.length == 0" class="empty-popup">Vous ne possédez aucune propriété</div>
+
+            <div class="popup-content">
+                <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
+                    <div v-if="remainingPropertiesByType(type) < type.totalNb" style="display: block;" class="properties-container" :class="type.cssClass ? type.cssClass : type.name">
+                        <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property" :class="{'mortgaged': prop.isMortgaged}">
+                            <div v-if="prop.type == 'street'">
+                                {{prop.name}}
+                                <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
+                                <div v-if="remainingPropertiesByType(type) == 0 && prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
+                                <div v-if="prop.level > 0" class="house-number">{{prop.level}}</div>
+                            </div>
+                            <div v-else>
+                                {{prop.name}}
+                            </div>
                         </div>
-                        <div v-else>
-                            {{prop.name}}
-                        </div>
-                    </div>
-                    <div v-for="i in remainingPropertiesByType(type)" :key="typeIndex * i + i" class="blank-property"></div>
-                </div> 
+                        <div v-for="i in remainingPropertiesByType(type)" :key="typeIndex * i + i" class="blank-property"></div>
+                    </div> 
+                </div>
             </div>
 
             <div v-if="propertiesEdition.open">

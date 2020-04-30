@@ -54,6 +54,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;
+
+    @media (max-height: 690px) {
+      height: 200px;
+    }
   }
 
   @keyframes montgolfiereAnimation {
@@ -78,6 +82,10 @@
     transform: translate(calc(-50% + 300px), calc(-50% - 200px));
     z-index: 150;
     animation: montgolfiereAnimation 12s infinite 0s ease;
+
+    @media (max-height: 690px) {
+      height: 180px;
+    }
   }
 
   #bus {
@@ -86,6 +94,10 @@
     left: 50%;
     transform: translate(calc(-50% - 300px), calc(-50% - 180px));
     z-index: 50;
+
+    @media (max-height: 690px) {
+      height: 130px;
+    }
   }
 
   #bateau {
@@ -96,7 +108,8 @@
     z-index: 150;
 
     @media (max-height: 900px) {
-      transform: translate(calc(-50% - 230px), calc(-50% + 150px));;
+      height: 150px;
+      transform: translate(calc(-50% - 230px), calc(-50% + 150px));
     }
   }
 
