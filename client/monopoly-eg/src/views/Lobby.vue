@@ -429,8 +429,8 @@ export default {
         },
 
         logout() {
-            this.$store.dispatch('logout')
-            .then(() => {
+            this.socket.close();
+            this.$store.dispatch('logout').then(() => {
                 this.$router.push('/');
             });
         },
@@ -494,10 +494,8 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
-        this.socket.removeAllListeners();
-
-        console.log("REMOVE ALL LISTENERS FROM LOBBY");
-        // this.socket.disconnect();
+        // this.socket.removeAllListeners();
+        this.socket.close();
     },
     mounted() {
         this.playMusic();
@@ -763,8 +761,8 @@ export default {
         // On peut se reconnecter à une partie en cours
         this.socket.on('canReconnectToGame', () => {
             this.loading = true;
-            // this.socket.disconnect();
-
+            this.socket.close();
+            
             setTimeout(() => {
                 this.$router.push('/game');
                 this.loading = false;

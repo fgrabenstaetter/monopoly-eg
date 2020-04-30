@@ -9,7 +9,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <form @submit.prevent="signin">
-                        <input v-model="form.nickname" type="text" class="form-control" placeholder="Pseudo">
+                        <input v-model="form.nickname" type="text" class="form-control" placeholder="Pseudo" autofocus>
                         <input v-model="form.email" type="email" class="form-control" placeholder="Email">
                         <input v-model="form.password" type="password" class="form-control" placeholder="Mot de passe">
                         <button type="submit" class="btn btn-primary">INSCRIPTION</button>
@@ -58,6 +58,10 @@ export default {
             this.$parent.toast(err.response.data.status, 'danger', 5);
         });
     }
+  },
+  mounted() {
+    const input = document.querySelector('[autofocus]');
+    if (input) input.focus();
   }
 };
 </script>

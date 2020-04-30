@@ -49,10 +49,8 @@ router.beforeEach((to, from, next) => {
   const unrestrictedRoutes = ['Home', 'Login', 'Signin'];
 
   if (!unrestrictedRoutes.includes(to.name) && !store.getters.isLoggedIn) {
-    console.log("REDIRECT LOGIN");
-    next('Login');
+    next('/login');
   } else {
-    console.log("ROUTER OKOK");
     next();
   }
 })
