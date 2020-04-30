@@ -497,11 +497,13 @@ export default {
     sendBid(bid) {
       if (!bid.myPrice) return;
       const myPrice = parseInt(bid.myPrice);
+      const myPlayer = this.getPlayerById(this.loggedUser.id);
+      if (!myPlayer) return;
 
       if (myPrice < bid.startingPrice) {
         this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
         return;
-      } else if (myPrice > this.player.money) {
+      } else if (myPrice > myPlayer.money) {
         this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
         return;
       }
