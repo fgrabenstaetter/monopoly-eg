@@ -1266,12 +1266,12 @@ class Network {
             player.socket.broadcast.to(game.name).emit('gamePlayerReconnectedRes', { playerID: player.id });
         }, 400);
 
-        let players = [], cells = [], properties = [],  chatMessages = [], cellsCounter = 0;
+        let players = [], cells = [], properties = [],  chatMessages = [], bids = [], offers = [], playerProperties = [], cellsCounter = 0;
+
         player.socket.on('gameReadyReq', () => {
             console.log(' -- READY REQ DE RECONNEXION');
 
             for (const player of game.players) {
-                let playerProperties = [];
                 for (const prop of player.properties)
                     playerProperties.push(prop.id);
 
@@ -1333,8 +1333,6 @@ class Network {
                     createdTime : mess.createdTime
                 });
             }
-
-            let bids = [], offers = [];
 
             for (const bid of game.bids) {
                 bids.push({
