@@ -55,11 +55,11 @@ export default {
           this.$router.push('/login');
       });
 
-      socket.on('disconnect', () => {
-          setTimeout( () => {
-              socket.connect();
-          }, 400);
-      });
+      // socket.on('disconnect', () => {
+      //     setTimeout( () => {
+      //         socket.connect();
+      //     }, 400);
+      // });
     }
   }
 }

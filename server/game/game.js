@@ -1,17 +1,17 @@
-const Chat                    = require('./chat');
-const Constants               = require('./../lib/constants');
-const Deck                    = require('./deck');
-const Player                  = require('./player');
-const Bank                    = require('./bank');
-const Cells                   = require('./../lib/cells');
-const Properties              = require('./../lib/properties');
-const chanceCardsMeta         = require('./../lib/chanceCards');
+const Chat = require('./chat');
+const Constants = require('./../lib/constants');
+const Deck = require('./deck');
+const Player = require('./player');
+const Bank = require('./bank');
+const Cells = require('./../lib/cells');
+const Properties = require('./../lib/properties');
+const chanceCardsMeta = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-const Errors                  = require('./../lib/errors');
-const Bid                     = require('./bid');
-const SuccessManager          = require('./successManager');
-const activeGameSchema        = require('./../models/activeGame');
-const Lobby                   = require('./lobby');
+const Errors = require('./../lib/errors');
+const Bid = require('./bid');
+const SuccessManager = require('./successManager');
+const activeGameSchema = require('./../models/activeGame');
+const Lobby = require('./lobby');
 
 
 /**
@@ -27,24 +27,24 @@ class Game {
      * @param duration La durée souhaitée de temps de jeu en ms ou null si illimité
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (id, users, duration, GLOBAL) {
-        this.id                       = id;
-        this.GLOBAL                   = GLOBAL;
-        this.players                  = [];
-        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells                    = Cells.new;
-        this.chanceDeck               = new Deck(chanceCardsMeta);
-        this.communityChestDeck       = new Deck(communityChestCardsMeta);
-        this.chat                     = new Chat();
-        this.bank                     = new Bank(this.cells);
+    constructor(id, users, duration, GLOBAL) {
+        this.id = id;
+        this.GLOBAL = GLOBAL;
+        this.players = [];
+        this.forcedDiceRes = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.cells = Cells.new;
+        this.chanceDeck = new Deck(chanceCardsMeta);
+        this.communityChestDeck = new Deck(communityChestCardsMeta);
+        this.chat = new Chat();
+        this.bank = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
-        this.offers                   = [];
-        this.lastOffers               = []; // anti spam
+        this.offers = [];
+        this.lastOffers = []; // anti spam
         // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
-        this.bids                     = [];
-        this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
-        this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
-        this.ended                    = false;
+        this.bids = [];
+        this.alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
+        this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended = false;
 
         this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime = null; // timestamp de démarrage en ms
@@ -66,22 +66,22 @@ class Game {
 
         this.turnData = { // pour le client (envoi Network)
             // action data
-            actionMessage        : null,
-            asyncRequestType     : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs     : null, // liste
+            actionMessage: null,
+            asyncRequestType: null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs: null, // liste
 
             // dices system
-            nbDoubleDices        : 0, // ++ à chaque double et si >= 3 => prison
-            canRollDiceAgain     : false, // true quand le joueur peux encore lancer les dés, false sinon
+            nbDoubleDices: 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain: false, // true quand le joueur peux encore lancer les dés, false sinon
 
             // turn system
-            startedTime          : null, // timestamp de début du tour
-            endTime              : null, // timestamp de fin de tour
-            timeout              : null,
-            midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
-            timeoutActionTimeout : null,
-            playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval      : null  // id de interval pour fairie clearInterval apres
+            startedTime: null, // timestamp de début du tour
+            endTime: null, // timestamp de fin de tour
+            timeout: null,
+            midTimeout: null, // timestamp de moitié de tour => lancer les dés auto
+            timeoutActionTimeout: null,
+            playerInd: Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
+            persistInterval: null  // id de interval pour fairie clearInterval apres
         };
         this.successManager = new SuccessManager(this);
 
@@ -90,7 +90,7 @@ class Game {
             gameState.save();
         }
 
-        this.checkEndInterval = setInterval( () => {
+        this.checkEndInterval = setInterval(() => {
             if (this.checkEnd()) {
                 clearInterval(this.checkEndInterval);
                 this.ended = true;
@@ -98,7 +98,7 @@ class Game {
         }, 2e3);
     }
 
-    deleteGameState () {
+    deleteGameState() {
         let id = this.id;
         if (this.shouldPersist)
             activeGameSchema.deleteOne({ '_id': this.id }, function (err) {
@@ -131,7 +131,7 @@ class Game {
         this.deleteGameState();
     }
 
-    get active () {
+    get active() {
         return this.players.length > 0;
     }
 
@@ -215,7 +215,7 @@ class Game {
     /**
      * Cette fonction doit etre utilisee pour obtenir l'etat courant du jeu sous forme de dictionaire
      */
-    currentGameState () {
+    currentGameState() {
         let players = [];
         let cells = [];
         let properties = [];
@@ -238,10 +238,10 @@ class Game {
         }
     }
 
-    persistGameState () {
+    persistGameState() {
         let gameId = this.id;
         let gameState = activeGameSchema(this.currentGameState());
-        activeGameSchema.findOneAndUpdate({_id: this.id}, gameState, {upsert: true}, function(err, doc) {
+        activeGameSchema.findOneAndUpdate({ _id: this.id }, gameState, { upsert: true }, function (err, doc) {
             /*
             if (err)
                 console.log('Error at saving gamestate for game #', gameId);
@@ -282,7 +282,7 @@ class Game {
      * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite OU le timeout de partie a été atteint)
      * @return true si la partie est finie, false sinon
      */
-    checkEnd () {
+    checkEnd() {
         const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
         if (gameTimeout) {
             // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
@@ -308,7 +308,7 @@ class Game {
             let nb = 0, solo;
             for (const pl of this.players) {
                 if (pl.failure)
-                    nb ++;
+                    nb++;
                 else
                     solo = pl;
             }
@@ -333,7 +333,7 @@ class Game {
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
 
-    turnMidTimeCheck () {
+    turnMidTimeCheck() {
         if (this.turnData.canRollDiceAgain)
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
     }
@@ -382,7 +382,7 @@ class Game {
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
      * @param expired true si le tour a expiré, false sinon (cette méthode n'est pas apellé uniquement lors du timeout de tour, mais aussi lorsqu'on veut relancer les dés)
      */
-    turnPlayerTimeoutAction (expired = true) {
+    turnPlayerTimeoutAction(expired = true) {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
@@ -400,7 +400,7 @@ class Game {
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
      * @return [int, int] le résultat des dés ou false si problème quelconque
      */
-    rollDice (useExitJailCard = false) {
+    rollDice(useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
 
@@ -415,11 +415,11 @@ class Game {
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
         else if (diceRes[0] === diceRes[1]) {
-            this.turnData.nbDoubleDices ++;
+            this.turnData.nbDoubleDices++;
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
                 this.setTurnActionData(null, null,
-                    this.curPlayer.nickname + ' a fait 3 doubles, direction la prison ! (tour 1/3)');
+                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
             } else {
                 this.turnData.canRollDiceAgain = true;
 
@@ -477,12 +477,12 @@ class Game {
                 if (!this.curPlayer.isInPrison) {
                     let mess;
                     if (this.curPlayer.cellPos === 10)
-                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de prison';
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour visiter le parlement';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                            default: mess = this.curPlayer.nickname + ' Visite le parc de l\'orangerie';
                         }
                     }
 
@@ -507,14 +507,14 @@ class Game {
     turnPlayerAlreadyInPrison(diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
             if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
-                this.curPlayer.nbJailEscapeCards --;
+                this.curPlayer.nbJailEscapeCards--;
                 this.curPlayer.quitPrison();
             } else if (diceRes[0] === diceRes[1])
                 this.curPlayer.quitPrison();
             else {
-                this.curPlayer.remainingTurnsInJail --;
+                this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -586,11 +586,11 @@ class Game {
 
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
+            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
 
     }
 
-    turnPlayerTaxCell () {
+    turnPlayerTaxCell() {
         const moneyToPay = this.curCell.tax.money;
         if (this.curPlayer.money < moneyToPay) {
             this.playerNotEnoughMoney(this.curPlayer, moneyToPay,
@@ -826,13 +826,13 @@ class Game {
             }
 
             this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
-                properties  : propertiesID,
-                playerID    : player.id,
-                playerMoney : player.money,
-                bankMoney   : this.bank.money,
-                message     : mess,
-                rentalOwner : rentalOwner,
-                auto        : auto
+                properties: propertiesID,
+                playerID: player.id,
+                playerMoney: player.money,
+                bankMoney: this.bank.money,
+                message: mess,
+                rentalOwner: rentalOwner,
+                auto: auto
             });
         }
     }
@@ -844,7 +844,7 @@ class Game {
      * @param msgIfFailure Le message a mettre dans turnData.actionMessage si le joueur est en faillite
      * @param msgIfShouldMortgage Le message a mettre dans turnData.actionMessage si le joueur doit hypothéquer (pas de faillite)
      */
-    playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
+    playerNotEnoughMoney(player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
         // regarder si ses propriétés valent assez pour combler ce montant
         let sum = player.money;
         for (const prop of player.properties) {

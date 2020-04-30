@@ -32,14 +32,14 @@ const chanceCards = [{
     effectType: 'gainMoney',
     effectArg1: 50
 }, {
-    description: "Vous obtenez une carte sortie de prison. Elle peut être conservée jusqu'à être utilisée ou vendue",
+    description: "Vous obtenez une carte 'Fin de session parlementaire'. Elle peut être conservée jusqu'à être utilisée ou vendue",
     effectType: 'jailEscapeCard'
 }, {
     description: 'Reculez de 4 cases',
     effectType: 'moveRelative',
     effectArg1: -4
 }, {
-    description: 'Allez en prison. Avancez tout droit en prison, ne passez pas par la case départ. Ne recevez pas 200€',
+    description: 'Allez en Session parlementaire. Avancez tout droit jusqu\'au parlement, ne passez pas par la case départ. Ne recevez pas 200€',
     effectType: 'goJail'
 }, {
     description: 'Faites des réparations pour toutes vos maisons. Versez pour chaque maison 25€. Versez pour chaque hôtel 100€',
