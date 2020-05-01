@@ -460,9 +460,10 @@ class Game {
 
             case Constants.CELL_TYPE.PROPERTY:
                 this.turnPlayerPropertyCell(diceRes);
-                const property = this.curCell.property;
-                if (this.turnData.shouldCreateBid)
+                if (this.turnData.shouldCreateBid) {
+                    const property = this.curCell.property;
                     new Bid(property, 0, this);;
+                }
                 break;
 
             case Constants.CELL_TYPE.CHANCE:
@@ -490,7 +491,7 @@ class Game {
                         }
                     }
 
-                    this.setTurnActionData(null, null, mess, false);
+                    this.setTurnActionData(null, null, mess);
                 }
                 break;
         }
@@ -518,7 +519,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !', false);
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -545,14 +546,14 @@ class Game {
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété', false);
+                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
             if (!property.owner && this.curPlayer.money >= buyingPrice) {
                 // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
                 this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
-                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name, false);
+                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
 
             } else if (property.owner) {
                 // Le terrain appartient à un autre joueur
@@ -568,10 +569,10 @@ class Game {
                     this.curPlayer.loseMoney(rentalPrice);
                     property.owner.addMoney(rentalPrice);
                     this.setTurnActionData(null, null,
-                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname, false);
+                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
             } else if (!property.owner && this.curPlayer.money < buyingPrice)
-                this.setTurnActionData(null, null, null, true);
+                this.turnData.shouldCreateBid = true;
         }
     }
 
@@ -591,8 +592,7 @@ class Game {
 
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)', false);
-
+            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
     }
 
     turnPlayerTaxCell() {
@@ -606,7 +606,7 @@ class Game {
             this.curPlayer.loseMoney(moneyToPay);
             this.bank.addMoney(moneyToPay);
             this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes', false);
+                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes');
         }
     }
 
@@ -715,15 +715,15 @@ class Game {
      * @param asyncRequestType Le type de requête asynchrone que le client pourra faire ensuite (ou null)
      * @param asyncRequestArgs Liste d'arguments pour la requête asynchrone possible à envoyer au joueur (ou null)
      */
-    setTurnActionData(asyncRequestType, asyncRequestArgs, actionMessage, shouldCreateBid) {
+    setTurnActionData(asyncRequestType, asyncRequestArgs, actionMessage) {
         this.turnData.asyncRequestType = asyncRequestType;
         this.turnData.asyncRequestArgs = asyncRequestArgs;
         this.turnData.actionMessage = actionMessage;
-        this.shouldCreateBid = shouldCreateBid;
     }
 
     resetTurnActionData() {
-        this.setTurnActionData(null, null, null, false);
+        this.setTurnActionData(null, null, null);
+        this.turnData.shouldCreateBid = false;
     }
 
     /**
