@@ -829,7 +829,7 @@ export default {
                 this.CST.PAWNS[currPlayer.pawn],
                 this.CST.CELL_PRISON
               );
-              
+
               if (currPlayer.id == this.loggedUser.id) {
                 this.$refs.actionBtn.progressSetStateTerminer();
               }
@@ -1070,7 +1070,7 @@ export default {
           } else {
             currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
 
-            if (this.currPlayer.nbJailEscapeCards > 0)
+            if (currPlayer.nbJailEscapeCards > 0)
               this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
           }
         }
