@@ -170,13 +170,17 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
-      <div v-if="endGame" class="end-game-background"></div>
+      <div v-if="endGame" class="end-game-background">
+        <div class="pyro">
+          <div class="before"></div>
+          <div class="after"></div>
+        </div>
+      </div>
       <div v-if="endGame" class="end-game-screen">
         <div class="header">
-          <h5>Fin de la partie !</h5>
+          <div class="winner">{{endGame.winnerNickname}}</div>
         </div>
         <div class="content">
-          <div class="winner">{{endGame.winnerNickname}}</div>
           <div class="subtitle">a gagné la partie !</div>
           <div class="info">
             <div class="label">Temps de jeu</div>
@@ -251,22 +255,14 @@ export default {
           "schoolbus"
         ],
         PLAYERS_COLORS: [
-          { name: 'yellow', hex: '#FDFF00' },
-          { name: 'red', hex: '#d43333' },
-          { name: 'blue', hex: '#006aff' },
-          { name: 'green', hex: '#22d406' },
-          { name: 'white', hex: '#FFFFFF' },
-          { name: 'purple', hex: '#F576F4' },
-          { name: 'cyan', hex: '#59FFFF' },
-          { name: 'orange', hex: '#F8A100' }
-          // "yellow",
-          // "#d43333",
-          // "#006aff",
-          // "#22d406",
-          // "white",
-          // "violet",
-          // "cyan",
-          // "orange"
+          "yellow",
+          "#d43333",
+          "#006aff",
+          "#22d406",
+          "white",
+          "violet",
+          "cyan",
+          "orange"
         ],
         CELL_PRISON: 10
       },
@@ -689,10 +685,9 @@ export default {
       this.socket.on("gamePlayerLeavingRes", res => {
         if (res.error === 0) {
           this.$refs.gameSettings.closeModal();
-          this.socket.close();
           setTimeout(() => {
             this.$router.push("/lobby");
-          }, 1000);
+          }, 800);
         } else {
           this.$parent.toast(res.status, "danger", 5);
         }
@@ -867,20 +862,23 @@ export default {
             data.properties[i].level = 0;
             data.properties[i].ownerID = null;
             data.properties[i].isMortgage = 0;
+            // this.$set(this.properties, i, data.properties[i]);
         }
 
         // Génération de la liste de joueurs
-        data.players.forEach((player) => {
+        data.players.forEach((player, index) => {
             // Champs par défaut du joueur
-            this.$set(player, 'isInJail', false);
+            // player.properties = [];
             this.$set(player, 'nbJailEscapeCards', 0);
             this.$set(player, 'properties', []);
             this.$set(player, 'money', data.playersMoney);
             this.$set(player, 'failure', false);
             this.$set(player, 'hasLeft', false);
-            this.$set(player, 'cellPos', 0);
-            this.$set(player, 'color', this.CST.PLAYERS_COLORS[player.pawn]);
-
+            // player.money = data.playersMoney;
+            player.cellPos = 0;
+            player.color = this.CST.PLAYERS_COLORS[index];
+            player.isInJail = false;
+            // this.$set(this.player, index, player);
             this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
         });
 
@@ -918,8 +916,8 @@ export default {
             this.properties[i].ownerID = null;
 
         // Génération de la liste de joueurs
-        this.players.forEach((player) => {
-            player.color = this.CST.PLAYERS_COLORS[player.pawn];
+        this.players.forEach((player, index) => {
+            player.color = this.CST.PLAYERS_COLORS[index];
 
             if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
 
@@ -930,7 +928,7 @@ export default {
               const propertyObj = this.getPropertyById(player.properties[i]);
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
-                gameboard.loaderFlag("d" + cell.id, player.color.hex);
+                gameboard.loaderFlag("d" + cell.id, player.color);
 
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
@@ -1086,7 +1084,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
             player.properties.push(property.id);
-            gameboard.loaderFlag("d" + cell.id, player.color.hex);
+            gameboard.loaderFlag("d" + cell.id, player.color);
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
@@ -1198,7 +1196,7 @@ export default {
 
         // Transfert de drapeau
         gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color.hex);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
@@ -1331,7 +1329,7 @@ export default {
               property.ownerID = res.playerID;
               winner.properties.push(property.id);
 
-              gameboard.loaderFlag(`d${cell.id}`, winner.color.hex);
+              gameboard.loaderFlag(`d${cell.id}`, winner.color);
 
               this.$set(winner, 'money', res.playerMoney);
             }
