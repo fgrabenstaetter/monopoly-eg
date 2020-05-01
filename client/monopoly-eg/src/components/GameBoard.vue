@@ -425,6 +425,13 @@ export default {
                         o.material.color = new THREE.Color(colore);
                 }
             });
+            
+            const color = 0x404040;
+            const intensity = 0.1;
+            const light1 = new THREE. DirectionalLight( 0x404040, intensity)
+            light1.position.set(this.objs[flag].children[0].position.x, this.objs[flag].children[0].position.y, this.objs[flag].children[0].position.z);
+            this.scene.add(light1);
+            //console.log(this.objs[flag].children[0]);
             this.scene.add(root);
         });
     },
