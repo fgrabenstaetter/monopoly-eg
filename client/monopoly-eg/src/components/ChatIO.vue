@@ -29,16 +29,11 @@ import {Howl} from 'howler'
  * @vuese
  * @group Components
  * Chat du jeu (utilisé dans le lobby et dans le jeu)
+ * Important : le parent de ce composant doit posséder une connexion établie à un socket dans l'attribut data 'socket' que ce composant utilisera pour ses communications
  */
 export default {
     name: 'ChatIO',
     props: {
-        // @vuese
-        // socket utilisé pour l'envoi de messages
-        socket: {
-            type: Object,
-            required: true
-        },
         // @vuese
         // Environnement dans lequel est utilisé le chat : 'lobby' ou 'game'
         env: {
@@ -64,13 +59,36 @@ export default {
     methods: {
         /**
          * @vuese
+         * Initialisation des sockets (appelé par le parent lorsque la connexion au socket est établie)
+         */
+        initSocket() {
+            if (this.env === 'lobby') {
+                this.$parent.socket.on('lobbyChatReceiveRes', (mess) => {
+                    if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
+                        this.audio.sfx.newMessage.play();
+                    }
+                    this.messages.push(mess);
+                });
+            } else {
+                this.$parent.socket.on('gameChatReceiveRes', (mess) => {
+                    if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
+                        this.audio.sfx.newMessage.play();
+                    }
+                    const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
+                    this.messages.push(formatMsg);
+                });
+            }
+        },
+
+        /**
+         * @vuese
          * Envoi le contenu du nouveau message au serveur et vide la zone de saisie ('msg')
          */
         postMsg() {
             if (this.env === 'lobby')
-                this.socket.emit('lobbyChatSendReq', { content: this.msg });
+                this.$parent.socket.emit('lobbyChatSendReq', { content: this.msg });
             else
-                this.socket.emit('gameChatSendReq', { text: this.msg });
+                this.$parent.socket.emit('gameChatSendReq', { text: this.msg });
             
             this.msg = '';
         },
@@ -99,23 +117,6 @@ export default {
     },
     mounted() {
         this.loadSfx();
-
-        if (this.env === 'lobby') {
-            this.socket.on('lobbyChatReceiveRes', (mess) => {
-                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
-                    this.audio.sfx.newMessage.play();
-                }
-                this.messages.push(mess);
-            });
-        } else {
-            this.socket.on('gameChatReceiveRes', (mess) => {
-                if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
-                    this.audio.sfx.newMessage.play();
-                }
-                const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
-                this.messages.push(formatMsg);
-            });
-        }
     },
     updated() {
         this.scrollToBottom();

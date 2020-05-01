@@ -263,16 +263,17 @@
 <script>
 import $ from 'jquery';
 
+/**
+ * @vuese
+ * Modal (popup) de paramètres du jeu
+ * Important : le parent de ce composant doit posséder une connexion établie à un socket dans l'attribut data 'socket' que ce composant utilisera pour ses communications
+ */
 export default {
     name: 'GameSettingsModal',
     props: {
         env: {
             type: String,
             default: 'lobby'
-        },
-        socket: {
-            type: Object,
-            required: true
         },
         loggedUser: {
             type: Object,
@@ -320,7 +321,7 @@ export default {
             // parent save
             this.$parent.loggedUser.settings = this.userSettings;
             // socket save
-            this.socket.emit('playerSettingsReq', this.userSettings);
+            this.$parent.socket.emit('playerSettingsReq', this.userSettings);
 
             if (this.env == 'game') {
                 // Refresh du plateau en direct

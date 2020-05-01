@@ -88,7 +88,7 @@
             <div class="container lobby-bottom-row">
                 <div class="row">
                     <div class="col-md-4">
-                        <chat-io v-bind:socket="socket" ref="chat"></chat-io>
+                        <chat-io ref="chat"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
                         <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
@@ -516,6 +516,8 @@ export default {
                         path: '/socket.io',
                         secure: true
                     });
+
+        this.$refs.chat.initSocket();
 
         this.playMusic();
         this.loadSfx();

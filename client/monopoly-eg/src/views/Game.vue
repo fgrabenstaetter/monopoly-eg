@@ -59,7 +59,7 @@
       <div class="container-fluid bottom-container pl-5 pr-5" style="z-index: 10;">
         <div class="row">
           <div class="col-md-4">
-            <chat-io v-if="gameMounted" v-bind:socket="socket" env="game" ref="chat"></chat-io>
+            <chat-io env="game" ref="chat"></chat-io>
           </div>
           <div class="col-md-4"></div>
           <div class="col-md-4">
@@ -616,10 +616,7 @@ export default {
      * Indique au serveur que l'on est prêt à commencer la partie côté client (et donc à recevoir les sockets du serveur)
      */
     gameReady() {
-        setTimeout(() => {
-          console.log('gameReadyReq');
-          this.socket.emit('gameReadyReq');
-        }, 1000);
+        console.log('boardReady');
     },
 
     /**
@@ -844,8 +841,10 @@ export default {
             path: "/socket.io",
             secure: true
       });
-    
+
     this.gameMounted = true;
+
+    this.$refs.chat.initSocket();
 
     this.playMusic();
     this.loadSfx();
@@ -1492,6 +1491,12 @@ export default {
             this.$parent.toast(html,  'success', 10);
         }, 6e3);
     });
+
+
+    setTimeout(() => {
+      console.log('gameReadyReq');
+      this.socket.emit('gameReadyReq');
+    }, 1000);
 
   }
 };
