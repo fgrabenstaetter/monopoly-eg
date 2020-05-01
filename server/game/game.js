@@ -81,7 +81,8 @@ class Game {
             midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
             timeoutActionTimeout : null,
             playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval      : null  // id de interval pour fairie clearInterval apres
+            persistInterval      : null,  // id de interval pour fairie clearInterval apres
+            shouldCreateBid      : false
         };
         this.successManager = new SuccessManager(this);
 
@@ -419,7 +420,7 @@ class Game {
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
                 this.setTurnActionData(null, null,
-                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
+                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)', false);
             } else {
                 this.turnData.canRollDiceAgain = true;
 
@@ -459,6 +460,8 @@ class Game {
 
             case Constants.CELL_TYPE.PROPERTY:
                 this.turnPlayerPropertyCell(diceRes);
+                if (this.turnData.shouldCreateBid)
+                    new Bid(property, 0, this);;
                 break;
 
             case Constants.CELL_TYPE.CHANCE:
@@ -486,7 +489,7 @@ class Game {
                         }
                     }
 
-                    this.setTurnActionData(null, null, mess);
+                    this.setTurnActionData(null, null, mess, false);
                 }
                 break;
         }
@@ -514,7 +517,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !', false);
             }
 
         } else {
@@ -541,14 +544,14 @@ class Game {
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
+                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété', false);
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
             if (!property.owner && this.curPlayer.money >= buyingPrice) {
                 // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
                 this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
-                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
+                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name, false);
 
             } else if (property.owner) {
                 // Le terrain appartient à un autre joueur
@@ -564,10 +567,10 @@ class Game {
                     this.curPlayer.loseMoney(rentalPrice);
                     property.owner.addMoney(rentalPrice);
                     this.setTurnActionData(null, null,
-                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
+                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname, false);
                 }
             } else if (!property.owner && this.curPlayer.money < buyingPrice)
-                new Bid(property, 0, this);
+                this.setTurnActionData(null, null, null, true);
         }
     }
 
@@ -587,7 +590,7 @@ class Game {
 
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
+            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)', false);
 
     }
 
@@ -602,7 +605,7 @@ class Game {
             this.curPlayer.loseMoney(moneyToPay);
             this.bank.addMoney(moneyToPay);
             this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes');
+                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes', false);
         }
     }
 
@@ -711,14 +714,15 @@ class Game {
      * @param asyncRequestType Le type de requête asynchrone que le client pourra faire ensuite (ou null)
      * @param asyncRequestArgs Liste d'arguments pour la requête asynchrone possible à envoyer au joueur (ou null)
      */
-    setTurnActionData(asyncRequestType, asyncRequestArgs, actionMessage) {
+    setTurnActionData(asyncRequestType, asyncRequestArgs, actionMessage, shouldCreateBid) {
         this.turnData.asyncRequestType = asyncRequestType;
         this.turnData.asyncRequestArgs = asyncRequestArgs;
         this.turnData.actionMessage = actionMessage;
+        this.shouldCreateBid = shouldCreateBid;
     }
 
     resetTurnActionData() {
-        this.setTurnActionData(null, null, null);
+        this.setTurnActionData(null, null, null, false);
     }
 
     /**
@@ -856,11 +860,11 @@ class Game {
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
             this.playerFailure(player);
-            this.setTurnActionData(null, null, msgIfFailure);
+            this.setTurnActionData(null, null, msgIfFailure, false);
         } else {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
+            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage, false);
         }
     }
 }
