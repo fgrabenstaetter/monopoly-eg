@@ -284,6 +284,7 @@ class Game {
      */
     checkEnd() {
         const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
+        let ranking = [];
         if (gameTimeout) {
             // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
             let winnerPlayer, winnerValue = 0;
@@ -295,12 +296,31 @@ class Game {
                     winnerPlayer = pl;
             }
 
+            ranking.push(winnerPlayer.id);
+            let others = [];
+            for (const p of this.players) {
+                if (p !== winnerPlayer) {
+                    let sum = p.money;
+                    for (const prop of p.properties)
+                        sum += prop.value;
+                    others.push({
+                        playerID: p.id,
+                        money: sum
+                    });
+                }
+            }
+
+            others.sort((a, b) => b.sum - a.sum);
+            for (const obj of others) {
+                ranking.push(obj.playerID);
+            }
+
             this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                 type: 'timeout',
                 winnerID: winnerPlayer.id,
+                ranking: ranking,
                 duration: Date.now() - this.startedTime
             });
-
             this.delete();
             return true;
 
@@ -315,9 +335,30 @@ class Game {
 
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
+                // A MODIFIER ADAPTER EN FONCTION DU TEMPS DE FAILLITE JE FAIS PLUS TARD
+                /*ranking.push(winner.id);
+                let others = [];
+                for (const p of this.players) {
+                    if (p !== winner) {
+                        let sum = p.money;
+                        for (const prop of p.properties)
+                            sum += prop.value;
+                        others.push({
+                            playerID: p.id,
+                            money: sum
+                        });
+                    }
+                }
+
+                others.sort((a, b) => b.sum - a.sum);
+                for (const obj of others) {
+                    ranking.push(obj.playerID);
+                }
+                console.log(ranking);*/
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                     type     : 'normal',
                     winnerID : winner.id,
+                    ranking: ranking,
                     duration : Date.now() - this.startedTime
                 });
 
