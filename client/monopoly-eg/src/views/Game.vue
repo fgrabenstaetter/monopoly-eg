@@ -829,6 +829,11 @@ export default {
                 this.CST.PAWNS[currPlayer.pawn],
                 this.CST.CELL_PRISON
               );
+              
+              if (currPlayer.id == this.loggedUser.id) {
+                this.$refs.actionBtn.progressSetStateTerminer();
+              }
+
               return this.gameActionResAfterSecondMovement(data);
             }, 800);
           }, 800);
@@ -1048,7 +1053,7 @@ export default {
 
         if (currPlayer.id == this.loggedUser.id) {
             console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1] || currPlayer.isInJail) {
+            if (data.dicesRes[0] != data.dicesRes[1]) {
               this.$refs.actionBtn.progressSetStateTerminer();
             } else {
               const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
@@ -1438,6 +1443,21 @@ export default {
           }
         }
     });
+
+    // En cas d'hypothèque forcée (si un paiement doit être fait)
+    this.socket.on('gameForcedMortgageRes', (res) => {
+      this.$parent.toast(`Hypothèque forcée : ${res.message}`, 'danger', 5);
+      
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
+      this.$set(player, 'money', res.playerMoney);
+
+      if (res.rentalOwner) {
+        const rentalOwner = this.getPlayerById(res.rentalOwner.id);
+        if (!rentalOwner) return;
+        this.$set(rentalOwner, 'money', res.rentalOwner.money);
+      } 
+    })
 
     // Faire leverl'hypothèque ERREUR
     this.socket.on("gamePropertyUnmortgageRes", (res) => {
