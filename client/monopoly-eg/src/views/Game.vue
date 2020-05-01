@@ -1292,6 +1292,7 @@ export default {
     // Fin d'une enchère
     this.socket.on('gameBidEndedRes', (res) => {
         console.log('gameBidEndedRes');
+        console.log(res);
         let bid;
         let bidIndex;
         for (const i in this.bids) {
