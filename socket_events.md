@@ -672,6 +672,7 @@
         {
             type: string, // 'failure' si dernier joueur qui n'a pas fait faillite ou 'timeout' si le timeout de partie a expiré et que c'est le joueur qui possède la plus grande valeur
             winnerID: int, // ID joueur qui a gagné
+            ranking: [] // tableau trié dans l'ordre croissant de victoire par ID => 1er = indice 0 / 2e indice 1 ... etc
             duration: timestamp // durée totale du jeu en ms
         }
         ```
