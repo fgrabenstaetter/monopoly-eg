@@ -1123,6 +1123,7 @@ class Network {
 
     gameOfferActionReq(player, game) {
         player.socket.on('gameOfferActionReq', (data) => {
+            console.log('OFER #5');
             let err = Errors.SUCCESS, offer;
             if (data)
                 data.offerID = parseInt(data.offerID);
