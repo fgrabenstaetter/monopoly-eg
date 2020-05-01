@@ -352,7 +352,13 @@ class Game {
             return;
         }
 
+        if (this.turnData.shouldCreateBid) {
+            const curProp = this.curCell.property;
+            new Bid(curProp, 0, this);
+        }
+
         this.resetTurnActionData();
+        this.turnData.shouldCreateBid = false;
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
@@ -733,11 +739,6 @@ class Game {
                 const curProp = this.curCell.property;
                 new Bid(curProp, 0, this);
                 break;
-        }
-        if (this.turnData.shouldCreateBid) {
-            const property = this.curCell.property;
-            new Bid(property, 0, this);;
-            this.turnData.shouldCreateBid = false;
         }
     }
 
