@@ -874,8 +874,10 @@ export default {
         });
 
 
-        console.log("LOBBY READY REQ");
-        this.socket.emit('lobbyReadyReq');
+        setTimeout(() => {
+            console.log("LOBBY READY REQ");
+            this.socket.emit('lobbyReadyReq');
+        }, 1000);
     }
 }
 </script>
