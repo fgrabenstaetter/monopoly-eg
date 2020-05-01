@@ -687,20 +687,14 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortgage(propertiesList) {
-        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si pas hypothèque forcée (= manuel)
-        let sum = this.curPlayer.money;
         let properties = [];
 
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
-            if (prop && !prop.isMortgaged) {
-                sum += prop.mortgagePrice;
-                properties.push(prop);
-            }
+            if (!prop || prop.isMortgaged)
+                return false;
+            properties.push(prop);
         }
-
-        if (moneyToObtain && sum < moneyToObtain) // seulement si hypothèque forcée (cause: loyer ou taxe)
-            return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
 
         // hypothéquer
         for (const prop of properties)
