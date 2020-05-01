@@ -338,7 +338,7 @@ describe('Network + Game', () => {
         sock.emit('gameRollDiceReq');
     });
 
-    it('Hypothèque forcée (pas assez pour payer loyer)', (done) => {
+    it('Hypothèquer une propriété', (done) => {
         const game = new Game(1, [user, user2], null, GLOBAL);
         // démarrage manuel
         for (const player of game.players)
@@ -370,7 +370,6 @@ describe('Network + Game', () => {
             assert.deepEqual(data.dicesRes, [1, 2]);
             assert.strictEqual(data.playerID, player.id);
             assert.strictEqual(data.cellPos, 3);
-            assert.strictEqual(data.asyncRequestType, 'shouldMortgage');
             assert.deepStrictEqual(data.asyncRequestArgs, [ property.rentalPrice ]);
 
             sock.on('gamePropertyMortgageRes', (data) => {
@@ -382,9 +381,7 @@ describe('Network + Game', () => {
             sock.on('gamePropertyMortgagedRes', (data) => {
                 assert.deepStrictEqual(data.properties, [ prop.id ]);
                 assert.strictEqual(data.playerID, player.id);
-                assert.strictEqual(data.playerMoney, 12);
-                assert.ok(data.message);
-                assert.deepStrictEqual(data.rentalOwner, { id: player2.id, money: Constants.GAME_PARAM.PLAYER_INITIAL_MONEY + property.rentalPrice });
+                assert.strictEqual(data.playerMoney, 72);
                 if (++ nb === 2)
                     done();
             });
@@ -722,7 +719,7 @@ describe('Network + Game', () => {
 
         // A Modifier lorsque l'event pour les succès sera prêt
         sock.on('gameActionRes', (data) => {
-            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 1);
+            assert.strictEqual(game.successManager.datas[player.id].nbDoubles, 0); // car prison + double = annuler le prison
             assert.strictEqual(game.successManager.datas[player.id].nbJailTimes, 1);
             assert.deepEqual(data.dicesRes, [15, 15]);
             assert.strictEqual(data.playerID, player.id);

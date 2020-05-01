@@ -905,12 +905,7 @@
             playerID: int,
             playerMoney: int, // nouveau solde
             bankMoney: int,
-            message: string, // message lié à l'hypothèque
-            auto: bool, // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
-            rentalOwner: { // seulement si hypothèque forcée POUR PAYER UN LOYER (pas taxe), sinon null
-                id: int,
-                money: int // son nouveau solde
-            }
+            auto: bool // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
         }
         ```
 
@@ -943,6 +938,24 @@
             propertyID: int,
             playerMoney: int,
             bankMoney: int
+        }
+        ```
+
+* **Résultat d'une hypothèque forcée d'un joueur**
+    > Envoyé à tous les joueurs lorsque l'hypothèque forcée d'un joueur a terminée
+
+    * **Réponse:** gameForcedMortgageRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int,
+            playerMoney: int, // nouveau solde
+            bankMoney: int,
+            message: string, // message lié à la fin de l'hypothèque forcée (peut êter succès ou échec = faillite)
+            rentalOwner: { // seulement si hypothèque forcée pour PAYER UN LOYER, sinon null (taxe, carte par ex)
+                id: int,
+                money: int // son nouveau solde
+            }
         }
         ```
 

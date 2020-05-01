@@ -1026,7 +1026,7 @@ class Network {
                 }
 
                 if (err === Errors.SUCCESS && !game.asyncActionManualMortgage(data.properties)) // hypothécation ici
-                    err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
+                    err = Errors.UNKNOW;
             }
 
             player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
