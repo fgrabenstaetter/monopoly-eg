@@ -868,6 +868,8 @@ export default {
             this.$set(player, 'nbJailEscapeCards', 0);
             this.$set(player, 'properties', []);
             this.$set(player, 'money', data.playersMoney);
+            this.$set(player, 'failure', false);
+            this.$set(player, 'hasLeft', false);
             // player.money = data.playersMoney;
             player.cellPos = 0;
             player.color = this.CST.PLAYERS_COLORS[index];
@@ -906,15 +908,17 @@ export default {
           }
         }
 
-
         for (const i in this.properties)
             this.properties[i].ownerID = null;
 
         // Génération de la liste de joueurs
         this.players.forEach((player, index) => {
-            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
             player.color = this.CST.PLAYERS_COLORS[index];
-            player.isInJail = false;
+
+            if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
+
+            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
+            // player.isInJail = false;
 
             for (const i in player.properties) {
               const propertyObj = this.getPropertyById(player.properties[i]);
@@ -1119,19 +1123,25 @@ export default {
 
         const player = this.getPlayerById(res.playerID);
         if (!player) return;
+        
+        this.$set(player, 'failure', true);
 
         this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
 
         // Toutes les propriétés sont à nouveau à vendre
-        this.properties.forEach((property) => {
-            if (property.ownerID == player.id)
-                property.ownerID = null;
-        });
-
+        // Suppr propriétés
+        for (const i in player.properties) {
+          const property = this.getPropertyById(player.properties[i]);
+          if (property) {
+            this.$set(property, 'ownerID', null);
+          }
+        }
         this.$set(player, 'properties', []);
-        this.$set(player, 'failure', true);
 
         // Suppression du pion
+        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+
+        // Suppr pion
         gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
     });
 
@@ -1431,22 +1441,19 @@ export default {
 
         console.log("=== PLAYER LEFT ===");
         const player = this.getPlayerById(res.playerID);
-        if (player) {
-            console.log('PLAYER LEFT IS')
-            console.log(player);
-            this.$refs.chat.messages.push({
-                senderUserID: -1,
-                content: `${player.nickname} a quitté la partie :/`,
-                createdTime: new Date()
-            });
+        if (!player)  return;
 
-            for (const i in this.players) {
-                if (this.players[i].id == player.id) {
-                    this.players.splice(i, 1);
-                    return;
-                }
-            }
-        }
+        console.log('PLAYER LEFT IS')
+        console.log(player);
+
+        // Notification
+        this.$refs.chat.messages.push({
+            senderUserID: -1,
+            content: `${player.nickname} a quitté la partie :/`,
+            createdTime: new Date()
+        });
+
+        this.$set(player, 'hasLeft', true);
     });
 
     this.socket.on('gameSuccessCompletedRes', (data) => {
