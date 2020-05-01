@@ -380,8 +380,7 @@ class Game {
 
     nextTurn() {
         // si le joueur n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
-        if (this.turnData.asyncRequestType != null)
-            this.asyncActionExpired();
+        this.asyncActionExpired();
 
         if (this.ended)
             return;
@@ -446,8 +445,7 @@ class Game {
             return false;
 
         // si le joueur n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
-        if (this.turnData.asyncRequestType != null)
-            this.asyncActionExpired();
+        this.asyncActionExpired();
 
         this.turnData.canRollDiceAgain = false;
         this.resetTurnActionData();
