@@ -743,6 +743,7 @@ export default {
         } else if (data.asyncRequestType == "shouldMortgage") {
           // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
           // let totalMoneyToHave = data.asyncRequestArgs[0];
+          this.$parent.toast('Plus assez d\'argent : vous devez hypothéquer avant la fin de votre tour !', 'danger', 8);
         } else {
           afficherMessageAction = true;
         }
@@ -1013,10 +1014,13 @@ export default {
 
         if (currPlayer.id == this.loggedUser.id) {
             console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1])
-                this.$refs.actionBtn.progressSetStateTerminer();
-            else
-                this.$refs.actionBtn.progressSetStateRelancer();
+            if (data.dicesRes[0] != data.dicesRes[1]) {
+              this.$refs.actionBtn.progressSetStateTerminer();
+            } else {
+              const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
+              this.$refs.actionBtn.progressSetStateRelancer();
+              this.$refs.actionBtn.progressStart(turnTimeSeconds);
+            }
         }
 
         if (currPlayer.isInJail) {

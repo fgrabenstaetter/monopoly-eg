@@ -26,7 +26,7 @@
             <a href="#"><i class="fab fa-windows"></i></a>
           </div>
         </div>
-        <div class="version">Ver.: XXX.XXX</div>
+        <div class="version">Version {{version}}</div>
         <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
     </div>
@@ -105,12 +105,19 @@
 </template>
 
 <script>
+import { version } from "../../package.json";
+
 /**
  * @vuese
  * @group Views
  * Page d'accueil du jeu (logo et bouton "Jouer")
  */
 export default {
-  name: "Home"
+  name: "Home",
+  data() {
+    return {
+      version: version
+    }
+  }
 };
 </script>
