@@ -37,7 +37,6 @@ class Lobby {
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser(user) {
-        //console.log(user.nickname);
         if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
             return false;
 
