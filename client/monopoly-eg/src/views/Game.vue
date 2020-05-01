@@ -79,7 +79,7 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
-                        <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button>
+                        <!-- <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button> -->
                       </div>
                     </div>
                   </div>
@@ -115,7 +115,7 @@
                     </div>
                   </div>
 
-                  <div v-if="notif.type == 'bonusJail'" class="card notification">
+                  <div v-if="notif.type == 'bonusJail'" class="card notification event">
                     <div class="card-body" :class="{'no-header': !notif.title}">
                       <div class="col-md-12 text-center value">
                         <p>Voulez-vous utiliser votre bonus « Sortir du Parlement » ?</p>
@@ -1023,7 +1023,7 @@ export default {
 
         if (currPlayer.id == this.loggedUser.id) {
             console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1]) {
+            if (data.dicesRes[0] != data.dicesRes[1] || currPlayer.isInJail) {
               this.$refs.actionBtn.progressSetStateTerminer();
             } else {
               const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
@@ -1038,8 +1038,10 @@ export default {
                 this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
               currPlayer.isInJail = false;
           } else {
-            this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
             currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
+
+            if (this.currPlayer.nbJailEscapeCards > 0)
+              this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
           }
         }
 
