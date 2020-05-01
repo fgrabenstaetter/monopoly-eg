@@ -420,7 +420,7 @@ class Game {
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
                 this.setTurnActionData(null, null,
-                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)', false);
+                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
             } else {
                 this.turnData.canRollDiceAgain = true;
 
@@ -861,11 +861,11 @@ class Game {
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
             this.playerFailure(player);
-            this.setTurnActionData(null, null, msgIfFailure, false);
+            this.setTurnActionData(null, null, msgIfFailure);
         } else {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage, false);
+            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
         }
     }
 }
