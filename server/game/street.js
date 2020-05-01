@@ -57,7 +57,10 @@ class Street extends Property {
         else
             price = this.rentalPrices.empty;
 
-        return price * (this.owner.colorMonopoly(this.color) ? 2 : 1);
+        if (this.curUpgradeLevel === 0 && this.owner.colorMonopoly(this.color))
+            price *= 2;
+
+        return price;
     }
 
     /**
