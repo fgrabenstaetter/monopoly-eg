@@ -37,6 +37,7 @@ class Lobby {
      * @param user L'objet correspond à l'utilisateur à ajouter dans le lobby
      */
     addUser(user) {
+        //console.log(user.nickname);
         if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
             return false;
 
@@ -74,7 +75,7 @@ class Lobby {
         if (inMM !== -1) {
             this.open = true;
             let err = Errors.SUCCESS;
-            this.GLOBAL.matchmaking.delLobby(this);
+            this.GLOBAL.matchmaking.delLobby(this, false);
             this.GLOBAL.network.io.to(this.name).emit('lobbyCancelPlayRes', {
                 error: err.code,
                 status: err.status
