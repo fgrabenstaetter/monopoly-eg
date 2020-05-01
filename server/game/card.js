@@ -80,7 +80,7 @@ class Card {
 
     goJail(game, player) {
         player.goPrison();
-        player.remainingTurnsInJail++; // car un -- juste après en exécutant l'action de la nouvelle case ! (case 10 prison)
+        game.turnData.canRollDiceAgain = false;
         game.setTurnActionData(null, null,
             game.curPlayer.nickname + ' est envoyé en session au parlement européen ! (tour 1/3)');
     }

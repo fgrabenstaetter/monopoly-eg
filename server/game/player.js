@@ -103,7 +103,7 @@ class Player {
 
     goPrison () {
         this.moveAbsolute(10);
-        this.remainingTurnsInJail = 4;
+        this.remainingTurnsInJail = 3;
     }
 
     quitPrison () {

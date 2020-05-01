@@ -108,6 +108,7 @@ class Network {
 
         user.socket.on('lobbyReadyReq', () => {
             // réponse de création / rejoignage de lobby
+            console.log(user.nickname);
             this.lobbyNewUser(user, lobby);
         });
     }
@@ -155,8 +156,8 @@ class Network {
         this.gamePropertyBuyReq        (player, game);
         this.gamePropertyUpgradeReq    (player, game);
         this.gamePropertyMortgageReq   (player, game);
-        this.gamePlayerLeavingReq      (player, game);
         this.gamePropertyUnmortgageReq (player, game);
+        this.gamePlayerLeavingReq      (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq           (player, game);
@@ -287,11 +288,15 @@ class Network {
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
-        user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
-            id       : user.id,
-            nickname : user.nickname,
-            avatar   : user.getAvatar()
-        });
+        for (const usr of lobby.users) {
+            if (usr !== user) {
+                usr.socket.emit('lobbyUserJoinedRes', {
+                    id       : user.id,
+                    nickname : user.nickname,
+                    avatar   : user.getAvatar()
+                });
+            }
+        }
     }
 
     lobbyInvitationReq(user, lobby) {
@@ -342,122 +347,6 @@ class Network {
                 }
 
                 user.socket.emit('lobbyInvitationRes', { error: err.code, status: err.status });
-            });
-        });
-    }
-
-    lobbyFriendInvitationSendReq(user, lobby) {
-        user.socket.on('lobbyFriendInvitationSendReq', (data) => {
-
-            if (user.nickname === data.nickname) {
-                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.CANT_INVITE_YOURSELF.code, status: Errors.FRIENDS.CANT_INVITE_YOURSELF.status });
-                return;
-            }
-
-            UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
-                if (error || !invitedUser) {
-                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
-                    return;
-                }
-
-                UserSchema.getFriends(user.id, (error, friends) => {
-                    if (error) {
-                        user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                        return;
-                    }
-
-                    // On vérifie si l'invitation n'a pas déjà été envoyée (ou si users pas déjà amis)
-                    let friendFound = false;
-                    if (friends && friends.length > 0) {
-                        for (let i = 0; i < friends.length; i++) {
-                            if (friends[i].friend._id.equals(invitedUser._id)) {
-                                friendFound = friends[i].status;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (friendFound) {
-                        if (friendFound == 'accepted') {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_FRIENDS.code, status: Errors.FRIENDS.ALREADY_FRIENDS.status });
-                        } else if (friendFound == 'requested') {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED.code, status: Errors.FRIENDS.ALREADY_INVITED.status });
-                        } else if (friendFound == 'pending') {
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.code, status: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.status });
-                        }
-                    } else {
-                        UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
-                            if (error) {
-                                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                                return;
-                            }
-
-                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
-
-                            // Envoi temps réel (si utilisateur connecté)
-                            for (const u of this.GLOBAL.users) {
-                                if (invitedUser._id == u.id) {
-                                    u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
-                                    break;
-                                }
-                            }
-
-                            return;
-                        });
-                    }
-                });
-            });
-        });
-    }
-
-    lobbyFriendInvitationActionReq(user, lobby) {
-        user.socket.on('lobbyFriendInvitationActionReq', (data) => {
-
-            let action = data.action; // 0 = reject; 1 = accept
-            let userNickname = data.nickname;
-
-            UserSchema.findOne({ nickname: userNickname }, (error, invitedByUser) => {
-                if (error || !invitedByUser) {
-                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
-                    return;
-                }
-
-                if (action) { // accept
-                    UserSchema.requestFriend(user.id, invitedByUser._id, (error, friendships) => {
-                        if (error) {
-                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
-                            return;
-                        }
-
-                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
-
-                        // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
-                        for (const u of this.GLOBAL.users) {
-                            if (invitedByUser._id == u.id) {
-                                u.socket.emit('lobbyFriendInvitationAcceptedRes', {
-                                    id: user.id,
-                                    nickname: user.nickname,
-                                    avatar: user.getAvatar()
-                                });
-                                break;
-                            }
-                        }
-
-                        return;
-                    });
-                } else { // reject
-
-                    UserSchema.findById(user.id, (error, userMongo) => {
-                        if (error || !userMongo) {
-                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
-                            return;
-                        }
-                        UserSchema.removeFriend(userMongo, invitedByUser);
-                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
-                    });
-
-                    return;
-                }
             });
         });
     }
@@ -658,6 +547,10 @@ class Network {
         });
     }
 
+    //////////
+    // AMIS //
+    //////////
+
     lobbyFriendListReq(user, lobby) {
         user.socket.on('lobbyFriendListReq', () => {
             let friends = [];
@@ -735,6 +628,123 @@ class Network {
             });
         });
     }
+
+    lobbyFriendInvitationSendReq(user, lobby) {
+        user.socket.on('lobbyFriendInvitationSendReq', (data) => {
+
+            if (user.nickname === data.nickname) {
+                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.CANT_INVITE_YOURSELF.code, status: Errors.FRIENDS.CANT_INVITE_YOURSELF.status });
+                return;
+            }
+
+            UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
+                if (error || !invitedUser) {
+                    user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+
+                UserSchema.getFriends(user.id, (error, friends) => {
+                    if (error) {
+                        user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                        return;
+                    }
+
+                    // On vérifie si l'invitation n'a pas déjà été envoyée (ou si users pas déjà amis)
+                    let friendFound = false;
+                    if (friends && friends.length > 0) {
+                        for (let i = 0; i < friends.length; i++) {
+                            if (friends[i].friend._id.equals(invitedUser._id)) {
+                                friendFound = friends[i].status;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (friendFound) {
+                        if (friendFound == 'accepted') {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_FRIENDS.code, status: Errors.FRIENDS.ALREADY_FRIENDS.status });
+                        } else if (friendFound == 'requested') {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED.code, status: Errors.FRIENDS.ALREADY_INVITED.status });
+                        } else if (friendFound == 'pending') {
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.code, status: Errors.FRIENDS.ALREADY_INVITED_BY_THIS_MEMBER.status });
+                        }
+                    } else {
+                        UserSchema.requestFriend(user.id, invitedUser._id, (error, friendships) => {
+                            if (error) {
+                                user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                                return;
+                            }
+
+                            user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                            // Envoi temps réel (si utilisateur connecté)
+                            for (const u of this.GLOBAL.users) {
+                                if (invitedUser._id == u.id) {
+                                    u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                                    break;
+                                }
+                            }
+
+                            return;
+                        });
+                    }
+                });
+            });
+        });
+    }
+
+    lobbyFriendInvitationActionReq(user, lobby) {
+        user.socket.on('lobbyFriendInvitationActionReq', (data) => {
+
+            let action = data.action; // 0 = reject; 1 = accept
+            let userNickname = data.nickname;
+
+            UserSchema.findOne({ nickname: userNickname }, (error, invitedByUser) => {
+                if (error || !invitedByUser) {
+                    user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                    return;
+                }
+
+                if (action) { // accept
+                    UserSchema.requestFriend(user.id, invitedByUser._id, (error, friendships) => {
+                        if (error) {
+                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.REQUEST_ERROR.code, status: Errors.FRIENDS.REQUEST_ERROR.status });
+                            return;
+                        }
+
+                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+
+                        // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
+                        for (const u of this.GLOBAL.users) {
+                            if (invitedByUser._id == u.id) {
+                                u.socket.emit('lobbyFriendInvitationAcceptedRes', {
+                                    id: user.id,
+                                    nickname: user.nickname,
+                                    avatar: user.getAvatar()
+                                });
+                                break;
+                            }
+                        }
+
+                        return;
+                    });
+                } else { // reject
+
+                    UserSchema.findById(user.id, (error, userMongo) => {
+                        if (error || !userMongo) {
+                            user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
+                            return;
+                        }
+                        UserSchema.removeFriend(userMongo, invitedByUser);
+                        user.socket.emit('lobbyFriendInvitationActionRes', { error: Errors.SUCCESS.code, status: Errors.SUCCESS.status });
+                    });
+
+                    return;
+                }
+            });
+        });
+    }
+
 
     /////////////////
     // GAME EVENTS //
@@ -1016,7 +1026,7 @@ class Network {
                 }
 
                 if (err === Errors.SUCCESS && !game.asyncActionManualMortgage(data.properties)) // hypothécation ici
-                    err = Errors.GAME.NOT_ENOUGH_FOR_MORTGAGE;
+                    err = Errors.UNKNOW;
             }
 
             player.socket.emit('gamePropertyMortgageRes', { error: err.code, status: err.status });
@@ -1205,6 +1215,8 @@ class Network {
                 err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
+            else if (prop.isMortgaged)
+                err = Errors.GAME.PROPERTY_IS_MORTGAGED;
             else {
                 new Bid(prop, data.initialPrice, game, true);
                 // réponse envoyée depuis le constructeur de Bid
@@ -1285,7 +1297,8 @@ class Network {
                     cellPos           : player.cellPos,
                     connected         : player.connected,
                     failure           : player.failure,
-                    hasLeft           : player.hasLeft
+                    hasLeft           : player.hasLeft,
+                    isInJail          : player.isInPrison ? 4 - player.remainingTurnsInJail : false
                 });
             }
 
@@ -1365,8 +1378,7 @@ class Network {
                 bids         : bids,
                 players      : players,
                 cells        : cells,
-                properties   : properties,
-                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false,
+                properties   : properties
             });
 
             if (game.startedTime) { // partie commencée

@@ -46,7 +46,7 @@ class Property { // classe abstraite
     }
 
     mortgage (game) {
-        if (this.isMortgaged)
+        if (this.isMortgaged || !this.owner)
             return false;
 
         game.bank.loseMoney(this.mortgagePrice);

@@ -653,10 +653,10 @@
                     cellPos: int, // de 0 à 39
                     connected: bool,
                     failure: bool,
-                    hasLeft: bool
+                    hasLeft: bool,
+                    isInJail: int | false // tour de prison du joueur ou false si pas en prison
                 }, ...
             ],
-            isInJail: int, // tour de prison du joueur ou false si pas en prison
             cells: [], // voir gameStartedRes
             properties: [] // voir gameStartedRes et ligne ci-dessous (+ champ isMortgaged pour chaque propriété)
             // ATTENTION: si propriété == Street => l'objet contient aussi level (int de 0 à 5)
@@ -905,12 +905,7 @@
             playerID: int,
             playerMoney: int, // nouveau solde
             bankMoney: int,
-            message: string, // message lié à l'hypothèque
-            auto: bool, // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
-            rentalOwner: { // seulement si hypothèque forcée POUR PAYER UN LOYER (pas taxe), sinon null
-                id: int,
-                money: int // son nouveau solde
-            }
+            auto: bool // true seulement si l'hypothèque était forcée et le serveur a du hypothéquer automatiquement, false sinon
         }
         ```
 
@@ -943,6 +938,24 @@
             propertyID: int,
             playerMoney: int,
             bankMoney: int
+        }
+        ```
+
+* **Résultat d'une hypothèque forcée d'un joueur**
+    > Envoyé à tous les joueurs lorsque l'hypothèque forcée d'un joueur a terminée
+
+    * **Réponse:** gameForcedMortgageRes
+        * *Données:*
+        ```javascript
+        {
+            playerID: int,
+            playerMoney: int, // nouveau solde
+            bankMoney: int,
+            message: string, // message lié à la fin de l'hypothèque forcée (peut êter succès ou échec = faillite)
+            rentalOwner: { // seulement si hypothèque forcée pour PAYER UN LOYER, sinon null (taxe, carte par ex)
+                id: int,
+                money: int // son nouveau solde
+            }
         }
         ```
 

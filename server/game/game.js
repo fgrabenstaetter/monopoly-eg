@@ -4,7 +4,6 @@ const Deck                    = require('./deck');
 const Player                  = require('./player');
 const Bank                    = require('./bank');
 const Cells                   = require('./../lib/cells');
-const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
@@ -352,7 +351,13 @@ class Game {
             return;
         }
 
+        if (this.turnData.shouldCreateBid) {
+            const curProp = this.curCell.property;
+            new Bid(curProp, 0, this);
+        }
+
         this.resetTurnActionData();
+        this.turnData.shouldCreateBid = false;
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
@@ -419,6 +424,7 @@ class Game {
             this.turnData.nbDoubleDices++;
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
+                this.turnData.canRollDiceAgain = false;
                 this.setTurnActionData(null, null,
                     this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
             } else {
@@ -478,12 +484,12 @@ class Game {
                 if (!this.curPlayer.isInPrison) {
                     let mess;
                     if (this.curPlayer.cellPos === 10)
-                        mess = this.curPlayer.nickname + ' s\'est arrêté pour visiter le parlement';
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de session parlementaire';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'orangerie';
+                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'Orangerie';
                         }
                     }
 
@@ -515,7 +521,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -587,6 +593,7 @@ class Game {
         }
 
         this.curPlayer.goPrison();
+        this.turnData.canRollDiceAgain = false;
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
     }
@@ -680,24 +687,26 @@ class Game {
      * @param propertiesList Liste d'ID de propriétés à hypothéquer
      */
     asyncActionManualMortgage(propertiesList) {
-        const moneyToObtain = this.turnData.asyncRequestArgs ? this.turnData.asyncRequestArgs[0] : null; // null si pas hypothèque forcée (= manuel)
-        let sum = this.curPlayer.money;
         let properties = [];
 
         for (const id of propertiesList) {
             const prop = this.curPlayer.propertyByID(id);
-            if (prop && !prop.isMortgaged) {
-                sum += prop.mortgagePrice;
-                properties.push(prop);
-            }
+            if (!prop || prop.isMortgaged)
+                return false;
+            properties.push(prop);
         }
 
-        if (moneyToObtain && sum < moneyToObtain) // seulement si hypothèque forcée (cause: loyer ou taxe)
-            return false; // enclancher la vente forcée automatique au timeout de tour (si pas de nouvelle requête qui réussie)
+        // hypothéquer
+        for (const prop of properties)
+            prop.mortgage(this);
 
-        this.playerAutoMortgage(this.curPlayer, properties);
-        if (this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE)
-            this.resetTurnActionData();
+        this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
+            properties  : propertiesList,
+            playerID    : this.curPlayer.id,
+            playerMoney : this.curPlayer.money,
+            bankMoney   : this.bank.money,
+            auto        : false
+        });
 
         return true;
     }
@@ -726,18 +735,13 @@ class Game {
      */
     asyncActionExpired() {
         switch (this.turnData.asyncRequestType) {
-            case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE: // l'hypothèque forcée a été ignorée, => vente automatique ou faillure
-                this.playerAutoMortgage(this.curPlayer);
+            case Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE:
+                this.processShouldMortgageExpired();
                 break;
             case Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY:
                 const curProp = this.curCell.property;
                 new Bid(curProp, 0, this);
                 break;
-        }
-        if (this.turnData.shouldCreateBid) {
-            const property = this.curCell.property;
-            new Bid(property, 0, this);;
-            this.turnData.shouldCreateBid = false;
         }
     }
 
@@ -761,74 +765,35 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
-        console.log(player);
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
     /**
-     * Attention: peut être appelée pour une hypothèque volontaire ou forcée !
+     * À n'appeler que lorsque this.turnData.asyncRequestType === SHOULD_MORGAGE
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
-     * @param properties si null et hypothèque forcée => vente automatique dans l'ordre croissant, sinon liste des propriétés obtenues via asyncActionManualMortgage UNIQUEMENT (la somme des hypothèques + argent joueur doit être suffisante dans ce cas !)
+     * @return true si succès, false si faillite
      */
-    playerAutoMortgage(player, properties = null) {
-        // hypothèque forcée = moneyToObtain ci-dessous != null SINON PAS FORCÉE
-        const isForced = player === this.curPlayer && this.turnData.asyncRequestType === Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE;
-        const moneyToObtain = isForced ? this.turnData.asyncRequestArgs[0] : null; // null si hypothèque non forcée (= manuel)
+    playerAutoMortgage(player, moneyToObtain) {
         let sum = player.money;
 
-        if (!moneyToObtain && !properties)
-            return false;
-
-        let auto = false;
-        if (!properties) { // vente automatique forcée (dans l'ordre)
-            auto = true;
-            properties = [];
-            for (const prop of properties) {
-                if (prop.isMortgaged)
-                    continue;
-                sum += prop.mortgagePrice;
-                properties.push(prop);
-                if (sum >= moneyToObtain)
-                    break;
-            }
-        } else { // liste donnée en paramètre: hyp forcée manuel ou non forcée
-            for (const prop of properties) {
-                if (!prop.isMortgaged)
-                    sum += prop.mortgagePrice;
-            }
+        let properties = [];
+        for (const prop of player.properties) {
+            if (prop.isMortgaged || !prop.owner)
+                continue;
+            sum += prop.mortgagePrice;
+            properties.push(prop);
+            if (sum >= moneyToObtain)
+                break;
         }
 
-        if (moneyToObtain && sum < moneyToObtain) // failure
+        if (sum < moneyToObtain) { // failure
             this.playerFailure(player);
-        else {
+            return false;
+        } else {
             let propertiesID = [];
             for (const prop of properties) {
-                propertiesID.push(prop.id);
-                prop.mortgage(this);
-            }
-
-            let rentalOwner, mess;
-            if (moneyToObtain) { // hypothèque forcée
-                // payer le loyer ou la taxe
-                player.loseMoney(moneyToObtain);
-                if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
-                    // LOYER
-                    const owner = this.curCell.property.owner;
-                    owner.addMoney(moneyToObtain);
-                    rentalOwner = { id: owner.id, money: owner.money };
-                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de loyer à ' + owner.nickname;
-                } else if (this.curCell.type === Constants.CELL_TYPE.TAX) {
-                    // TAXE | IMPOT
-                    this.bank.addMoney(moneyToObtain);
-                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer ' + moneyToObtain + '€ de taxes';
-                } else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY) {
-                    // CARTE CHANCE | COMMUNAUTEE
-                    this.bank.addMoney(moneyToObtain);
-                    mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€ pour réussir à payer la carte chance/communautée';
-                }
-            } else { // non forcée
-                rentalOwner = null;
-                mess = 'Le joueur ' + player.nickname + ' a hypothéqué un montant de ' + sum + '€';
+                if (prop.mortgage(this))
+                    propertiesID.push(prop.id);
             }
 
             this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
@@ -836,11 +801,56 @@ class Game {
                 playerID    : player.id,
                 playerMoney : player.money,
                 bankMoney   : this.bank.money,
-                message     : mess,
-                rentalOwner : rentalOwner,
-                auto        : auto
+                auto        : true
             });
+
+            return true;
         }
+    }
+
+    processShouldMortgageExpired () {
+        const moneyToObtain = this.turnData.asyncRequestArgs[0];
+        let failure = false;
+        if (this.curPlayer.money < moneyToObtain) {
+            // hypothèque auto jusqu'à ce que suffisant
+            failure = !this.playerAutoMortgage(this.curPlayer, moneyToObtain);
+
+        } // else => le joueur a hypothéqué manuellement et suffisament
+
+        let mess, rentalOwner;
+
+        if (failure)
+            mess = 'Le joueur ' + this.curPlayer.nickname + ' n\'a pas pu suffisamment hypothéquer pour payer ' + moneyToObtain + '€ ';
+        else {
+            mess = 'Le joueur ' + this.curPlayer.nickname + ' a finalisé ses hypothèques et a pu payer ' + moneyToObtain + '€ ';
+
+            // payer
+            this.curPlayer.loseMoney(moneyToObtain);
+            if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
+                const owner = this.curCell.property.owner;
+                owner.addMoney(moneyToObtain);
+            } else if (this.curCell.type === Constants.CELL_TYPE.TAX)
+                this.bank.addMoney(moneyToObtain);
+            else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY)
+                this.bank.addMoney(moneyToObtain);
+        }
+
+        if (this.curCell.type === Constants.CELL_TYPE.PROPERTY) {
+            const owner = this.curCell.property.owner;
+            rentalOwner = { id: owner.id, money: owner.money };
+            mess += 'de loyer à ' + owner.nickname;
+        } else if (this.curCell.type === Constants.CELL_TYPE.TAX)
+            mess += 'de taxes';
+        else if (this.curCell.type === Constants.CELL_TYPE.CHANCE || this.curCell.type === Constants.CELL_TYPE.COMMUNITY)
+            mess += 'pour la carte chance/communauté';
+
+        this.GLOBAL.network.io.to(this.name).emit('gameForcedMortgageRes', {
+            playerID    : this.curPlayer.id,
+            playerMoney : this.curPlayer.money,
+            bankMoney   : this.bank.money,
+            message     : mess,
+            rentalOwner : rentalOwner
+        });
     }
 
     /**

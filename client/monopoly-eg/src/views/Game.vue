@@ -860,7 +860,7 @@ export default {
 
       console.log("=== fin gameActionRes ===");
     },
-    
+
     isNumber(evt) {
       evt = (evt) ? evt : window.event;
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1397,6 +1397,11 @@ export default {
         if (res.error !== 0) {
             this.$parent.toast(`Erreur hypothèque : ${res.status}`, 'danger', 4);
         }
+    });
+
+    this.socket.on("gamePropertyMortgagedRes", (res) => {
+        console.log('GAME FORCED MORTGAGE RES !!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log(res);
     });
 
     // Hypothèque OK
