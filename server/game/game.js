@@ -66,22 +66,22 @@ class Game {
 
         this.turnData = { // pour le client (envoi Network)
             // action data
-            actionMessage: null,
-            asyncRequestType: null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs: null, // liste
+            actionMessage        : null,
+            asyncRequestType     : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs     : null, // liste
 
             // dices system
-            nbDoubleDices: 0, // ++ à chaque double et si >= 3 => prison
-            canRollDiceAgain: false, // true quand le joueur peux encore lancer les dés, false sinon
+            nbDoubleDices        : 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain     : false, // true quand le joueur peux encore lancer les dés, false sinon
 
             // turn system
-            startedTime: null, // timestamp de début du tour
-            endTime: null, // timestamp de fin de tour
-            timeout: null,
-            midTimeout: null, // timestamp de moitié de tour => lancer les dés auto
-            timeoutActionTimeout: null,
-            playerInd: Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval: null  // id de interval pour fairie clearInterval apres
+            startedTime          : null, // timestamp de début du tour
+            endTime              : null, // timestamp de fin de tour
+            timeout              : null,
+            midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
+            timeoutActionTimeout : null,
+            playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
+            persistInterval      : null  // id de interval pour fairie clearInterval apres
         };
         this.successManager = new SuccessManager(this);
 
@@ -229,11 +229,11 @@ class Game {
         }
 
         return {
-            _id: this.id,
-            endTime: this.endTime,
-            players: players,
-            bank: this.bank.toJSON(),
-            properties: properties
+            _id        : this.id,
+            endTime    : this.endTime,
+            players    : players,
+            bank       : this.bank.toJSON(),
+            properties : properties
         }
     }
 
@@ -315,9 +315,9 @@ class Game {
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
-                    type: 'normal',
-                    winnerID: winner.id,
-                    duration: Date.now() - this.startedTime
+                    type     : 'normal',
+                    winnerID : winner.id,
+                    duration : Date.now() - this.startedTime
                 });
 
                 this.delete();
@@ -361,10 +361,11 @@ class Game {
 
         this.turnData.startedTime = Date.now();
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
+
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime,
-            canRollDiceAgain: true
+            playerID         : this.curPlayer.id,
+            turnEndTime      : this.turnData.endTime,
+            canRollDiceAgain : true
         });
 
         if (!this.curPlayer.connected)
@@ -429,9 +430,9 @@ class Game {
 
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
-                    this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                    this.turnData.timeout    = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
                     this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
-                    this.turnData.endTime = Date.now() + newDuration;
+                    this.turnData.endTime    = Date.now() + newDuration;
                 }
             }
         }
@@ -557,6 +558,7 @@ class Game {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
                         'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')',
                         'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
+
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(rentalPrice);
@@ -825,13 +827,13 @@ class Game {
             }
 
             this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
-                properties: propertiesID,
-                playerID: player.id,
-                playerMoney: player.money,
-                bankMoney: this.bank.money,
-                message: mess,
-                rentalOwner: rentalOwner,
-                auto: auto
+                properties  : propertiesID,
+                playerID    : player.id,
+                playerMoney : player.money,
+                bankMoney   : this.bank.money,
+                message     : mess,
+                rentalOwner : rentalOwner,
+                auto        : auto
             });
         }
     }
