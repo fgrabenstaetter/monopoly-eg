@@ -170,13 +170,17 @@
       <splash-text ref="splashText" v-once></splash-text>
 
       <!-- Ecran de fin -->
-      <div v-if="endGame" class="end-game-background"></div>
-      <div v-if="endGame" class="end-game-screen">
+      <div class="end-game-background">
+        <div class="pyro">
+          <div class="before"></div>
+          <div class="after"></div>
+        </div>
+      </div>
+      <div class="end-game-screen">
         <div class="header">
-          <h5>Fin de la partie !</h5>
+          <div class="winner">Truc</div>
         </div>
         <div class="content">
-          <div class="winner">{{endGame.winnerNickname}}</div>
           <div class="subtitle">a gagné la partie !</div>
           <div class="info">
             <div class="label">Temps de jeu</div>
