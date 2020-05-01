@@ -354,7 +354,7 @@ class Network {
                 return;
             }
 
-            UserSchema.findOne({ nickname: data.nickname }, (error, invitedUser) => {
+            UserSchema.findOne({ nickname: { $regex: new RegExp('^'+ data.nickname + '$', "i") } }, (error, invitedUser) => {
                 if (error || !invitedUser) {
                     user.socket.emit('lobbyFriendInvitationSendRes', { error: Errors.FRIENDS.NOT_EXISTS.code, status: Errors.FRIENDS.NOT_EXISTS.status });
                     return;

@@ -55,7 +55,7 @@ class UserManager { // abstract
         if (!nickname || !rawPassword)
             return cb(Errors.MISSING_FIELD);
 
-        UserSchema.findOne({ nickname: nickname }, (err, user) => {
+        UserSchema.findOne({ nickname: { $regex: new RegExp('^'+ nickname + '$', "i") } }, (err, user) => {
             if (err)
                 return cb(Errors.INTERNAL_ERROR);
 
@@ -92,14 +92,14 @@ class UserManager { // abstract
         if (!UserManager.isEmail(email))
             return cb(Errors.REGISTER.ERR_EMAIL_FORMAT);
 
-        UserSchema.findOne({ email: email }, (err, user) => {
+        UserSchema.findOne({ email: { $regex: new RegExp('^'+ email + '$', "i") } }, (err, user) => {
             if (err)
                 return cb(Errors.INTERNAL_ERROR);
 
             if (user)
                 return cb(Errors.REGISTER.EMAIL_TAKEN);
 
-            UserSchema.findOne({ nickname: nickname }, (err, user) => {
+            UserSchema.findOne({ nickname: { $regex: new RegExp('^'+ nickname + '$', "i") } }, (err, user) => {
                 if (err)
                     return cb(Errors.INTERNAL_ERROR);
 
