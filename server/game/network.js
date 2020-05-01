@@ -778,8 +778,7 @@ class Network {
                         let propertyData = {
                             id          : cell.property.id,
                             type        : cell.property.type,
-                            name        : cell.property.name,
-                            description : cell.property.description
+                            name        : cell.property.name
                         };
 
                         switch (cell.property.type) {
@@ -803,7 +802,7 @@ class Network {
                     } else if (cell.type === Constants.CELL_TYPE.TAX) {
                         taxes.push({
                             id          : cell.tax.id,
-                            description : cell.tax.description,
+                            description : cell.tax.name,
                             money       : cell.tax.money
                         });
                     }

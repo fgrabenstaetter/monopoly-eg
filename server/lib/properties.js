@@ -6,25 +6,21 @@ const Properties = {
     TRAIN_STATION: [
         {
             name: 'Homme de Fer',
-            description: 'Quelle magnifique gare !',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
             name: "Droits de l'Homme",
-            description: 'Gare perdue',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
             name: 'Université',
-            description: 'Quelle magnifique gare !',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         },
         {
             name: "Porte de l'Hôpital",
-            description: 'Gare perdue',
             price: 200,
             rentalPrices: [25, 50, 100, 200]
         }
@@ -33,7 +29,6 @@ const Properties = {
     STREET: [
         {
             name: 'Rue du Vieux Marché aux Poissons',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BROWN,
             prices: {
                 empty: 60,
@@ -48,7 +43,6 @@ const Properties = {
         },
         {
             name: 'Rue des Tonneliers',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BROWN,
             prices: {
                 empty: 60,
@@ -63,7 +57,6 @@ const Properties = {
         },
         {
             name: 'Faubourg de Saverne',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.LIGHTBLUE,
             prices: {
                 empty: 100,
@@ -78,7 +71,6 @@ const Properties = {
         },
         {
             name: 'Avenue des Vosges',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.LIGHTBLUE,
             prices: {
                 empty: 100,
@@ -93,7 +85,6 @@ const Properties = {
         },
         {
             name: 'Rue Oberlin',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.LIGHTBLUE,
             prices: {
                 empty: 120,
@@ -108,7 +99,6 @@ const Properties = {
         },
         {
             name: 'Chemin du Wacken',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.PURPLE,
             prices: {
                 empty: 140,
@@ -123,7 +113,6 @@ const Properties = {
         },
         {
             name: 'Rue Pierre de Coubertin',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.PURPLE,
             prices: {
                 empty: 140,
@@ -138,7 +127,6 @@ const Properties = {
         },
         {
             name: 'Boulevard de Dresde',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.PURPLE,
             prices: {
                 empty: 160,
@@ -153,7 +141,6 @@ const Properties = {
         },
         {
             name: 'Rue Boecklin',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.ORANGE,
             prices: {
                 empty: 180,
@@ -168,7 +155,6 @@ const Properties = {
         },
         {
             name: 'Impasse des Bosquets',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.ORANGE,
             prices: {
                 empty: 180,
@@ -183,7 +169,6 @@ const Properties = {
         },
         {
             name: "Avenue de l'Europe",
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.ORANGE,
             prices: {
                 empty: 200,
@@ -198,7 +183,6 @@ const Properties = {
         },
         {
             name: 'Allée de la Robertsau',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.RED,
             prices: {
                 empty: 220,
@@ -213,7 +197,6 @@ const Properties = {
         },
         {
             name: 'Rue Fischart',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.RED,
             prices: {
                 empty: 220,
@@ -228,7 +211,6 @@ const Properties = {
         },
         {
             name: 'Avenue de la Forêt Noire',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.RED,
             prices: {
                 empty: 240,
@@ -243,7 +225,6 @@ const Properties = {
         },
         {
             name: 'Avenue du Général de Gaulle',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.YELLOW,
             prices: {
                 empty: 260,
@@ -258,7 +239,6 @@ const Properties = {
         },
         {
             name: 'Rue de Rome',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.YELLOW,
             prices: {
                 empty: 260,
@@ -273,7 +253,6 @@ const Properties = {
         },
         {
             name: 'Rue Descartes',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.YELLOW,
             prices: {
                 empty: 280,
@@ -288,7 +267,6 @@ const Properties = {
         },
         {
             name: 'Rue des Balayeurs',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
                 empty: 300,
@@ -303,7 +281,6 @@ const Properties = {
         },
         {
             name: 'Rue des Orphelins',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
                 empty: 300,
@@ -318,7 +295,6 @@ const Properties = {
         },
         {
             name: 'Rue de la Première Armée',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.GREEN,
             prices: {
                 empty: 320,
@@ -333,7 +309,6 @@ const Properties = {
         },
         {
             name: 'Rue des Grandes Arcades',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BLUE,
             prices: {
                 empty: 350,
@@ -348,7 +323,6 @@ const Properties = {
         },
         {
             name: 'Rue des Orfèvres',
-            description: 'Quelle magnifique rue !',
             color: Constants.STREET_COLOR.BLUE,
             prices: {
                 empty: 400,
@@ -366,12 +340,10 @@ const Properties = {
     PUBLIC_COMPANY: [
         {
             name: 'Eléctricité de Strasbourg',
-            description: 'En libre service, venez donc',
             price: 150
         },
         {
             name: "Syndicat Des Eaux et de l'Assainissement",
-            description: 'Math info top niveau',
             price: 150
         }
     ]

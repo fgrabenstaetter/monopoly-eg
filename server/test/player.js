@@ -69,7 +69,7 @@ describe("Player", function() {
         const street = new Street(Properties.STREET[0]);
         player.addProperty(street);
         assert.equal(1, player.properties.length);
-        assert.equal("Rue du vieux marché aux poissons", player.properties[0].name);
+        assert.equal("Rue du Vieux Marché aux Poissons", player.properties[0].name);
     });
 
     it("Le joueur ne possède plus la Rue du vieux marché aux poissons", function() {

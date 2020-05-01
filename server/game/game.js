@@ -1,17 +1,17 @@
-const Chat = require('./chat');
-const Constants = require('./../lib/constants');
-const Deck = require('./deck');
-const Player = require('./player');
-const Bank = require('./bank');
-const Cells = require('./../lib/cells');
-const Properties = require('./../lib/properties');
-const chanceCardsMeta = require('./../lib/chanceCards');
+const Chat                    = require('./chat');
+const Constants               = require('./../lib/constants');
+const Deck                    = require('./deck');
+const Player                  = require('./player');
+const Bank                    = require('./bank');
+const Cells                   = require('./../lib/cells');
+const Properties              = require('./../lib/properties');
+const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-const Errors = require('./../lib/errors');
-const Bid = require('./bid');
-const SuccessManager = require('./successManager');
-const activeGameSchema = require('./../models/activeGame');
-const Lobby = require('./lobby');
+const Errors                  = require('./../lib/errors');
+const Bid                     = require('./bid');
+const SuccessManager          = require('./successManager');
+const activeGameSchema        = require('./../models/activeGame');
+const Lobby                   = require('./lobby');
 
 
 /**
@@ -28,26 +28,26 @@ class Game {
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor(id, users, duration, GLOBAL) {
-        this.id = id;
-        this.GLOBAL = GLOBAL;
-        this.players = [];
-        this.forcedDiceRes = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells = Cells.new;
-        this.chanceDeck = new Deck(chanceCardsMeta);
-        this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.chat = new Chat();
-        this.bank = new Bank(this.cells);
+        this.id                       = id;
+        this.GLOBAL                   = GLOBAL;
+        this.players                  = [];
+        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.cells                    = Cells.new;
+        this.chanceDeck               = new Deck(chanceCardsMeta);
+        this.communityChestDeck       = new Deck(communityChestCardsMeta);
+        this.chat                     = new Chat();
+        this.bank                     = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
-        this.offers = [];
-        this.lastOffers = []; // anti spam
+        this.offers                   = [];
+        this.lastOffers               = []; // anti spam
         // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
-        this.bids = [];
+        this.bids                = [];
         this.alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
-        this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
-        this.ended = false;
+        this.maxDuration         = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended               = false;
 
-        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
-        this.startedTime = null; // timestamp de démarrage en ms
+        this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        this.startedTime         = null; // timestamp de démarrage en ms
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -107,7 +107,6 @@ class Game {
     }
 
     delete() {
-        // mettre tous les joueurs dans un même nouveau lobby :)
         let users = [];
         for (const player of this.players) {
             users.push(player.user);
@@ -482,7 +481,7 @@ class Game {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' Visite le parc de l\'orangerie';
+                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'orangerie';
                         }
                     }
 
