@@ -156,8 +156,8 @@ class Network {
         this.gamePropertyBuyReq        (player, game);
         this.gamePropertyUpgradeReq    (player, game);
         this.gamePropertyMortgageReq   (player, game);
-        this.gamePlayerLeavingReq      (player, game);
         this.gamePropertyUnmortgageReq (player, game);
+        this.gamePlayerLeavingReq      (player, game);
 
         // Chat + offres et enchères
         this.gameChatSendReq           (player, game);
@@ -1215,6 +1215,8 @@ class Network {
                 err = Errors.BID.ONE_MANUAL_MAX;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
+            else if (prop.isMortgaged)
+                err = Errors.GAME.PROPERTY_IS_MORTGAGED;
             else {
                 new Bid(prop, data.initialPrice, game, true);
                 // réponse envoyée depuis le constructeur de Bid

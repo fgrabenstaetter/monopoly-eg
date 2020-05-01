@@ -4,7 +4,6 @@ const Deck                    = require('./deck');
 const Player                  = require('./player');
 const Bank                    = require('./bank');
 const Cells                   = require('./../lib/cells');
-const Properties              = require('./../lib/properties');
 const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
 const Errors                  = require('./../lib/errors');
@@ -31,7 +30,7 @@ class Game {
         this.id                       = id;
         this.GLOBAL                   = GLOBAL;
         this.players                  = [];
-        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes            = [6,4]; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells                    = Cells.new;
         this.chanceDeck               = new Deck(chanceCardsMeta);
         this.communityChestDeck       = new Deck(communityChestCardsMeta);
@@ -425,6 +424,7 @@ class Game {
             this.turnData.nbDoubleDices++;
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
+                this.turnData.canRollDiceAgain = false;
                 this.setTurnActionData(null, null,
                     this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
             } else {
@@ -521,7 +521,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -593,6 +593,7 @@ class Game {
         }
 
         this.curPlayer.goPrison();
+        this.turnData.canRollDiceAgain = false;
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
     }
@@ -784,7 +785,7 @@ class Game {
             auto = true;
             properties = [];
             for (const prop of properties) {
-                if (prop.isMortgaged)
+                if (prop.isMortgaged || !prop.owner)
                     continue;
                 sum += prop.mortgagePrice;
                 properties.push(prop);
@@ -803,8 +804,8 @@ class Game {
         else {
             let propertiesID = [];
             for (const prop of properties) {
-                propertiesID.push(prop.id);
-                prop.mortgage(this);
+                if (prop.mortgage(this))
+                    propertiesID.push(prop.id);
             }
 
             let rentalOwner, mess;

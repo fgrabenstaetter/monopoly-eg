@@ -90,7 +90,7 @@ class Bid {
             return;
 
         // si le joueur n'a plus l'argent qu'il a souhaité pour enchérir, ou que le propriétaire de la propriété a changé entre temps, mettre this.player null => enchère échouée
-        if ((this.player && this.player.money < this.amountAsked) || this.initialPropertyOwner !== this.property.owner)
+        if ((this.player && ((this.player.money < this.amountAsked) || this.player.failure)) || this.initialPropertyOwner !== this.property.owner)
             this.player = null;
 
         const oldOwner = this.property.owner ? this.property.owner : this.game.bank;
