@@ -353,6 +353,7 @@ class Game {
         }
 
         this.resetTurnActionData();
+        this.turnData.shouldCreateBid = false;
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
@@ -723,7 +724,6 @@ class Game {
 
     resetTurnActionData() {
         this.setTurnActionData(null, null, null);
-        this.turnData.shouldCreateBid = false;
     }
 
     /**
