@@ -968,7 +968,7 @@ export default {
               const propertyObj = this.getPropertyById(player.properties[i]);
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
-                gameboard.loaderFlag("d" + cell.id, player.color);
+                gameboard.loaderFlag("d" + cell.id, player.color.hex);
 
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
@@ -1129,7 +1129,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
             player.properties.push(property.id);
-            gameboard.loaderFlag("d" + cell.id, player.color);
+            gameboard.loaderFlag("d" + cell.id, player.color.hex);
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
@@ -1241,7 +1241,7 @@ export default {
 
         // Transfert de drapeau
         gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color.hex);
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
@@ -1374,7 +1374,7 @@ export default {
               property.ownerID = res.playerID;
               winner.properties.push(property.id);
 
-              gameboard.loaderFlag(`d${cell.id}`, winner.color);
+              gameboard.loaderFlag(`d${cell.id}`, winner.color.hex);
 
               this.$set(winner, 'money', res.playerMoney);
             }
