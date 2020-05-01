@@ -255,14 +255,22 @@ export default {
           "schoolbus"
         ],
         PLAYERS_COLORS: [
-          "yellow",
-          "#d43333",
-          "#006aff",
-          "#22d406",
-          "white",
-          "violet",
-          "cyan",
-          "orange"
+          { name: 'yellow', hex: '#FDFF00' },
+          { name: 'red', hex: '#d43333' },
+          { name: 'blue', hex: '#006aff' },
+          { name: 'green', hex: '#22d406' },
+          { name: 'white', hex: '#FFFFFF' },
+          { name: 'purple', hex: '#F576F4' },
+          { name: 'cyan', hex: '#59FFFF' },
+          { name: 'orange', hex: '#F8A100' }
+          // "yellow",
+          // "#d43333",
+          // "#006aff",
+          // "#22d406",
+          // "white",
+          // "violet",
+          // "cyan",
+          // "orange"
         ],
         CELL_PRISON: 10
       },
@@ -274,11 +282,7 @@ export default {
       loggedUser: this.$store.getters.loggedUser,
       // @vuese
       // socket client utilisé pour les communications
-      socket: io.connect(this.$store.getters.serverUrl, {
-            query: "token=" + this.$store.getters.jwt,
-            path: "/socket.io",
-            secure: true
-      }),
+      socket: null,
       // @vuese
       // Liste des joueurs dans la partie (envoyée par le serveur)
       players: [],
@@ -835,6 +839,12 @@ export default {
     this.socket.close();
   },
   mounted() {
+    this.socket = io.connect(this.$store.getters.serverUrl, {
+            query: "token=" + this.$store.getters.jwt,
+            path: "/socket.io",
+            secure: true
+      });
+    
     this.gameMounted = true;
 
     this.playMusic();

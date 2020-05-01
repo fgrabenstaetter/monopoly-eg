@@ -508,7 +508,6 @@ export default {
     },
     beforeDestroy() {
         this.stopMusic();
-        // this.socket.removeAllListeners();
         this.socket.close();
     },
     mounted() {
@@ -517,7 +516,7 @@ export default {
                         path: '/socket.io',
                         secure: true
                     });
-                    
+
         this.playMusic();
         this.loadSfx();
 
@@ -876,10 +875,8 @@ export default {
         });
 
 
-        setTimeout(() => {
-            console.log("LOBBY READY REQ");
-            this.socket.emit('lobbyReadyReq');
-        }, 1000);
+        console.log("LOBBY READY REQ");
+        this.socket.emit('lobbyReadyReq');
     }
 }
 </script>
