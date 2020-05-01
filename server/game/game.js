@@ -353,7 +353,6 @@ class Game {
         }
 
         this.resetTurnActionData();
-        this.turnData.shouldCreateBid = false;
         this.turnData.nbDoubleDices = 0;
         this.turnData.canRollDiceAgain = true;
 
@@ -461,10 +460,6 @@ class Game {
 
             case Constants.CELL_TYPE.PROPERTY:
                 this.turnPlayerPropertyCell(diceRes);
-                if (this.turnData.shouldCreateBid) {
-                    const property = this.curCell.property;
-                    new Bid(property, 0, this);;
-                }
                 break;
 
             case Constants.CELL_TYPE.CHANCE:
@@ -739,6 +734,11 @@ class Game {
                 new Bid(curProp, 0, this);
                 break;
         }
+        if (this.turnData.shouldCreateBid) {
+            const property = this.curCell.property;
+            new Bid(property, 0, this);;
+            this.turnData.shouldCreateBid = false;
+        }
     }
 
     /**
@@ -761,7 +761,7 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
-
+        console.log(player);
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
