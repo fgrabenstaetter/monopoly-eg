@@ -651,7 +651,9 @@
                     properties: array, // liste d'ID de ses propriétés
                     nbJailEscapeCards: int,
                     cellPos: int, // de 0 à 39
-                    connected: bool
+                    connected: bool,
+                    failure: bool,
+                    hasLeft: bool
                 }, ...
             ],
             isInJail: int, // tour de prison du joueur ou false si pas en prison

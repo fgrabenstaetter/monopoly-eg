@@ -4,14 +4,14 @@ class Offer {
 
     static idCounter = 0;
 
-    static offerByID (game, id) {
+    static offerByID(game, id) {
         for (const offer of game.offers)
             if (offer.id === id)
                 return offer;
         return false;
     }
 
-    static delOffer (offer) {
+    static delOffer(offer) {
         const ind = offer.game.offers.indexOf(offer);
         if (ind === -1)
             return false;
@@ -24,13 +24,13 @@ class Offer {
      * @param receiver Player auquel sender veut envoyer une nouvelle offre
      * @return true Si sender peux envoyer l'offre à receiver, false si la limite de SPAM est atteinte
      */
-    static canSend (sender, receiver, game) {
+    static canSend(sender, receiver, game) {
         const periodMaxNb = 2;
         const period = Constants.GAME_PARAM.OFFER_EXPIRE_AFTER;
         // max 2 offres sur 40s glissantes
 
         if (!game.lastOffers[sender.id])
-            game.lastOffers[sender.id] = { };
+            game.lastOffers[sender.id] = {};
 
         if (!game.lastOffers[sender.id][receiver.id])
             game.lastOffers[sender.id][receiver.id] = [];
@@ -54,44 +54,44 @@ class Offer {
     /**
      * @param property La propriété à acheter ou null pour carte sortie de prison
      */
-    constructor (game, player, receiver, property, amount) {
-        this.game     = game;
-        this.id       = Offer.idCounter ++;
-        this.maker    = player;
+    constructor(game, player, receiver, property, amount) {
+        this.game = game;
+        this.id = Offer.idCounter++;
+        this.maker = player;
         this.receiver = receiver;
         this.property = property;
-        this.amount   = amount;
+        this.amount = amount;
         this.game.offers.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.OFFER_EXPIRE_AFTER);
 
         // message à tous les joueurs
-        const propertyName = this.property ? this.property.name : 'une carte sortie de prison';
+        const propertyName = this.property ? this.property.name : 'une carte Fin de session parlementaire';
         const text = this.maker.nickname + ' propose à ' + this.receiver.nickname + ' de lui acheter ' + propertyName + ' pour ' + this.amount + '€ !';
         const mess = this.game.chat.addMessage(null, text);
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
-            playerID    : -1,
-            text        : mess.text,
-            createdTime : mess.createdTime
+            playerID: -1,
+            text: mess.text,
+            createdTime: mess.createdTime
         });
     }
 
-    expired () {
+    expired() {
         if (!Offer.offerByID(this.game, this.id))
             return false;
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameOfferFinishedRes', {
-            receiverID : this.receiver.id,
-            offerID    : this.id,
-            price      : this.amount,
-            propertyID : this.property ? this.property.id : -1,
-            makerID    : this.maker.id,
-            accepted   : false
+            receiverID: this.receiver.id,
+            offerID: this.id,
+            price: this.amount,
+            propertyID: this.property ? this.property.id : -1,
+            makerID: this.maker.id,
+            accepted: false
         });
 
         Offer.delOffer(this);
     }
 
-    accept () {
+    accept() {
         if (!Offer.delOffer(this) || this.maker.money < this.amount)
             return false;
 
@@ -105,21 +105,21 @@ class Offer {
             if (this.receiver.nbJailEscapeCards === 0)
                 return false;
 
-            this.receiver.nbJailEscapeCards --;
-            this.maker.nbJailEscapeCards ++;
+            this.receiver.nbJailEscapeCards--;
+            this.maker.nbJailEscapeCards++;
         }
 
         this.maker.loseMoney(this.amount);
         this.receiver.addMoney(this.amount);
 
         // message à tous les joueurs
-        const propertyName = this.property ? 'la propriété ' + this.property.name : 'une carte sortie de prison';
+        const propertyName = this.property ? 'la propriété ' + this.property.name : 'une carte Fin de session parlementaire';
         const text = this.maker.nickname + ' a acheté ' + propertyName + ' de ' + this.receiver.nickname + ' pour ' + this.amount + '€ !';
         const mess = this.game.chat.addMessage(null, text);
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
-            playerID    : -1,
-            text        : mess.text,
-            createdTime : mess.createdTime
+            playerID: -1,
+            text: mess.text,
+            createdTime: mess.createdTime
         });
 
         return true;

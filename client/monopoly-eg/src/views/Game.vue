@@ -312,7 +312,9 @@ export default {
       // Ressources audio du jeu
       audio: {
         background: null,
-        sfx: {}
+        sfx: {
+          buttonClick: null
+        }
       },
       // @vuese
       // Indique si la partie est terminée (affiche l'écran de fin si true)
@@ -436,6 +438,7 @@ export default {
      * @arg L'index de la notification à supprimer
      */
     discardTurnNotif(index) {
+      this.audio.sfx.buttonClick.play();
       if (!this.imCurrentPlayer) return;
       this.turnNotifications.splice(index, 1);
     },
@@ -481,6 +484,7 @@ export default {
      * @arg L'ID de l'offre concernée
      */
     rejectOffer(offerID) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: false });
       console.log('gameOfferActionReq reject');
       this.discardOffer(offerID);
@@ -492,6 +496,7 @@ export default {
      * @arg L'ID de l'offre concernée
      */
     offerAccept(offerID) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: true });
       console.log('gameOfferActionReq accept');
       this.discardOffer(offerID);
@@ -526,6 +531,7 @@ export default {
      * @arg L'objet 'bid' contenant l'enchère que l'on souhaite passer
      */
     rejectBid(bid) {
+      this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: 0 });
       this.$set(bid, 'disabled', true);
     },
@@ -578,6 +584,12 @@ export default {
         autoplay: false,
         loop: false,
         volume: this.loggedUser.settings.sfxLevel /100
+      });
+      this.audio.sfx.buttonClick = new Howl({
+        src: ['/assets/audio/sfx/buttonClick.mp3'],
+        autoplay: false,
+        loop: false,
+        volume: this.loggedUser.settings.sfxLevel / 100
       });
     },
 
@@ -815,9 +827,7 @@ export default {
   },
   beforeDestroy() {
     this.stopMusic();
-    this.socket.removeAllListeners();
-    console.log("REMOVE ALL LISTENERS FROM GAME");
-    this.socket.disconnect();
+    this.socket.close();
   },
   mounted() {
     this.gameMounted = true;
@@ -825,7 +835,7 @@ export default {
     this.playMusic();
     this.loadSfx();
 
-    this.loading = false; // DEBUG
+    // this.loading = false; // DEBUG
     this.players = [];
     const gameboard = this.$refs.gameboard;
 
@@ -1105,23 +1115,24 @@ export default {
         if (this.loading) return;
 
         console.log('gamePlayerFailureRes');
+        console.log(res);
 
         const player = this.getPlayerById(res.playerID);
-        if (player) {
-            this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
+        if (!player) return;
 
-            // Toutes les propriétés sont à nouveau à vendre
-            this.properties.forEach((property) => {
-                if (property.ownerID == player.id)
-                    property.ownerID = null;
-            });
+        this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
 
-            // Reset des propriétés du joueur
-            this.$set(player, 'properties', []);
+        // Toutes les propriétés sont à nouveau à vendre
+        this.properties.forEach((property) => {
+            if (property.ownerID == player.id)
+                property.ownerID = null;
+        });
 
-            // Simple texte d'annonce
-            this.$set(player, 'failure', true);
-        }
+        this.$set(player, 'properties', []);
+        this.$set(player, 'failure', true);
+
+        // Suppression du pion
+        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
     });
 
     // On a reçu une offre d'achat
@@ -1154,35 +1165,36 @@ export default {
 
       if (!buyer || !receiver || !property || !cell) return;
 
-      // Transfert argent
-      this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
-      this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+      if (res.accepted) {
+        // Transfert argent
+        this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
+        this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
 
-      // Transfert propriétés
-      for (const i in receiver.properties) {
-        if (receiver.properties[i] == property.id) {
-          receiver.properties.splice(i, 1);
-          break;
+        // Transfert propriétés
+        for (const i in receiver.properties) {
+          if (receiver.properties[i] == property.id) {
+            receiver.properties.splice(i, 1);
+            break;
+          }
         }
-      }
-      property.ownerID = buyer.id;
-      buyer.properties.push(property.id);
+        property.ownerID = buyer.id;
+        buyer.properties.push(property.id);
 
-      // Transfert de drapeau
-      gameboard.deleteFlag(`d${cell.id}`);
-      gameboard.loaderFlag(`d${cell.id}`, buyer.color);
+        // Transfert de drapeau
+        gameboard.deleteFlag(`d${cell.id}`);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
 
-      // Notifications
-      if (receiver.id == this.loggedUser.id) {
-        if (res.accepted) {
+        // Notifications
+        if (receiver.id == this.loggedUser.id) {
           this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
-        } else {
-          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
-        }
-      } else if (buyer.id == this.loggedUser.id) {
-        if (res.accepted) {
+        } else if (buyer.id == this.loggedUser.id) {
           this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} pour ${res.price}€`, 'success', 5);
-        } else {
+        }
+      } else {
+        // Notifications (de refus)
+        if (receiver.id == this.loggedUser.id) {
+          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
+        } else if (buyer.id == this.loggedUser.id) {
           this.$parent.toast(`${receiver.nickname} n'a pas accepté de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
           // this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
         }
@@ -1454,6 +1466,7 @@ export default {
             this.$parent.toast(html,  'success', 10);
         }, 6e3);
     });
+
   }
 };
 </script>

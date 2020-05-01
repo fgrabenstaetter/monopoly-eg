@@ -25,10 +25,10 @@ const communityChestCards = [{
     effectType: 'gainMoney',
     effectArg1: 50
 }, {
-    description: "Vous obtenez une carte sortie de prison. Elle peut être conservée jusqu'à être utilisée ou vendue",
+    description: "Vous obtenez une carte 'Fin de session parlementaire'. Elle peut être conservée jusqu'à être utilisée ou vendue",
     effectType: 'jailEscapeCard'
 }, {
-    description: "Allez en prison. Ne passez pas par la case Départ. Ne recevez pas 200€",
+    description: "Allez en session parlementaire. Ne passez pas par la case Départ. Ne recevez pas 200€",
     effectType: 'goJail',
     effectArg1: 30
 }, {

@@ -778,8 +778,7 @@ class Network {
                         let propertyData = {
                             id          : cell.property.id,
                             type        : cell.property.type,
-                            name        : cell.property.name,
-                            description : cell.property.description
+                            name        : cell.property.name
                         };
 
                         switch (cell.property.type) {
@@ -803,7 +802,7 @@ class Network {
                     } else if (cell.type === Constants.CELL_TYPE.TAX) {
                         taxes.push({
                             id          : cell.tax.id,
-                            description : cell.tax.description,
+                            description : cell.tax.name,
                             money       : cell.tax.money
                         });
                     }
@@ -1284,7 +1283,9 @@ class Network {
                     properties        : playerProperties,
                     nbJailEscapeCards : player.nbJailEscapeCards,
                     cellPos           : player.cellPos,
-                    connected         : player.connected
+                    connected         : player.connected,
+                    failure           : player.failure,
+                    hasLeft           : player.hasLeft
                 });
             }
 
@@ -1365,7 +1366,7 @@ class Network {
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false
+                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false,
             });
 
             if (game.startedTime) { // partie commencée

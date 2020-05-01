@@ -27,11 +27,11 @@ class Game {
      * @param duration La durée souhaitée de temps de jeu en ms ou null si illimité
      * @param GLOBAL L'instance globale de données du serveur
      */
-    constructor (id, users, duration, GLOBAL) {
+    constructor(id, users, duration, GLOBAL) {
         this.id                       = id;
         this.GLOBAL                   = GLOBAL;
         this.players                  = [];
-        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
         this.cells                    = Cells.new;
         this.chanceDeck               = new Deck(chanceCardsMeta);
         this.communityChestDeck       = new Deck(communityChestCardsMeta);
@@ -41,13 +41,13 @@ class Game {
         this.offers                   = [];
         this.lastOffers               = []; // anti spam
         // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
-        this.bids                     = [];
-        this.alreadyOneManualBid      = false; // max 1 bid mannuelle à la fois
-        this.maxDuration              = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
-        this.ended                    = false;
+        this.bids                = [];
+        this.alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
+        this.maxDuration         = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended               = false;
 
-        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
-        this.startedTime = null; // timestamp de démarrage en ms
+        this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        this.startedTime         = null; // timestamp de démarrage en ms
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -90,7 +90,7 @@ class Game {
             gameState.save();
         }
 
-        this.checkEndInterval = setInterval( () => {
+        this.checkEndInterval = setInterval(() => {
             if (this.checkEnd()) {
                 clearInterval(this.checkEndInterval);
                 this.ended = true;
@@ -98,7 +98,7 @@ class Game {
         }, 2e3);
     }
 
-    deleteGameState () {
+    deleteGameState() {
         let id = this.id;
         if (this.shouldPersist)
             activeGameSchema.deleteOne({ '_id': this.id }, function (err) {
@@ -107,7 +107,6 @@ class Game {
     }
 
     delete() {
-        // mettre tous les joueurs dans un même nouveau lobby :)
         let users = [];
         for (const player of this.players) {
             users.push(player.user);
@@ -131,7 +130,7 @@ class Game {
         this.deleteGameState();
     }
 
-    get active () {
+    get active() {
         return this.players.length > 0;
     }
 
@@ -215,7 +214,7 @@ class Game {
     /**
      * Cette fonction doit etre utilisee pour obtenir l'etat courant du jeu sous forme de dictionaire
      */
-    currentGameState () {
+    currentGameState() {
         let players = [];
         let cells = [];
         let properties = [];
@@ -230,18 +229,18 @@ class Game {
         }
 
         return {
-            _id: this.id,
-            endTime: this.endTime,
-            players: players,
-            bank: this.bank.toJSON(),
-            properties: properties
+            _id        : this.id,
+            endTime    : this.endTime,
+            players    : players,
+            bank       : this.bank.toJSON(),
+            properties : properties
         }
     }
 
-    persistGameState () {
+    persistGameState() {
         let gameId = this.id;
         let gameState = activeGameSchema(this.currentGameState());
-        activeGameSchema.findOneAndUpdate({_id: this.id}, gameState, {upsert: true}, function(err, doc) {
+        activeGameSchema.findOneAndUpdate({ _id: this.id }, gameState, { upsert: true }, function (err, doc) {
             /*
             if (err)
                 console.log('Error at saving gamestate for game #', gameId);
@@ -282,7 +281,7 @@ class Game {
      * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite OU le timeout de partie a été atteint)
      * @return true si la partie est finie, false sinon
      */
-    checkEnd () {
+    checkEnd() {
         const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
         if (gameTimeout) {
             // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
@@ -308,7 +307,7 @@ class Game {
             let nb = 0, solo;
             for (const pl of this.players) {
                 if (pl.failure)
-                    nb ++;
+                    nb++;
                 else
                     solo = pl;
             }
@@ -316,9 +315,9 @@ class Game {
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
-                    type: 'normal',
-                    winnerID: winner.id,
-                    duration: Date.now() - this.startedTime
+                    type     : 'normal',
+                    winnerID : winner.id,
+                    duration : Date.now() - this.startedTime
                 });
 
                 this.delete();
@@ -333,7 +332,7 @@ class Game {
      * Démarre un nouveau tour de jeu avec le joueur suivant (pas d'action de jeu prise ici, mais dans rollDice)
      */
 
-    turnMidTimeCheck () {
+    turnMidTimeCheck() {
         if (this.turnData.canRollDiceAgain)
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
     }
@@ -362,10 +361,11 @@ class Game {
 
         this.turnData.startedTime = Date.now();
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
+
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime,
-            canRollDiceAgain: true
+            playerID         : this.curPlayer.id,
+            turnEndTime      : this.turnData.endTime,
+            canRollDiceAgain : true
         });
 
         if (!this.curPlayer.connected)
@@ -382,7 +382,7 @@ class Game {
      * Actions nécéssaires pour le tour d'un joueur qui est AFK/déconnecté
      * @param expired true si le tour a expiré, false sinon (cette méthode n'est pas apellé uniquement lors du timeout de tour, mais aussi lorsqu'on veut relancer les dés)
      */
-    turnPlayerTimeoutAction (expired = true) {
+    turnPlayerTimeoutAction(expired = true) {
         clearTimeout(this.turnData.timeout);
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
@@ -400,7 +400,7 @@ class Game {
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
      * @return [int, int] le résultat des dés ou false si problème quelconque
      */
-    rollDice (useExitJailCard = false) {
+    rollDice(useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
             return false;
 
@@ -415,11 +415,11 @@ class Game {
         if (this.curPlayer.isInPrison)
             this.turnPlayerAlreadyInPrison(diceRes, useExitJailCard);
         else if (diceRes[0] === diceRes[1]) {
-            this.turnData.nbDoubleDices ++;
+            this.turnData.nbDoubleDices++;
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
                 this.setTurnActionData(null, null,
-                    this.curPlayer.nickname + ' a fait 3 doubles, direction la prison ! (tour 1/3)');
+                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
             } else {
                 this.turnData.canRollDiceAgain = true;
 
@@ -430,9 +430,9 @@ class Game {
 
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
-                    this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                    this.turnData.timeout    = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
                     this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
-                    this.turnData.endTime = Date.now() + newDuration;
+                    this.turnData.endTime    = Date.now() + newDuration;
                 }
             }
         }
@@ -477,12 +477,12 @@ class Game {
                 if (!this.curPlayer.isInPrison) {
                     let mess;
                     if (this.curPlayer.cellPos === 10)
-                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de prison';
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour visiter le parlement';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' a bu trop de Vodka';
+                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'orangerie';
                         }
                     }
 
@@ -507,14 +507,14 @@ class Game {
     turnPlayerAlreadyInPrison(diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
             if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
-                this.curPlayer.nbJailEscapeCards --;
+                this.curPlayer.nbJailEscapeCards--;
                 this.curPlayer.quitPrison();
             } else if (diceRes[0] === diceRes[1])
                 this.curPlayer.quitPrison();
             else {
-                this.curPlayer.remainingTurnsInJail --;
+                this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en prison (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (5 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -538,7 +538,7 @@ class Game {
         if (property.isMortgaged)
             return; // rien à faire
 
-        if (property.owner === this.curPlayer && property.type === Constants.PROPERTY_TYPE.STREET) {
+        if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
                 'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
@@ -558,6 +558,7 @@ class Game {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
                         'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')',
                         'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
+
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(rentalPrice);
@@ -586,11 +587,11 @@ class Game {
 
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
-            this.curPlayer.nickname + ' est envoyé en prison ! (tour 1/3)');
+            this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
 
     }
 
-    turnPlayerTaxCell () {
+    turnPlayerTaxCell() {
         const moneyToPay = this.curCell.tax.money;
         if (this.curPlayer.money < moneyToPay) {
             this.playerNotEnoughMoney(this.curPlayer, moneyToPay,
@@ -844,7 +845,7 @@ class Game {
      * @param msgIfFailure Le message a mettre dans turnData.actionMessage si le joueur est en faillite
      * @param msgIfShouldMortgage Le message a mettre dans turnData.actionMessage si le joueur doit hypothéquer (pas de faillite)
      */
-    playerNotEnoughMoney (player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
+    playerNotEnoughMoney(player, moneyToObtain, msgIfFailure, msgIfShouldMortgage) {
         // regarder si ses propriétés valent assez pour combler ce montant
         let sum = player.money;
         for (const prop of player.properties) {

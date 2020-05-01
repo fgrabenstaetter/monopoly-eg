@@ -19,7 +19,6 @@ class Street extends Property {
      */
     load (data) {
         this.name         = data.name;
-        this.description  = data.description;
         this.color        = data.color;
         this.prices       = data.prices;
         this.rentalPrices = data.rentalPrices;
