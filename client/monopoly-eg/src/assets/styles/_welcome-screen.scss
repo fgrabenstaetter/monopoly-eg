@@ -9,7 +9,7 @@
     width: 500%;
     height: 500%;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -50,7 +50,7 @@
 
   #logo {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;
@@ -77,20 +77,20 @@
 
   #montgolfiere {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(calc(-50% + 300px), calc(-50% - 200px));
     z-index: 150;
     animation: montgolfiereAnimation 12s infinite 0s ease;
 
     @media (max-height: 690px) {
-      height: 180px;
+      height: 200px;
     }
   }
 
   #bus {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(calc(-50% - 300px), calc(-50% - 180px));
     z-index: 50;
@@ -102,7 +102,7 @@
 
   #bateau {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(calc(-50% - 180px), calc(-50% + 150px));
     z-index: 150;
@@ -115,7 +115,7 @@
 
   .btn {
     position: absolute;
-    bottom: 130px;
+    bottom: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 140px;
@@ -131,7 +131,7 @@
 
   #download-box {
     position: absolute;
-    bottom: 25px;
+    bottom: 7%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: rgba($color: #FFFFFF, $alpha: 0.5);
