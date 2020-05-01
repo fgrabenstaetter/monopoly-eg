@@ -653,10 +653,10 @@
                     cellPos: int, // de 0 à 39
                     connected: bool,
                     failure: bool,
-                    hasLeft: bool
+                    hasLeft: bool,
+                    isInJail: int | false // tour de prison du joueur ou false si pas en prison
                 }, ...
             ],
-            isInJail: int, // tour de prison du joueur ou false si pas en prison
             cells: [], // voir gameStartedRes
             properties: [] // voir gameStartedRes et ligne ci-dessous (+ champ isMortgaged pour chaque propriété)
             // ATTENTION: si propriété == Street => l'objet contient aussi level (int de 0 à 5)
