@@ -9,7 +9,6 @@
             player.disconnected ? 'disconnected' : '',
             player.failure ? 'failure' : ''
         ]"
-
     >
         <div v-on:click="showPlayerProperties()" class="name">
             {{player.nickname}}
@@ -116,7 +115,7 @@
             </div>
 
             <div v-if="player.properties.length == 0 && loggedUser.id == player.id" class="empty-popup">Vous ne possédez aucune propriété</div>
-            <div v-if="player.properties.length == 0 && loggedUser.id != player.id" class="empty-popup">{{player.id}} ne possède aucune propriété</div>
+            <div v-if="player.properties.length == 0 && loggedUser.id != player.id" class="empty-popup">{{player.nickname}} ne possède aucune propriété</div>
 
             <div class="popup-content">
                 <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
