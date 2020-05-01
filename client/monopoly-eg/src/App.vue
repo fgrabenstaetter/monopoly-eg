@@ -8,8 +8,10 @@
         <br />Pense à étendre la fenêtre du jeu pour en profiter pleinement!
       </div>
     </div>
-    
-    <div v-if="toastContent" v-html="toastContent" class="toast-notification" :class="toastClass">{{toastContent}}</div>
+
+    <div class="toast-notifications">
+      <div v-for="(toast, index) in toasts" :key="index" class="toast-notification" :class="toast.type" v-html="toast.content"></div>
+    </div>
   </div>
 </template>
 
@@ -18,22 +20,33 @@ export default {
   name: 'App',
   data() {
     return {
-      toastContent: '',
-      toastClass: ''
+      toasts: [],
+      toastIdCounter: 0
     }
   },
   methods: {
     /**
-     * Crée une notification "toast"
+     * Crée une notification "toast" (et l'ajoute à la liste de notifications affichées)
      * @param {string} content Contenu de la notification
      * @param {string} type Type de la notification (success, danger ou info)
      * @param {int} time Temps d'affichage de la notification (en secondes)
      */
     toast(content, type, time) {
-      this.toastContent = content;
-      this.toastClass = type;
+      const newToast = {
+        id: this.toastIdCounter++,
+        content: content,
+        type: type
+      };
+
+      this.toasts.push(newToast);
+      
       setTimeout(() => {
-        this.toastContent = "";
+        for (const i in this.toasts) {
+          if (this.toasts[i].id == newToast.id) {
+            this.toasts.splice(i, 1);
+            break;
+          }
+        }
       }, time * 1000);
     },
 
