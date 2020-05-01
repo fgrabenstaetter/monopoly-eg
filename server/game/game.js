@@ -460,6 +460,7 @@ class Game {
 
             case Constants.CELL_TYPE.PROPERTY:
                 this.turnPlayerPropertyCell(diceRes);
+                const property = this.curCell.property;
                 if (this.turnData.shouldCreateBid)
                     new Bid(property, 0, this);;
                 break;
