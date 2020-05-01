@@ -1123,19 +1123,25 @@ export default {
 
         const player = this.getPlayerById(res.playerID);
         if (!player) return;
+        
+        this.$set(player, 'failure', true);
 
         this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
 
         // Toutes les propriétés sont à nouveau à vendre
-        this.properties.forEach((property) => {
-            if (property.ownerID == player.id)
-                property.ownerID = null;
-        });
-
+        // Suppr propriétés
+        for (const i in player.properties) {
+          const property = this.getPropertyById(player.properties[i]);
+          if (property) {
+            this.$set(property, 'ownerID', null);
+          }
+        }
         this.$set(player, 'properties', []);
-        this.$set(player, 'failure', true);
 
         // Suppression du pion
+        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+
+        // Suppr pion
         gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
     });
 
@@ -1447,17 +1453,6 @@ export default {
             createdTime: new Date()
         });
 
-        // Suppr pion
-        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
-
-        // Suppr propriétés
-        for (const i in player.properties) {
-          const property = this.getPropertyById(player.properties[i]);
-          if (property) {
-            this.$set(property, 'ownerID', null);
-          }
-        }
-        this.$set(player, 'properties', []);
         this.$set(player, 'hasLeft', true);
     });
 
