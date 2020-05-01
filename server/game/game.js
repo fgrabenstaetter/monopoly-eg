@@ -762,7 +762,6 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
-        console.log(player);
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 

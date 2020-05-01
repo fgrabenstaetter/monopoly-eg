@@ -108,6 +108,7 @@ class Network {
 
         user.socket.on('lobbyReadyReq', () => {
             // réponse de création / rejoignage de lobby
+            console.log(user.nickname);
             this.lobbyNewUser(user, lobby);
         });
     }
@@ -287,11 +288,15 @@ class Network {
         });
 
         // envoyer à tous les users du loby, sauf le nouveau
-        user.socket.broadcast.to(lobby.name).emit('lobbyUserJoinedRes', {
-            id       : user.id,
-            nickname : user.nickname,
-            avatar   : user.getAvatar()
-        });
+        for (const usr of lobby.users) {
+            if (usr !== user) {
+                usr.socket.emit('lobbyUserJoinedRes', {
+                    id       : user.id,
+                    nickname : user.nickname,
+                    avatar   : user.getAvatar()
+                });
+            }
+        }
     }
 
     lobbyInvitationReq(user, lobby) {
