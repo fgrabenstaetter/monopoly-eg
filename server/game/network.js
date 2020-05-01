@@ -1283,7 +1283,9 @@ class Network {
                     properties        : playerProperties,
                     nbJailEscapeCards : player.nbJailEscapeCards,
                     cellPos           : player.cellPos,
-                    connected         : player.connected
+                    connected         : player.connected,
+                    failure           : player.failure,
+                    hasLeft           : player.hasLeft
                 });
             }
 
@@ -1364,7 +1366,7 @@ class Network {
                 players      : players,
                 cells        : cells,
                 properties   : properties,
-                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false
+                isInJail     : player.isInPrison ? 4 - player.remainingTurnsInJail : false,
             });
 
             if (game.startedTime) { // partie commencée
