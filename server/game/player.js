@@ -33,17 +33,16 @@ class Player {
             properties.push(property.toJSON());
 
         return {
-            nickname: this.nickname,
-            id: this.id,
-            pawn: this.pawn,
-            money: this.money,
-            cellPos: this.cellPos,
-            nbJailEscapeCards: this.nbJailEscapeCards,
-            remainingTurnsInJail: this.remainingTurnsInJail,
-            properties: properties
+            nickname             : this.nickname,
+            id                   : this.id,
+            pawn                 : this.pawn,
+            money                : this.money,
+            cellPos              : this.cellPos,
+            nbJailEscapeCards    : this.nbJailEscapeCards,
+            remainingTurnsInJail : this.remainingTurnsInJail,
+            properties           : properties
         }
     }
-
 
     /**
      * @return true si le joueur est en prison, false sinon

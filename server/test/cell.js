@@ -16,7 +16,7 @@ describe("Cell", function() {
 
     it("La cellule 3 correspond à la Rue des tonneliers", function() {
         const street = Cells.new[3];
-        assert.equal("Rue des tonneliers", street.property.name);
+        assert.equal("Rue des Tonneliers", street.property.name);
     });
 
     describe('toJSON()', function () {

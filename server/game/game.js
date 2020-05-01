@@ -1,17 +1,17 @@
-const Chat = require('./chat');
-const Constants = require('./../lib/constants');
-const Deck = require('./deck');
-const Player = require('./player');
-const Bank = require('./bank');
-const Cells = require('./../lib/cells');
-const Properties = require('./../lib/properties');
-const chanceCardsMeta = require('./../lib/chanceCards');
+const Chat                    = require('./chat');
+const Constants               = require('./../lib/constants');
+const Deck                    = require('./deck');
+const Player                  = require('./player');
+const Bank                    = require('./bank');
+const Cells                   = require('./../lib/cells');
+const Properties              = require('./../lib/properties');
+const chanceCardsMeta         = require('./../lib/chanceCards');
 const communityChestCardsMeta = require('./../lib/communityChestCards');
-const Errors = require('./../lib/errors');
-const Bid = require('./bid');
-const SuccessManager = require('./successManager');
-const activeGameSchema = require('./../models/activeGame');
-const Lobby = require('./lobby');
+const Errors                  = require('./../lib/errors');
+const Bid                     = require('./bid');
+const SuccessManager          = require('./successManager');
+const activeGameSchema        = require('./../models/activeGame');
+const Lobby                   = require('./lobby');
 
 
 /**
@@ -28,26 +28,26 @@ class Game {
      * @param GLOBAL L'instance globale de données du serveur
      */
     constructor(id, users, duration, GLOBAL) {
-        this.id = id;
-        this.GLOBAL = GLOBAL;
-        this.players = [];
-        this.forcedDiceRes = null; // forcer un [int, int] pour le prochain rollDice = > POUR TESTS UNITAIRES UNIQUEMENT !!!
-        this.cells = Cells.new;
-        this.chanceDeck = new Deck(chanceCardsMeta);
-        this.communityChestDeck = new Deck(communityChestCardsMeta);
-        this.chat = new Chat();
-        this.bank = new Bank(this.cells);
+        this.id                       = id;
+        this.GLOBAL                   = GLOBAL;
+        this.players                  = [];
+        this.forcedDiceRes            = null; // forcer un [int, int] pour le prochain rollDice => POUR TESTS UNITAIRES UNIQUEMENT !!!
+        this.cells                    = Cells.new;
+        this.chanceDeck               = new Deck(chanceCardsMeta);
+        this.communityChestDeck       = new Deck(communityChestCardsMeta);
+        this.chat                     = new Chat();
+        this.bank                     = new Bank(this.cells);
         this.networkLastGameActionRes = null; // SEULEMENT POUR NETWORK PAS TOUCHE LA MOUCHE
-        this.offers = [];
-        this.lastOffers = []; // anti spam
+        this.offers                   = [];
+        this.lastOffers               = []; // anti spam
         // lastOffers => { senderID: { receiverID: [lastTime, lastTime2], ... }, ... }
-        this.bids = [];
+        this.bids                = [];
         this.alreadyOneManualBid = false; // max 1 bid mannuelle à la fois
-        this.maxDuration = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
-        this.ended = false;
+        this.maxDuration         = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
+        this.ended               = false;
 
-        this.shouldPersist = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
-        this.startedTime = null; // timestamp de démarrage en ms
+        this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        this.startedTime         = null; // timestamp de démarrage en ms
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -66,22 +66,22 @@ class Game {
 
         this.turnData = { // pour le client (envoi Network)
             // action data
-            actionMessage: null,
-            asyncRequestType: null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
-            asyncRequestArgs: null, // liste
+            actionMessage        : null,
+            asyncRequestType     : null, // voir lib/constants.js GAME_ASYNC_REQUEST_TYPE
+            asyncRequestArgs     : null, // liste
 
             // dices system
-            nbDoubleDices: 0, // ++ à chaque double et si >= 3 => prison
-            canRollDiceAgain: false, // true quand le joueur peux encore lancer les dés, false sinon
+            nbDoubleDices        : 0, // ++ à chaque double et si >= 3 => prison
+            canRollDiceAgain     : false, // true quand le joueur peux encore lancer les dés, false sinon
 
             // turn system
-            startedTime: null, // timestamp de début du tour
-            endTime: null, // timestamp de fin de tour
-            timeout: null,
-            midTimeout: null, // timestamp de moitié de tour => lancer les dés auto
-            timeoutActionTimeout: null,
-            playerInd: Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval: null  // id de interval pour fairie clearInterval apres
+            startedTime          : null, // timestamp de début du tour
+            endTime              : null, // timestamp de fin de tour
+            timeout              : null,
+            midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
+            timeoutActionTimeout : null,
+            playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
+            persistInterval      : null  // id de interval pour fairie clearInterval apres
         };
         this.successManager = new SuccessManager(this);
 
@@ -107,7 +107,6 @@ class Game {
     }
 
     delete() {
-        // mettre tous les joueurs dans un même nouveau lobby :)
         let users = [];
         for (const player of this.players) {
             users.push(player.user);
@@ -230,11 +229,11 @@ class Game {
         }
 
         return {
-            _id: this.id,
-            endTime: this.endTime,
-            players: players,
-            bank: this.bank.toJSON(),
-            properties: properties
+            _id        : this.id,
+            endTime    : this.endTime,
+            players    : players,
+            bank       : this.bank.toJSON(),
+            properties : properties
         }
     }
 
@@ -316,9 +315,9 @@ class Game {
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
-                    type: 'normal',
-                    winnerID: winner.id,
-                    duration: Date.now() - this.startedTime
+                    type     : 'normal',
+                    winnerID : winner.id,
+                    duration : Date.now() - this.startedTime
                 });
 
                 this.delete();
@@ -362,10 +361,11 @@ class Game {
 
         this.turnData.startedTime = Date.now();
         this.turnData.endTime = this.turnData.startedTime + (this.curPlayer.connected ? Constants.GAME_PARAM.TURN_MAX_DURATION : Constants.GAME_PARAM.TURN_DISCONNECTED_MAX_DURATION);
+
         this.GLOBAL.network.io.to(this.name).emit('gameTurnRes', {
-            playerID: this.curPlayer.id,
-            turnEndTime: this.turnData.endTime,
-            canRollDiceAgain: true
+            playerID         : this.curPlayer.id,
+            turnEndTime      : this.turnData.endTime,
+            canRollDiceAgain : true
         });
 
         if (!this.curPlayer.connected)
@@ -430,9 +430,9 @@ class Game {
 
                     clearTimeout(this.turnData.timeout);
                     clearTimeout(this.turnData.midTimeout);
-                    this.turnData.timeout = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
+                    this.turnData.timeout    = setTimeout(this.nextTurn.bind(this), newDuration); // fin de tour
                     this.turnData.midTimeout = setTimeout(this.turnMidTimeCheck.bind(this), newDuration / 2); // moitié de tour
-                    this.turnData.endTime = Date.now() + newDuration;
+                    this.turnData.endTime    = Date.now() + newDuration;
                 }
             }
         }
@@ -482,7 +482,7 @@ class Game {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' Visite le parc de l\'orangerie';
+                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'orangerie';
                         }
                     }
 
@@ -538,7 +538,7 @@ class Game {
         if (property.isMortgaged)
             return; // rien à faire
 
-        if (property.owner === this.curPlayer && property.type === Constants.PROPERTY_TYPE.STREET) {
+        if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
                 'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
@@ -558,6 +558,7 @@ class Game {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
                         'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')',
                         'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
+
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(rentalPrice);
@@ -826,13 +827,13 @@ class Game {
             }
 
             this.GLOBAL.network.io.to(this.name).emit('gamePropertyMortgagedRes', {
-                properties: propertiesID,
-                playerID: player.id,
-                playerMoney: player.money,
-                bankMoney: this.bank.money,
-                message: mess,
-                rentalOwner: rentalOwner,
-                auto: auto
+                properties  : propertiesID,
+                playerID    : player.id,
+                playerMoney : player.money,
+                bankMoney   : this.bank.money,
+                message     : mess,
+                rentalOwner : rentalOwner,
+                auto        : auto
             });
         }
     }

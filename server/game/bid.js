@@ -55,9 +55,11 @@ class Bid {
         if (this.nBidsOnProperty.indexOf(player.id) === -1)
             this.nBidsOnProperty.push(player.id);
 
-        let targetMaxLen = this.game.players.length;
-        if (this.initialPropertyOwner)
-            targetMaxLen --; // le créateur ne peux pas surenchérir
+        let targetMaxLen = 0;
+        for (const player of this.game.players) {
+            if (player.connected && !player.failure && player !== this.initialPropertyOwner)
+                targetMaxLen ++;
+        }
 
         if (amount <= this.amountAsked) {
             // return false;
