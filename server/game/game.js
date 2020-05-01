@@ -522,7 +522,7 @@ class Game {
                         mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de session parlementaire';
                     else {
                         switch (this.curPlayer.cellPos) {
-                            case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
+                            case 0: mess = this.curPlayer.nickname + ' a reçu ' + Constants.GAME_PARAM.GET_MONEY_FROM_START + '€ de la banque !';
                                 break;
                             default: mess = this.curPlayer.nickname + ' visite le parc de l\'Orangerie';
                         }
