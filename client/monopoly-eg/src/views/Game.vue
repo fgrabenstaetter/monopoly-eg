@@ -255,14 +255,22 @@ export default {
           "schoolbus"
         ],
         PLAYERS_COLORS: [
-          "yellow",
-          "#d43333",
-          "#006aff",
-          "#22d406",
-          "white",
-          "violet",
-          "cyan",
-          "orange"
+          { name: 'yellow', hex: '#FDFF00' },
+          { name: 'red', hex: '#d43333' },
+          { name: 'blue', hex: '#006aff' },
+          { name: 'green', hex: '#22d406' },
+          { name: 'white', hex: '#FFFFFF' },
+          { name: 'purple', hex: '#F576F4' },
+          { name: 'cyan', hex: '#59FFFF' },
+          { name: 'orange', hex: '#F8A100' }
+          // "yellow",
+          // "#d43333",
+          // "#006aff",
+          // "#22d406",
+          // "white",
+          // "violet",
+          // "cyan",
+          // "orange"
         ],
         CELL_PRISON: 10
       },
@@ -685,9 +693,10 @@ export default {
       this.socket.on("gamePlayerLeavingRes", res => {
         if (res.error === 0) {
           this.$refs.gameSettings.closeModal();
+          this.socket.close();
           setTimeout(() => {
             this.$router.push("/lobby");
-          }, 800);
+          }, 1000);
         } else {
           this.$parent.toast(res.status, "danger", 5);
         }
@@ -862,23 +871,20 @@ export default {
             data.properties[i].level = 0;
             data.properties[i].ownerID = null;
             data.properties[i].isMortgage = 0;
-            // this.$set(this.properties, i, data.properties[i]);
         }
 
         // Génération de la liste de joueurs
-        data.players.forEach((player, index) => {
+        data.players.forEach((player) => {
             // Champs par défaut du joueur
-            // player.properties = [];
+            this.$set(player, 'isInJail', false);
             this.$set(player, 'nbJailEscapeCards', 0);
             this.$set(player, 'properties', []);
             this.$set(player, 'money', data.playersMoney);
             this.$set(player, 'failure', false);
             this.$set(player, 'hasLeft', false);
-            // player.money = data.playersMoney;
-            player.cellPos = 0;
-            player.color = this.CST.PLAYERS_COLORS[index];
-            player.isInJail = false;
-            // this.$set(this.player, index, player);
+            this.$set(player, 'cellPos', 0);
+            this.$set(player, 'color', this.CST.PLAYERS_COLORS[player.pawn]);
+
             this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
         });
 
@@ -916,8 +922,8 @@ export default {
             this.properties[i].ownerID = null;
 
         // Génération de la liste de joueurs
-        this.players.forEach((player, index) => {
-            player.color = this.CST.PLAYERS_COLORS[index];
+        this.players.forEach((player) => {
+            player.color = this.CST.PLAYERS_COLORS[player.pawn];
 
             if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
 
@@ -928,7 +934,7 @@ export default {
               const propertyObj = this.getPropertyById(player.properties[i]);
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
-                gameboard.loaderFlag("d" + cell.id, player.color);
+                gameboard.loaderFlag("d" + cell.id, player.color.hex);
 
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
@@ -1084,7 +1090,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
             player.properties.push(property.id);
-            gameboard.loaderFlag("d" + cell.id, player.color);
+            gameboard.loaderFlag("d" + cell.id, player.color.hex);
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
@@ -1196,7 +1202,7 @@ export default {
 
         // Transfert de drapeau
         gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color);
+        gameboard.loaderFlag(`d${cell.id}`, buyer.color.hex);
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
@@ -1328,7 +1334,7 @@ export default {
               property.ownerID = res.playerID;
               winner.properties.push(property.id);
 
-              gameboard.loaderFlag(`d${cell.id}`, winner.color);
+              gameboard.loaderFlag(`d${cell.id}`, winner.color.hex);
 
               this.$set(winner, 'money', res.playerMoney);
             }

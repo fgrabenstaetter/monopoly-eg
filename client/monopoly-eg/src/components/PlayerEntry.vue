@@ -1,5 +1,16 @@
 <template>
-    <div v-if="!player.hasLeft" v-click-outside="hidePlayerProperties" class="player-entry" :class="{current: isCurrent, disconnected: player.disconnected, failure: player.failure}">
+    <div
+        v-if="!player.hasLeft"
+        v-click-outside="hidePlayerProperties"
+        class="player-entry"
+        :class="[
+            player.color.name,
+            isCurrent ? 'current' : '',
+            player.disconnected ? 'disconnected' : '',
+            player.failure ? 'failure' : ''
+        ]"
+
+    >
         <div v-on:click="showPlayerProperties()" class="name">
             {{player.nickname}}
             <span v-if="player.disconnected">(Déconnecté)</span>
