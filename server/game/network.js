@@ -1136,7 +1136,7 @@ class Network {
             else if (offer.maker.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else {
-                if ((data.accept && !offer.accept()) || !data.accept && !offer.expired())
+                if ((data.accept && !offer.accept()) || (!data.accept && !offer.expired()))
                     err = Errors.UNKNOW;
                 else {
                     this.io.to(game.name).emit('gameOfferFinishedRes', {
