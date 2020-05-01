@@ -484,12 +484,12 @@ class Game {
                 if (!this.curPlayer.isInPrison) {
                     let mess;
                     if (this.curPlayer.cellPos === 10)
-                        mess = this.curPlayer.nickname + ' s\'est arrêté pour visiter le parlement';
+                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de session parlementaire';
                     else {
                         switch (this.curPlayer.cellPos) {
                             case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque';
                                 break;
-                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'orangerie';
+                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'Orangerie';
                         }
                     }
 
