@@ -321,6 +321,8 @@ export default {
       audio: {
         background: null,
         sfx: {
+          rollDices: null,
+          cashRegister: null,
           buttonClick: null
         }
       },
@@ -418,6 +420,39 @@ export default {
         if (this.cells[i].propertyID == property.id) return this.cells[i];
       }
       return null;
+    },
+
+    /**
+     * @vuese
+     * Met en place le timer de la partie
+     * @arg Le timestamp de fin de la partie (en ms)
+     */
+    initGameTimer(gameEndTime) {
+      if (!gameEndTime) return;
+
+      const timeMs = gameEndTime - Date.now();
+
+      let seconds = Math.floor((timeMs / 1000) % 60),
+          minutes = Math.floor((timeMs / (1000 * 60)) % 60),
+          hours = Math.floor((timeMs / (1000 * 60 * 60)) % 24);
+        
+      minutes += 60 * hours;
+
+      this.gameRemainingTime = {min: minutes, sec: seconds};
+      
+      if (!this.gameTimer) {
+        this.gameTimer = setInterval(() => {
+          if (this.gameRemainingTime.min > 0 && this.gameRemainingTime.sec >= 0) {
+            this.$set(this.gameRemainingTime, 'sec', this.gameRemainingTime.sec - 1);
+            if (this.gameRemainingTime.sec == -1) {
+              this.$set(this.gameRemainingTime, 'sec', 59);
+              this.$set(this.gameRemainingTime, 'min', this.gameRemainingTime.min - 1);
+            }
+          } else {
+            clearInterval(this.gameTimer);
+          }
+        }, 1000)
+      }
     },
 
     /**
@@ -607,8 +642,10 @@ export default {
      * @arg Pourcentage du volume (entier de 0 à 100)
      */
     setSfxLevel(level) {
-        for (let [key] of Object.entries(this.audio.sfx))
-            key.volume(level / 100);
+      for (let [key] of Object.entries(this.audio.sfx)) {
+        if (typeof this.audio.sfx[key].volume === 'function')
+          this.audio.sfx[key].volume(level / 100);
+      }
     },
 
     /**
@@ -792,6 +829,11 @@ export default {
                 this.CST.PAWNS[currPlayer.pawn],
                 this.CST.CELL_PRISON
               );
+              
+              if (currPlayer.id == this.loggedUser.id) {
+                this.$refs.actionBtn.progressSetStateTerminer();
+              }
+
               return this.gameActionResAfterSecondMovement(data);
             }, 800);
           }, 800);
@@ -823,7 +865,7 @@ export default {
 
       console.log("=== fin gameActionRes ===");
     },
-    
+
     isNumber(evt) {
       evt = (evt) ? evt : window.event;
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -863,6 +905,7 @@ export default {
         this.properties = data.properties;
         console.log(this.properties);
         this.gameEndTime = data.gameEndTime;
+        this.initGameTimer(this.gameEndTime);
 
         console.log('Le jeu a démarré !');
         console.log(data);
@@ -907,20 +950,7 @@ export default {
         this.cells = res.cells;
         this.properties = res.properties;
         this.gameEndTime = res.gameEndTime;
-
-        if (this.gameEndTime) {
-          this.gameRemainingTime = this.gameEndTime - Date.now();
-          if (!this.gameTimer) {
-            this.gameTimer = setInterval(() => {
-              if (this.gameRemainingTime > 0) {
-                this.gameRemainingTime--;
-              } else {
-                clearInterval(this.gameTimer);
-                this.reset();
-              }
-            }, 1000)
-          }
-        }
+        this.initGameTimer(this.gameEndTime);
 
         for (const i in this.properties)
             this.properties[i].ownerID = null;
@@ -1023,7 +1053,7 @@ export default {
 
         if (currPlayer.id == this.loggedUser.id) {
             console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1] || currPlayer.isInJail) {
+            if (data.dicesRes[0] != data.dicesRes[1]) {
               this.$refs.actionBtn.progressSetStateTerminer();
             } else {
               const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
@@ -1374,6 +1404,11 @@ export default {
         }
     });
 
+    this.socket.on("gamePropertyMortgagedRes", (res) => {
+        console.log('GAME FORCED MORTGAGE RES !!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log(res);
+    });
+
     // Hypothèque OK
     this.socket.on("gamePropertyMortgagedRes", (res) => {
         console.log("gamePropertyMortgagedRes");
@@ -1408,6 +1443,21 @@ export default {
           }
         }
     });
+
+    // En cas d'hypothèque forcée (si un paiement doit être fait)
+    this.socket.on('gameForcedMortgageRes', (res) => {
+      this.$parent.toast(`Hypothèque forcée : ${res.message}`, 'danger', 5);
+      
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
+      this.$set(player, 'money', res.playerMoney);
+
+      if (res.rentalOwner) {
+        const rentalOwner = this.getPlayerById(res.rentalOwner.id);
+        if (!rentalOwner) return;
+        this.$set(rentalOwner, 'money', res.rentalOwner.money);
+      } 
+    })
 
     // Faire leverl'hypothèque ERREUR
     this.socket.on("gamePropertyUnmortgageRes", (res) => {

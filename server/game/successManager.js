@@ -104,7 +104,7 @@ class SuccessManager {
         if (this.game.turnData.canRollDiceAgain)
             obj.nbDoubles ++;
 
-        if (player.remainingTurnsInJail === 4)
+        if (player.remainingTurnsInJail === 3)
             obj.nbJailTimes ++;
 
         if (player.cellPos === 4)

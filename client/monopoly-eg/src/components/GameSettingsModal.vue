@@ -12,8 +12,11 @@
                     </div>
                     <div class="modal-body">
                         <div v-if="env =='game'" class="mb-4">
-                            <span>Temps restant : {{$parent.gameRemainingTime}}</span>
-                            <span v-if="gameRemainingTime">{{gameRemainingTime}}</span>
+                            <span>Temps restant : </span>
+                            <span v-if="$parent.gameRemainingTime">
+                                {{$parent.gameRemainingTime.min}}min
+                                {{$parent.gameRemainingTime.sec}}sec
+                            </span>
                             <span v-else>Illimité</span>
                         </div>
                         <ul>
@@ -285,32 +288,14 @@ export default {
             userSettings: {
                 graphicsQuality: 1,
                 autoZoom: true,
-                musicLevel: 100,
-                sfxLevel: 100
+                musicLevel: 50,
+                sfxLevel: 50
             }
         }
     },
     mounted() {
+        $('.modal-backdrop.show').remove();
         this.userSettings = this.loggedUser.settings;
-    },
-    computed: {
-        gameRemainingTime() {
-            if (this.env != 'game') return false;
-            if (this.$parent.gameRemainingTime == null) return false;
-            let timeMs = this.$parent.gameRemainingTime;
-
-            let seconds = Math.floor((timeMs / 1000) % 60),
-                minutes = Math.floor((timeMs / (1000 * 60)) % 60),
-                hours = Math.floor((timeMs / (1000 * 60 * 60)) % 24);
-
-            let gameTime = '';
-            if (hours > 0)
-                gameTime += `${hours}h `;
-
-            gameTime += `${minutes}min ${seconds}sec`;
-
-            return gameTime;
-        }
     },
     methods: {
         updateUserSettings() {
@@ -331,6 +316,7 @@ export default {
 
             // Refresh volume en direct
             this.$parent.setMusicLevel(this.userSettings.musicLevel);
+            this.$parent.setSfxLevel(this.userSettings.sfxLevel);
         },
         closeModal() {
             $('#optionsModal').modal('hide');

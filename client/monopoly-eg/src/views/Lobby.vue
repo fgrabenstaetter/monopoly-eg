@@ -487,8 +487,10 @@ export default {
         },
 
         setSfxLevel(level) {
-            for (let [key] of Object.entries(this.audio.sfx))
-                key.volume(level / 100);
+            for (let [key] of Object.entries(this.audio.sfx)) {
+                if (typeof this.audio.sfx[key].volume === 'function')
+                    this.audio.sfx[key].volume(level / 100);
+            }
         },
 
         updateProfile() {
