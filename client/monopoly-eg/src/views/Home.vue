@@ -26,6 +26,7 @@
             <a href="#"><i class="fab fa-windows"></i></a>
           </div>
         </div>
+        <div class="version">Ver.: XXX.XXX</div>
         <div class="credits" aria-hidden="true" data-toggle="modal" data-target="#creditsModal">Crédits</div>
       </div>
     </div>
