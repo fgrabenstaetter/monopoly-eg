@@ -97,9 +97,9 @@ class Bid {
 
         if (this.player) {
             this.player.loseMoney(this.amountAsked);
-            this.player.addProperty(this.property);
             oldOwner.addMoney(this.amountAsked);
             oldOwner.delProperty(this.property);
+            this.player.addProperty(this.property);
         }
 
         Bid.delBid(this);
