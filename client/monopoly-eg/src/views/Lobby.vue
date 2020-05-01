@@ -232,11 +232,7 @@ export default {
     data() {
         return {
             loggedUser: this.$store.getters.loggedUser,
-            socket: io.connect(this.$store.getters.serverUrl, {
-                        query: 'token=' + this.$store.getters.jwt,
-                        path: '/socket.io',
-                        secure: true
-                    }),
+            socket: null,
             playBtn: {
                 text: "JOUER !",
                 loading: false,
@@ -516,6 +512,12 @@ export default {
         this.socket.close();
     },
     mounted() {
+        this.socket = io.connect(this.$store.getters.serverUrl, {
+                        query: 'token=' + this.$store.getters.jwt,
+                        path: '/socket.io',
+                        secure: true
+                    });
+                    
         this.playMusic();
         this.loadSfx();
 
