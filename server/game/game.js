@@ -538,7 +538,7 @@ class Game {
         if (property.isMortgaged)
             return; // rien à faire
 
-        if (property.owner === this.curPlayer && property.type === Constants.PROPERTY_TYPE.STREET) {
+        if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
             this.setTurnActionData(null, null,
                 'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
