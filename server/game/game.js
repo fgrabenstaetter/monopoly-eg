@@ -81,7 +81,8 @@ class Game {
             midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
             timeoutActionTimeout : null,
             playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval      : null  // id de interval pour fairie clearInterval apres
+            persistInterval      : null,  // id de interval pour fairie clearInterval apres
+            shouldCreateBid      : false
         };
         this.successManager = new SuccessManager(this);
 
@@ -419,7 +420,7 @@ class Game {
             if (this.turnData.nbDoubleDices >= 3) {
                 this.curPlayer.goPrison();
                 this.setTurnActionData(null, null,
-                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)');
+                    this.curPlayer.nickname + ' a fait 3 doubles, il part en session parlementaire ! (tour 1/3)', false);
             } else {
                 this.turnData.canRollDiceAgain = true;
 
@@ -459,6 +460,10 @@ class Game {
 
             case Constants.CELL_TYPE.PROPERTY:
                 this.turnPlayerPropertyCell(diceRes);
+                if (this.turnData.shouldCreateBid) {
+                    const property = this.curCell.property;
+                    new Bid(property, 0, this);;
+                }
                 break;
 
             case Constants.CELL_TYPE.CHANCE:
@@ -567,7 +572,7 @@ class Game {
                         'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
             } else if (!property.owner && this.curPlayer.money < buyingPrice)
-                new Bid(property, 0, this);
+                this.turnData.shouldCreateBid = true;
         }
     }
 
@@ -588,7 +593,6 @@ class Game {
         this.curPlayer.goPrison();
         this.setTurnActionData(null, null,
             this.curPlayer.nickname + ' est envoyé en session parlementaire ! (tour 1/3)');
-
     }
 
     turnPlayerTaxCell() {
@@ -719,6 +723,7 @@ class Game {
 
     resetTurnActionData() {
         this.setTurnActionData(null, null, null);
+        this.turnData.shouldCreateBid = false;
     }
 
     /**
@@ -856,11 +861,11 @@ class Game {
         if (sum < moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
             this.playerFailure(player);
-            this.setTurnActionData(null, null, msgIfFailure);
+            this.setTurnActionData(null, null, msgIfFailure, false);
         } else {
             // lui demander quelles propriétés il veux hypothéquer
             // Si il ignore cette action asynchrone, une vente automatique de ses propriétés sera effectuée
-            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage);
+            this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.SHOULD_MORTGAGE, [moneyToObtain], msgIfShouldMortgage, false);
         }
     }
 }
