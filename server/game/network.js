@@ -992,11 +992,12 @@ class Network {
                 err = Errors.GAME.NOT_MY_TURN;
             else {
                 switch (game.asyncActionUpgradeProperty(data.list)) {
-                    case 1: err = Errors.UNKNOW;                          break ;
-                    case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY;   break ;
-                    case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY;   break ;
-                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY;       break ;
-                    case 5: err = Errors.GAME.UPGRADE_PROPERTY_MORTGAGED; break ;
+                    case 1: err = Errors.UNKNOW;                              break ;
+                    case 2: err = Errors.GAME.UPGRADE_INVALID_PROPERTY;       break ;
+                    case 3: err = Errors.GAME.UPGRADE_NOT_ENOUGH_MONEY;       break ;
+                    case 4: err = Errors.GAME.UPGRADE_NOT_MONOPOLY;           break ;
+                    case 5: err = Errors.GAME.UPGRADE_PROPERTY_MORTGAGED;     break ;
+                    case 6: err = Errors.GAME.UPGRADE_MONOPOLY_ONE_MORTGAGED; break ;
                 }
             }
 

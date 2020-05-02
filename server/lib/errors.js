@@ -209,7 +209,7 @@ module.exports = Object.freeze({
         },
         UPGRADE_INVALID_PROPERTY: {
             code: 10,
-            status: 'Une propriété invalide a été détectée'
+            status: 'Une propriété est invalide'
         },
         UPGRADE_NOT_ENOUGH_MONEY: {
             code: 11,
@@ -217,7 +217,7 @@ module.exports = Object.freeze({
         },
         UPGRADE_NOT_MONOPOLY: {
             code: 12,
-            status: 'Une propriété dont vous n\'avez pas le monopole de couleur a été détectée'
+            status: 'Vous n\'avez pas le monopole d\'une propriété'
         },
         PROPERTY_ALREADY_SOLD: {
             code: 13,
@@ -229,7 +229,7 @@ module.exports = Object.freeze({
         },
         UPGRADE_PROPERTY_MORTGAGED: {
             code: 15,
-            status: 'Une propriété hypothéquée a été détectée'
+            status: 'Une propriété est hypothéquée'
         },
         OFFER_LIMIT_REACHED: {
             code: 16,
@@ -238,6 +238,10 @@ module.exports = Object.freeze({
         PRICE_OUT_OF_RANGE: {
             code: 17,
             status: 'Le prix entré est invalide (hors de portée)'
+        },
+        UPGRADE_MONOPOLY_ONE_MORTGAGED: {
+            code: 18,
+            status: 'Une propriété dont une propriété du même monopole est hypothéquée'
         }
     }
 });

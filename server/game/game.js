@@ -674,7 +674,7 @@ class Game {
         for (const row of list) {
             if (row.propertyID == null || row.level == null || row.level < 0 || row.level > 5)
                 return 1;
-            let prop = this.curPlayer.propertyByID(row.propertyID);
+            const prop = this.curPlayer.propertyByID(row.propertyID);
 
             if (!prop || prop.type !== Constants.PROPERTY_TYPE.STREET)
                 return 2;
@@ -683,9 +683,14 @@ class Game {
             else if (!this.curPlayer.colorMonopoly(prop.color))
                 return 4;
 
+            // il a bien le monopole => vérifier qu'aucune propriété de la monopole n'est hypothéquée
+            for (const pr of this.curPlayer.properties) {
+                if (pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.isMortgaged)
+                    return 6;
+            }
+
             sum += prop.upgradePrice(row.level);
         }
-
 
         if (sum > 0) {
             if (sum > this.curPlayer.money)
