@@ -1453,11 +1453,6 @@ export default {
         }
     });
 
-    this.socket.on("gamePropertyMortgagedRes", (res) => {
-        console.log('GAME FORCED MORTGAGE RES !!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log(res);
-    });
-
     // Hypothèque OK
     this.socket.on("gamePropertyMortgagedRes", (res) => {
         console.log("gamePropertyMortgagedRes");
@@ -1475,6 +1470,15 @@ export default {
 
             // Modifier "isMortgaged" dans la liste globale des propriétés
             this.$set(property, 'isMortgaged', true);
+
+            // Enlever les propriétés (le cas échéant)
+            if (property.level == 5) {
+              gameboard.deleteHotel(cell.id);
+            } else if (property.level > 0) {
+              for (let i = 1; i <= property.level; i++) {
+                gameboard.deleteHouse(cell.id, i);
+              }
+            }
 
             // Cône plateau
             gameboard.loaderHypotheque(cell.id);
