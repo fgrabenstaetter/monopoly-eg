@@ -10,7 +10,7 @@
             player.failure ? 'failure' : ''
         ]"
     >
-        <div v-on:click="showPlayerProperties()" class="name">
+        <div @click="showPlayerProperties()" class="name">
             {{player.nickname}}
             <span v-if="player.disconnected">(Déconnecté)</span>
         </div>

@@ -14,7 +14,7 @@
                 <div class="input-group">
                     <input v-model="msg" class="form-control" type="text" placeholder="Votre message...">
                     <div class="input-group-append">
-                        <span class="input-group-text" v-on:click="postMsg"><i class="fa fa-paper-plane"></i></span>
+                        <span class="input-group-text" @click="postMsg"><i class="fa fa-paper-plane"></i></span>
                     </div>
                 </div>
             </form>

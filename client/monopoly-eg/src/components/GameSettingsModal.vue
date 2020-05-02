@@ -46,7 +46,7 @@
                         </ul>
 
                         <button class="btn btn-primary show-rules" href="#" role="button" aria-hidden="true" data-toggle="modal" data-target="#rulesModal">RÈGLES</button>
-                        <button v-if="env == 'game'" v-on:click="quitGame" class="btn btn-primary" href="#" role="button"
+                        <button v-if="env == 'game'" @click="quitGame" class="btn btn-primary" href="#" role="button"
                             style="background-color: red;">QUITTER LA PARTIE</button>
                     </div>
                 </div>

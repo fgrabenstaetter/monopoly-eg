@@ -13,8 +13,8 @@
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
                 <div class="message">{{offer.buyerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
                 <div class="form">
-                  <button v-on:click="offerAccept(offer.offerID)">Accepter</button>
-                  <button v-on:click="discardOffer(offer.offerID)">Refuser</button>
+                  <button @click="offerAccept(offer.offerID)">Accepter</button>
+                  <button @click="rejectOffer(offer.offerID)">Refuser</button>
                 </div>
               </div>
 
@@ -79,7 +79,7 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
-                        <!-- <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button> -->
+                        <!-- <button class="btn btn-primary" v-if="imCurrentPlayer" @click="discardTurnNotif(index)">OK</button> -->
                       </div>
                     </div>
                   </div>
@@ -104,12 +104,12 @@
                         <button
                           class="btn btn-primary accept"
                           v-if="imCurrentPlayer"
-                          v-on:click="saleCardBuyProperty(index)"
+                          @click="saleCardBuyProperty(index)"
                         >ACHETER</button>
                         <button
                           class="btn btn-secondary reject"
                           v-if="imCurrentPlayer"
-                          v-on:click="discardTurnNotif(index)"
+                          @click="discardTurnNotif(index)"
                         >NE RIEN FAIRE</button>
                       </div>
                     </div>
@@ -152,7 +152,7 @@
                 <div class="bid-input">
                     <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€
                     <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
-                    <button :disabled="bid.disabled" class="bid-cancel" v-on:click="rejectBid(bid)">Passer</button>
+                    <button :disabled="bid.disabled" class="bid-cancel" @click="rejectBid(bid)">Passer</button>
                 </div>
             </form>
           </div>
@@ -781,7 +781,11 @@ export default {
         } else if (data.asyncRequestType == "shouldMortgage") {
           // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
           // let totalMoneyToHave = data.asyncRequestArgs[0];
-          this.$parent.toast('Plus assez d\'argent : vous devez hypothéquer avant la fin de votre tour !', 'danger', 8);
+          this.turnNotifications.push({
+            title: 'Attention !',
+            content: 'Plus assez d\'argent : vous devez hypothéquer avant la fin de votre tour !',
+            type: 'text'
+          });
         } else {
           afficherMessageAction = true;
         }
@@ -794,7 +798,7 @@ export default {
         this.turnNotifications.push({
           title: null,
           content: data.actionMessage,
-          type: "text"
+          type: 'text'
         });
       }
 
@@ -962,7 +966,6 @@ export default {
             if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
 
             gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
-            // player.isInJail = false;
 
             for (const i in player.properties) {
               const propertyObj = this.getPropertyById(player.properties[i]);
@@ -973,14 +976,8 @@ export default {
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
                 } else if (propertyObj.level != 0) {
-                  if (propertyObj.level >= 1)
-                    gameboard.loaderHouseProperty(cell.id, 1);
-                  if (propertyObj.level >= 2)
-                    gameboard.loaderHouseProperty(cell.id, 2);
-                  if (propertyObj.level >= 3)
-                    gameboard.loaderHouseProperty(cell.id, 3);
-                  if (propertyObj.level >= 4)
-                    gameboard.loaderHouseProperty(cell.id, 4);
+                  for (let i = 1; i <= propertyObj.level; i++)
+                    gameboard.loaderHouseProperty(cell.id, i);
                 }
 
                 if (propertyObj.isMortgaged)
@@ -1254,7 +1251,7 @@ export default {
         if (receiver.id == this.loggedUser.id) {
           this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
         } else if (buyer.id == this.loggedUser.id) {
-          this.$parent.toast(`${receiver.nickname} n'a pas accepté de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
+          this.$parent.toast(`${receiver.nickname} a refusé de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
           // this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
         }
       }
@@ -1278,6 +1275,13 @@ export default {
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
 
+      this.turnNotifications.push({
+          type: 'text',
+          title: 'Amélioration',
+          color: 'green',
+          content: `${player.nickname} a édité ses propriétés !`
+      });
+
       this.$set(player, 'money', res.playerMoney);
 
       for (const i in res.list) {
@@ -1292,37 +1296,55 @@ export default {
         // Màj des maisons sur le plateau 3D
         if (property.level > oldLevel) {
           // Amélioration
-          if (property.level == 1) {
-              gameboard.loaderHouseProperty(cell.id, 1);
-          } else if (property.level == 2) {
-              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-
-              gameboard.loaderHouseProperty(cell.id, 2);
-          } else if (property.level == 3) {
-              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-              if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
-
-              gameboard.loaderHouseProperty(cell.id, 3);
-          } else if (property.level == 4) {
-              if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-              if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
-              if (oldLevel < 3) gameboard.loaderHouseProperty(cell.id, 3);
-
-              gameboard.loaderHouseProperty(cell.id, 4);
-          } else if (property.level == 5) {
-              for (let k = 0; k < oldLevel; k++) {
-                gameboard.deleteHouse(cell.id, k+1);
+          if (property.level == 5) {
+              for (let k = 1; k <= oldLevel; k++) {
+                gameboard.deleteHouse(cell.id, k);
               }
               gameboard.loaderHotelProperty(cell.id);
+          } else {
+            for (let i = 1; i < oldLevel; i++) {
+              if (property.level < i) gameboard.loaderHouseProperty(cell.id, i);
+            }
+            gameboard.loaderHouseProperty(cell.id, oldLevel);
+          }
+
+          // if (property.level == 1) {
+          //     gameboard.loaderHouseProperty(cell.id, 1);
+          // } else if (property.level == 2) {
+          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
+
+          //     gameboard.loaderHouseProperty(cell.id, 2);
+          // } else if (property.level == 3) {
+          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
+          //     if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
+
+          //     gameboard.loaderHouseProperty(cell.id, 3);
+          // } else if (property.level == 4) {
+          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
+          //     if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
+          //     if (oldLevel < 3) gameboard.loaderHouseProperty(cell.id, 3);
+
+          //     gameboard.loaderHouseProperty(cell.id, 4);
+          // } else if (property.level == 5) {
+          //     for (let k = 0; k < oldLevel; k++) {
+          //       gameboard.deleteHouse(cell.id, k+1);
+          //     }
+          //     gameboard.loaderHotelProperty(cell.id);
+          // }
+        } else {
+          // Détruire les maisons / hotel
+          if (oldLevel == 5) {
+              gameboard.deleteHotel(cell.id);
+              for (let k = 1; k <= property.level; k++) {
+                gameboard.loaderHouseProperty(cell.id, k);
+              }
+          } else {
+            gameboard.deleteHouse(cell.id, property.level);
+            for (let i = 1; i < property.level; i++) {
+              if (oldLevel > i) gameboard.deleteHouse(cell.id, i);
+            }
           }
         }
-
-        // gameboard.loaderHouseProperty(nbcase, nhouse);
-        // gameboard.loaderHotelProperty(ncase)
-
-        // gameboard.deleteHouse(ncase, nhouse)
-
-        // gameboard.deleteHotel(ncase);
       }
     });
 

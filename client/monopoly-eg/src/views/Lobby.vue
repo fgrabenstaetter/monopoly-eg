@@ -9,7 +9,7 @@
                         <i id="open-user-settings" class="fa fa-pen" data-toggle="modal" data-target="#userSettingsModal"></i>
                         <img class="user-avatar" data-id="" :src="loggedUser.avatar">
                         <i class="fa fa-cog open-settings ml-2" aria-hidden="true" data-toggle="modal" data-target="#optionsModal"></i>
-                        <i v-on:click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
+                        <i @click="logout" class="logout-btn fas fa-sign-out-alt" title="Déconnexion"></i>
                     </div>
                 </div>
             </div>
@@ -30,14 +30,14 @@
                                         <div class="friend-request-text">
                                             <span>{{friend.nickname}}</span> souhaite vous ajouter à sa liste d'amis
                                         </div>
-                                        <div v-on:click="acceptFriendInvitation(friend.id, friend.nickname)" class="accept-button">accepter</div>
-                                        <div v-on:click="rejectFriendInvitation(friend.id, friend.nickname)" class="deny-button">refuser</div>
+                                        <div @click="acceptFriendInvitation(friend.id, friend.nickname)" class="accept-button">accepter</div>
+                                        <div @click="rejectFriendInvitation(friend.id, friend.nickname)" class="deny-button">refuser</div>
                                     </div>
                                     <div id="friendList">
                                         <div v-for="friend in friends" :key="friend.id" class="friend-entry">
                                             <img v-if="friend.showInSearch" class="friends-avatar" :src="friend.avatar">
                                             <div v-if="friend.showInSearch" class="friends-name">{{friend.nickname}}</div>
-                                            <div v-if="friend.showInSearch" class="friend-action" v-on:click="inviteFriendInLobby(friend.id)">inviter</div>
+                                            <div v-if="friend.showInSearch" class="friend-action" @click="inviteFriendInLobby(friend.id)">inviter</div>
                                         </div>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
                                     <div v-for="player in players" :key="player.id" class="group-entry" :class="{'leader': player.id==hostID}">
                                         <img class="friends-avatar" :src="player.avatar">
                                         <div class="friends-name">{{player.nickname}}</div>
-                                        <div v-if="loggedUser.id == hostID && player.id != loggedUser.id" class="friend-action" v-on:click="kickPlayerFromLobby(player.id)"><i class="fas fa-times"></i></div>
+                                        <div v-if="loggedUser.id == hostID && player.id != loggedUser.id" class="friend-action" @click="kickPlayerFromLobby(player.id)"><i class="fas fa-times"></i></div>
                                     </div>
                                 </div>
                             </div>
@@ -68,16 +68,16 @@
                             <div class="card-body pl-3 pr-3 pt-3 pb-3">
                                 <div class="game-time-container">
                                     <div class="game-time-selector">
-                                        <button v-if="leftGameTime" class="arrow-left" v-on:click="leftGameTimeClick"></button>
+                                        <button v-if="leftGameTime" class="arrow-left" @click="leftGameTimeClick"></button>
                                         <div id="gameTime">{{gameTime}}</div>
-                                        <button v-if="rightGameTime" class="arrow-right" v-on:click="rightGameTimeClick"></button>
+                                        <button v-if="rightGameTime" class="arrow-right" @click="rightGameTimeClick"></button>
                                     </div>
                                 </div>
                                 <div class="nb-joueurs-container">
                                     <div class="nb-joueurs-selector">
-                                        <button v-if="leftNbJ" class="arrow-left" v-on:click="leftNbJClick"></button>
+                                        <button v-if="leftNbJ" class="arrow-left" @click="leftNbJClick"></button>
                                         <div id="nbJoueurs">{{nbPlayers}}</div>
-                                        <button v-if="rightNbJ" class="arrow-right" v-on:click="rightNbJClick"></button>
+                                        <button v-if="rightNbJ" class="arrow-right" @click="rightNbJClick"></button>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                         <chat-io ref="chat"></chat-io>
                     </div>
                     <div class="col-md-8 text-right play-button-container">
-                        <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" v-on:click="play">{{playBtn.text}}</a>
+                        <a class="btn btn-primary stylized play-button" :class="{'disabled': playBtn.disabled}" @click="play">{{playBtn.text}}</a>
                     </div>
                     <div class="col-md-4 notification-container" id="inviteGameContainer">
                         <div v-for="invitation in lobbyInvitations" :key="invitation.id" class="card notification lobby-invitation" :id="invitation.id">
@@ -100,8 +100,8 @@
                             </div>
                             <div class="card-body">
                                 <p class="card-text">{{invitation.friendNickname}} vous invite à rejoindre sa partie</p>
-                                <button class="btn btn-primary" v-on:click="acceptLobbyInvitation(invitation.id)">ACCEPTER</button>
-                                <button class="btn btn-secondary" v-on:click="rejectLobbyInvitation(invitation.id)">REFUSER</button>
+                                <button class="btn btn-primary" @click="acceptLobbyInvitation(invitation.id)">ACCEPTER</button>
+                                <button class="btn btn-secondary" @click="rejectLobbyInvitation(invitation.id)">REFUSER</button>
                             </div>
                         </div>
                     </div>
