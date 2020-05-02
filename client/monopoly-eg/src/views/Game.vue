@@ -177,11 +177,18 @@
         </div>
       </div>
       <div v-if="endGame" class="end-game-screen">
+        <img class="trophy" src="/assets/img/ui/trophy.png">
+        <img class="avatar" src="/assets/img/ui/bus.png">
         <div class="header">
-          <div class="winner">{{endGame.winnerNickname}}</div>
+          <div class="ribbon">
+            {{endGame.winnerNickname}}
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
         </div>
         <div class="content">
-          <div class="subtitle">a gagné la partie !</div>
           <div class="info">
             <div class="label">Temps de jeu</div>
             <div class="value">{{endGame.gameTime}}</div>
