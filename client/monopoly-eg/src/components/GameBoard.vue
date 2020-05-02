@@ -420,9 +420,9 @@ export default {
                 }
             });
             
-            const color = 0x404040;
+            const colorLight = 0x404040;
             const intensity = 0.1;
-            const light1 = new THREE. DirectionalLight( color, intensity)
+            const light1 = new THREE.DirectionalLight( colorLight, intensity)
             light1.position.set(this.objs[`d${cell}`].children[0].position.x, this.objs[`d${cell}`].children[0].position.y, 
                                 this.objs[`d${cell}`].children[0].position.z);
             this.scene.add(light1);
