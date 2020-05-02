@@ -637,8 +637,8 @@
     .player-list {
       height: 50vh;
       display: flex;
+      flex-wrap: wrap;
       flex-direction: column;
-      justify-content: center;
       position: absolute;
       left: 45px;
       padding: 0;
@@ -647,6 +647,7 @@
 
       .player-entry {
         margin-bottom: 10px;
+        margin-right: 30px;
         position: relative;
         cursor: pointer;
 
@@ -1294,19 +1295,13 @@
         }
       }
 
-      @media (max-height: 820px) {
-        .player-entry {
-          margin-bottom: 0px;
-        }
-      }
-
       // couleurs assignées automatiquement aux membres de la liste
       @import "_players-colors.scss";
     }
 
-    @media (max-height: 820px) {
+    @media (min-height: 760px) {
       .player-list {
-        margin-top: -40px;
+        height: 55vh;
       }
     }
   }
