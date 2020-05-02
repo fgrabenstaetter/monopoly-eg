@@ -984,7 +984,7 @@ export default {
               const propertyObj = this.getPropertyById(player.properties[i]);
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
-                gameboard.loaderFlag("d" + cell.id, player.color.hex);
+                gameboard.loaderFlag(cell.id, player.color.hex);
 
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
@@ -1139,7 +1139,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
             player.properties.push(property.id);
-            gameboard.loaderFlag("d" + cell.id, player.color.hex);
+            gameboard.loaderFlag(cell.id, player.color.hex);
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
@@ -1195,6 +1195,9 @@ export default {
             this.$set(property, 'ownerID', null);
             const cell = this.getCellByProperty(property);
             if (cell) gameboard.deleteFlag(cell.id);
+
+            if (property.isMortgaged)
+              gameboard.deleteHypotheque(cell.id);
           }
         }
         this.$set(player, 'properties', []);
@@ -1252,8 +1255,8 @@ export default {
         buyer.properties.push(property.id);
 
         // Transfert de drapeau
-        gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color.hex);
+        gameboard.deleteFlag(cell.id);
+        gameboard.loaderFlag(cell.id, buyer.color.hex);
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
@@ -1398,7 +1401,7 @@ export default {
                 const propertyIndex = oldOwner.properties.indexOf(property.id);
                 if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
                 
-                gameboard.deleteFlag(`d${cell.id}`);
+                gameboard.deleteFlag(cell.id);
 
                 if (res.propertyOldOwnerMoney)
                   this.$set(oldOwner, 'money', res.propertyOldOwnerMoney);
@@ -1413,7 +1416,7 @@ export default {
               property.ownerID = res.playerID;
               winner.properties.push(property.id);
 
-              gameboard.loaderFlag(`d${cell.id}`, winner.color.hex);
+              gameboard.loaderFlag(cell.id, winner.color.hex);
 
               this.$set(winner, 'money', res.playerMoney);
             }
