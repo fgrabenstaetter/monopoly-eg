@@ -62,11 +62,10 @@ class Bid {
         }
 
         if (amount <= this.amountAsked) {
-            // return false;
             if (this.nBidsOnProperty.length === targetMaxLen)
                 this.expired();
 
-            return true; // TMP POUR LES ENCHERES ONESHOT UNIQUEMENT
+            return true;
         }
 
         this.amountAsked = amount;

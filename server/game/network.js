@@ -108,7 +108,6 @@ class Network {
 
         user.socket.on('lobbyReadyReq', () => {
             // réponse de création / rejoignage de lobby
-            console.log(user.nickname);
             this.lobbyNewUser(user, lobby);
         });
     }
@@ -1125,7 +1124,6 @@ class Network {
 
     gameOfferActionReq(player, game) {
         player.socket.on('gameOfferActionReq', (data) => {
-            console.log('OFER #5');
             let err = Errors.SUCCESS, offer;
             if (data)
                 data.offerID = parseInt(data.offerID);
@@ -1138,20 +1136,8 @@ class Network {
                 err = Errors.UNKNOW;
             else if (offer.maker.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
-            else {
-                if ((data.accept && !offer.accept()) || (!data.accept && !offer.expired()))
-                    err = Errors.UNKNOW;
-                else {
-                    this.io.to(game.name).emit('gameOfferFinishedRes', {
-                        receiverID : offer.receiver.id,
-                        offerID    : offer.id,
-                        price      : offer.amount,
-                        propertyID : offer.property ? offer.property.id : -1, // -1 => carte sortie de prison
-                        makerID    : offer.maker.id,
-                        accepted   : data.accept
-                    });
-                }
-            }
+            else if ((data.accept && !offer.accept()) || (!data.accept && !offer.expired())) // res envoyé si succès
+                err = Errors.UNKNOW;
 
             player.socket.emit('gameOfferActionRes', { error: err.code, status: err.status });
         });
@@ -1178,23 +1164,18 @@ class Network {
                 else if (bid.initialPropertyOwner && bid.initialPropertyOwner === player)
                     err = Errors.BID.CANNOT_OVERBID_MY;
                 else {
-                    const boundary = data.price - bid.amountAsked;
-                    //Sécurité pour les enchères, histoire qu'il n'y ait pas d'update pour une différence de 1 euro par exemple entre 200 et 201
-                    // if (boundary >= 10) { COMMENTÉ POUR ENCHERES ONESHOT TMP !
-                        if (!bid.updateBid(player, data.price))
-                            err = Errors.UNKNOW;
-                        else {
-                            this.io.to(game.name).emit('gameBidRes', {
-                                bidID           : bid.id,
-                                propertyID      : bid.property.id,
-                                propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
-                                playerID        : player.id,
-                                text            : bid.text,
-                                price           : data.price
-                            });
-                        }
-                    // } else
-                    //     err = Errors.BID.DIFF_LOWER_THAN_MIN;
+                    if (!bid.updateBid(player, data.price))
+                        err = Errors.UNKNOW;
+                    else {
+                        this.io.to(game.name).emit('gameBidRes', {
+                            bidID           : bid.id,
+                            propertyID      : bid.property.id,
+                            propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
+                            playerID        : player.id,
+                            text            : bid.text,
+                            price           : data.price
+                        });
+                    }
                 }
             }
 

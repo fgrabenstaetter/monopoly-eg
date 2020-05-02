@@ -75,6 +75,9 @@ class Offer {
         });
     }
 
+    /**
+     * Expiré ou refusé
+     */
     expired() {
         if (!Offer.offerByID(this.game, this.id))
             return false;
@@ -122,10 +125,20 @@ class Offer {
         this.maker.loseMoney(this.amount);
         this.receiver.addMoney(this.amount);
 
+        this.game.GLOBAL.network.io.to(this.game.name).emit('gameOfferFinishedRes', {
+            receiverID: this.receiver.id,
+            offerID: this.id,
+            price: this.amount,
+            propertyID: this.property ? this.property.id : -1,
+            makerID: this.maker.id,
+            accepted: true
+        });
+
         // message à tous les joueurs
         const propertyName = this.property ? 'la propriété ' + this.property.name : 'une carte Fin de session parlementaire';
         const text = this.maker.nickname + ' a accepté d\'acheter ' + propertyName + ' de ' + this.receiver.nickname + ' à ' + this.amount + '€ !';
         const mess = this.game.chat.addMessage(null, text);
+
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
             playerID: -1,
             text: mess.text,
