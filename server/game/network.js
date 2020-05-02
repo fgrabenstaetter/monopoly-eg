@@ -115,6 +115,9 @@ class Network {
     }
 
     lobbyUserStopListening(user, lobby) {
+        if (!user.socket)
+            return;
+
         user.socket.leave(lobby.name);
 
         // Inviter / Rejoindre / Quitter
