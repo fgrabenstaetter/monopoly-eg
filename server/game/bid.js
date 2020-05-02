@@ -33,6 +33,7 @@ class Bid {
         this.manual               = manual;
         this.text                 = this.property.name;
         this.nBidsOnProperty      = [];
+        this.lastOverbids         = []
         this.game.bids.push(this);
         setTimeout(this.expired.bind(this), Constants.GAME_PARAM.BID_EXPIRE_AFTER);
 
@@ -61,6 +62,11 @@ class Bid {
                 targetMaxLen ++;
         }
 
+        if (this.property.owner !== this.initialPropertyOwner) {
+            this.expired();
+            return false;
+        }
+
         if (amount <= this.amountAsked) {
             if (this.nBidsOnProperty.length === targetMaxLen)
                 this.expired();
@@ -68,13 +74,11 @@ class Bid {
             return true;
         }
 
+        if (this.player)
+            this.lastOverbids.push({ player: this.player, amountAsked: this.amountAsked });
+
         this.amountAsked = amount;
         this.player = player;
-
-        if (this.property.owner !== this.initialPropertyOwner) {
-            this.expired();
-            return false;
-        }
 
 
         if (this.nBidsOnProperty.length === targetMaxLen)
@@ -88,9 +92,18 @@ class Bid {
         if (!curBid)
             return;
 
-        // si le joueur n'a plus l'argent qu'il a souhaité pour enchérir, ou que le propriétaire de la propriété a changé entre temps, mettre this.player null => enchère échouée
-        if ((this.player && ((this.player.money < this.amountAsked) || this.player.failure)) || this.initialPropertyOwner !== this.property.owner)
-            this.player = null;
+        while (true) {
+            if ((this.player && ((this.player.money < this.amountAsked) || this.player.failure)) || this.initialPropertyOwner !== this.property.owner) {
+                this.player = null;
+                if (this.lastOverbids.length > 0) {
+                    const last = this.lastOverbids.pop();
+                    this.player = last.player;
+                    this.amountAsked = last.amountAsked;
+                } else
+                    break;
+            } else
+                break;
+        }
 
         const oldOwner = this.property.owner ? this.property.owner : this.game.bank;
 
@@ -104,14 +117,14 @@ class Bid {
         Bid.delBid(this);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameBidEndedRes', {
-            bidID              : this.id,
-            propertyID         : this.property.id,
-            propertyOldOwnerID : oldOwner === this.game.bank ? null : oldOwner.id,
-            playerID           : this.player ? this.player.id : null,
-            playerMoney        : this.player ? this.player.money : null,
-            price              : this.amountAsked,
-            bankMoney          : this.game.bank.money,
-            propertyOwnerMoney : oldOwner ? oldOwner.money : null
+            bidID                 : this.id,
+            propertyID            : this.property.id,
+            propertyOldOwnerID    : oldOwner === this.game.bank ? null : oldOwner.id,
+            playerID              : this.player ? this.player.id : null,
+            playerMoney           : this.player ? this.player.money : null,
+            price                 : this.amountAsked,
+            bankMoney             : this.game.bank.money,
+            propertyOldOwnerMoney : oldOwner ? oldOwner.money : null
         });
     }
 }

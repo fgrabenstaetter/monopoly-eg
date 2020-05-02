@@ -1116,10 +1116,10 @@
             playerID: int // null si expiré sans surenchérisseur (sinon ID du vainqueur)
             propertyID: int // null si expiré sans surenchérisseur (s
             propertyOldOwnerID: int, // ou null si pas d'ancien propriétaire (= banque, enchère auto)
+            propertyOldOwnerMoney: int | null, // uniquement si enchère manuelle sinon null
             price: int,
             bankMoney: int,
             playerMoney: int, // null si aucun joueur ne surrenchérit lors d'une enchère générée automatiquement (non achat d'une propriété)
-            propertyOwnerMoney: int | null // uniquement si enchère manuelle sinon null
         }
         ```
 - **Démarée une enchère manuelle**
