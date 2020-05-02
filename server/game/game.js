@@ -516,14 +516,11 @@ class Game {
             case Constants.CELL_TYPE.OTHER:
                 if (!this.curPlayer.isInPrison) {
                     let mess;
-                    if (this.curPlayer.cellPos === 10)
-                        mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de session parlementaire';
-                    else {
-                        switch (this.curPlayer.cellPos) {
-                            case 0: mess = this.curPlayer.nickname + ' tente de braquer la banque !';
-                                break;
-                            default: mess = this.curPlayer.nickname + ' visite le parc de l\'Orangerie';
-                        }
+                    switch (this.curPlayer.cellPos) {
+                        case 10: mess = this.curPlayer.nickname + ' s\'est arrêté pour tabasser son ancien compagnon de session parlementaire';
+                            break;
+                        case 20: mess = this.curPlayer.nickname + ' visite le parc de l\'Orangerie';
+                            break;
                     }
 
                     this.setTurnActionData(null, null, mess);
@@ -596,7 +593,7 @@ class Game {
 
                 if (this.curPlayer.money < rentalPrice) {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
-                        'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux payer le loyer de ' + property.owner.nickname + ')',
+                        'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peut pas payer le loyer de ' + property.owner.nickname + ')',
                         'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
 
                 } else {
