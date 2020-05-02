@@ -277,7 +277,7 @@ class Network {
             users.push({
                 id       : usr.id,
                 nickname : usr.nickname,
-                avatar   : User.getAvatar(user.id)
+                avatar   : User.getAvatar(usr.id)
             });
         }
 

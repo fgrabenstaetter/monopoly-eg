@@ -340,8 +340,7 @@ export default {
     /**
      * @vuese
      * Supprime une maison
-     * @param {int} Numero de case
-     * @param {int} Numero de maison
+     * @arg {int} ncase: Numero de case (int), nhouse: Numero de maison (int)
      */
     deleteHouse(ncase, nhouse) {
         let concatS = "";
@@ -351,7 +350,7 @@ export default {
     /**
      * @vuese
      * Supprime une maison (Auxiliaire)
-     * @param {string} Numero de la maison
+     * @arg {string} houseProperty de la maison
      */
     deleteHouseD(houseProperty) {
         this.scene.remove(this.objs[houseProperty]);
@@ -360,7 +359,7 @@ export default {
     /**
      * @vuese
      * Supprime un hotel
-     * @param {int} Numero de case
+     * @arg {int} ncase: Numero de case
      */
     deleteHotel(ncase) {
         let concatS = "";
@@ -370,7 +369,7 @@ export default {
     /**
      * @vuese
      * Supprime un hotel (Auxiliaire)
-     * @param {string} Numero de l'hotel
+     * @arg {string} hotelProperty: Numero de l'hotel
      */
     deleteHotelD(hotelProperty) {
         // requestAnimationFrame(render);
@@ -380,7 +379,7 @@ export default {
     /**
      * @vuese
      * Supprime un pion
-     * @param {string} nom du pion
+     * @arg {string} pawn: nom du pion
      */
     deletePawn(pawn) {
         // requestAnimationFrame(render);
@@ -391,8 +390,7 @@ export default {
     /**
      * @vuese
      * Modifie la couleur du drapeau
-     * @param {string} Nom du drapeau
-     * @param {string} Nom de la couleur
+     * @arg {string} flag: Nom du drapeau, {string} colore: Nom de la couleur
      */
     changeColorFlag(flag, colore) {
         this.deleteFlag(flag);
@@ -402,7 +400,7 @@ export default {
     /**
      * @vuese
      * Supprime un drapeau
-     * @param {string} Nom du drapeau
+     * @arg {string} flag: Nom du drapeau
      */
     deleteFlag(flag) {
         this.scene.remove(this.objs[flag]);
@@ -411,8 +409,7 @@ export default {
     /**
      * @vuese
      * Ajoute un drapeau de la couleur du joueur sur la propriété
-     * @param {string} Nom du drapeau
-     * @param {string} Nom de la couleur
+     * @arg {string} flag: Nom du drapeau, {string} colore: Nom de la couleur
      */
     loaderFlag(flag, colore) {
         this.gltfLoader.load('/assets/models/drapeaux/' + flag + '.gltf', (gltf) => {
@@ -429,7 +426,8 @@ export default {
             const color = 0x404040;
             const intensity = 0.1;
             const light1 = new THREE. DirectionalLight( color, intensity)
-            light1.position.set(this.objs[flag].children[0].position.x, this.objs[flag].children[0].position.y, this.objs[flag].children[0].position.z);
+            light1.position.set(this.objs[flag].children[0].position.x, this.objs[flag].children[0].position.y, 
+                                this.objs[flag].children[0].position.z);
             this.scene.add(light1);
             //console.log(this.objs[flag].children[0]);
             this.scene.add(root);
@@ -439,7 +437,7 @@ export default {
     /**
      * @vuese
      * Efface l'hypothèque de la propriété
-     * @param {string} Cell de la case ('hyp1')
+     * @arg {string} Cell: Nom de la case ('hyp1')
      */
     deleteHypotheque(cell) {
         this.scene.remove(this.objs[`hyp${cell}`]);
@@ -448,7 +446,7 @@ export default {
     /**
      * @vuese
      * Charge l'hypothèque pour la propriété
-     * @param {string} Cell de la case ('hyp1')
+     * @arg {string} Cell: Nom de la case ('hyp1')
      */
     loaderHypotheque(cell) {
         this.gltfLoader.load(`/assets/models/hypotheque/hyp${cell}.gltf`, (gltf) => {
@@ -461,8 +459,7 @@ export default {
     /**
      * @vuese
      * Ajoute un pion à la case qu'on veut
-     * @param {string} pawn Le nom du pion (Ex: 'moto')
-     * @param {int} vdp Un entier entre [0-39]
+     * @arg {string} pawn: Le nom du pion (Ex: 'moto'), {int} vdp: Un entier entre [0-39]
      */
     loaderPawn(pawn, vdp) {
         this.gltfLoader.load('/assets/models/pions/' + pawn + '.gltf', (gltf) => {
@@ -501,11 +498,11 @@ export default {
     /**
      * @vuese
      * Fonction auxiliaire - Charge une maison à la case spécifiée
-     * @param {int} ncase Chiffre de la case
-     * @param {int} nhouse Entier entre [1-4]. 1 -> met la case en bas à droite de la case
-     * 					 					 2 -> met la case en bas à gauche de la case
-     * 										 3 -> met la case en haut à droite de la case
-     * 										 4 -> met la case en haut à gauche de la case
+     * @arg {int} ncase Chiffre de la case, {int} nhouse Entier entre [1-4]. 
+     *  1 -> met la case en bas à droite de la case
+     * 	2 -> met la case en bas à gauche de la case
+     * 	3 -> met la case en haut à droite de la case
+     *  4 -> met la case en haut à gauche de la case
      */
     loaderHouseProperty(ncase, nhouse) {
         let concatS = "";
@@ -515,7 +512,7 @@ export default {
     /**
      * @vuese
      * Fonction prinicpale - Charge une maison à la case spécifiée
-     * @param {string} houseProperty  Nom de la maison (Ex: M3_1_2)
+     * @arg {string} houseProperty:  Nom de la maison (Ex: M3_1_2)
      */
     housePropertyL(houseProperty) {
         this.gltfLoader.load('/assets/models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
@@ -528,7 +525,7 @@ export default {
     /**
      * @vuese
      * Fonction auxiliaire - Charge un hôtel à la case spécifiée
-     * @param {int} ncase Chiffre de la case 
+     * @arg {int} ncase: Chiffre de la case 
      */
     loaderHotelProperty(ncase) {
         let concatS = "";
@@ -538,7 +535,7 @@ export default {
     /**
      * @vuese
      * Fonction principale - Charge un hôtel à la case spécifiée
-     * @param {string} hotelPropriete Nom de l'hôtel (Ex: H1_2)
+     * @arg {string} hotelPropriete: Nom de l'hôtel (Ex: H1_2)
      */
     hotelPropertyL(hotelPropriete) {
         this.gltfLoader.load('/assets/models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
@@ -551,7 +548,7 @@ export default {
     /**
      * @vuese
      * Active ou désactive le zoom sur le plateau
-     * @param {int} number Entier entre [0-1]. 0 pour désactiver le zoom et 1 pour l'activer
+     * @arg {int} number: Entier entre [0-1]. 0 pour désactiver le zoom et 1 pour l'activer
      */
     zoomOnOff(number) {
         this.zoomOn = number;
@@ -560,10 +557,9 @@ export default {
     /**
      * @vuese
      * Animation pour le déplacement des pions
-     * @param {int} pawn Nom du pion
-     * @param {int} vectorToAnimate La position du pion
-     * @param {int} target Les coordonnées de la case d'arrivée
-     * @param {int} options Options - Callback
+     * @arg {int} pawn: Nom du pion, {int} vectorToAnimate: La position du pion,
+     * {int} target: Les coordonnées de la case d'arrivée,
+     * {int} options: Options - Callback
      */
     /* Animates a Vector3 to the target */
     animateVector3(pawn, vectorToAnimate, target, options){
@@ -653,8 +649,8 @@ export default {
     /**
      * @vuese
      * Réplace la caméra au centre du plateau
-     * @param {string} position Les coordonnées de la case d'arrivée
-     * @param {int} time La durée du mouvement de la caméra
+     * @arg {string} position: Les coordonnées de la case d'arrivée,
+     * {int} time: La durée du mouvement de la caméra
      */
     test(position, time) {
         new TWEEN.Tween(this.camera.position).to(position, time).easing(TWEEN.Easing.Quadratic.InOut)
@@ -664,8 +660,8 @@ export default {
     /**
      * @vuese
      * Déplace la caméra en suivant le pion et fait un zoom sur le pion
-     * @param {string} position Les coordonnées de la case d'arrivée
-     * @param {int} time La durée du mouvement de la caméra
+     * @arg {string} position: Les coordonnées de la case d'arrivée,
+     * {int} time: La durée du mouvement de la caméra
      */
     tweenCamera(position, time){
         const _this = this;
@@ -691,9 +687,8 @@ export default {
     /**
      * @vuese
      * Déplace le pion sur le plateau
-     * @param {string} pawn Le nom du pion (Ex: 'moto')
-     * @param {int} vdp Un entier entre [0-39] 
-     * @callback callback Appel d'un callback()
+     * @arg {string} pawn: Le nom du pion (Ex: 'moto'), {int} vdp Un entier entre [0-39],
+     * callback: Appel d'un callback()
      */
     movement (pawn, caseArr, callback) {
         let i;
