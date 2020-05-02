@@ -551,7 +551,7 @@ class Game {
             else {
                 this.curPlayer.remainingTurnsInJail--;
                 if (this.curPlayer.remainingTurnsInJail > 0)
-                    this.setTurnActionData(null, null, 'Le joueur ' + this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
+                    this.setTurnActionData(null, null, this.curPlayer.nickname + ' est toujours en session parlementaire (tour ' + (4 - this.curPlayer.remainingTurnsInJail) + '/3) !');
             }
 
         } else {
@@ -577,15 +577,14 @@ class Game {
 
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
-            this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' est tombé sur sa propriété');
+            this.setTurnActionData(null, null, this.curPlayer.nickname + ' est tombé sur sa propriété');
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
             if (!property.owner && this.curPlayer.money >= buyingPrice) {
                 // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
                 this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
-                    'Le joueur ' + this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
+                    this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
 
             } else if (property.owner) {
                 // Le terrain appartient à un autre joueur
@@ -593,15 +592,15 @@ class Game {
 
                 if (this.curPlayer.money < rentalPrice) {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
-                        'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peut pas payer le loyer de ' + property.owner.nickname + ')',
-                        'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
+                        this.curPlayer.nickname + ' est en faillite (ne peut pas payer le loyer de ' + property.owner.nickname + ')',
+                        this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
 
                 } else {
                     // Le joueur peux payer le loyer sans devoir hypothéquer
                     this.curPlayer.loseMoney(rentalPrice);
                     property.owner.addMoney(rentalPrice);
                     this.setTurnActionData(null, null,
-                        'Le joueur ' + this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
+                        this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
             } else if (!property.owner && this.curPlayer.money < buyingPrice)
                 this.turnData.shouldCreateBid = true;
@@ -627,14 +626,13 @@ class Game {
         const moneyToPay = this.curCell.tax.money;
         if (this.curPlayer.money < moneyToPay) {
             this.playerNotEnoughMoney(this.curPlayer, moneyToPay,
-                'Le joueur ' + this.curPlayer.nickname + ' est en faillite (ne peux pas payer la taxe de ' + moneyToPay + '€)',
-                'Le joueur ' + this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la taxe de ' + moneyToPay + '€');
+                this.curPlayer.nickname + ' est en faillite (ne peux pas payer la taxe de ' + moneyToPay + '€)',
+                this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la taxe de ' + moneyToPay + '€');
         } else {
             // il a assez d'argent
             this.curPlayer.loseMoney(moneyToPay);
             this.bank.addMoney(moneyToPay);
-            this.setTurnActionData(null, null,
-                'Le joueur ' + this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes');
+            this.setTurnActionData(null, null, this.curPlayer.nickname + ' a payé ' + moneyToPay + '€ de taxes');
         }
     }
 
@@ -851,9 +849,9 @@ class Game {
         let mess, rentalOwner;
 
         if (failure)
-            mess = 'Le joueur ' + this.curPlayer.nickname + ' n\'a pas pu suffisamment hypothéquer pour payer ' + moneyToObtain + '€ ';
+            mess = this.curPlayer.nickname + ' n\'a pas pu suffisamment hypothéquer pour payer ' + moneyToObtain + '€ ';
         else {
-            mess = 'Le joueur ' + this.curPlayer.nickname + ' a finalisé ses hypothèques et a pu payer ' + moneyToObtain + '€ ';
+            mess = this.curPlayer.nickname + ' a finalisé ses hypothèques et a pu payer ' + moneyToObtain + '€ ';
 
             // payer
             this.curPlayer.loseMoney(moneyToObtain);
