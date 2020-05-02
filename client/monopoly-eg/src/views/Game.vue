@@ -293,6 +293,9 @@ export default {
       // Liste des propriétés du plateau de jeu (envoyée par le serveur)
       properties: [],
       // @vuese
+      // Somme remportée par un joueur lorsqu'il passe par la case départ (envoyée par le serveur)
+      moneyFromStart: null,
+      // @vuese
       // Timestamp de fin de la partie (envoyé par le serveur)
       gameEndTime: null,
       // @vuese
@@ -819,6 +822,15 @@ export default {
           this.turnNotifications.push(notification);
         }
 
+        if (typeof data.extra.gainMoneyFromStart !== "undefined") {
+          this.turnNotifications.push({
+              type: 'text',
+              title: 'Case départ',
+              color: 'green',
+              content: `${currPlayer.nickname} gagne ${this.moneyFromStart}€ en passant par la case départ`
+          });
+        }
+
         // Nb de cartes sortie de prison si il a changé
         if (typeof data.extra.nbJailEscapeCards !== "undefined")
           currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
@@ -907,7 +919,7 @@ export default {
         this.players = data.players;
         this.cells = data.cells;
         this.properties = data.properties;
-        console.log(this.properties);
+        this.moneyFromStart = data.moneyFromStart;
         this.gameEndTime = data.gameEndTime;
         this.initGameTimer(this.gameEndTime);
 
@@ -953,6 +965,7 @@ export default {
         this.players = res.players;
         this.cells = res.cells;
         this.properties = res.properties;
+        this.moneyFromStart = data.moneyFromStart;
         this.gameEndTime = res.gameEndTime;
         this.initGameTimer(this.gameEndTime);
 
