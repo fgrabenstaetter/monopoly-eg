@@ -1321,7 +1321,7 @@ export default {
               gameboard.loaderHotelProperty(cell.id);
           } else {
             for (let i = oldLevel + 1; i <= property.level; i++)
-              if (property.level < i) gameboard.loaderHouseProperty(cell.id, i);
+              gameboard.loaderHouseProperty(cell.id, i);
           }
 
           // if (property.level == 1) {
