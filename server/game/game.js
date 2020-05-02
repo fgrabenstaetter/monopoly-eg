@@ -784,10 +784,9 @@ class Game {
      */
     playerFailure(player) {
         // la banque récupère tout son fric et propriétés
-        for (const prop of player.properties) {
-            player.delProperty(prop);
+        for (const prop of player.properties)
             this.bank.addProperty(prop);
-        }
+        player.properties = [];
 
         this.bank.addMoney(player.money);
         player.loseMoney(player.money);
@@ -846,6 +845,7 @@ class Game {
     processShouldMortgageExpired () {
         const moneyToObtain = this.turnData.asyncRequestArgs[0];
         let failure = false;
+
         if (this.curPlayer.money < moneyToObtain) {
             // hypothèque auto jusqu'à ce que suffisant
             failure = !this.playerAutoMortgage(this.curPlayer, moneyToObtain);

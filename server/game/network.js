@@ -80,6 +80,9 @@ class Network {
     /////////////////////
 
     lobbyUserListen(user, lobby) {
+        if (!user.socket)
+            return;
+
         user.socket.join(lobby.name);
 
         // Inviter / Rejoindre / Quitter
@@ -149,6 +152,9 @@ class Network {
     }
 
     gamePlayerListen (player, game) {
+        if (!player.socket)
+            return;
+
         player.socket.join(game.name);
 
         // Début/Fin + tour
@@ -176,6 +182,9 @@ class Network {
     }
 
     gamePlayerStopListening (player, game) {
+        if (!player.socket)
+            return;
+
         player.socket.leave(game.name);
 
         // Début/Fin + tour
