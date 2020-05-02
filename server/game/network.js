@@ -41,7 +41,7 @@ class Network {
             for (const lobby of this.GLOBAL.lobbies) {
                 if (lobby.userByID(user.id)) {
                     lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
-                    return;
+                    break;
                 }
             }
 
@@ -50,9 +50,11 @@ class Network {
                 const player = game.playerByID(user.id);
                 if (player) {
                     this.gamePlayerDisconnected(player, game);
-                    return;
+                    break;
                 }
             }
+
+            user.socket = null;
         });
 
         // regarder si le joueur est dans une partie + !hasLeft
@@ -322,7 +324,7 @@ class Network {
                         }
                     }
 
-                    if (!friendUser) {
+                    if (!friendUser || !friendUser.socket) {
                         err = Errors.FRIENDS.NOT_CONNECTED;
                     } else {
                         for (const game of this.GLOBAL.games) {
