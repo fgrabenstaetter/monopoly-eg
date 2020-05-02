@@ -29,8 +29,8 @@ class Card {
     loseMoney(game, player) {
         if (player.money < this.effectArg1) {
             game.playerNotEnoughMoney(player, this.effectArg1,
-                'Le joueur ' + player.nickname + ' est en faillite (ne peux pas payer la carte de ' + this.effectArg1 + '€)',
-                'Le joueur ' + player.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la carte');
+                player.nickname + ' est en faillite (ne peux pas payer la carte de ' + this.effectArg1 + '€)',
+                player.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la carte');
         } else
             player.loseMoney(this.effectArg1);
     }
@@ -43,7 +43,7 @@ class Card {
     anniversary(game, player) {
         let sum = 0;
         for (const p of game.players) {
-            if (p !== player) {
+            if (p !== player && !p.failure) {
                 p.loseMoney(this.effectArg1);
                 sum += this.effectArg1;
             }
@@ -72,8 +72,8 @@ class Card {
 
         if (player.money < price) {
             game.playerNotEnoughMoney(player, price,
-                'Le joueur ' + player.nickname + ' est en faillite (ne peux pas payer les réparations de ' + price + '€)',
-                'Le joueur ' + player.nickname + ' doit hypothéquer des propriétés pour pouvoir les réparations');
+                player.nickname + ' est en faillite (ne peux pas payer les réparations de ' + price + '€)',
+                player.nickname + ' doit hypothéquer des propriétés pour pouvoir les réparations');
         } else
             player.loseMoney(price);
     }
