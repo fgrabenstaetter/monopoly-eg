@@ -275,10 +275,8 @@ describe('Network + Lobby', () => {
                 GLOBAL.matchmaking.checkLaunch();
                 if (++ nb === 6) done();
             });
-            //console.log(GLOBAL.lobbies);
 
             sock.on('lobbyGameFoundRes', (data) => {
-                //console.log("tata");
                 assert.strictEqual(false, lobby.open);
                 assert.strictEqual(false, lobby2.open);
                 assert.strictEqual(GLOBAL.games.length, 1);

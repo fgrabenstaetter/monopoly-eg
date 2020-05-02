@@ -306,8 +306,10 @@ export default {
                 this.nbPlayers--;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
 
-                if (this.nbPlayers === 2) {
+                if (this.nbPlayers === 2 || this.nbPlayers === this.players.length) {
                     this.leftNbJ = false;
+                } else {
+                    this.leftNbJ = true;
                 }
             }
         },
@@ -699,8 +701,6 @@ export default {
 
         this.socket.on('lobbyTargetUsersNbChangedRes', (res) => {
             this.nbPlayers = res.nb;
-            // if (hostID === ID)
-            //     updateNbUsersArrows();
         });
 
         this.socket.on('lobbyDurationChangedRes', (res) => {
@@ -785,7 +785,7 @@ export default {
         this.socket.on('canReconnectToGame', () => {
             this.loading = true;
             this.socket.close();
-            
+
             setTimeout(() => {
                 this.$router.push('/game');
                 this.loading = false;
