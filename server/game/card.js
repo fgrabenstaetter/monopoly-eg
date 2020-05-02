@@ -43,7 +43,7 @@ class Card {
     anniversary(game, player) {
         let sum = 0;
         for (const p of game.players) {
-            if (p !== player) {
+            if (p !== player && !p.failure) {
                 p.loseMoney(this.effectArg1);
                 sum += this.effectArg1;
             }

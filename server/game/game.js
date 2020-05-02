@@ -45,7 +45,7 @@ class Game {
         this.maxDuration         = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         this.ended               = false;
 
-        this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        // this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime         = null; // timestamp de démarrage en ms
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
@@ -794,6 +794,7 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
+
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
