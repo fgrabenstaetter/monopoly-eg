@@ -182,14 +182,14 @@ export default {
     data() {
         return {
             propertiesTypes: [
-                { name: 'yellow', totalNb: 3 },
-                { name: 'red', totalNb: 3 },
-                { name: 'blue', totalNb: 2 },
-                { name: 'orange', totalNb: 3 },
-                { name: 'purple', totalNb: 3 },
                 { name: 'brown', totalNb: 2 },
                 { name: 'cyan', totalNb: 3 },
+                { name: 'purple', totalNb: 3 },
+                { name: 'orange', totalNb: 3 },
+                { name: 'red', totalNb: 3 },
+                { name: 'yellow', totalNb: 3 },
                 { name: 'green', totalNb: 3 },
+                { name: 'blue', totalNb: 2 },
                 { name: 'trainStation', totalNb: 4, cssClass: 'station' },
                 { name: 'publicCompany', totalNb: 2, cssClass: 'company' }
             ],

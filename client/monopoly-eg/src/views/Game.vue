@@ -476,7 +476,6 @@ export default {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications = [];
       this.socket.emit("gameRollDiceReq", { useExitJailCard: this.useBonusJail });
-      this.useBonusJail = false;
     },
 
     /**
@@ -799,6 +798,7 @@ export default {
           // let totalMoneyToHave = data.asyncRequestArgs[0];
           this.turnNotifications.push({
             title: 'Attention !',
+            color: 'red',
             content: 'Plus assez d\'argent : vous devez hypothéquer avant la fin de votre tour !',
             type: 'text'
           });
@@ -1095,7 +1095,6 @@ export default {
             return;
         }
 
-
         // Sortie de prison
         let leftJailWithDouble = false;
         if (currPlayer.isInJail) {
@@ -1105,11 +1104,20 @@ export default {
               currPlayer.isInJail = false;
           } else {
             // Si le joueur a fait un double, il peut sortir. Sinon, il reste un tour ++ en prison
-            if (data.dicesRes[0] != data.dicesRes[1]) {
-              currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
-            } else {
+            if (this.useBonusJail) {
+              this.useBonusJail = false; // Reset
+              currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
+              this.turnNotifications.push({
+                type: 'text',
+                title: 'Bye bye',
+                color: 'green',
+                content: `${currPlayer.nickname} utilise son bonus pour quitter sa session parlementaire !`
+              });
+            } else if (data.dicesRes[0] == data.dicesRes[1]) {
               currPlayer.isInJail = false;
               leftJailWithDouble = true;
+            } else {
+              currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
             }
           }
         }
