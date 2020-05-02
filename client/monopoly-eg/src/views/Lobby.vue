@@ -274,7 +274,7 @@ export default {
     watch: {
         searchFriends() {
             for (const friend of this.friends)
-                friend.showInSearch = friend.nickname.includes(this.searchFriends);
+                friend.showInSearch = friend.nickname.toUpperCase().includes(this.searchFriends.toUpperCase());
         }
     },
     methods: {
