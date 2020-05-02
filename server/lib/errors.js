@@ -237,7 +237,7 @@ module.exports = Object.freeze({
         },
         PRICE_OUT_OF_RANGE: {
             code: 17,
-            status: 'Le prix entré est invalide (hors de portée'
+            status: 'Le prix entré est invalide (hors de portée)'
         }
     }
 });
