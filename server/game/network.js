@@ -719,7 +719,7 @@ class Network {
 
                         // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
                         for (const u of this.GLOBAL.users) {
-                            if (invitedByUser._id == u.id) {
+                            if (invitedByUser._id == u.id && u.socket) {
                                 u.socket.emit('lobbyFriendInvitationAcceptedRes', {
                                     id: user.id,
                                     nickname: user.nickname,
