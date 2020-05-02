@@ -821,14 +821,15 @@ class Network {
                 }
 
                 this.io.to(game.name).emit('gameStartedRes', {
-                    gameEndTime  : game.forcedEndTime,
-                    duration     : game.maxDuration,
-                    playersMoney : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
-                    bankMoney    : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
-                    players      : players,
-                    cells        : cells,
-                    properties   : properties,
-                    taxes        : taxes
+                    gameEndTime    : game.forcedEndTime,
+                    duration       : game.maxDuration,
+                    playersMoney   : Constants.GAME_PARAM.PLAYER_INITIAL_MONEY,
+                    bankMoney      : Constants.GAME_PARAM.BANK_INITIAL_MONEY,
+                    moneyFromStart : Constants.GAME_PARAM.GET_MONEY_FROM_START,
+                    players        : players,
+                    cells          : cells,
+                    properties     : properties,
+                    taxes          : taxes
                 });
             }
         });
@@ -930,6 +931,9 @@ class Network {
 
         if (!wasInPrison && player.isInPrison)
             extra.goJail = true;
+
+        if (player.cellPos < cellPosSave && !player.isInPrison)
+            extra.gainMoneyFromStart = true;
 
         const res = {
             dicesRes         : diceRes,
@@ -1355,15 +1359,16 @@ class Network {
 
             // infos de reconnexion au joueur
             player.socket.emit('gameReconnectionRes', {
-                gameEndTime  : game.forcedEndTime,
-                duration     : game.maxDuration,
-                bankMoney    : game.bank.money,
-                chatMessages : chatMessages,
-                offers        : offers,
-                bids         : bids,
-                players      : players,
-                cells        : cells,
-                properties   : properties
+                gameEndTime    : game.forcedEndTime,
+                duration       : game.maxDuration,
+                bankMoney      : game.bank.money,
+                chatMessages   : chatMessages,
+                moneyFromStart : Constants.GAME_PARAM.GET_MONEY_FROM_START,
+                offers         : offers,
+                bids           : bids,
+                players        : players,
+                cells          : cells,
+                properties     : properties
             });
 
             if (game.startedTime) { // partie commencée

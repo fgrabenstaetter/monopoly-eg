@@ -544,6 +544,7 @@
             duration: int, 30 | 60 | null, // durée max en minutes ou null si illimité
             playersMoney: int, // argent initial de chaque joueur
             bankMoney: int, // argent initial de la banque
+            moneyFromStart: int, // argent qu'on gagne en passant à la case départ
             players: [
                 {
                     nickname: string,
@@ -642,6 +643,7 @@
             chatMessages: array, // liste des messages de chat (chaque élément = même format que gameChatReceiveRes
             offers: array, // chaque élément: idem gameOfferReceiveRes
             bids: array, // chaque élément: idem gameBidRes
+            moneyFromStart: int, // argent qu'on gagne en passant à la case départ
             players: [
                 {
                     nickname: string,
@@ -767,6 +769,7 @@
                 // contient 0, 1 ou plusieurs de ces champs (tester existence !)
                 nbJailEscapeCards: int, // nb de cartes sortie de prison si il a changé
                 goJail: true, // reçu uniquement lorsque on entre en prison et doit y rester
+                gainMoneyFromStart: true, // reçu uniquement quand le joueur a gagné l'argent de la case départ
                 newCard: {
                     type: string, // chance | community
                     description: string
