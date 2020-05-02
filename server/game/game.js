@@ -617,11 +617,6 @@ class Game {
     }
 
     turnPlayerGoPrisonCell() {
-        if (this.curPlayer.cellPos === 30) {
-            // Perdre l'argent gagné au passage de la case départ
-            this.curPlayer.loseMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
-        }
-
         this.curPlayer.goPrison();
         this.turnData.canRollDiceAgain = false;
         this.setTurnActionData(null, null,
