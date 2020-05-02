@@ -136,7 +136,7 @@ class Offer {
 
         // message à tous les joueurs
         const propertyName = this.property ? 'la propriété ' + this.property.name : 'une carte Fin de session parlementaire';
-        const text = this.maker.nickname + ' a accepté d\'acheter ' + propertyName + ' de ' + this.receiver.nickname + ' à ' + this.amount + '€ !';
+        const text = this.receiver.nickname + ' a accepté d\'acheter ' + propertyName + ' de ' + this.maker.nickname + ' à ' + this.amount + '€ !';
         const mess = this.game.chat.addMessage(null, text);
 
         this.game.GLOBAL.network.io.to(this.game.name).emit('gameChatReceiveRes', {
