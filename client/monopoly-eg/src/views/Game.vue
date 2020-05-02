@@ -1315,10 +1315,8 @@ export default {
               }
               gameboard.loaderHotelProperty(cell.id);
           } else {
-            for (let i = 1; i < oldLevel; i++) {
+            for (let i = oldLevel + 1; i <= property.level; i++)
               if (property.level < i) gameboard.loaderHouseProperty(cell.id, i);
-            }
-            gameboard.loaderHouseProperty(cell.id, oldLevel);
           }
 
           // if (property.level == 1) {
@@ -1352,10 +1350,8 @@ export default {
                 gameboard.loaderHouseProperty(cell.id, k);
               }
           } else {
-            gameboard.deleteHouse(cell.id, property.level);
-            for (let i = 1; i < property.level; i++) {
-              if (oldLevel > i) gameboard.deleteHouse(cell.id, i);
-            }
+            for (let i = oldLevel; i > property.level; i--)
+              gameboard.deleteHouse(cell.id, i);
           }
         }
       }
@@ -1396,9 +1392,13 @@ export default {
             // Suppression de la propriété de l'ancien propriétaire (le cas échéant)
             if (res.propertyOldOwnerID) {
               const oldOwner = this.getPlayerById(res.propertyOldOwnerID);
-              const propertyIndex = oldOwner.properties.indexOf(property.id);
-              if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
-              gameboard.deleteFlag(`d${cell.id}`);
+              if (oldOwner) {
+                const propertyIndex = oldOwner.properties.indexOf(property.id);
+                if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
+                
+                gameboard.deleteFlag(`d${cell.id}`);
+                this.$set(oldOwner, 'money', res.propertyOwnerMoney);
+              }
             }
 
             // Attribution du propriété au vainqueur de l'enchère

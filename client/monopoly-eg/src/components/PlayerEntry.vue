@@ -247,24 +247,6 @@ export default {
         remainingPropertiesByType(type) {
             return (type.totalNb - this.playerPropertiesByType(type).length);
         },
-        remainingPropertiesByTypeBefore(type, property) {
-            let nb = 0;
-            let remainingProperties = this.remainingPropertiesByType(type);
-            for (const i in remainingProperties) {
-                if (remainingProperties.id < property.id)
-                    nb++;
-            }
-            return nb;
-        },
-        remainingPropertiesByTypeAfter(type, property) {
-            let nb = 0;
-            let remainingProperties = this.remainingPropertiesByType(type);
-            for (const i in remainingProperties) {
-                if (remainingProperties.id > property.id)
-                    nb++;
-            }
-            return nb;
-        },
 
         submitPropertiesEdition() {
             let list = [];
