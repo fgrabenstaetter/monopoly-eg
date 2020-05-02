@@ -372,7 +372,6 @@ export default {
      * @arg {string} hotelProperty: Numero de l'hotel
      */
     deleteHotelD(hotelProperty) {
-        // requestAnimationFrame(render);
         this.scene.remove(this.objs[hotelProperty]);
     },
 
@@ -382,7 +381,6 @@ export default {
      * @arg {string} pawn: nom du pion
      */
     deletePawn(pawn) {
-        // requestAnimationFrame(render);
         this.scene.remove(this.objs[pawn]);
     },
 
@@ -413,7 +411,6 @@ export default {
      */
     loaderFlag(flag, colore) {
         this.gltfLoader.load('/assets/models/drapeaux/' + flag + '.gltf', (gltf) => {
-            // requestAnimationFrame(render);
             const root = gltf.scene;
             this.objs[flag] = gltf.scene;
             this.objs[flag].traverse((o) => {
@@ -429,7 +426,6 @@ export default {
             light1.position.set(this.objs[flag].children[0].position.x, this.objs[flag].children[0].position.y, 
                                 this.objs[flag].children[0].position.z);
             this.scene.add(light1);
-            //console.log(this.objs[flag].children[0]);
             this.scene.add(root);
         });
     },
@@ -463,7 +459,6 @@ export default {
      */
     loaderPawn(pawn, vdp) {
         this.gltfLoader.load('/assets/models/pions/' + pawn + '.gltf', (gltf) => {
-            // requestAnimationFrame(render);
             const root = gltf.scene;
             this.objs[pawn] = gltf.scene;
 
