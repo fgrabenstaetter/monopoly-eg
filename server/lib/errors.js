@@ -234,6 +234,10 @@ module.exports = Object.freeze({
         OFFER_LIMIT_REACHED: {
             code: 16,
             status: 'Vous ne pouvez pas envoyer autant d\'offres au même joueur si rapidement'
+        },
+        PRICE_OUT_OF_RANGE: {
+            code: 17,
+            status: 'Le prix entré est invalide (hors de portée'
         }
     }
 });

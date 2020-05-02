@@ -1110,6 +1110,8 @@ class Network {
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
             else if (recvr.failure)
                 err = Errors.GAME.PLAYER_IN_FAILURE;
+            else if (data.price < 0 || data.price > 1e5)
+                err = Errors.GAME.PRICE_OUT_OF_RANGE;
             else if (!Offer.canSend(player, recvr, game))
                 err = Errors.GAME.OFFER_LIMIT_REACHED;
             else {
@@ -1162,6 +1164,8 @@ class Network {
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (player.money < data.price)
                 err = Errors.BID.NOT_ENOUGH_MONEY;
+            else if (data.price < 0 || data.price > 1e5)
+                err = Errors.GAME.PRICE_OUT_OF_RANGE;
             else {
                 const bid = Bid.bidByID(game, data.bidID);
                 if (!bid)
