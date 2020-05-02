@@ -80,8 +80,7 @@ class Game {
             midTimeout           : null, // timestamp de moitié de tour => lancer les dés auto
             timeoutActionTimeout : null,
             playerInd            : Math.floor(Math.random() * this.players.length), // le premier sera l'indice cette valeur + 1 % nb joueurs
-            persistInterval      : null,  // id de interval pour fairie clearInterval apres
-            shouldCreateBid      : false
+            persistInterval      : null  // id de interval pour fairie clearInterval apres
         };
         this.successManager = new SuccessManager(this);
 
@@ -581,12 +580,12 @@ class Game {
         } else {
             const buyingPrice = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
 
-            if (!property.owner && this.curPlayer.money >= buyingPrice) {
-                // La propriété n'est pas encore achetée et j'ai assez d'argent pour l'acheter !
+            if (!property.owner) {
+                // La propriété n'est pas encore achetée
                 this.setTurnActionData(Constants.GAME_ASYNC_REQUEST_TYPE.CAN_BUY, [buyingPrice],
                     this.curPlayer.nickname + ' considère l\'achat de ' + property.name);
 
-            } else if (property.owner) {
+            } else {
                 // Le terrain appartient à un autre joueur
                 const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice;
 
@@ -602,8 +601,7 @@ class Game {
                     this.setTurnActionData(null, null,
                         this.curPlayer.nickname + ' a payé ' + rentalPrice + '€ de loyer à ' + property.owner.nickname);
                 }
-            } else if (!property.owner && this.curPlayer.money < buyingPrice)
-                this.turnData.shouldCreateBid = true;
+            }
         }
     }
 
@@ -770,12 +768,6 @@ class Game {
                 const curProp = this.curCell.property;
                 new Bid(curProp, 0, this);
                 break;
-        }
-
-        if (this.turnData.shouldCreateBid) {
-            this.turnData.shouldCreateBid = false;
-            const curProp = this.curCell.property;
-            new Bid(curProp, 0, this);
         }
     }
 
