@@ -7,6 +7,22 @@ const { UserSchema, UserManager } = require('../models/user');
  */
 class User {
 
+    /**
+     * Récupère l'avatar du joueur avec cet ID
+     */
+    static getAvatar (id) {
+        try {
+            const avatarPath = `/avatars/${id}.jpg`;
+            if (fs.existsSync(`${__dirname}/../public${avatarPath}`)) {
+                return avatarPath;
+            } else {
+                return '/avatars/default.jpg';
+            }
+        } catch (err) {
+            return '/avatars/default.jpg';
+        }
+    }
+
     /*
      * @param userSchema Le modèle d'utilisateur associé aux données
      */
@@ -47,22 +63,6 @@ class User {
         while (this.exp > this.levelUpExp) {
             this.level ++;
             this.exp = this.exp - this.levelUpExp;
-        }
-    }
-
-    /**
-     * Récupère l'avatar de ce joueur
-     */
-    getAvatar () {
-        try {
-            const avatarPath = `/avatars/${this.id}.jpg`;
-            if (fs.existsSync(`${__dirname}/../public${avatarPath}`)) {
-                return avatarPath;
-            } else {
-                return '/avatars/default.jpg';
-            }
-        } catch (err) {
-            return '/avatars/default.jpg';
         }
     }
 }

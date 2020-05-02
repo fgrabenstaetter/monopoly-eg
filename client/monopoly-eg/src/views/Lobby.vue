@@ -614,6 +614,7 @@ export default {
         this.socket.on('lobbyFriendListRes', (res) => {
             console.log("========== lobbyFriendListRes==============")
 
+            this.friends = [];
             for (const i in res.friends) {
                 res.friends[i].avatar = this.$store.getters.serverUrl + res.friends[i].avatar
                 res.friends[i].showInSearch = true;

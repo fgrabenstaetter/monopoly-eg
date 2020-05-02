@@ -1,5 +1,4 @@
 const Constants                   = require('../lib/constants');
-
 const Errors                      = require('../lib/errors');
 const Offer                       = require('./offer');
 const Bid                         = require('./bid');
@@ -9,6 +8,7 @@ const FileType                    = require('file-type');
 const fs                          = require('fs');
 const Success                     = require('../lib/success');
 const Lobby                       = require('./lobby');
+const User                        = require('./user');
 
 /**
  * Simplifie et centralise toutes les communications socket
@@ -275,7 +275,7 @@ class Network {
             users.push({
                 id       : usr.id,
                 nickname : usr.nickname,
-                avatar: usr.getAvatar()
+                avatar   : User.getAvatar(user.id)
             });
         }
 
@@ -292,7 +292,7 @@ class Network {
                 usr.socket.emit('lobbyUserJoinedRes', {
                     id       : user.id,
                     nickname : user.nickname,
-                    avatar   : user.getAvatar()
+                    avatar   : User.getAvatar(user.id)
                 });
             }
         }
@@ -572,7 +572,7 @@ class Network {
                     friends.push({
                         id: friendsObj[i].friend._id,
                         nickname: friendsObj[i].friend.nickname,
-                        avatar: friendsObj[i].friend.getAvatar()
+                        avatar: User.getAvatar(friendsObj[i].friend.id)
                     });
                 }
 
@@ -721,9 +721,8 @@ class Network {
                                 u.socket.emit('lobbyFriendInvitationAcceptedRes', {
                                     id: user.id,
                                     nickname: user.nickname,
-                                    avatar: user.getAvatar()
+                                    avatar: User.getAvatar(user.id)
                                 });
-                                break;
                             }
                         }
 
