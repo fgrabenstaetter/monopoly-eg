@@ -120,18 +120,20 @@
             <div class="popup-content">
                 <div v-for="(type, typeIndex) in propertiesTypes" :key="type.name">
                     <div v-if="remainingPropertiesByType(type) < type.totalNb" style="display: block;" class="properties-container" :class="type.cssClass ? type.cssClass : type.name">
-                        <div v-for="prop in propertiesByType(type)" :key="prop.id" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property" :class="{'mortgaged': prop.isMortgaged}">
-                            <div v-if="prop.type == 'street'">
-                                {{prop.name}}
-                                <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
-                                <div v-if="remainingPropertiesByType(type) == 0 && prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
-                                <div v-if="prop.level > 0" class="house-number">{{prop.level}}</div>
+                        <div v-for="(prop, propIndex) in allPropertiesByType(type)" :key="typeIndex * propIndex + propIndex">
+                            <div v-if="player.properties.includes(prop.id)" @click="displayOverviewCard(prop)" v-click-outside="hideOverviewCard" class="property" :class="{'mortgaged': prop.isMortgaged}">
+                                <div v-if="prop.type == 'street'">
+                                    {{prop.name}}
+                                    <div v-if="remainingPropertiesByType(type) == 0 && prop.level < 5 && propertiesEdition.totalPrice <= player.money" @click="propertiesEditionAddHouse(prop)" class="add-house">+</div>
+                                    <div v-if="remainingPropertiesByType(type) == 0 && prop.level > 0" @click="propertiesEditionRemoveHouse(prop)" class="remove-house">-</div>
+                                    <div v-if="prop.level > 0" class="house-number">{{prop.level}}</div>
+                                </div>
+                                <div v-else>
+                                    {{prop.name}}
+                                </div>
                             </div>
-                            <div v-else>
-                                {{prop.name}}
-                            </div>
+                            <div v-else class="blank-property"></div>
                         </div>
-                        <div v-for="i in remainingPropertiesByType(type)" :key="typeIndex * i + i" class="blank-property"></div>
                     </div> 
                 </div>
             </div>
@@ -226,8 +228,15 @@ export default {
         }
     },
     methods: {
-
-        propertiesByType(type) {
+        allPropertiesByType(type) {
+            let res = [];
+            for (const i in this.$parent.properties) {
+                if (this.$parent.properties[i].type == type.name || this.$parent.properties[i].color == type.name)
+                    res.push(this.$parent.properties[i]);
+            }
+            return res;
+        },
+        playerPropertiesByType(type) {
             let res = [];
             for (const i in this.playerPropertiesObj) {
                 if (this.playerPropertiesObj[i].type == type.name || this.playerPropertiesObj[i].color == type.name)
@@ -236,8 +245,27 @@ export default {
             return res;
         },
         remainingPropertiesByType(type) {
-            return (type.totalNb - this.propertiesByType(type).length);
+            return (type.totalNb - this.playerPropertiesByType(type).length);
         },
+        remainingPropertiesByTypeBefore(type, property) {
+            let nb = 0;
+            let remainingProperties = this.remainingPropertiesByType(type);
+            for (const i in remainingProperties) {
+                if (remainingProperties.id < property.id)
+                    nb++;
+            }
+            return nb;
+        },
+        remainingPropertiesByTypeAfter(type, property) {
+            let nb = 0;
+            let remainingProperties = this.remainingPropertiesByType(type);
+            for (const i in remainingProperties) {
+                if (remainingProperties.id > property.id)
+                    nb++;
+            }
+            return nb;
+        },
+
         submitPropertiesEdition() {
             let list = [];
             for (const i in this.propertiesEdition.modifications) {
