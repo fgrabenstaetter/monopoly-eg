@@ -965,7 +965,7 @@ export default {
         this.players = res.players;
         this.cells = res.cells;
         this.properties = res.properties;
-        this.moneyFromStart = data.moneyFromStart;
+        this.moneyFromStart = res.moneyFromStart;
         this.gameEndTime = res.gameEndTime;
         this.initGameTimer(this.gameEndTime);
 

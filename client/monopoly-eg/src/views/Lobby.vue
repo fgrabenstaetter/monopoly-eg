@@ -303,29 +303,26 @@ export default {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id
                 && this.nbPlayers > 2 && this.nbPlayers > this.players.length) {
+                this.rightNbJ = true;
+                
                 this.nbPlayers--;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
 
                 if (this.nbPlayers === 2 || this.nbPlayers === this.players.length) {
                     this.leftNbJ = false;
-                } else {
-                    this.leftNbJ = true;
                 }
             }
         },
         rightNbJClick() {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id && this.nbPlayers < 8) {
+                this.leftNbJ = true;
+
                 this.nbPlayers++;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
 
-                if (this.nbPlayers > 2) {
-                    this.leftNbJ = true;
-                }
-
-                if (this.nbPlayers >= 8) {
+                if (this.nbPlayers >= 8)
                     this.rightNbJ = false;
-                }
             }
         },
         leftGameTimeClick() {
