@@ -1193,6 +1193,8 @@ export default {
           const property = this.getPropertyById(player.properties[i]);
           if (property) {
             this.$set(property, 'ownerID', null);
+            const cell = this.getCellByProperty(property);
+            if (cell) gameboard.deleteFlag(cell.id);
           }
         }
         this.$set(player, 'properties', []);
@@ -1397,7 +1399,9 @@ export default {
                 if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
                 
                 gameboard.deleteFlag(`d${cell.id}`);
-                this.$set(oldOwner, 'money', res.propertyOwnerMoney);
+
+                if (res.propertyOldOwnerMoney)
+                  this.$set(oldOwner, 'money', res.propertyOldOwnerMoney);
               }
             }
 
