@@ -74,13 +74,15 @@ class SuccessManager {
             }
         }
 
-        player.socket.emit('gameSuccessCompletedRes', {
-            description : succ.description,
-            difficulty  : succ.difficulty,
-            exp         : succ.exp,
-            playerLevel : player.level,
-            playerExp   : player.exp
-        });
+        if (player.socket) {
+            player.socket.emit('gameSuccessCompletedRes', {
+                description : succ.description,
+                difficulty  : succ.difficulty,
+                exp         : succ.exp,
+                playerLevel : player.level,
+                playerExp   : player.exp
+            });
+        }
     }
 
     /**

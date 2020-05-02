@@ -1258,9 +1258,10 @@ class Network {
         const oldSock = player.socket;
 
         setTimeout( () => {
-            if (player.socket !== oldSock || !player.socket.connected) {
+            if (!player.socket || player.socket !== oldSock || !player.socket.connected) {
                 console.log('Reconnexion au jeu trop rapide, déconnexion du socket')
-                player.socket.disconnect();
+                if (player.socket)
+                    player.socket.disconnect();
                 return;
             }
 
