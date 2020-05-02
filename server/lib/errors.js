@@ -166,6 +166,10 @@ module.exports = Object.freeze({
         NOT_IN_MATCHMAKING: {
             code: 7,
             status: 'Vous n\'êtes pas en recherche de partie'
+        },
+        ALREADY_IN_FRIEND_LOBBY: {
+            code: 8,
+            status: 'Vous êtes déjà dans le lobby de votre ami'
         }
     },
 

@@ -377,6 +377,8 @@ class Network {
 
                     if (!friendLobby || !friendLobby.open)
                         err = Errors.LOBBY.CLOSED;
+                    else if (friendLobby.userByID(user.id))
+                        err = Errors.LOBBY.ALREADY_IN_FRIEND_LOBBY;
                     else if (friendLobby.users.length >= friendLobby.maxUsersNb)
                         err = Errors.LOBBY.FULL;
                     else {
