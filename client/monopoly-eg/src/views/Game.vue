@@ -145,7 +145,7 @@
                 Une enchère est lancée pour {{bid.propertyName}}
             </div>
             <div v-else class="content">
-                {{bid.launcherNickname}} lance une enchère pour {{bid.propertyName}}. Prix de départ : {{bid.startingPrice}}
+                {{bid.launcherNickname}} lance une enchère pour {{bid.propertyName}}. Prix de départ : {{bid.startingPrice}}€
             </div>
 
             <form @submit.prevent="sendBid(bid)">
@@ -338,7 +338,10 @@ export default {
       },
       // @vuese
       // Indique si la partie est terminée (affiche l'écran de fin si true)
-      endGame: false
+      endGame: false,
+      // @vuese
+      // Queue de fonctions, utilisée si des fonctions asynchrones (events) arrivent simultanément du serveur et doivent être traités l'un après l'autre
+      fnQueue: []
     };
   },
   computed: {
@@ -566,8 +569,8 @@ export default {
       const myPlayer = this.getPlayerById(this.loggedUser.id);
       if (!myPlayer) return;
 
-      if (myPrice < bid.startingPrice) {
-        this.$parent.toast(`Votre enchère doit être ≥ ${bid.startingPrice}€`, 'danger', 3);
+      if (myPrice <= bid.startingPrice) {
+        this.$parent.toast(`Votre enchère doit être > ${bid.startingPrice}€`, 'danger', 3);
         return;
       } else if (myPrice > myPlayer.money) {
         this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
@@ -694,6 +697,9 @@ export default {
      * @arg Enchère à ajouter (objet 'bid')
      */
     pushGameBid(bid) {
+      const myPlayer = this.getPlayerById(this.loggedUser.id);
+      if (!myPlayer) return;
+
       // Premier message uniquement
       if (bid.playerID == null) {
         // La propriété appartient déjà à quelqu'un
@@ -704,7 +710,7 @@ export default {
             this.bids.push({
                 launcherNickname: propertyOwner.nickname,
                 startingPrice: bid.price,
-                disabled: (bid.propertyOwnerID == this.loggedUser.id),
+                disabled: (bid.propertyOwnerID == this.loggedUser.id || myPlayer.failure),
                 myPrice: '',
                 propertyName: bid.text,
                 textContent: "",
@@ -714,7 +720,7 @@ export default {
             this.bids.push({
                 launcherNickname: null,
                 startingPrice: 0,
-                disabled: false,
+                disabled: myPlayer.failure, // Si l'on est en faillite, on désactive par défaut l'enchère
                 myPrice: '',
                 propertyName: bid.text,
                 textContent: "",
@@ -886,9 +892,24 @@ export default {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
 
+      this.execQueue();
+
       console.log("=== fin gameActionRes ===");
     },
 
+    /**
+     * @vuese
+     * Exécute la dernière fonction de la queue (le cas échéant)
+     */
+    execQueue() {
+      if (this.fnQueue.length > 0)
+        (this.fnQueue.shift())();
+    },
+
+    /**
+     * @vuese
+     * Vérifie si l'événément passé en paramètre contient un nombre ou non
+     */
     isNumber(evt) {
       evt = (evt) ? evt : window.event;
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1038,18 +1059,24 @@ export default {
         // On vide toutes les notifications (au cas-où)
         this.turnNotifications = [];
         this.currentPlayerID = data.playerID;
-        const player = this.getPlayerById(data.playerID);
+        
+        const currPlayer = this.getPlayerById(data.playerID);
+        if (currPlayer) {
 
-        if (player) {
-            // afficher décompte de temps du tour
-            if (this.currentPlayerID == this.loggedUser.id) {
-                this.$refs.actionBtn.progressReset();
-                this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white');
-                this.$refs.actionBtn.progressStart(turnTimeSeconds);
-            } else {
-                this.$refs.splashText.trigger(`<img src="/assets/img/pawns/${this.CST.PAWNS[player.pawn]}.png" width="320"><br>C'est au tour de ${player.nickname} !`, 'white');
-                this.$refs.actionBtn.progressFinish();
-            }
+          // afficher décompte de temps du tour
+          if (this.currentPlayerID == this.loggedUser.id) {
+              this.$refs.actionBtn.progressReset();
+              this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white', this.execQueue);
+              this.$refs.actionBtn.progressStart(turnTimeSeconds);
+          } else {
+              this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est au tour de ${currPlayer.nickname} !`, 'white', this.execQueue);
+              this.$refs.actionBtn.progressFinish();
+          }
+
+          // afficher la carte bonus sortie de parlement (le cas échéant)
+          if (currPlayer.isInJail && currPlayer.isInJail < 3 && currPlayer.nbJailEscapeCards > 0)
+            this.turnNotifications.push({ type: 'bonusJail' });
+        
         }
     });
 
@@ -1068,28 +1095,35 @@ export default {
             return;
         }
 
-        if (currPlayer.id == this.loggedUser.id) {
-            console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1]) {
-              this.$refs.actionBtn.progressSetStateTerminer();
-            } else {
-              const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
-              this.$refs.actionBtn.progressSetStateRelancer();
-              this.$refs.actionBtn.progressStart(turnTimeSeconds);
-            }
-        }
 
+        // Sortie de prison
+        let leftJailWithDouble = false;
         if (currPlayer.isInJail) {
           if (currPlayer.isInJail >= 3) { // Sortie de prison
               if (currPlayer.id == this.loggedUser.id)
                 this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
               currPlayer.isInJail = false;
           } else {
-            currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
-
-            if (currPlayer.nbJailEscapeCards > 0)
-              this.turnNotifications.push({ type: 'bonusJail' }); // Proposer au joueur d'utiliser sa carte 'sortie de prison'
+            // Si le joueur a fait un double, il peut sortir. Sinon, il reste un tour ++ en prison
+            if (data.dicesRes[0] != data.dicesRes[1]) {
+              currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
+            } else {
+              currPlayer.isInJail = false;
+              leftJailWithDouble = true;
+            }
           }
+        }
+
+        // Initialisation du bouton d'action
+        if (currPlayer.id == this.loggedUser.id) {
+            console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
+            if (data.dicesRes[0] != data.dicesRes[1] || leftJailWithDouble) {
+              this.$refs.actionBtn.progressSetStateTerminer();
+            } else {
+              const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
+              this.$refs.actionBtn.progressSetStateRelancer();
+              this.$refs.actionBtn.progressStart(turnTimeSeconds);
+            }
         }
 
         const totalDices = data.dicesRes[0] + data.dicesRes[1];
@@ -1100,7 +1134,17 @@ export default {
 
         // Lancement de l'animation des dés
         this.audio.sfx.rollDices.play();
-        this.$refs.dices.triggerDices(data.dicesRes[0], data.dicesRes[1], () => {// Déplacement du pion du joueur
+        this.$refs.dices.triggerDices(data.dicesRes[0], data.dicesRes[1], () => {
+
+            // Notification si sortie de prison grâce à un double
+            if (leftJailWithDouble) {
+              this.turnNotifications.push({
+                type: 'text',
+                title: 'Bye bye',
+                color: 'green',
+                content: `${currPlayer.nickname} a fait un double : il peut quitter sa session parlementaire !`
+              });
+            }
 
             // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
             if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
@@ -1131,13 +1175,8 @@ export default {
         console.log("gamePropertyBuyRes");
         console.log(data);
         if (typeof data.error !== "undefined") {
-            this.turnNotifications.push({
-                type: 'text',
-                title: data.status,
-                color: 'brown',
-                content: 'Impossible d\'acheter'
-            });
-            return;
+          this.$parent.toast(`Impossible d'acheter : ${data.status}`, 'danger', 8);
+          return;
         }
 
         const property = this.getPropertyById(data.propertyID);
@@ -1184,36 +1223,38 @@ export default {
     this.socket.on('gamePlayerFailureRes', (res) => {
         if (this.loading) return;
 
-        console.log('gamePlayerFailureRes');
-        console.log(res);
+        this.fnQueue.push(() => {
+          console.log('gamePlayerFailureRes');
+          console.log(res);
 
-        const player = this.getPlayerById(res.playerID);
-        if (!player) return;
-        
-        this.$set(player, 'failure', true);
+          const player = this.getPlayerById(res.playerID);
+          if (!player) return;
+          
+          this.$set(player, 'failure', true);
 
-        this.$refs.splashText.trigger(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311');
+          // Toutes les propriétés sont à nouveau à vendre
+          // Suppr propriétés
+          for (const i in player.properties) {
+            const property = this.getPropertyById(player.properties[i]);
+            if (property) {
+              this.$set(property, 'ownerID', null);
+              const cell = this.getCellByProperty(property);
+              if (cell) gameboard.deleteFlag(cell.id);
 
-        // Toutes les propriétés sont à nouveau à vendre
-        // Suppr propriétés
-        for (const i in player.properties) {
-          const property = this.getPropertyById(player.properties[i]);
-          if (property) {
-            this.$set(property, 'ownerID', null);
-            const cell = this.getCellByProperty(property);
-            if (cell) gameboard.deleteFlag(cell.id);
-
-            if (property.isMortgaged)
-              gameboard.deleteHypotheque(cell.id);
+              if (property.isMortgaged)
+                gameboard.deleteHypotheque(cell.id);
+            }
           }
-        }
-        this.$set(player, 'properties', []);
+          this.$set(player, 'properties', []);
 
-        // Suppression du pion
-        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+          // Suppression du pion
+          gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
 
-        // Suppr pion
-        gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+          // Suppr pion
+          gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+
+          this.$refs.splashText.triggerCb(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311', this.execQueue);
+        });
     });
 
     // On a reçu une offre d'achat
@@ -1294,11 +1335,12 @@ export default {
 
     // Edition des propriétés d'un joueur
     this.socket.on('gamePropertyUpgradedRes', (res) => {
-      // alert('gamePropertyUpgradedRes');
       console.log('gamePropertyUpgradedRes');
       console.log(res);
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
+
+      if (res.list.length == 0) return;
 
       this.turnNotifications.push({
           type: 'text',
@@ -1330,30 +1372,6 @@ export default {
             for (let i = oldLevel + 1; i <= property.level; i++)
               gameboard.loaderHouseProperty(cell.id, i);
           }
-
-          // if (property.level == 1) {
-          //     gameboard.loaderHouseProperty(cell.id, 1);
-          // } else if (property.level == 2) {
-          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-
-          //     gameboard.loaderHouseProperty(cell.id, 2);
-          // } else if (property.level == 3) {
-          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-          //     if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
-
-          //     gameboard.loaderHouseProperty(cell.id, 3);
-          // } else if (property.level == 4) {
-          //     if (oldLevel < 1) gameboard.loaderHouseProperty(cell.id, 1);
-          //     if (oldLevel < 2) gameboard.loaderHouseProperty(cell.id, 2);
-          //     if (oldLevel < 3) gameboard.loaderHouseProperty(cell.id, 3);
-
-          //     gameboard.loaderHouseProperty(cell.id, 4);
-          // } else if (property.level == 5) {
-          //     for (let k = 0; k < oldLevel; k++) {
-          //       gameboard.deleteHouse(cell.id, k+1);
-          //     }
-          //     gameboard.loaderHotelProperty(cell.id);
-          // }
         } else {
           // Détruire les maisons / hotel
           if (oldLevel == 5) {
@@ -1394,7 +1412,7 @@ export default {
         this.$set(bid, 'disabled', true);
 
         if (res.playerID == null) {
-            this.$set(bid, 'textContent', 'Le terrain n\'a pas été acheté...');
+            this.$set(bid, 'textContent', 'Enchère expirée : Le terrain n\'a pas été acheté');
         } else {
             const property = this.getPropertyById(res.propertyID);
             const cell = this.getCellByProperty(property);
@@ -1551,11 +1569,13 @@ export default {
 
         gameTime += `${minutes}min ${seconds}sec`;
 
-        this.endGame = {
-          winnerNickname: this.idToNick(res.winnerID),
-          gameTime: gameTime,
-          endType: res.type // 'failure' (dernier en vie) ou 'timeout'
-        }
+        this.fnQueue.push(() => {
+            this.endGame = {
+              winnerNickname: this.idToNick(res.winnerID),
+              gameTime: gameTime,
+              endType: res.type // 'failure' (dernier en vie) ou 'timeout'
+            }
+        });
     });
 
     // Un joueur quitte la partie

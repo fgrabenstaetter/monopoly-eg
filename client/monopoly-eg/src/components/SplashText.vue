@@ -49,6 +49,12 @@ export default {
     methods: {
         trigger(text, color) {
             $('.splash-text .letters-1').html(text).css('color', color);
+            this.splashAnim.complete = null;
+            this.splashAnim.restart();
+        },
+        triggerCb(text, color, cb) {
+            $('.splash-text .letters-1').html(text).css('color', color);
+            this.splashAnim.complete = cb;
             this.splashAnim.restart();
         }
     }

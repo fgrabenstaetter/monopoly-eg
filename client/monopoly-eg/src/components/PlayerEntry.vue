@@ -257,8 +257,6 @@ export default {
                 });
             }
 
-            console.log(list);
-
             this.socket.emit('gamePropertyUpgradeReq', { list: list });
 
             this.cancelPropertiesEdition();

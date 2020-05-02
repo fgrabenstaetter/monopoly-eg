@@ -32,7 +32,7 @@ const chanceCards = [{
     effectType: 'gainMoney',
     effectArg1: 50
 }, {
-    description: "Vous obtenez une carte 'Fin de session parlementaire'. Elle peut être conservée jusqu'à être utilisée ou vendue",
+    description: "Vous obtenez une carte 'Fin de session parlementaire'. Elle peut être conservée jusqu'à être utilisée.",
     effectType: 'jailEscapeCard'
 }, {
     description: 'Reculez de 4 cases',
