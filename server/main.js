@@ -20,9 +20,7 @@ const Network     = require('./game/network');
 const { UserSchema, UserManager } = require('./models/user');
 
 let server;
-let production = false;
-if (foundArg('production'))
-    production = true;
+const production = foundArg('production');
 
 mongoose.connect('mongodb://localhost:27017/monopolyeg', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 const JWT_SECRET = 'J@-(icrwUsD*IH5';
@@ -33,25 +31,27 @@ const JWT_SECRET = 'J@-(icrwUsD*IH5';
 
 if (production) {
     // mode production
-    const securePort = 443;
-    const redirectionPort = 80;
-    console.log('Démarrage en mode [ PRODUCTION ]');
+    const port = 8087;
 
-    // SSL Let's Encrypt certificats
-    const constants = require('crypto');
-    const options = {
-        cert          : fs.readFileSync('./ssl/fullchain.pem'),
-        key           : fs.readFileSync('./ssl/privkey.pem'),
-        secureOptions : constants.SSL_OP_NO_TLSv1
-    };
+    // autorisation de toutes les requ  tes externes
+    app.use( (req, res, next) => {
+        // Website you wish to allow to connect
+        res.setHeader('Access-Control-Allow-Origin', '*');
 
-    server = https.createServer(options, app).listen(securePort);
+        // Request methods you wish to allow
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Redirection du port 'redirectionPort' vers le port 'securePort'
-    http.createServer( (req, res) => {
-        res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url });
-        res.end();
-    }).listen(redirectionPort);
+        // Request headers you wish to allow
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+        // Set to true if you need the website to include cookies in the requests sent
+        // to the API (e.g. in case you use sessions)
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        next();
+    });
+
+    console.log('Demarrage en mode PRODUCTION');
+    server = http.createServer(app).listen(port);
 
 } else {
     // mode développement

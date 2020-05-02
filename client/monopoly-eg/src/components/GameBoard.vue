@@ -372,7 +372,6 @@ export default {
      * @arg {string} hotelProperty: Numero de l'hotel
      */
     deleteHotelD(hotelProperty) {
-        // requestAnimationFrame(render);
         this.scene.remove(this.objs[hotelProperty]);
     },
 
@@ -382,7 +381,6 @@ export default {
      * @arg {string} pawn: nom du pion
      */
     deletePawn(pawn) {
-        // requestAnimationFrame(render);
         this.scene.remove(this.objs[pawn]);
     },
 
@@ -390,46 +388,44 @@ export default {
     /**
      * @vuese
      * Modifie la couleur du drapeau
-     * @arg {string} flag: Nom du drapeau, {string} colore: Nom de la couleur
+     * @arg Numéro de la case ; Couleur du drapeau (hexadecimal, ex : '#FFFFFF')
      */
-    changeColorFlag(flag, colore) {
-        this.deleteFlag(flag);
-        this.loaderFlag(flag, colore);
+    changeColorFlag(cell, color) {
+        this.deleteFlag(cell);
+        this.loaderFlag(cell, color);
     },
 
     /**
      * @vuese
      * Supprime un drapeau
-     * @arg {string} flag: Nom du drapeau
+     * @arg Numéro de la case
      */
-    deleteFlag(flag) {
-        this.scene.remove(this.objs[flag]);
+    deleteFlag(cell) {
+        this.scene.remove(this.objs[`d${cell}`]);
     },
 
     /**
      * @vuese
      * Ajoute un drapeau de la couleur du joueur sur la propriété
-     * @arg {string} flag: Nom du drapeau, {string} colore: Nom de la couleur
+     * @arg Numéro de la case ; Couleur du drapeau (hexadecimal, ex : '#FFFFFF')
      */
-    loaderFlag(flag, colore) {
-        this.gltfLoader.load('/assets/models/drapeaux/' + flag + '.gltf', (gltf) => {
-            // requestAnimationFrame(render);
+    loaderFlag(cell, color) {
+        this.gltfLoader.load(`/assets/models/drapeaux/d${cell}.gltf`, (gltf) => {
             const root = gltf.scene;
-            this.objs[flag] = gltf.scene;
-            this.objs[flag].traverse((o) => {
+            this.objs[`d${cell}`] = gltf.scene;
+            this.objs[`d${cell}`].traverse((o) => {
                 if (o.isMesh) {
-                    if (o.name === this.drapPlane[flag])
-                        o.material.color = new THREE.Color(colore);
+                    if (o.name === this.drapPlane[`d${cell}`])
+                        o.material.color = new THREE.Color(color);
                 }
             });
             
-            const color = 0x404040;
+            const colorLight = 0x404040;
             const intensity = 0.1;
-            const light1 = new THREE. DirectionalLight( color, intensity)
-            light1.position.set(this.objs[flag].children[0].position.x, this.objs[flag].children[0].position.y, 
-                                this.objs[flag].children[0].position.z);
+            const light1 = new THREE.DirectionalLight( colorLight, intensity)
+            light1.position.set(this.objs[`d${cell}`].children[0].position.x, this.objs[`d${cell}`].children[0].position.y, 
+                                this.objs[`d${cell}`].children[0].position.z);
             this.scene.add(light1);
-            //console.log(this.objs[flag].children[0]);
             this.scene.add(root);
         });
     },
@@ -437,7 +433,7 @@ export default {
     /**
      * @vuese
      * Efface l'hypothèque de la propriété
-     * @arg {string} Cell: Nom de la case ('hyp1')
+     * @arg Numéro de la case
      */
     deleteHypotheque(cell) {
         this.scene.remove(this.objs[`hyp${cell}`]);
@@ -446,7 +442,7 @@ export default {
     /**
      * @vuese
      * Charge l'hypothèque pour la propriété
-     * @arg {string} Cell: Nom de la case ('hyp1')
+     * @arg Numéro de la case
      */
     loaderHypotheque(cell) {
         this.gltfLoader.load(`/assets/models/hypotheque/hyp${cell}.gltf`, (gltf) => {
@@ -463,7 +459,6 @@ export default {
      */
     loaderPawn(pawn, vdp) {
         this.gltfLoader.load('/assets/models/pions/' + pawn + '.gltf', (gltf) => {
-            // requestAnimationFrame(render);
             const root = gltf.scene;
             this.objs[pawn] = gltf.scene;
 

@@ -991,7 +991,7 @@ export default {
               const propertyObj = this.getPropertyById(player.properties[i]);
               const cell = this.getCellByProperty(propertyObj)
               if (propertyObj && cell)
-                gameboard.loaderFlag("d" + cell.id, player.color.hex);
+                gameboard.loaderFlag(cell.id, player.color.hex);
 
                 if (propertyObj.level == 5) {
                   gameboard.loaderHotelProperty(cell.id);
@@ -1146,7 +1146,7 @@ export default {
             const player = this.getPlayerById(data.playerID);
             property.ownerID = player.id;
             player.properties.push(property.id);
-            gameboard.loaderFlag("d" + cell.id, player.color.hex);
+            gameboard.loaderFlag(cell.id, player.color.hex);
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
@@ -1200,6 +1200,11 @@ export default {
           const property = this.getPropertyById(player.properties[i]);
           if (property) {
             this.$set(property, 'ownerID', null);
+            const cell = this.getCellByProperty(property);
+            if (cell) gameboard.deleteFlag(cell.id);
+
+            if (property.isMortgaged)
+              gameboard.deleteHypotheque(cell.id);
           }
         }
         this.$set(player, 'properties', []);
@@ -1257,8 +1262,8 @@ export default {
         buyer.properties.push(property.id);
 
         // Transfert de drapeau
-        gameboard.deleteFlag(`d${cell.id}`);
-        gameboard.loaderFlag(`d${cell.id}`, buyer.color.hex);
+        gameboard.deleteFlag(cell.id);
+        gameboard.loaderFlag(cell.id, buyer.color.hex);
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
@@ -1322,10 +1327,8 @@ export default {
               }
               gameboard.loaderHotelProperty(cell.id);
           } else {
-            for (let i = 1; i < oldLevel; i++) {
+            for (let i = oldLevel + 1; i <= property.level; i++)
               if (property.level < i) gameboard.loaderHouseProperty(cell.id, i);
-            }
-            gameboard.loaderHouseProperty(cell.id, oldLevel);
           }
 
           // if (property.level == 1) {
@@ -1359,10 +1362,8 @@ export default {
                 gameboard.loaderHouseProperty(cell.id, k);
               }
           } else {
-            gameboard.deleteHouse(cell.id, property.level);
-            for (let i = 1; i < property.level; i++) {
-              if (oldLevel > i) gameboard.deleteHouse(cell.id, i);
-            }
+            for (let i = oldLevel; i > property.level; i--)
+              gameboard.deleteHouse(cell.id, i);
           }
         }
       }
@@ -1403,9 +1404,15 @@ export default {
             // Suppression de la propriété de l'ancien propriétaire (le cas échéant)
             if (res.propertyOldOwnerID) {
               const oldOwner = this.getPlayerById(res.propertyOldOwnerID);
-              const propertyIndex = oldOwner.properties.indexOf(property.id);
-              if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
-              gameboard.deleteFlag(`d${cell.id}`);
+              if (oldOwner) {
+                const propertyIndex = oldOwner.properties.indexOf(property.id);
+                if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
+                
+                gameboard.deleteFlag(cell.id);
+
+                if (res.propertyOldOwnerMoney)
+                  this.$set(oldOwner, 'money', res.propertyOldOwnerMoney);
+              }
             }
 
             // Attribution du propriété au vainqueur de l'enchère
@@ -1416,7 +1423,7 @@ export default {
               property.ownerID = res.playerID;
               winner.properties.push(property.id);
 
-              gameboard.loaderFlag(`d${cell.id}`, winner.color.hex);
+              gameboard.loaderFlag(cell.id, winner.color.hex);
 
               this.$set(winner, 'money', res.playerMoney);
             }

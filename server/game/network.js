@@ -115,6 +115,9 @@ class Network {
     }
 
     lobbyUserStopListening(user, lobby) {
+        if (!user.socket)
+            return;
+
         user.socket.leave(lobby.name);
 
         // Inviter / Rejoindre / Quitter
@@ -277,7 +280,7 @@ class Network {
             users.push({
                 id       : usr.id,
                 nickname : usr.nickname,
-                avatar   : User.getAvatar(user.id)
+                avatar   : User.getAvatar(usr.id)
             });
         }
 
@@ -719,7 +722,7 @@ class Network {
 
                         // Envoi de la notification d'acceptation en temps réel si l'utilisateur ayant fait la demande d'ami est connecté
                         for (const u of this.GLOBAL.users) {
-                            if (invitedByUser._id == u.id) {
+                            if (invitedByUser._id == u.id && u.socket) {
                                 u.socket.emit('lobbyFriendInvitationAcceptedRes', {
                                     id: user.id,
                                     nickname: user.nickname,
