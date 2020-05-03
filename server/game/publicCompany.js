@@ -19,7 +19,7 @@ class PublicCompany extends Property {
     }
 
     /**
-     * @return La valeur totale de la compagnie
+     * @returns La valeur totale de la compagnie
      */
     get value () {
         return this.price;
@@ -27,7 +27,7 @@ class PublicCompany extends Property {
 
     /**
      * @param diceRes [int, int] résultats des dés
-     * @return le prix de loyer
+     * @returns le prix de loyer
      */
     rentalPrice (diceRes) {
         const total = diceRes[0] + diceRes[1];

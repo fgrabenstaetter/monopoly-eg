@@ -35,7 +35,7 @@ class Property { // classe abstraite
     }
 
     /**
-     * @return Le prix d'hypothéque de la compagnie
+     * @returns Le prix d'hypothéque de la compagnie
      */
     get mortgagePrice () {
         return Math.ceil(this.value / 2);
