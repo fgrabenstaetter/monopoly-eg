@@ -5,8 +5,12 @@
 <script>
 import $ from 'jquery'
 
+/**
+ * @vuese
+ * Bouton d'action du jeu : sert à déclencher les actions comme "lancer les dés", "terminer mon tour", etc. (avec timer inclus)
+ */
 export default {
-    name: 'ActioButton',
+    name: 'ActionButton',
     data() {
         return {}
     },

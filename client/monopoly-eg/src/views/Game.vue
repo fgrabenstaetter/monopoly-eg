@@ -794,8 +794,6 @@ export default {
 
           this.turnNotifications.push(notification);
         } else if (data.asyncRequestType == "shouldMortgage") {
-          // le montant de loyer à payer (donc à obtenir avec argent actuel + hypothèque de propriétés)
-          // let totalMoneyToHave = data.asyncRequestArgs[0];
           this.turnNotifications.push({
             title: 'Attention !',
             color: 'red',
@@ -965,17 +963,14 @@ export default {
         // Génération de la liste de joueurs
         data.players.forEach((player, index) => {
             // Champs par défaut du joueur
-            // player.properties = [];
             this.$set(player, 'nbJailEscapeCards', 0);
             this.$set(player, 'properties', []);
             this.$set(player, 'money', data.playersMoney);
             this.$set(player, 'failure', false);
             this.$set(player, 'hasLeft', false);
-            // player.money = data.playersMoney;
             player.cellPos = 0;
             player.color = this.CST.PLAYERS_COLORS[index];
             player.isInJail = false;
-            // this.$set(this.player, index, player);
             this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
         });
 

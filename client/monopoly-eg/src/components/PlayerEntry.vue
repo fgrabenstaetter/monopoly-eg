@@ -155,31 +155,47 @@
 import ClickOutside from 'vue-click-outside'
 import IOdometer from 'vue-odometer';
 
+/**
+ * @vuese
+ * Entrée d'un joueur dans la liste de joueurs du jeu (HUD)
+ */
 export default {
     name: 'PlayerEntry',
     props: {
+        // @vuese
+        // Le joueur représenté par cette instance de "PlayerEntry"
         player: {
             type: Object,
             required: true
         },
+        // @vuese
+        // Indique si 'player' est le joueur courant (dont c'est actuellement le tour)
         isCurrent: {
             type: Boolean,
             default: false
         },
+        // @vuese
+        // Joueur connecté sur ce client
         loggedUser: {
             type: Object,
             required: true
         },
+        // @vuese
+        // Socket utilisé pour les communications serveur
         socket: {
             type: Object,
             required: true
         }
     },
     components: {
+        // @vuese
+        // Compteur d'argent animé (permet de faire tourner les chiffres de l'argent des joueurs)
         IOdometer
     },
     data() {
         return {
+            // @vuese
+            // Types des propriétés et nombre total ([{ name: string, totalNb: int[, cssClass: string] }, ...])
             propertiesTypes: [
                 { name: 'brown', totalNb: 2 },
                 { name: 'cyan', totalNb: 3 },
@@ -192,16 +208,26 @@ export default {
                 { name: 'trainStation', totalNb: 4, cssClass: 'station' },
                 { name: 'publicCompany', totalNb: 2, cssClass: 'company' }
             ],
+            // @vuese
+            // Indique si la fenêtre de propriétés est ouverte (bool)
             showProperties: false,
+            // @vuese
+            // Affichage d'une carte du joueur : 'false' pour masquer sinon objet 'property'
             overviewCard: false,
+            // @vuese
+            // Input de proposition d'achat d'une propriété : { open: bool, price: int }
             overviewCardBuy: {
                 open: false,
                 price: ''
             },
+            // @vuese
+            // Input de mise en vente (enchère manuelle) d'une propriété : { open: bool, price: int }
             overviewCardSell: {
                 open: false,
                 price: ''
             },
+            // @vuese
+            // Edition des propriétés : { open: bool, totalPrice: int, modifications: [] }
             propertiesEdition: {
                 open: false,
                 totalPrice: 0,
@@ -213,6 +239,8 @@ export default {
         this.popupItem = this.$el;
     },
     computed: {
+        // @vuese
+        // Renvoie les propriétés du joueur sous forme de tableau d'objets 'property' (et non plus uniquement un tableau d'IDs des propriétés)
         playerPropertiesObj() {
             let propertiesObj = [];
             for (const i in this.player.properties) {
@@ -222,11 +250,18 @@ export default {
             }
             return propertiesObj
         },
+        // @vuese
+        // Chemin du fichier contenant l'image du pion du joueur
         playerPawnImgSrc() {
             return `/assets/img/pawns/${this.$parent.CST.PAWNS[this.player.pawn]}.png`;
         }
     },
     methods: {
+        /**
+         * @vuese
+         * Récupère toutes les propriétés du jeu d'un certain type
+         * @arg Le type de propriété à récupérer (couleur de la rue ou 'trainStation' ou 'publicCompany')
+         */
         allPropertiesByType(type) {
             let res = [];
             for (const i in this.$parent.properties) {
@@ -235,6 +270,12 @@ export default {
             }
             return res;
         },
+
+        /**
+         * @vuese
+         * Récupère les propriétés appartenant à un joueur et d'un certain type (par couleur / gare / compagnie publique)
+         * @arg Le type de propriété à récupérer (couleur de la rue ou 'trainStation' ou 'publicCompany')
+         */
         playerPropertiesByType(type) {
             let res = [];
             for (const i in this.playerPropertiesObj) {
@@ -243,10 +284,20 @@ export default {
             }
             return res;
         },
+        
+        /**
+         * @vuese
+         * Renvoie le nombre de propriétés restantes (qui n'appartiennent pas au joueur) d'un certain type
+         * @arg Le type de propriété à considérer (couleur de la rue ou 'trainStation' ou 'publicCompany')
+         */
         remainingPropertiesByType(type) {
             return (type.totalNb - this.playerPropertiesByType(type).length);
         },
 
+        /**
+         * @vuese
+         * Envoie une demande de modification de propriétés au serveur (ajouter/enlever des maisons/hotels sur nos propriétés)
+         */
         submitPropertiesEdition() {
             let list = [];
             for (const i in this.propertiesEdition.modifications) {
@@ -260,8 +311,12 @@ export default {
 
             this.cancelPropertiesEdition();
         },
+
+        /**
+         * @vuese
+         * Annule l'édition des propriétés en cours (et remets les valeurs avant modification en place)
+         */
         cancelPropertiesEdition() {
-            console.log("CANCEL PROPERTIES EDITION");
             // Reset les données d'édition
             this.propertiesEdition.totalPrice = 0;
             for (const i in this.propertiesEdition.modifications) {
@@ -276,6 +331,12 @@ export default {
             this.propertiesEdition.totalPrice = 0;
             this.propertiesEdition.open = false;
         },
+
+        /**
+         * @vuese
+         * Enlève la propriété donnée des modifications en cours
+         * @arg Propriété à retirer (objet 'property')
+         */
         propertiesEditionRemovePropertyFromModifications(property) {
             for (const i in this.propertiesEdition.modifications) {
                 if (this.propertiesEdition.modifications[i].propertyID == property.id) {
@@ -284,12 +345,25 @@ export default {
                 }
             }
         },
+
+        /**
+         * @vuese
+         * Récupère l'index d'une propriété dans la liste des modifications en cours (null si non trouvé)
+         * @arg La propriété dont on chercher l'index (objet 'property')
+         */
         propertiesEditionGetPropertyModificationIndex(property) {
             for (const i in this.propertiesEdition.modifications) {
                 if (this.propertiesEdition.modifications[i].propertyID == property.id)
                     return i;
             }
+            return null;
         },
+
+        /**
+         * @vuese
+         * Ajoute une maison à une propriété dans la liste des modifications en cours
+         * @arg Propriété (objet 'property') à laquelle on ajoute une maison
+         */
         propertiesEditionAddHouse(property) {
             if (property.level == 5) return;
             let propertyIndex = this.propertiesEditionGetPropertyModificationIndex(property);
@@ -318,6 +392,12 @@ export default {
                     this.propertiesEdition.totalPrice += property.prices.house / 2;
             }
         },
+
+        /**
+         * @vuese
+         * Retire une maison d'une propriété dans la liste des modifications en cours
+         * @arg Propriété (objet 'property') de laquelle on souhaite retirer une maison
+         */
         propertiesEditionRemoveHouse(property) {
             if (property.level == 0) return;
             let propertyIndex = this.propertiesEditionGetPropertyModificationIndex(property);
@@ -348,84 +428,161 @@ export default {
 
         },
 
+        /**
+         * @vuese
+         * Affiche les propriétés du joueur
+         */
         showPlayerProperties() {
             this.showProperties = true;
         },
+
+        /**
+         * @vuese
+         * Masque les propriétés du joueur
+         */
         hidePlayerProperties() {
             this.showProperties = false;
             this.hideOverviewCard();
         },
+        
+        /**
+         * @vuese
+         * Affiche une carte de propriété du joueur (i.e. détails d'une propriété)
+         * @arg La propriété (objet 'property') que l'on veut afficher en détails
+         */
         displayOverviewCard(property) {
             this.overviewCard = property;
             this.closeOverviewCardBuy();
             this.closeOverviewCardSell();
         },
+
+        /**
+         * @vuese
+         * Masque les détails d'une carte du joueur
+         */
         hideOverviewCard() {
             this.overviewCard = false;
             this.closeOverviewCardSell();
             this.closeOverviewCardBuy();
         },
+
+        /**
+         * @vuese
+         * Active l'édition de propriétés
+         */
         openPropertiesEdition() {
             this.propertiesEdition.open = true;
         },
+
+        /**
+         * @vuese
+         * Affiche la popup de vente d'une propriété (input prix de départ)
+         */
         openOverviewCardSell() {
             this.overviewCardSell.open = true;
             this.overviewCardSell.price = '';
             // this.$refs.overviewCardSellPrice.focus();
         },
+
+        /**
+         * @vuese
+         * Affiche la popup de proposition d'achat d'une propriété (input prix proposé)
+         */
         openOverviewCardBuy() {
             this.overviewCardBuy.open = true;
             this.overviewCardBuy.price = '';
             // this.$refs.overviewCardBuyPrice.focus();
         },
+
+        /**
+         * @vuese
+         * Ferme la popup de vente (enchère manuelle) d'une propriété
+         */
         closeOverviewCardSell() {
             this.overviewCardSell.open = false;
             this.overviewCardSell.price = '';
         },
+        
+        /**
+         * @vuese
+         * Ferme la popup de proposition d'achat d'une propriété
+         */
         closeOverviewCardBuy() {
             this.overviewCardBuy.open = false;
             this.overviewCardBuy.price = '';
         },
+
+        /**
+         * @vuese
+         * Ferme à la fois la popup de vente et de proposition d'achat d'une propriété (si l'une ou les deux sont ouvertes)
+         */
         closeOverviewCardBuySell() {
             this.closeOverviewCardSell();
             this.closeOverviewCardBuy();
         },
+
+        /**
+         * @vuese
+         * Toggle (affiche si fermé, masque si affiché) la popup de vente d'une propriété
+         */
         toggleOverviewCardSell() {
             if (this.overviewCardSell.open)
                 this.closeOverviewCardSell();
             else
                 this.openOverviewCardSell();
         },
+
+        /**
+         * @vuese
+         * Toggle (affiche si fermé, masque si affiché) la popup de proposition d'achat d'une propriété
+         */
         toggleOverviewCardBuy() {
             if (this.overviewCardBuy.open)
                 this.closeOverviewCardBuy();
             else
                 this.openOverviewCardBuy();
         },
+
+        /**
+         * @vuese
+         * Envoie une requête de vente (enchère manuelle) au serveur pour une propriété
+         */
         sellProperty(propertyID) {
             this.socket.emit('gameManualBidReq', { propertyID: propertyID, initialPrice: this.overviewCardSell.price });
             this.closeOverviewCardSell();
         },
+
+        /**
+         * @vuese
+         * Envoie une proposition d'achat pour une propriété au serveur (gameOfferSendReq)
+         */
         buyProperty(propertyID) {
-            console.log("buyProperty");
-            console.log({ receiverID: this.player.id, propertyID: propertyID, price: this.overviewCardBuy.price });
             this.socket.emit('gameOfferSendReq', { receiverID: this.player.id, propertyID: propertyID, price: this.overviewCardBuy.price });
             this.closeOverviewCardBuy();
         },
+
+        /**
+         * @vuese
+         * Met une propriété en vente (enchère manuelle) (envoie la requête au serveur)
+         * @arg ID de la propriété que l'on souhaite hypothéquer
+         */
         mortgageProperty(propertyID) {
             this.socket.emit('gamePropertyMortgageReq', { properties: [propertyID] });
         },
+
+        /**
+         * @vuese
+         * Rachète l'hypothèque d'une propriété (envoie la requête au serveur)
+         * @arg ID de la propriété dont on souhaite racheter l'hypothèque
+         */
         rebuyProperty(propertyID) {
             this.socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
         }
     },
     directives: {
+        //@vuese
+        // Utilisé pour détecter le clic à l'extérieur d'un élément
         ClickOutside
-    },
-    watch: {
-        // player(nouv, prev) {
-        //     console.log(nouv, prev);
-        // }
     }
 
 }

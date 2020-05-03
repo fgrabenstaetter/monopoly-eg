@@ -274,10 +274,14 @@ import $ from 'jquery';
 export default {
     name: 'GameSettingsModal',
     props: {
+        // @vuese
+        // Environnement dans lequel est utilisé le composant ('lobby' ou 'game')
         env: {
             type: String,
             default: 'lobby'
         },
+        // @vuese
+        // Utilisateur actuellement connecté
         loggedUser: {
             type: Object,
             required: true
@@ -285,6 +289,8 @@ export default {
     },
     data() {
         return {
+            // @vuese
+            // Paramètres utilisateur (prennent les valeurs des paramètres de loggedUser à l'initialisation)
             userSettings: {
                 graphicsQuality: 1,
                 autoZoom: true,
@@ -298,6 +304,10 @@ export default {
         this.userSettings = this.loggedUser.settings;
     },
     methods: {
+        /**
+         * @vuese
+         * Met à jour les paramètres utilisations : en local, à distance (via socket) et en temps réel (en jeu ou dans le lobby)
+         */
         updateUserSettings() {
             this.userSettings.graphicsQuality = parseInt(this.userSettings.graphicsQuality);
             this.userSettings.autoZoom = !!this.userSettings.autoZoom;
@@ -318,9 +328,19 @@ export default {
             this.$parent.setMusicLevel(this.userSettings.musicLevel);
             this.$parent.setSfxLevel(this.userSettings.sfxLevel);
         },
+
+        /**
+         * @vuese
+         * Force la fermeture de la modal d'options
+         */
         closeModal() {
             $('#optionsModal').modal('hide');
         },
+
+        /**
+         * @vuese
+         * Lors d'un clic sur le bouton "Quitter la partie", appelle la méthode "quitGame()" du parent si elle existe
+         */
         quitGame() {
             if (typeof this.$parent.quitGame === 'function')
                 this.$parent.quitGame();
@@ -328,36 +348,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.range-slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 10px;
-  border-radius: 5px;
-  margin: 8px 0;
-  background: #d7d7d7;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-}
-
-.range-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%; 
-  background: #027AFE;
-  cursor: pointer;
-}
-
-.range-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #027AFE;
-  cursor: pointer;
-}
-</style>
