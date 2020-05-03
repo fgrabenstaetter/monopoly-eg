@@ -136,17 +136,16 @@
                         </div>
                     </div> 
                 </div>
+                <!-- Cartes bonus -->
+                <div class="bonus-container" v-if="player.nbJailEscapeCards > 0">
+                    <div class="bonus">« Sortir du parlement » ({{player.nbJailEscapeCards}})</div>
+                </div>
             </div>
 
             <div v-if="propertiesEdition.open">
                 <div class="houses-total-price">{{propertiesEdition.totalPrice}}€</div>
                 <button @click="submitPropertiesEdition" class="houses-validation-btn">Terminer</button>
                 <button @click="cancelPropertiesEdition" class="houses-cancel-btn">Annuler</button>
-            </div>
-
-            <!-- Cartes bonus -->
-            <div class="bonus-container" v-if="player.nbJailEscapeCards > 0">
-                <div class="bonus">« Sortir du parlement » ({{player.nbJailEscapeCards}})</div>
             </div>
         </div>
     </div>
