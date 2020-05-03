@@ -303,6 +303,13 @@ export default {
     mounted() {
         $('.modal-backdrop.show').remove();
         this.userSettings = this.loggedUser.settings;
+
+        $('#rulesModal a').click(function(e) {
+            e.preventDefault();
+            $('#rulesModal').animate({
+                scrollTop: $($(this).attr('href')).offset().top
+            }, 600);
+        })
     },
     methods: {
         /**

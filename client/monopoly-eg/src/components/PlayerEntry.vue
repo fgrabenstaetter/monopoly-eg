@@ -11,11 +11,14 @@
         ]"
     >
         <div @click="showPlayerProperties()" class="name">
-            {{player.nickname}}
-            <span v-if="player.disconnected">(Déconnecté)</span>
+            <div>
+                {{player.nickname}}
+                <span v-if="player.disconnected">(Déconnecté)</span>
+            </div>
+            <IOdometer :value="player.money" ref="iOdometer" class="iOdometer money"></IOdometer>
+            <span v-if="player.gainMoney" class="money-gain">+{{player.gainMoney}}€</span>
+            <span v-if="player.loseMoney" class="money-lose">{{player.loseMoney}}€</span>
         </div>
-        
-        <IOdometer :value="player.money" class="iOdometer money"></IOdometer>
         
         <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
             <div class="popup-title">{{player.nickname}}</div>
@@ -599,3 +602,23 @@ export default {
 
 }
 </script>
+
+<style>
+.money-gain, .money-lose {
+    position: relative;
+    right: -10px;
+    animation: ltrfadeout 2.8s ease-out;
+}
+.money-gain {
+    color: green;
+}
+.money-lose {
+    color: red;
+}
+@keyframes ltrfadeout {
+    0%   {right:-10px;opacity:1;}
+    25%   {opacity:1;}
+    90%  {right:-30px;opacity:0;}
+    100% {opacity:0;}
+}
+</style>

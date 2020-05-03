@@ -104,7 +104,7 @@
                         <button
                           class="btn btn-primary accept"
                           v-if="imCurrentPlayer"
-                          @click="saleCardBuyProperty(index)"
+                          @click="saleCardBuyProperty()"
                         >ACHETER</button>
                         <button
                           class="btn btn-secondary reject"
@@ -436,6 +436,26 @@ export default {
       return null;
     },
 
+    setPlayerMoney(player, money) {
+      const delta = money - player.money;
+
+      this.$set(player, 'money', money);
+      
+      if (delta == 0) return;
+
+      if (delta > 0) {
+        this.$set(player, 'gainMoney', delta);
+        setTimeout(() => {
+          this.$set(player, 'gainMoney', null);
+        }, 2600);
+      } else {
+        this.$set(player, 'loseMoney', delta);
+        setTimeout(() => {
+          this.$set(player, 'loseMoney', null);
+        }, 2600);
+      }
+    },
+
     /**
      * @vuese
      * Met en place le timer de la partie
@@ -456,7 +476,7 @@ export default {
       
       if (!this.gameTimer) {
         this.gameTimer = setInterval(() => {
-          if (this.gameRemainingTime.min > 0 && this.gameRemainingTime.sec >= 0) {
+          if (this.gameRemainingTime.min >= 0 && this.gameRemainingTime.sec >= 0) {
             this.$set(this.gameRemainingTime, 'sec', this.gameRemainingTime.sec - 1);
             if (this.gameRemainingTime.sec == -1) {
               this.$set(this.gameRemainingTime, 'sec', 59);
@@ -501,13 +521,11 @@ export default {
 
     /**
      * @vuese
-     * Envoi une requête d'achat (après être tombé sur la case d'un terrain vierge) et supprime la notification associée
-     * @arg L'index de la notification concernée
+     * Envoi une requête d'achat (après être tombé sur la case d'un terrain vierge)
      */
-    saleCardBuyProperty(notifIndex) {
+    saleCardBuyProperty() {
       if (!this.imCurrentPlayer) return;
       this.socket.emit("gamePropertyBuyReq");
-      this.turnNotifications.splice(notifIndex, 1);
     },
 
     /**
@@ -542,7 +560,6 @@ export default {
     rejectOffer(offerID) {
       this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: false });
-      console.log('gameOfferActionReq reject');
       this.discardOffer(offerID);
     },
 
@@ -554,7 +571,6 @@ export default {
     offerAccept(offerID) {
       this.audio.sfx.buttonClick.play();
       this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: true });
-      console.log('gameOfferActionReq accept');
       this.discardOffer(offerID);
     },
 
@@ -760,7 +776,7 @@ export default {
         data.updateMoney.forEach(row => {
           const player = this.getPlayerById(row.playerID);
           if (player) {
-            this.$set(player, "money", row.money);
+            this.setPlayerMoney(player, row.money);
           }
         });
       }
@@ -775,7 +791,6 @@ export default {
           let price = data.asyncRequestArgs[0];
           let notification = {
             type: "saleCard",
-            cardType: "company eau",
             propertyID: property.id,
             propertyName: property.name,
             price: price
@@ -958,7 +973,6 @@ export default {
             data.properties[i].level = 0;
             data.properties[i].ownerID = null;
             data.properties[i].isMortgage = 0;
-            // this.$set(this.properties, i, data.properties[i]);
         }
 
         // Génération de la liste de joueurs
@@ -1185,6 +1199,12 @@ export default {
           this.$parent.toast(`Impossible d'acheter : ${data.status}`, 'danger', 8);
           return;
         }
+        
+        // Suppr de la notification
+        let notifIndex;
+        for (notifIndex = 0; notifIndex < this.turnNotifications.length && this.turnNotifications[notifIndex].type != 'saleCard'; notifIndex++);
+        if (notifIndex < this.turnNotifications.length)
+          this.turnNotifications.splice(notifIndex, 1);
 
         const property = this.getPropertyById(data.propertyID);
         const cell = this.getCellByProperty(property);
@@ -1196,7 +1216,7 @@ export default {
 
             if (data.playerMoney != player.money) {
                 this.audio.sfx.cashRegister.play();
-                this.$set(player, 'money', data.playerMoney);
+                this.setPlayerMoney(player, data.playerMoney);
             }
 
             // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
@@ -1292,12 +1312,15 @@ export default {
       const property = this.getPropertyById(res.propertyID);
       const cell = this.getCellByProperty(property);
 
+      // Suppression de l'offre (si elle est toujours affichée)
+      this.discardOffer(res.offerID);
+
       if (!buyer || !receiver || !property || !cell) return;
 
       if (res.accepted) {
         // Transfert argent
-        this.$set(buyer, 'money', parseInt(buyer.money) - parseInt(res.price));
-        this.$set(receiver, 'money', parseInt(receiver.money) + parseInt(res.price));
+        this.setPlayerMoney(buyer, parseInt(buyer.money) - parseInt(res.price));
+        this.setPlayerMoney(receiver, parseInt(receiver.money) + parseInt(res.price));
 
         // Transfert propriétés
         for (const i in receiver.properties) {
@@ -1356,7 +1379,7 @@ export default {
           content: `${player.nickname} a édité ses propriétés !`
       });
 
-      this.$set(player, 'money', res.playerMoney);
+      this.setPlayerMoney(player, res.playerMoney);
 
       for (const i in res.list) {
         const edit = res.list[i]; // { propertyID: int, level: int }
@@ -1436,7 +1459,7 @@ export default {
                 gameboard.deleteFlag(cell.id);
 
                 if (res.propertyOldOwnerMoney)
-                  this.$set(oldOwner, 'money', res.propertyOldOwnerMoney);
+                  this.setPlayerMoney(oldOwner, res.propertyOldOwnerMoney);
               }
             }
 
@@ -1450,7 +1473,7 @@ export default {
 
               gameboard.loaderFlag(cell.id, winner.color.hex);
 
-              this.$set(winner, 'money', res.playerMoney);
+              this.setPlayerMoney(winner, res.playerMoney);
             }
         }
 
@@ -1486,7 +1509,7 @@ export default {
         const player = this.getPlayerById(res.playerID);
         if (!player) return;
 
-        this.$set(player, 'money', res.playerMoney);
+        this.setPlayerMoney(player, res.playerMoney);
         let mortgagedPropertiesNames = [];
         for (const i in res.properties) {
             const property = this.getPropertyById(res.properties[i]);
@@ -1529,7 +1552,7 @@ export default {
       
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
-      this.$set(player, 'money', res.playerMoney);
+      this.setPlayerMoney(player, res.playerMoney);
 
       if (res.rentalOwner) {
         const rentalOwner = this.getPlayerById(res.rentalOwner.id);
@@ -1555,7 +1578,7 @@ export default {
 
         if (!player || !property || !cell) return;
 
-        this.$set(player, 'money', res.playerMoney);
+        this.setPlayerMoney(player, res.playerMoney);
         this.$set(property, 'isMortgaged', false);
 
         gameboard.deleteHypotheque(cell.id);
@@ -1577,13 +1600,21 @@ export default {
 
         gameTime += `${minutes}min ${seconds}sec`;
 
-        this.fnQueue.push(() => {
+        if (res.type == 'timeout') {
+          this.endGame = {
+            winnerNickname: this.idToNick(res.winnerID),
+            gameTime: gameTime,
+            endType: res.type // 'failure' (dernier en vie) ou 'timeout'
+          }
+        } else {
+          this.fnQueue.push(() => {
             this.endGame = {
               winnerNickname: this.idToNick(res.winnerID),
               gameTime: gameTime,
               endType: res.type // 'failure' (dernier en vie) ou 'timeout'
             }
-        });
+          });
+        }
     });
 
     // Un joueur quitte la partie
