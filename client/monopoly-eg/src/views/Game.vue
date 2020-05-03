@@ -1492,6 +1492,7 @@ export default {
 
             // Modifier "isMortgaged" dans la liste globale des propriétés
             this.$set(property, 'isMortgaged', true);
+            this.$set(property, 'level', 0);
 
             // Enlever les propriétés (le cas échéant)
             if (property.level == 5) {
@@ -1512,9 +1513,9 @@ export default {
         if (player.id == this.loggedUser.id) {
           const autoStr = res.auto ? ' automatiquement' : '';
           if (mortgagedPropertiesNames.length == 1) {
-            this.$parent.toast(`Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`, 'success', 3);
+            this.$parent.toast(`Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`, 'success', 4);
           } else {
-            this.$parent.toast(`Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(', ')}`, 'success', 5);
+            this.$parent.toast(`Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(', ')}`, 'success', 8);
           }
         }
     });
