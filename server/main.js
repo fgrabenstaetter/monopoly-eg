@@ -167,7 +167,7 @@ io.on('connection', (socket) => {
     const user = getConnectedUserById(decodedToken.id);
 
     if (!user) {
-        console.log('[SOCKET] Utilisateur du socket ' + socket.id + ' non trouvé => envoi de notLoggedRes');
+        console.log('[SOCKET] Utilisateur du socket ' + socket.id + ' non trouvé');
         socket.emit('notLoggedRes');
         return;
     }
