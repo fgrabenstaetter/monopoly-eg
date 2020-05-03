@@ -1370,10 +1370,12 @@ class Network {
 
             for (const bid of game.bids) {
                 bids.push({
-                    bidID    : bid.id,
-                    playerID : bid.player ? bid.player.id : null,
-                    text     : bid.text,
-                    price    : bid.amountAsked
+                    bidID           : bid.id,
+                    playerID        : bid.player ? bid.player.id : null,
+                    text            : bid.text,
+                    propertyID      : bid.property.id,
+                    propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
+                    price           : bid.amountAsked
                 });
             }
 
