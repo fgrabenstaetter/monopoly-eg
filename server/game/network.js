@@ -523,8 +523,8 @@ class Network {
 
             if (!data || !data.content)
                 err = Errors.MISSING_FIELD;
-            else
-                this.lobbySendMessage(lobby, user, data.content);
+            else if (!this.lobbySendMessage(lobby, user, data.content))
+                err = Errors.LOBBY.CHAT_LIMIT_REACHED;
 
             user.socket.emit('lobbyChatSendRes', { error: err.code, status: err.status });
         });
@@ -533,12 +533,16 @@ class Network {
     // cette méthode n'est pas associée à un event socket !
     lobbySendMessage (lobby, user, text) {
         const mess = lobby.chat.addMessage(user, text);
+        if (!mess)
+            return false;
         // broadcast lobby (also sender)
         this.io.to(lobby.name).emit('lobbyChatReceiveRes', {
             senderUserID : mess.sender ? mess.sender.id : -1, // -1 => Server
             content      : mess.text,
             createdTime  : mess.createdTime
         });
+
+        return true;
     }
 
     lobbyPlayReq(user, lobby) {
@@ -1109,11 +1113,15 @@ class Network {
             else {
                 // envoyer le message (texte brut)
                 const mess = game.chat.addMessage(player.user, data.text);
-                this.io.to(game.name).emit('gameChatReceiveRes', {
-                    playerID    : player.id,
-                    text        : mess.text,
-                    createdTime : mess.createdTime
-                });
+                if (!mess)
+                    err = Errors.LOBBY.CHAT_LIMIT_REACHED;
+                else {
+                    this.io.to(game.name).emit('gameChatReceiveRes', {
+                        playerID    : player.id,
+                        text        : mess.text,
+                        createdTime : mess.createdTime
+                    });
+                }
             }
 
             player.socket.emit('gameChatSendRes', { error: err.code, status: err.status });

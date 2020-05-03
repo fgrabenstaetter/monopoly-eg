@@ -174,6 +174,10 @@ module.exports = Object.freeze({
         ALREADY_INVITED: {
             code: 9,
             status: 'Ce joueur a déjà été invité dans ce lobby'
+        },
+        CHAT_LIMIT_REACHED: {
+            code: 10,
+            status: 'Vous ne pouvez pas envoyer autant de message si rapidement'
         }
     },
 

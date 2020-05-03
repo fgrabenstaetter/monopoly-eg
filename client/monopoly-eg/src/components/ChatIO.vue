@@ -68,6 +68,10 @@ export default {
                     }
                     this.messages.push(mess);
                 });
+                this.$parent.socket.on('lobbyChatSendRes', (res) => {
+                    if (res.error)
+                        this.$parent.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+                });
             } else {
                 this.$parent.socket.on('gameChatReceiveRes', (mess) => {
                     if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
@@ -75,6 +79,10 @@ export default {
                     }
                     const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
                     this.messages.push(formatMsg);
+                });
+                this.$parent.socket.on('gameChatSendRes', (res) => {
+                    if (res.error)
+                        this.$parent.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
                 });
             }
         },
@@ -88,7 +96,7 @@ export default {
                 this.$parent.socket.emit('lobbyChatSendReq', { content: this.msg });
             else
                 this.$parent.socket.emit('gameChatSendReq', { text: this.msg });
-            
+
             this.msg = '';
         },
 
