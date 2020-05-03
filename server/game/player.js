@@ -19,6 +19,7 @@ class Player {
         this.money      = Constants.GAME_PARAM.PLAYER_INITIAL_MONEY;
         this.cellPos    = 0;
         this.properties = [];
+        this.failureTime = null;
 
         this.nbJailEscapeCards    = 0;
         this.remainingTurnsInJail = 0;

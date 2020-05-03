@@ -293,23 +293,37 @@ class Game {
                 if (sum > winnerValue)
                     winnerPlayer = pl;
             }
-
             ranking.push(winnerPlayer.id);
-            let others = [];
+
+            let nonFails = [], fails = [];
+            //Les joueurs ayant perdu au moment de la fin de partie
             for (const p of this.players) {
-                if (p !== winnerPlayer) {
+                if (p !== winnerPlayer && !p.failure) {
                     let sum = p.money;
                     for (const prop of p.properties)
                         sum += prop.value;
-                    others.push({
+                    nonFails.push({
                         playerID: p.id,
                         money: sum
                     });
                 }
             }
+            nonFails.sort((a, b) => b.sum - a.sum);
+            for (const obj of nonFails) {
+                ranking.push(obj.playerID);
+            }
 
-            others.sort((a, b) => b.sum - a.sum);
-            for (const obj of others) {
+            //Les joueurs ayant perdu avant la fin de la partie, on les classe en fonction du temps de partie
+            for (const p of this.players) {
+                if (p.failure) {
+                    nonFails.push({
+                        playerID: p.id,
+                        gameTime: Date.now() - p.failureTime
+                    });
+                }
+            }
+            fails.sort((a, b) => b.sum - a.sum);
+            for (const obj of fails) {
                 ranking.push(obj.playerID);
             }
 
@@ -333,26 +347,22 @@ class Game {
 
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
-                // A MODIFIER ADAPTER EN FONCTION DU TEMPS DE FAILLITE JE FAIS PLUS TARD
-                /*ranking.push(winner.id);
-                let others = [];
+                // Tout le monde a perdu donc classement juste en fonction du temps de partie (sauf winner)
+                ranking.push(winner.id);
+                let fails = [];
                 for (const p of this.players) {
                     if (p !== winner) {
-                        let sum = p.money;
-                        for (const prop of p.properties)
-                            sum += prop.value;
-                        others.push({
+                        fails.push({
                             playerID: p.id,
-                            money: sum
+                            gameTime: Date.now() - p.failureTime
                         });
                     }
                 }
-
-                others.sort((a, b) => b.sum - a.sum);
-                for (const obj of others) {
+                fails.sort((a, b) => b.sum - a.sum);
+                for (const obj of fails) {
                     ranking.push(obj.playerID);
                 }
-                console.log(ranking);*/
+                console.log(ranking);
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                     type     : 'normal',
                     winnerID : winner.id,
@@ -793,7 +803,7 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
-
+        player.failureTime = Date.now()
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
