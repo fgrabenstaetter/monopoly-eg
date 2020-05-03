@@ -775,6 +775,9 @@ class Game {
      * @param player Le player a foutre a la rue
      */
     playerFailure(player) {
+        if (player.failure)
+            return;
+
         // la banque récupère tout son fric et propriétés
         for (const prop of player.properties)
             this.bank.addProperty(prop);
