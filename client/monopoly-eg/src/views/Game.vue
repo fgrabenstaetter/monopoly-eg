@@ -1060,10 +1060,13 @@ export default {
         if (currPlayer) {
 
           // afficher décompte de temps du tour
-          if (this.currentPlayerID == this.loggedUser.id) {
+          if (this.currentPlayerID == this.loggedUser.id) {     
               this.$refs.actionBtn.progressReset();
               this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white', this.execQueue);
               this.$refs.actionBtn.progressStart(turnTimeSeconds);
+              if(!data.canRollDiceAgain){
+                this.$refs.actionBtn.progressSetStateTerminer();
+              }
           } else {
               this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est au tour de ${currPlayer.nickname} !`, 'white', this.execQueue);
               this.$refs.actionBtn.progressFinish();
