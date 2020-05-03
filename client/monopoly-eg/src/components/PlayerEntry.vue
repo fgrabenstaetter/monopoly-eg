@@ -97,7 +97,7 @@
                     <div v-if="loggedUser.id == player.id && overviewCardSell.open" v-click-outside="closeOverviewCardSell" class="sell-input">
                         <form @submit.prevent="sellProperty(overviewCard.id)">
                             <label>Montant de départ de l'enchère</label>
-                            <input v-model="overviewCardSell.price" ref="overviewCardSellPrice" type="text" placeholder="Votre montant...">
+                            <input v-model="overviewCardSell.price" ref="overviewCardSellPrice" type="text" @keypress="isNumber($event)" placeholder="Votre montant...">
                             <button class="btn">Vendre</button>
                         </form>
                     </div>
@@ -107,7 +107,7 @@
                     <div v-if="loggedUser.id != player.id && overviewCardBuy.open" v-click-outside="closeOverviewCardBuy" class="buy-input">
                         <form @submit.prevent="buyProperty(overviewCard.id)">
                             <label>Quel est le montant de votre offre ?</label>
-                            <input v-model="overviewCardBuy.price" ref="overviewCardBuyPrice" type="text" placeholder="Votre montant...">
+                            <input v-model="overviewCardBuy.price" ref="overviewCardBuyPrice" type="text" @keypress="isNumber($event)" placeholder="Votre montant...">
                             <button class="btn">Acheter</button>
                         </form>
                     </div>
@@ -578,6 +578,17 @@ export default {
          */
         rebuyProperty(propertyID) {
             this.socket.emit("gamePropertyUnmortgageReq", { propertyID: propertyID });
+        },
+
+        /**
+         * @vuese
+         * Vérifie si l'événément passé en paramètre contient un nombre ou non
+         */
+        isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if ((charCode < 48 || charCode > 57) && charCode != 13)
+            evt.preventDefault();
         }
     },
     directives: {
