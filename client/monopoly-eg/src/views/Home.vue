@@ -116,6 +116,8 @@ export default {
   name: "Home",
   data() {
     return {
+      // @vuese
+      // Version actuelle du client (récupéré via la config package.json)
       version: version
     }
   }
