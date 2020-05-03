@@ -157,6 +157,7 @@ import IOdometer from 'vue-odometer';
 
 /**
  * @vuese
+ * @group Components
  * Entrée d'un joueur dans la liste de joueurs du jeu (HUD)
  */
 export default {

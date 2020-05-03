@@ -14,12 +14,14 @@ Ecran de jeu dans lequel se déroule une partie (contenant HUD, plateau, chat, e
 |getPropertyById|Récupère un objet 'property' (propriété) à partir de son ID (null si non trouvé)|L'ID de la propriété|
 |getPropertyByCellId|Récupère un objet 'property' (propriété) à partir de l'ID d'une 'cell' (case du plateau) (null si non trouvé)|L'ID de la case dont on souhaite récupérer la propriété "associée"|
 |getCellByProperty|Récupère un objet 'cell' (case du plateau) à partir d'une 'property' (propriété)|La propriété dont on souhaite récupérer la case|
+|initGameTimer|Met en place le timer de la partie|Le timestamp de fin de la partie (en ms)|
 |gameRollDiceReq|Envoie une requête de lancement de dés|-|
 |gameTurnEndReq|Signale la fin de notre tour de jeu (pour pouvoir manuellement passer la main au joueur suivant)|-|
 |discardTurnNotif|Supprime une notification de tour ('turn notification') de la liste des notifications (et donc du HUD)|L'index de la notification à supprimer|
 |saleCardBuyProperty|Envoi une requête d'achat (après être tombé sur la case d'un terrain vierge) et supprime la notification associée|L'index de la notification concernée|
 |acceptUseBonusJail|Indique que l'on utilisera notre carte bonus "Sortir du parlement" au prochain lancement de dés|L'index de la notification concernée (qui sera supprimée)|
-|discardOffer|Efface une offre d'achat faite par un autre joueur (sans l'accepter)|L'ID de l'offre concernée (et non pas l'index !)|
+|discardOffer|Efface une offre d'achat faite par un autre joueur dans notre liste|L'ID de l'offre concernée (et non pas l'index !)|
+|rejectOffer|Refuse une offre d'achat faite par un autre joueur|L'ID de l'offre concernée|
 |offerAccept|Accepte une offre d'achat faite par un autre joueur et supprime la notification associée|L'ID de l'offre concernée|
 |sendBid|Envoi notre participation à une enchère en cours|L'objet 'bid' contenant l'enchère à laquelle on participe|
 |rejectBid|Rejette la participation à une enchère ("passer" l'enchère) et envoie une participation à 0€ au serveur|L'objet 'bid' contenant l'enchère que l'on souhaite passer|
@@ -34,6 +36,8 @@ Ecran de jeu dans lequel se déroule une partie (contenant HUD, plateau, chat, e
 |quitGame|Quitte volontairement la partie et de manière définitive (en le signalant au serveur)|-|
 |gameActionResAfterFirstMovement|Continue le tour de jeu (gameActionRes) après le premier déplacement|data : données de gameActionRes ; currPlayer : joueur courant ; cellPos2 : position #2 (le cas échéant)|
 |gameActionResAfterSecondMovement|Termine le gameActionRes (et vérifie si un double a été fait avec les dés)|Données de 'gameActionRes'|
+|execQueue|Exécute la dernière fonction de la queue (le cas échéant)|-|
+|isNumber|Vérifie si l'événément passé en paramètre contient un nombre ou non|-|
 
 <!-- @vuese:Game:methods:end -->
 
@@ -47,10 +51,11 @@ Ecran de jeu dans lequel se déroule une partie (contenant HUD, plateau, chat, e
 |CST|`Object`|Constantes du jeu (pions, couleurs des joueurs, etc.)|-|
 |loading|`Boolean`|Affiche l'écran de chargement|true|
 |loggedUser|`Member`|Utilisateur connecté (chargé depuis le store Vuex)|-|
-|socket|`Call`|socket client utilisé pour les communications|-|
+|socket|`Null`|socket client utilisé pour les communications|-|
 |players|`Array`|Liste des joueurs dans la partie (envoyée par le serveur)|-|
 |cells|`Array`|Liste des cellules du plateau de jeu (envoyée par le serveur)|-|
 |properties|`Array`|Liste des propriétés du plateau de jeu (envoyée par le serveur)|-|
+|moneyFromStart|`Null`|Somme remportée par un joueur lorsqu'il passe par la case départ (envoyée par le serveur)|-|
 |gameEndTime|`Null`|Timestamp de fin de la partie (envoyé par le serveur)|-|
 |gameRemainingTime|`Null`|Temps restant avant la fin de la partie|-|
 |gameTimer|`Null`|Timer (contenant un setInterval()) de la partie|-|
@@ -61,6 +66,7 @@ Ecran de jeu dans lequel se déroule une partie (contenant HUD, plateau, chat, e
 |bids|`Array`|Liste d'enchères en cours|-|
 |audio|`Object`|Ressources audio du jeu|-|
 |endGame|`Boolean`|Indique si la partie est terminée (affiche l'écran de fin si true)|false|
+|fnQueue|`Array`|Queue de fonctions, utilisée si des fonctions asynchrones (events) arrivent simultanément du serveur et doivent être traités l'un après l'autre|-|
 
 <!-- @vuese:Game:data:end -->
 

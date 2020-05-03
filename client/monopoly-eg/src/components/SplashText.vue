@@ -9,6 +9,7 @@ import $ from 'jquery';
 
 /**
  * @vuese
+ * @group Components
  * Composant permettant d'afficher un grand texte animé à l'écran (changement de joueur, )
  */
 export default {

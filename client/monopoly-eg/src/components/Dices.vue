@@ -99,6 +99,11 @@
 <script>
 import $ from 'jquery'
 
+/**
+ * @vuese
+ * @group Components
+ * Gestion des dés (animés)
+ */
 export default {
     name: 'Dices',
     methods: {

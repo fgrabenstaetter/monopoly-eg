@@ -268,6 +268,7 @@ import $ from 'jquery';
 
 /**
  * @vuese
+ * @group Components
  * Modal (popup) de paramètres du jeu
  * Important : le parent de ce composant doit posséder une connexion établie à un socket dans l'attribut data 'socket' que ce composant utilisera pour ses communications
  */
