@@ -6,6 +6,20 @@ const Errors = require('../lib/errors');
 const friends = require('mongoose-friends');
 const Schema = mongoose.Schema;
 
+const nodemailer  = require('nodemailer');
+
+// Configuration EMAILING
+const emailTransporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+        user: 'projet.monopolyeg@gmail.com',
+        pass: '2wSkel}l|hGwAtU'
+    }
+});
+
 let userSchema = new Schema({
     nickname: { type: String, required: true },
     email: { type: String, required: true },
@@ -116,17 +130,32 @@ class UserManager { // abstract
                     newUser.password = hash;
 
                     newUser.save((err) => {
-                        if (err)
+                        if (err) {
                             return cb(Errors.INTERNAL_ERROR);
-                        else
-                            return cb(Errors.SUCCESS);
+                        } else {
+
+                            const mailOptions = {
+                                from: 'Monopoly EG <projet.monopolyeg@gmail.com>',
+                                to: newUser.email,
+                                subject: 'Bienvenue sur Monopoly EG !',
+                                text: `Bonjour ${newUser.nickname},\n\nBienvenue sur Monopoly EG !\n\nTu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.\nPour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
+                                html: `Bonjour ${newUser.nickname},<br><br>Bienvenue sur Monopoly EG !<br><br>Tu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.<br>Pour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`
+                            };
+                                
+                            emailTransporter.sendMail(mailOptions, (error, info) => {
+                                if (error)
+                                    console.log(error);
+                                else
+                                    console.log('Email inscription envoyé : ' + info.response);
+
+                                return cb(Errors.SUCCESS);
+                            });
+                        }
                     });
                 });
             });
         });
     }
-
-
 
     /**
      * Met à jour le profil d'un utilisateur dans la base de données
@@ -141,7 +170,7 @@ class UserManager { // abstract
         if (!nickname || !email)
             return cb(Errors.MISSING_FIELD, null);
 
-        if (nickname.length < 4)
+        if (nickname.length < 3 || nickname.length > 16)
             return cb(Errors.REGISTER.ERR_NICKNAME_LEN, null);
 
         if (rawPassword && rawPassword.length < 4)
@@ -168,7 +197,6 @@ class UserManager { // abstract
 
                     if (user)
                         return cb(Errors.REGISTER.NICKNAME_TAKEN, null);
-
 
                     if (rawPassword) {
                         UserManager.encryptPassword(rawPassword, (hash) => {
@@ -200,6 +228,69 @@ class UserManager { // abstract
                 });
             });
         });
+    }
+
+    /**
+     * Réinitialise le mot de passe d'un utilisateur à partir de son email (si utilisateur trouvé)
+     * Pour des raisons de sécurité, il n'y a pas de distinction si l'utilisateur a été trouvé ou non et si son mot de passe a été réinitialisé
+     * @param email L'adresse email de l'utilisateur
+     * @callback-return code d'erreur (Errors.REGISTER, voir errors.js)
+     */
+    static resetPassword(email, cb) {
+        if (!email) return cb(Errors.SUCCESS);
+
+        if (!UserManager.isEmail(email))
+            return cb(Errors.REGISTER.ERR_EMAIL_FORMAT);
+
+        UserSchema.findOne({ email: { $regex: new RegExp('^'+ email + '$', "i") } }, (err, user) => {
+            if (err || !user)
+                return cb(Errors.SUCCESS);
+            
+            const newPassword = UserManager.generatePassword(8);
+            UserManager.encryptPassword(newPassword, (hash) => {
+                if (!hash)
+                    return cb(Errors.INTERNAL_ERROR);
+
+                user.password = hash;
+
+                user.save((err) => {
+                    if (err)
+                        return cb(Errors.INTERNAL_ERROR);
+                        
+                    const mailOptions = {
+                        from: 'Monopoly EG <projet.monopolyeg@gmail.com>',
+                        to: user.email,
+                        subject: 'Nouveau mot de passe - Monopoly EG',
+                        text: `Bonjour ${user.nickname},\n\nVous avez demandé à réinitialiser votre mot de passe sur Monopoly EG.\nVoici votre nouveau code confidentiel : ${newPassword}\nGardez-le bien en sécurité et modifiez-le lors de votre prochaine connexion au jeu pour renforcer la sécurité de votre compte !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
+                        html: `Bonjour ${user.nickname},<br><br>Vous avez demandé à réinitialiser votre mot de passe sur Monopoly EG.<br>Voici votre nouveau code confidentiel : <strong>${newPassword}</strong><br>Gardez-le bien en sécurité et modifiez-le lors de votre prochaine connexion au jeu pour renforcer la sécurité de votre compte !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`,
+                    };
+                        
+                    emailTransporter.sendMail(mailOptions, (error, info) => {
+                        if (error)
+                            console.log(error);
+                        else
+                            console.log('Email inscription envoyé : ' + info.response);
+        
+                        return cb(Errors.SUCCESS);
+                    });
+                });
+            });
+        });
+    }
+
+    /**
+     * Génère un mot de passe de la longueur souhaitée (lettres & chiffres)
+     * @param length Longueur du mot de passe
+     * @return Mot de passe généré
+     */
+    static generatePassword(length) {
+        let result           = '';
+        const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 
     /**

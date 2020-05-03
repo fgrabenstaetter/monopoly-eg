@@ -17,7 +17,7 @@
               >
               <button v-if="btnLoading" class="btn btn-primary" disabled>CHARGEMENT...</button>
               <button v-else type="submit" class="btn btn-primary">ENVOYER</button>
-              <router-link class="btn btn-secondary" to="/login">ANNULER</router-link>
+              <router-link class="btn btn-secondary" to="/login">RETOUR</router-link>
             </form>
           </div>
         </div>
@@ -60,11 +60,10 @@ export default {
       this.btnLoading = true;
 
       this.$http
-        .post(`${this.$store.state.apiUrl}/reset-password`, this.form)
-        .then(res => {
-            this.$parent.toast(res.status, 'success', 12);
+        .post(`${this.$store.state.apiUrl}/reset-password`, { email: this.formEmail })
+        .then(() => {
+            this.$parent.toast('Votre demande a bien été prise en compte. Si un compte Monopoly EG est associé à cette adresse, vous recevrez un email dans les prochaines minutes.', 'success', 12);
             this.btnLoading = false;
-            this.$router.push('/lobby');
         })
         .catch(err => {
           if (err.response.status === 400)

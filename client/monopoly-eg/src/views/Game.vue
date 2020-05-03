@@ -1616,7 +1616,7 @@ export default {
 
         gameTime += `${minutes}min ${seconds}sec`;
 
-        if (res.type == 'timeout') {
+        if (res.type == 'timeout' || this.fnQueue.length == 0) {
           this.endGame = {
             winnerNickname: this.idToNick(res.winnerID),
             gameTime: gameTime,

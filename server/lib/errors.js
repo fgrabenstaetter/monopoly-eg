@@ -65,11 +65,11 @@ module.exports = Object.freeze({
         },
         ERR_NICKNAME_LEN: {
             code: 4,
-            status: 'Pseudo trop court'
+            status: 'Le pseudo doit comporter entre 3 et 16 caractères'
         },
         ERR_PASSWORD_LEN: {
             code: 5,
-            status: 'Mot de passe trop court'
+            status: 'Mot de passe trop court (min 4 caractères)'
         },
     },
 

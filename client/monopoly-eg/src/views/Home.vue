@@ -94,7 +94,7 @@
                           </p>
                       <h2>Contacts</h2>
                           <p>
-                              boris.flesch@gmail.com
+                              projet.monopolyeg@gmail.com
                           </p>
 
                 </div>

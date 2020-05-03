@@ -11,7 +11,6 @@ const jwt         = require('jsonwebtoken');
 const expressJwt  = require('express-jwt');
 const socketioJwt = require('socketio-jwt');
 const mongoose    = require('mongoose');
-const nodemailer  = require('nodemailer');
 
 const Constants   = require('./lib/constants');
 const Errors      = require('./lib/errors');
@@ -69,7 +68,7 @@ if (production) {
     server = http.createServer(app).listen(port);
 }
 
-const io = require('socket.io')(server, {origins:'localhost:* http://localhost:*'});
+const io = require('socket.io')(server);
 
 // Parse le contenu "URL-encoded" (i.e. formulaires HTML)
 app.use(express.urlencoded({ extended: true }));
@@ -77,20 +76,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('<h1>Bonjour</h1>');
+    res.send('<h1>EG Server.</h1>');
 });
 
-// Configuration EMAILING
-const emailTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: 'projet.monopolyeg@gmail.com',
-        pass: '2wSkel}l|hGwAtU'
-    }
-});
 
 //////////////////////
 // VARIABLES DE JEU //
@@ -117,7 +105,7 @@ function getConnectedUserById (id) {
 // API ENDPOINTS //
 ///////////////////
 
-app.use(expressJwt({ secret: JWT_SECRET }).unless({ path: ['/api/register', '/api/login', /\/avatars\/*/, /\/test*/] }));
+app.use(expressJwt({ secret: JWT_SECRET }).unless({ path: ['/api/register', '/api/login', '/api/reset-password', /\/avatars\/*/, /\/test*/] }));
 app.use(express.static(__dirname + "/public"));
 
 app.use( (err, req, res, next) => {
@@ -127,27 +115,10 @@ app.use( (err, req, res, next) => {
 
 app.post('/api/register', (req, res) => {
     UserManager.register(req.body.nickname, req.body.email, req.body.password, (err) => {
-        if (err.code === Errors.SUCCESS.code) {
-            const mailOptions = {
-                from: 'Monopoly EG <projet.monopolyeg@gmail.com>',
-                to: req.body.email,
-                subject: 'Bienvenue sur Monopoly EG !',
-                text: `Bonjour ${req.body.nickname},\n\nBienvenue sur Monopoly EG !\n\nTu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.\nPour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
-                html: `Bonjour ${req.body.nickname},<br><br>Bienvenue sur Monopoly EG !<br><br>Tu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.<br>Pour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`
-            };
-                
-            emailTransporter.sendMail(mailOptions, function(error, info){
-                if (error)
-                    console.log(error);
-                else
-                    console.log('Email inscription envoyé : ' + info.response);
-
-                res.json({ error: err.code, status: err.status });
-            });
-        } else {
+        if (err.code !== Errors.SUCCESS.code)
             res.status(400);
-            res.json({ error: err.code, status: err.status });
-        }
+        
+        res.json({ error: err.code, status: err.status });
     });
 });
 
@@ -180,6 +151,15 @@ app.post('/api/login', (req, res) => {
             user: userSchema,
             avatar: avatar
         });
+    });
+});
+
+app.post('/api/reset-password', (req, res) => {
+    UserManager.resetPassword(req.body.email, (err) => {
+        if (err.code !== Errors.SUCCESS.code)
+            res.status(400);
+
+        res.json({ error: err.code, status: err.status });
     });
 });
 

@@ -14,7 +14,7 @@
                         <input v-model="form.password" type="password" class="form-control" placeholder="Mot de passe">
                         <button v-if="btnLoading" class="btn btn-primary" disabled>CHARGEMENT...</button>
                         <button v-else type="submit" class="btn btn-primary">INSCRIPTION</button>
-                        <router-link class="btn btn-secondary" to="/login">ANNULER</router-link>
+                        <router-link class="btn btn-secondary" to="/login">RETOUR</router-link>
                     </form>
                 </div>
             </div>
