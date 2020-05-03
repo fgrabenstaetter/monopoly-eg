@@ -685,8 +685,9 @@
     .player-list {
       height: 50vh;
       display: flex;
-      flex-wrap: wrap;
+      
       flex-direction: column;
+      justify-content: center;
       position: absolute;
       left: 45px;
       padding: 0;
@@ -695,7 +696,7 @@
 
       .player-entry {
         margin-bottom: 10px;
-        margin-right: 30px;
+
         position: relative;
         cursor: pointer;
 
@@ -1344,13 +1345,24 @@
         }
       }
 
+      /*@media (max-height: 820px) {
+        .player-entry {
+          margin-bottom: 0px;
+        }
+      }*/
+
       // couleurs assignées automatiquement aux membres de la liste
       @import "_players-colors.scss";
     }
 
-    @media (min-height: 760px) {
+    @media (max-height: 900px) {
       .player-list {
-        height: 55vh;
+        margin-top: 40px;
+        flex-wrap: wrap;
+        justify-content: unset;
+      }
+      .player-entry {
+        margin-right: 30px;
       }
     }
   }
