@@ -86,7 +86,6 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
-                        <!-- <button class="btn btn-primary" v-if="imCurrentPlayer" @click="discardTurnNotif(index)">OK</button> -->
                       </div>
                     </div>
                   </div>
@@ -127,8 +126,8 @@
                       <div class="col-md-12 text-center value">
                         <p>Voulez-vous utiliser votre bonus « Sortir du Parlement » ?</p>
                       </div>
-                      <button v-if="imCurrentPlayer" @click="acceptUseBonusJail(index)" class="btn btn-primary accept-btn">Oui</button>
-                      <button v-if="imCurrentPlayer" @click="discardTurnNotif(index)" class="btn btn-primary deny-btn">Non</button>
+                      <button v-if="imCurrentPlayer" @click="acceptUseBonusJail(index)" class="btn btn-primary accept-btn">OUI</button>
+                      <button v-if="imCurrentPlayer" @click="discardTurnNotif(index)" class="btn btn-secondary deny-btn">NON</button>
                     </div>
                   </div>
                 </div>

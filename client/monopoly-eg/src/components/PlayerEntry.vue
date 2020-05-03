@@ -20,7 +20,7 @@
             <span v-if="player.loseMoney" class="money-lose">{{player.loseMoney}}€</span>
         </div>
         
-        <div v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
+        <perfect-scrollbar v-if="showProperties" class="popup top" :class="{'edition': propertiesEdition.open}">
             <div class="popup-title">{{player.nickname}}</div>
             <img class="popup-pawn" :src="playerPawnImgSrc">
 
@@ -150,13 +150,14 @@
                 <button @click="submitPropertiesEdition" class="houses-validation-btn">Terminer</button>
                 <button @click="cancelPropertiesEdition" class="houses-cancel-btn">Annuler</button>
             </div>
-        </div>
+        </perfect-scrollbar>
     </div>
 </template>
 
 <script>
-import ClickOutside from 'vue-click-outside'
+import ClickOutside from 'vue-click-outside';
 import IOdometer from 'vue-odometer';
+import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
 
 /**
  * @vuese
@@ -194,7 +195,10 @@ export default {
     components: {
         // @vuese
         // Compteur d'argent animé (permet de faire tourner les chiffres de l'argent des joueurs)
-        IOdometer
+        IOdometer,
+        // @vuese
+        // Utilisé pour afficher une scrollbar dans la liste des propriétés d'un joueur si nécessaire
+        PerfectScrollbar
     },
     data() {
         return {
