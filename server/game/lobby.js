@@ -28,7 +28,6 @@ class Lobby {
         this.gameDuration = null; // durée en ms ou null pour illimité
         this.maxUsersNb = 8;
         this.open = true;
-
         this.invitations = [];
 
         this.addUser(user);

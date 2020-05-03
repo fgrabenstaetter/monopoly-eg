@@ -28,7 +28,6 @@ class Network {
         if (user.socket) {
             // ancien socket toujours connecté, lui signaler
             user.socket.emit('notLoggedRes');
-            console.log('[SOCKET] Ancien socket de ' + user.nickname + ' trouvé => envoi de notLoggedRes à ce dernier');
         }
 
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
@@ -779,7 +778,6 @@ class Network {
 
     gameReadyReq(player, game) {
         player.socket.on('gameReadyReq', () => {
-            console.log(' -- READY REQ DE DÉBUT');
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -1285,7 +1283,7 @@ class Network {
 
         setTimeout( () => {
             if (!player.socket || player.socket !== oldSock || !player.socket.connected) {
-                console.log('Reconnexion au jeu trop rapide, déconnexion du socket')
+                console.log('Reconnexion au jeu trop rapide de ' + player.nickname + ', déconnexion du socket')
                 if (player.socket)
                     player.socket.disconnect();
                 return;
@@ -1299,7 +1297,6 @@ class Network {
 
 
         player.socket.on('gameReadyReq', () => {
-            console.log(' -- READY REQ DE RECONNEXION');
             let players = [], cells = [], properties = [], chatMessages = [], bids = [], offers = [], cellsCounter = 0;
 
             for (const player of game.players) {
@@ -1410,7 +1407,7 @@ class Network {
                     player.socket.emit('gameTurnRes', {
                         playerID         : game.curPlayer.id,
                         turnEndTime      : game.turnData.endTime,
-                        canRollDiceAgain : game.canRollDiceAgain
+                        canRollDiceAgain : game.turnData.canRollDiceAgain
                     });
                 }
             }
