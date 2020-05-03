@@ -170,6 +170,10 @@ module.exports = Object.freeze({
         ALREADY_IN_FRIEND_LOBBY: {
             code: 8,
             status: 'Vous êtes déjà dans le lobby de votre ami'
+        },
+        ALREADY_INVITED: {
+            code: 9,
+            status: 'Ce joueur a déjà été invité dans ce lobby'
         }
     },
 

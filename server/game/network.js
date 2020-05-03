@@ -28,7 +28,6 @@ class Network {
         if (user.socket) {
             // ancien socket toujours connecté, lui signaler
             user.socket.emit('notLoggedRes');
-            console.log('[SOCKET] Ancien socket de ' + user.nickname + ' trouvé => envoi de notLoggedRes à ce dernier');
         }
 
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
@@ -39,10 +38,15 @@ class Network {
 
             // si il est dans un lobby, l'y supprimer
             for (const lobby of this.GLOBAL.lobbies) {
-                if (lobby.userByID(user.id)) {
+                if (lobby.userByID(user.id))
                     lobby.delUser(user); // il ne sera supprimé que si il n'a pas été invité
-                    break;
+
+                // si une invitation lui était destinée, la supprimer
+                for (const invit of lobby.invitations) {
+                    if (invit.toUserID === user.id)
+                        lobby.delInvitation(invit.invitationID);
                 }
+
             }
 
             // si il est dans une partie de jeu, l'y déconnecter (PAS SUPPRIMER POUR RECONNEXION)
@@ -87,7 +91,7 @@ class Network {
 
         // Inviter / Rejoindre / Quitter
         this.lobbyInvitationReq             (user, lobby);
-        this.lobbyInvitationAcceptReq       (user, lobby);
+        this.lobbyInvitationActionReq       (user, lobby);
         this.lobbyKickReq                   (user, lobby);
 
         // Paramètres + Chat
@@ -125,7 +129,7 @@ class Network {
 
         // Inviter / Rejoindre / Quitter
         user.socket.removeAllListeners('lobbyInvitationReq');
-        user.socket.removeAllListeners('lobbyInvitationAcceptReq');
+        user.socket.removeAllListeners('lobbyInvitationActionReq');
         user.socket.removeAllListeners('lobbyKickReq');
 
         // Paramètres + Chat
@@ -349,6 +353,16 @@ class Network {
                     }
 
                     if (err.code === Errors.SUCCESS.code) {
+                        // si une invitation vers ce joueur existe déjà, ne rien faire (ANTI SPAM)
+                        for (const invit of lobby.invitations) {
+                            if (invit.toUserID === friendUser.id) {
+                                err = Errors.LOBBY.ALREADY_INVITED;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (err.code === Errors.SUCCESS.code) {
                         const invitId = lobby.addInvitation(user.id, data.friendID);
                         friendUser.socket.emit('lobbyInvitationReceivedRes', {
                             invitationID         : invitId,
@@ -364,33 +378,32 @@ class Network {
         });
     }
 
-    lobbyInvitationAcceptReq(user, lobby) {
-        user.socket.on('lobbyInvitationAcceptReq', (data) => {
+    lobbyInvitationActionReq(user, lobby) {
+        user.socket.on('lobbyInvitationActionReq', (data) => {
             let err = Errors.SUCCESS;
-            let friendLobby = null;
             if (data)
                 data.invitationID = parseInt(data.invitationID);
 
-            if (!data || isNaN(data.invitationID))
+            if (!data || isNaN(data.invitationID) || data.accept == null)
                 err = Errors.MISSING_FIELD;
             else {
-                const invitObj = lobby.delInvitation(data.invitationID);
-                if (!invitObj)
+                let invitObj, friendLobby;
+                for (const lob of this.GLOBAL.lobbies) {
+                    invitObj = lob.delInvitation(data.invitationID);
+                    if (invitObj) {
+                        friendLobby = lob;
+                        break;
+                    }
+                }
+
+                if (!friendLobby || !friendLobby.open)
+                    err = Errors.LOBBY.CLOSED;
+                else if (!invitObj)
                     err = Errors.LOBBY.INVITATION_NOT_EXISTS;
                 else if (invitObj.toUserID !== user.id)
                     err = Errors.UNKNOW;
-                else {
-                    for (const lobby of this.GLOBAL.lobbies) {
-                        const usr = lobby.userByID(invitObj.fromUserID);
-                        if (usr) {
-                            friendLobby = lobby;
-                            break;
-                        }
-                    }
-
-                    if (!friendLobby || !friendLobby.open)
-                        err = Errors.LOBBY.CLOSED;
-                    else if (friendLobby.userByID(user.id))
+                else if (data.accept) {
+                    if (friendLobby.userByID(user.id))
                         err = Errors.LOBBY.ALREADY_IN_FRIEND_LOBBY;
                     else if (friendLobby.users.length >= friendLobby.maxUsersNb)
                         err = Errors.LOBBY.FULL;
@@ -404,14 +417,13 @@ class Network {
                                 break;
                             }
                         }
+
+                        friendLobby.addUser(user);
                     }
                 }
-
-                if (err.code === Errors.SUCCESS.code)
-                    friendLobby.addUser(user);
-
-                user.socket.emit('lobbyInvitationAcceptRes', { error: err.code, status: err.status });
             }
+
+            user.socket.emit('lobbyInvitationActionRes', { error: err.code, status: err.status });
         });
     }
 
@@ -766,7 +778,6 @@ class Network {
 
     gameReadyReq(player, game) {
         player.socket.on('gameReadyReq', () => {
-            console.log(' -- READY REQ DE DÉBUT');
             player.isReady = true;
             if (game.allPlayersReady && !game.startedTime) {
                 // message de commencement
@@ -1272,7 +1283,7 @@ class Network {
 
         setTimeout( () => {
             if (!player.socket || player.socket !== oldSock || !player.socket.connected) {
-                console.log('Reconnexion au jeu trop rapide, déconnexion du socket')
+                console.log('Reconnexion au jeu trop rapide de ' + player.nickname + ', déconnexion du socket')
                 if (player.socket)
                     player.socket.disconnect();
                 return;
@@ -1286,7 +1297,6 @@ class Network {
 
 
         player.socket.on('gameReadyReq', () => {
-            console.log(' -- READY REQ DE RECONNEXION');
             let players = [], cells = [], properties = [], chatMessages = [], bids = [], offers = [], cellsCounter = 0;
 
             for (const player of game.players) {
@@ -1397,7 +1407,7 @@ class Network {
                     player.socket.emit('gameTurnRes', {
                         playerID         : game.curPlayer.id,
                         turnEndTime      : game.turnData.endTime,
-                        canRollDiceAgain : game.canRollDiceAgain
+                        canRollDiceAgain : game.turnData.canRollDiceAgain
                     });
                 }
             }

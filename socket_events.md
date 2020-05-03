@@ -69,15 +69,15 @@
         }
          ```
 
-- **Accepter une demande d'invitation lobby d'un ami**
-    * **Requête:** lobbyInvitationAcceptReq
+- **Accepter/Refuser une demande d'invitation lobby d'un ami**
+    * **Requête:** lobbyInvitationActionReq
         * *Données:*
         ```javascript
         {
             invitationID: int
         }
          ```
-    * **Réponse:** lobbyInvitationAcceptRes
+    * **Réponse:** lobbyInvitationActionRes
         * *Données:*
         ```javascript
         {

@@ -454,7 +454,7 @@ export default {
          */
         acceptLobbyInvitation(id) {
             console.log("acceptLobbyInvitation " + id);
-            this.socket.emit("lobbyInvitationAcceptReq", { invitationID: id });
+            this.socket.emit("lobbyInvitationActionReq", { invitationID: id, accept: true });
             this.deleteLobbyInvitation(id);
         },
 
@@ -464,7 +464,7 @@ export default {
          * @arg ID de l'invitation à rejeter
          */
         rejectLobbyInvitation(id) {
-            // Post-POC : possibilité de notifier le serveur
+            this.socket.emit("lobbyInvitationActionReq", { invitationID: id, accept: false });
             this.deleteLobbyInvitation(id);
         },
 
@@ -909,8 +909,8 @@ export default {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
-        this.socket.on("lobbyInvitationAcceptRes", (res) => {
-            console.log("lobbyInvitationAcceptRes");
+        this.socket.on("lobbyInvitationActionRes", (res) => {
+            console.log("lobbyInvitationActionRes");
             console.log(res);
             if (res.error === 0) {
                 this.socket.emit('lobbyReadyReq');

@@ -28,7 +28,6 @@ class SuccessManager {
 
             this.getPlayerAllSuccess(player, (success) => {
                 this.datas[key].completed = success;
-                console.log(' ___ succès de ' + player.nickname + ' : ' + success);
             });
         }
     }
@@ -69,13 +68,9 @@ class SuccessManager {
      * @param player Le joueur sur lequel la vérification est effectuée
      */
     checkCompleted (successID, player) {
-        console.log(' ___ checkCompleted() player ' + player.nickname + ' succès ' + successID)
-        if (this.datas[player.id].completed.indexOf(successID) !== -1) {
-            console.log(' => déjà  completed ! ')
+        if (this.datas[player.id].completed.indexOf(successID) !== -1)
             return;
-        }
 
-        console.log(' => SAVE BDD');
         this.datas[player.id].completed.push(successID);
         this.save(player);
 

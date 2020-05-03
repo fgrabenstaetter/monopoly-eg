@@ -10,9 +10,8 @@ class Lobby {
      * Objets d'invitation de lobby
      * { fromUserID: int, toUserID: int, invitationID: int }
      */
-    static invitations = [];
-    static invitationIDCounter = 0;
     static lobbyIDCounter = 0;
+    static invitationIDCounter = 0;
 
     /**
      * @param user Utilisateur qui crée le lobby (= hôte)
@@ -29,6 +28,7 @@ class Lobby {
         this.gameDuration = null; // durée en ms ou null pour illimité
         this.maxUsersNb = 8;
         this.open = true;
+        this.invitations = [];
 
         this.addUser(user);
     }
@@ -173,7 +173,7 @@ class Lobby {
      * @returns L'ID de l'invitation créée
      */
     addInvitation(fromID, toID) {
-        Lobby.invitations.push({
+        this.invitations.push({
             fromUserID: fromID,
             toUserID: toID,
             invitationID: Lobby.invitationIDCounter
@@ -187,13 +187,14 @@ class Lobby {
      * @returns L'objet invitation si trouvé, false sinon
      */
     delInvitation(id) {
-        for (let i = 0, l = Lobby.invitations.length; i < l; i++) {
-            if (Lobby.invitations[i].invitationID === id) {
-                const save = Lobby.invitations[i];
-                Lobby.invitations.splice(i, 1);
+        for (let i = 0, l = this.invitations.length; i < l; i++) {
+            if (this.invitations[i].invitationID === id) {
+                const save = this.invitations[i];
+                this.invitations.splice(i, 1);
                 return save;
             }
         }
+
         return false;
     }
 }
