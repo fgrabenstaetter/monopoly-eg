@@ -436,11 +436,15 @@ export default {
       return null;
     },
 
+    /**
+     * @vuese
+     * Met à jour l'argent d'un joueur avec animation du delta (perte/gain d'argent)
+     * @arg Le joueur (objet 'player') dont on met l'argent à jour ; Le nouveau solde du joueur
+     */
     setPlayerMoney(player, money) {
       const delta = money - player.money;
 
       this.$set(player, 'money', money);
-      
       if (delta == 0) return;
 
       if (delta > 0) {
