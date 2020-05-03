@@ -251,7 +251,7 @@ export default {
          */
         async triggerDices(d1, d2, _callback) {
             const rotations = 6;
-            if ($('.dice-container').css('top') == '50px') {
+            if ($('.dice-container').css('top') == '70px') {
                 $('.dice-container').css('top', '50%');
                 $('.dice-container').removeClass('mini');
                 await this.sleep(1000);
@@ -261,7 +261,7 @@ export default {
             this.rollDice(1, d1, rotations);
             this.rollDice(2, d2, rotations);
             await this.sleep(rotations * 400 + 800);
-            $('.dice-container').css('top', '50px');
+            $('.dice-container').css('top', '70px');
             $('.dice-container').addClass('mini');
             if (typeof _callback !== "undefined")
                 _callback();

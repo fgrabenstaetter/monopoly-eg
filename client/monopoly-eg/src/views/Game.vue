@@ -40,7 +40,7 @@
                   data-target="#optionsModal"
                 ></i>
 
-                <div v-if="gameRemainingTime" style="position: absolute; bottom: -10px; color: #fff; opacity: 0.8;">
+                <div v-if="gameRemainingTime" class="timer">
                     <span>
                         {{gameRemainingTime.min}}min
                         {{gameRemainingTime.sec}}sec
