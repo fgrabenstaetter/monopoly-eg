@@ -62,6 +62,7 @@ export default {
       this.$http
         .post(`${this.$store.state.apiUrl}/reset-password`, { email: this.formEmail })
         .then(() => {
+            this.formEmail = '';
             this.$parent.toast('Votre demande a bien été prise en compte. Si un compte Monopoly EG est associé à cette adresse, vous recevrez un email dans les prochaines minutes.', 'success', 12);
             this.btnLoading = false;
         })
