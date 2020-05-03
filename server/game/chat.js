@@ -15,7 +15,7 @@ class Chat {
     /**
      * @param sender L'utilisateur qui envoie le message (ou null si message du serveur)
      * @param text Le texte du message
-     * @return Le message ajouté
+     * @returns Le message ajouté
      */
     addMessage (sender, text) {
         this.messages.push({

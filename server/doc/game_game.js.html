@@ -1,4 +1,32 @@
-const Chat                    = require('./chat');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: game/game.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: game/game.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Chat                    = require('./chat');
 const Constants               = require('./../lib/constants');
 const Deck                    = require('./deck');
 const Player                  = require('./player');
@@ -50,7 +78,7 @@ class Game {
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
         const pawns = [0, 1, 2, 3, 4, 5, 6, 7];
-        for (let i = 0, l = users.length; i < l; i++) {
+        for (let i = 0, l = users.length; i &lt; l; i++) {
             const randInd = Math.floor(Math.random() * pawns.length);
             const pawn = pawns[randInd];
             pawns.splice(randInd, 1);
@@ -281,7 +309,7 @@ class Game {
      * @returns true si la partie est finie, false sinon
      */
     checkEnd() {
-        const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
+        const gameTimeout = this.forcedEndTime &amp;&amp; this.forcedEndTime &lt;= Date.now();
         let ranking = [];
         if (gameTimeout) {
             // le vainqueur est celui qui a le plus d'argent / biens de valeur (= valeur des propriétés)
@@ -298,7 +326,7 @@ class Game {
             let nonFails = [], fails = [];
             //Les joueurs ayant perdu au moment de la fin de partie
             for (const p of this.players) {
-                if (p !== winnerPlayer && !p.failure) {
+                if (p !== winnerPlayer &amp;&amp; !p.failure) {
                     let sum = p.money;
                     for (const prop of p.properties)
                         sum += prop.value;
@@ -362,7 +390,7 @@ class Game {
                 for (const obj of fails) {
                     ranking.push(obj.playerID);
                 }
-
+                console.log(ranking);
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                     type     : 'normal',
                     winnerID : winner.id,
@@ -436,7 +464,7 @@ class Game {
         clearTimeout(this.turnData.midTimeout);
         clearTimeout(this.turnData.timeoutActionTimeout);
 
-        if (this.turnData.canRollDiceAgain && this.active) { // relancer dés à chaque double aussi
+        if (this.turnData.canRollDiceAgain &amp;&amp; this.active) { // relancer dés à chaque double aussi
             this.GLOBAL.network.gameTurnAction(this.curPlayer, this);
             if (expired) // si expiré uniquement !
                 this.turnData.timeoutActionTimeout = setTimeout(this.turnPlayerTimeoutAction.bind(this), Constants.GAME_PARAM.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
@@ -472,7 +500,7 @@ class Game {
             } else {
                 this.turnData.canRollDiceAgain = true;
 
-                if (this.turnData.endTime >= Date.now() && this.curPlayer.connected) {
+                if (this.turnData.endTime >= Date.now() &amp;&amp; this.curPlayer.connected) {
                     // Reprogrammer le timeout en rajoutant le temps additionnel lors d'un double aux dés
                     const timeLeft = this.turnData.endTime - Date.now();
                     const newDuration = timeLeft + Constants.GAME_PARAM.TURN_DOUBLE_DICE_ADDED_TIME;
@@ -498,7 +526,7 @@ class Game {
     }
 
     makeTurnAfterMove(diceRes, player, oldPos) {
-        if (!this.curPlayer.isInPrison && oldPos > player.cellPos) // recevoir argent de la banque
+        if (!this.curPlayer.isInPrison &amp;&amp; oldPos > player.cellPos) // recevoir argent de la banque
             player.addMoney(Constants.GAME_PARAM.GET_MONEY_FROM_START);
 
         switch (this.curCell.type) {
@@ -552,7 +580,7 @@ class Game {
      */
     turnPlayerAlreadyInPrison(diceRes, useExitJailCard = false) {
         if (this.curPlayer.remainingTurnsInJail > 0) {
-            if (useExitJailCard && this.curPlayer.nbJailEscapeCards > 0) {
+            if (useExitJailCard &amp;&amp; this.curPlayer.nbJailEscapeCards > 0) {
                 this.curPlayer.nbJailEscapeCards--;
                 this.curPlayer.quitPrison();
             } else if (diceRes[0] === diceRes[1])
@@ -599,7 +627,7 @@ class Game {
                 // Le terrain appartient à un autre joueur
                 const rentalPrice = property.type === Constants.PROPERTY_TYPE.PUBLIC_COMPANY ? property.rentalPrice(diceRes) : property.rentalPrice;
 
-                if (this.curPlayer.money < rentalPrice) {
+                if (this.curPlayer.money &lt; rentalPrice) {
                     this.playerNotEnoughMoney(this.curPlayer, rentalPrice,
                         this.curPlayer.nickname + ' est en faillite (ne peut pas payer le loyer de ' + property.owner.nickname + ')',
                         this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer le loyer de ' + property.owner.nickname);
@@ -632,7 +660,7 @@ class Game {
 
     turnPlayerTaxCell() {
         const moneyToPay = this.curCell.tax.money;
-        if (this.curPlayer.money < moneyToPay) {
+        if (this.curPlayer.money &lt; moneyToPay) {
             this.playerNotEnoughMoney(this.curPlayer, moneyToPay,
                 this.curPlayer.nickname + ' est en faillite (ne peux pas payer la taxe de ' + moneyToPay + '€)',
                 this.curPlayer.nickname + ' doit hypothéquer des propriétés pour pouvoir payer la taxe de ' + moneyToPay + '€');
@@ -661,7 +689,7 @@ class Game {
             return 2;
 
         const price = property.type === Constants.PROPERTY_TYPE.STREET ? property.prices.empty : property.price;
-        if (this.curPlayer.money < price)
+        if (this.curPlayer.money &lt; price)
             return 3;
 
         this.curPlayer.loseMoney(price);
@@ -680,7 +708,7 @@ class Game {
     asyncActionUpgradeProperty(list) {
         let sum = 0;
         for (const row of list) {
-            if (row.propertyID == null || row.level == null || row.level < 0 || row.level > 5)
+            if (row.propertyID == null || row.level == null || row.level &lt; 0 || row.level > 5)
                 return 1;
             const prop = this.curPlayer.propertyByID(row.propertyID);
 
@@ -693,7 +721,7 @@ class Game {
 
             // il a bien le monopole => vérifier qu'aucune propriété de la monopole n'est hypothéquée
             for (const pr of this.curPlayer.properties) {
-                if (pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.isMortgaged)
+                if (pr.type === Constants.PROPERTY_TYPE.STREET &amp;&amp; pr.color === prop.color &amp;&amp; pr.isMortgaged)
                     return 6;
             }
 
@@ -825,7 +853,7 @@ class Game {
                 break;
         }
 
-        if (sum < moneyToObtain) { // failure
+        if (sum &lt; moneyToObtain) { // failure
             this.playerFailure(player);
             return false;
         } else {
@@ -851,7 +879,7 @@ class Game {
         const moneyToObtain = this.turnData.asyncRequestArgs[0];
         let failure = false;
 
-        if (this.curPlayer.money < moneyToObtain) {
+        if (this.curPlayer.money &lt; moneyToObtain) {
             // hypothèque auto jusqu'à ce que suffisant
             failure = !this.playerAutoMortgage(this.curPlayer, moneyToObtain);
 
@@ -908,7 +936,7 @@ class Game {
                 sum += prop.mortgagePrice;
         }
 
-        if (sum < moneyToObtain) {
+        if (sum &lt; moneyToObtain) {
             // le joueur ne peux pas payer, même en vendant ses propriétés => faillite
             this.playerFailure(player);
             this.setTurnActionData(null, null, msgIfFailure);
@@ -921,3 +949,26 @@ class Game {
 }
 
 module.exports = Game;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Bank.html">Bank</a></li><li><a href="Cell.html">Cell</a></li><li><a href="Chat.html">Chat</a></li><li><a href="Game.html">Game</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="Matchmaking.html">Matchmaking</a></li><li><a href="Network.html">Network</a></li><li><a href="Offer.html">Offer</a></li><li><a href="Player.html">Player</a></li><li><a href="Property.html">Property</a></li><li><a href="PublicCompany.html">PublicCompany</a></li><li><a href="Street.html">Street</a></li><li><a href="Tax.html">Tax</a></li><li><a href="TrainStation.html">TrainStation</a></li><li><a href="User.html">User</a></li><li><a href="UserManager.html">UserManager</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun May 03 2020 11:12:45 GMT+0200 (GMT+02:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

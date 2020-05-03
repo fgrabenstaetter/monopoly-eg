@@ -21,14 +21,14 @@ class TrainStation extends Property {
     }
 
     /**
-     * @return Le prix d'un loyer de la gare
+     * @returns Le prix d'un loyer de la gare
      */
     get rentalPrice () {
         return this.rentalPrices[this.owner.trainStationsNb - 1];
     }
 
     /**
-     * @return La valeur totale de la gare
+     * @returns La valeur totale de la gare
      */
     get value () {
         return this.price;
