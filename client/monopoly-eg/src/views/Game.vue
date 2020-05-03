@@ -86,6 +86,7 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
+                        <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button>
                       </div>
                     </div>
                   </div>
