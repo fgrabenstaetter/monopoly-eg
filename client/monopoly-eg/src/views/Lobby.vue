@@ -225,41 +225,87 @@ import * as SocketIOFileUpload from 'socketio-file-upload';
 export default {
     name: 'Lobby',
     components: {
+        // @vuese
+        // Ecran de chargement
         'full-screen-loader': FullScreenLoader,
+        // @vuese
+        // Système de chat
         'chat-io': ChatIO,
+        // @vuese
+        // Modal de paramètres
         'game-settings-modal': GameSettingsModal
     },
     data() {
         return {
+            // @vuese
+            // Utilisateur actuelement connecté (récupéré du store)
             loggedUser: this.$store.getters.loggedUser,
+            // @vuese
+            // Socket utilisé pour les connexions
             socket: null,
+            // @vuese
+            // Bouton "Jouer" ({ text: string, loading: bool, disabled: bool })
             playBtn: {
                 text: "JOUER !",
                 loading: false,
                 disabled: true
             },
+            // @vuese
+            // Formulaire d'ajout d'ami ({ nickname: string })
             addFriendForm: {
                 nickname: ""
             },
+            // @vuese
+            // Formulaire d'édition du profil ({ nickname: string, email: string, password: string })
             editProfile: {
                 nickname: '',
                 email: '',
                 password: ''
             },
-            siofu: null, // File upload (avatar) handler
+            // @vuese
+            // Gestionaire d'eupload d'image (pour l'avatar, cf. socketio-file-upload)
+            siofu: null,
+            // @vuese
+            // Indique si le lobby est en chargement (bool)
             loading: false,
+            // @vuese
+            // Liste des joueurs dans le lobby ('Mon groupe') (liste d'objets 'player')
             players: [],
+            // @vuese
+            // Liste d'amis
             friends: [],
+            // @vuese
+            // Liste d'invitations d'amis
             friendsInvitations: [],
+            // @vuese
+            // ID de l'hôte
             hostID: null,
+            // @vuese
+            // Flèche 'changement de joueurs' de gauche affichée (bool)
             leftNbJ: false,
+            // @vuese
+            // Flèche 'changement de joueurs' de droite affichée (bool)
             rightNbJ: false,
+            // @vuese
+            // Flèche 'changement de temps' de gauche affichée (bool)
             leftGameTime: false,
+            // @vuese
+            // Flèche 'changement de temps' de droite affichée (bool)
             rightGameTime: false,
+            // @vuese
+            // Temps souhaité pour la partie ['30 min', '1 h', 'Illimité']
             gameTime: 'Illimité',
+            // @vuese
+            // Nombre de joueurs souhaités ('target') pour la partie (matchmaking)
             nbPlayers: 0,
+            // @vuese
+            // Liste des invitations à rejoindre le lobby de quelqu'un d'autre
             lobbyInvitations: [],
+            // @vuese
+            // Recherche dans la liste d'amis
             searchFriends: '',
+            // @vuese
+            // Ressources audio utilisées dans le Lobby
             audio: {
                 background: null,
                 sfx: {
@@ -272,12 +318,20 @@ export default {
         }
     },
     watch: {
+        /**
+         * @vuese
+         * Rafraîchit la liste d'amis en fonction de la recherche
+         */
         searchFriends() {
             for (const friend of this.friends)
                 friend.showInSearch = friend.nickname.toUpperCase().includes(this.searchFriends.toUpperCase());
         }
     },
     methods: {
+        /**
+         * @vuese
+         * Clic sur le bouton "Jouer" : lance la partie (ou recherche une partie selon nos critères) OU annule la recherche de partie (selon l'état du bouton)
+         */
         play() {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id) {
@@ -287,24 +341,29 @@ export default {
                     this.socket.emit('lobbyCancelPlayReq');
             }
         },
-        nickToId(nick) {
-            for (const row of this.players) {
-                if (row.nickname === nick)
-                    return row.id;
-            }
-        },
+
+        /**
+         * @vuese
+         * Récupère le pseudo d'un joueur à partir de son ID
+         * @arg ID du joueur
+         */
         idToNick(id) {
             for (const row of this.players) {
                 if (row.id === id)
                     return row.nickname;
             }
         },
+
+        /**
+         * @vuese
+         * Diminue le nombre de joueurs souhaités pour la partie (min : min(2, [nb joueurs déjà dans le lobby]))
+         */
         leftNbJClick() {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id
                 && this.nbPlayers > 2 && this.nbPlayers > this.players.length) {
                 this.rightNbJ = true;
-                
+
                 this.nbPlayers--;
                 this.socket.emit('lobbyChangeTargetUsersNbReq', { nb: this.nbPlayers });
 
@@ -313,6 +372,11 @@ export default {
                 }
             }
         },
+
+        /**
+         * @vuese
+         * Augmente le nombre de joueurs souhaités pour la partie (max : 8)
+         */
         rightNbJClick() {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id && this.nbPlayers < 8) {
@@ -325,6 +389,11 @@ export default {
                     this.rightNbJ = false;
             }
         },
+
+        /**
+         * @vuese
+         * Diminue le temps souhaité pour la partie
+         */
         leftGameTimeClick() {
             this.audio.sfx.buttonClick.play();
             this.leftGameTime = true;
@@ -342,6 +411,11 @@ export default {
 
             this.socket.emit('lobbyChangeDurationReq' , { newDuration: dur });
         },
+
+        /**
+         * @vuese
+         * Augmente le temps souhaité pour la partie
+         */
         rightGameTimeClick() {
             this.audio.sfx.buttonClick.play();
             this.leftGameTime = true;
@@ -359,6 +433,12 @@ export default {
 
             this.socket.emit('lobbyChangeDurationReq' , { newDuration: dur });
         },
+
+        /**
+         * @vuese
+         * Supprime une invitation à rejoindre un lobby
+         * @arg ID de l'invitation à supprimer
+         */
         deleteLobbyInvitation(id) {
             for (const i in this.lobbyInvitations) {
                 if (this.lobbyInvitations[i].id === id) {
@@ -366,14 +446,32 @@ export default {
                 }
             }
         },
+
+        /**
+         * @vuese
+         * Accepte une invitation à rejoindre un lobby (et la supprime de l'écran)
+         * @arg ID de l'invitation à accepter
+         */
         acceptLobbyInvitation(id) {
             console.log("acceptLobbyInvitation " + id);
             this.socket.emit("lobbyInvitationAcceptReq", { invitationID: id });
             this.deleteLobbyInvitation(id);
         },
+
+        /**
+         * @vuese
+         * Rejette une invitation à rejoindre un lobby (i.e. la supprime)
+         * @arg ID de l'invitation à rejeter
+         */
         rejectLobbyInvitation(id) {
+            // Post-POC : possibilité de notifier le serveur
             this.deleteLobbyInvitation(id);
         },
+
+        /**
+         * @vuese
+         * Envoie le formulaire d'ajout d'ami au serveur
+         */
         addFriend() {
             this.audio.sfx.buttonClick.play();
             if (this.addFriendForm.nickname !== '') {
@@ -381,6 +479,12 @@ export default {
                 this.addFriendForm.nickname = '';
             }
         },
+
+        /**
+         * @vuese
+         * Supprime une invitation d'ami
+         * @arg ID du joueur dont l'invitation en ami sera supprimée
+         */
         deleteFriendInvitation(friendId) {
             for (const i in this.friendsInvitations) {
                 if (this.friendsInvitations[i].id === friendId) {
@@ -388,6 +492,12 @@ export default {
                 }
             }
         },
+
+        /**
+         * @vuese
+         * Accepte une invitation d'ami (et la supprime de l'affichage)
+         * @arg ID du joueur accepté en ami ; Pseudo du joueur accepté en ami
+         */
         acceptFriendInvitation(friendId, nickname) {
             this.audio.sfx.buttonClick.play();
             this.socket.emit('lobbyFriendInvitationActionReq', { action: 1, nickname: nickname });
@@ -395,19 +505,42 @@ export default {
             this.friends = [];
             this.socket.emit('lobbyFriendListReq');
         },
+
+        /**
+         * @vuese
+         * Rejette une invitation d'ami (et la supprime de l'affichage)
+         * @arg ID du joueur refusé en ami ; Pseudo du joueur refusé en ami
+         */
         rejectFriendInvitation(friendId, nickname) {
             this.audio.sfx.buttonClick.play();
             this.socket.emit("lobbyFriendInvitationActionReq", { action: 0, nickname: nickname });
             this.deleteFriendInvitation(friendId);
         },
+
+        /**
+         * @vuese
+         * Envoie une invitation dans le lobby à un ami
+         * @arg ID du joueur que l'on souhaite inviter
+         */
         inviteFriendInLobby(id) {
             this.audio.sfx.buttonClick.play();
             this.socket.emit("lobbyInvitationReq", { friendID: id });
         },
+
+        /**
+         * @vuese
+         * Expulse un joueur de notre lobby
+         * @arg ID du joueur à expulser
+         */
         kickPlayerFromLobby(id) {
             console.log("lobby kick req => ", id);
             this.socket.emit('lobbyKickReq', { userToKickID: id });
         },
+
+        /**
+         * @vuese
+         * Change les paramètres d'affichage (accessibilité des boutons) pour que l'on puisse - en tant qu'hôte - gérer le lobby
+         */
         imHost() {
             this.leftNbJ = true;
             this.rightNbJ = true;
@@ -418,20 +551,12 @@ export default {
                 this.rightNbJ = false;
 
             this.playBtn.disabled = false;
-
-            // // maj l'icone leader et les boutons exclure du groupe de lobby
-            // $('.grouplist .friend-action').css('display', '');
-            // const els = document.querySelectorAll('.grouplist .friends-name');
-            // for (const el of els) {
-            //     if (el.textContent === NICKNAME) {
-            //         if (!el.parentNode.classList.contains('leader'))
-            //             el.parentNode.classList.add('leader');
-            //         el.parentNode.querySelector('.friend-action').style.display = 'none';
-            //         break;
-            //     }
-            // }
         },
 
+        /**
+         * @vuese
+         * Déconnexion du jeu (et redirection à l'écran d'accueil)
+         */
         logout() {
             this.audio.sfx.buttonClick.play();
             this.socket.close();
@@ -440,6 +565,10 @@ export default {
             });
         },
 
+        /**
+         * @vuese
+         * Lance la musique de fond du lobby
+         */
         playMusic() {
             this.audio.background = new Howl({
                 src: '/assets/audio/musics/lobby-time-by-kevin-macleod-from-filmmusic-io.mp3',
@@ -449,15 +578,28 @@ export default {
             });
         },
 
+        /**
+         * @vuese
+         * Modifie le volume de la musique
+         * @arg Pourcentage du volume (entier de 0 à 100)
+         */
         setMusicLevel(level) {
             this.audio.background.volume(level / 100);
         },
 
+        /**
+         * @vuese
+         * Coupe la musique de fond (en fondu)
+         */
         stopMusic() {
             this.audio.background.fade(this.audio.background.volume(), 0, 500);
             this.audio.background.stop();
         },
 
+        /**
+         * @vuese
+         * Précharge tous les effets sonores (SFX) du jeu
+         */
         loadSfx() {
             this.audio.sfx.notification = new Howl({
                 src: ['/assets/audio/sfx/clearly.mp3'],
@@ -485,6 +627,11 @@ export default {
             });
         },
 
+        /**
+         * @vuese
+         * Modifie le volume des effets sonores
+         * @arg Pourcentage du volume (entier de 0 à 100)
+         */
         setSfxLevel(level) {
             for (let [key] of Object.entries(this.audio.sfx)) {
                 if (typeof this.audio.sfx[key].volume === 'function')
@@ -492,6 +639,10 @@ export default {
             }
         },
 
+        /**
+         * @vuese
+         * Envoie au serveur une requête de mise à jour du profil avec les informations du formulaire
+         */
         updateProfile() {
             this.audio.sfx.buttonClick.play();
             this.editProfile.loading = true;
@@ -501,6 +652,11 @@ export default {
                 this.siofu.submitFiles([this.editProfile.avatar]);
         },
 
+        /**
+         * @vuese
+         * Vérifie si l'avatar a été modifié dans la zone de fichiers du formulaire d'édition du profil
+         * @arg Evénement déclenché au changement de l'avatar
+         */
         processAvatar(event) {
             if (typeof event.target.files[0] !== 'undefined')
                 this.editProfile.avatar = event.target.files[0];
