@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: game/street.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: game/street.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Constants  = require('../lib/constants');
+const Property   = require('./property');
+const Properties = require('../lib/properties')
+
+/**
+ * Représente une carte "rue"
+ * Classe fille de la classe Propriété
+ */
+class Street extends Property {
+
+    constructor (data) {
+        super(Constants.PROPERTY_TYPE.STREET, data);
+        this.housesNb = 0;
+        this.hostel = false;
+    }
+
+    /**
+     * @param data L'objet correspond aux données de l'ID
+     */
+    load (data) {
+        this.name         = data.name;
+        this.color        = data.color;
+        this.prices       = data.prices;
+        this.rentalPrices = data.rentalPrices;
+    }
+
+    /**
+     * @returns Le prix d'un terrain vierge de la rue
+     */
+    get emptyPrice () {
+        return this.prices.empty;
+    }
+
+    /**
+     * @returns Le prix d'une maison de la rue
+     */
+    get housePrice () {
+        return this.prices.house;
+    }
+
+    /**
+     * @returns Le prix d'un hôtel de la rue
+     */
+    get hostelPrice () {
+        return this.prices.hostel;
+    }
+
+    /**
+     * @returns Le prix d'un loyer de la rue
+     */
+    get rentalPrice () {
+        let price;
+        if (this.hostel)
+            price = this.rentalPrices.hostel;
+        else if (this.housesNb > 0)
+            price = this.rentalPrices.house[this.housesNb - 1];
+        else
+            price = this.rentalPrices.empty;
+
+        if (this.curUpgradeLevel === 0 &amp;&amp; this.owner.colorMonopoly(this.color))
+            price *= 2;
+
+        return price;
+    }
+
+    /**
+     * @returns La valeur totale de la rue
+     */
+    get value () {
+        let sum = this.prices.empty;
+        if (this.hostel)
+            sum += this.prices.hostelPrice + this.prices.house * 4;
+        else
+            sum += this.prices.house * this.housesNb;
+
+        return sum;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
+     * Peut être augmenté ou diminué, les modifs de l'argent du joueur doivent déjà avoir été faites
+     */
+    upgrade (level) {
+        this.housesNb = 0;
+        this.hostel = false;
+        if (level === 5)
+            this.hostel = true;
+        else
+            this.housesNb = level;
+    }
+
+    /**
+     * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
+     * @returns la différence de prix pour avoir ce niveau d'amélioration (> 0 augmentation de l'amélioration, &lt; 0 diminution de l'amélioration, == 0 même niveau)
+     * Si diminution du niveau d'amélioration, l'argent gagné par le joueur est / 2 (prix de vente maison/hotel = prix d'achat / 2)
+     */
+    upgradePrice (level) {
+        let money = this.cumulatedUpgradePrice(level) - this.cumulatedUpgradePrice(this.curUpgradeLevel);
+        if (money &lt; 0)
+            money /= 2;
+
+        return money;
+    }
+
+    /**
+     * @param level Le niveau d'amélioration désiré
+     * @returns Le prix pour atteindre ce niveau depuis 0
+     */
+    cumulatedUpgradePrice (level) {
+        if (level === 5)
+            return 4 * this.housePrice + this.hostelPrice;
+        else
+            return this.housePrice * level;
+    }
+
+    get curUpgradeLevel () {
+        if (this.hostel)
+            return 5;
+        else
+            return this.housesNb;
+    }
+
+}
+
+module.exports = Street;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Bank.html">Bank</a></li><li><a href="Cell.html">Cell</a></li><li><a href="Chat.html">Chat</a></li><li><a href="Game.html">Game</a></li><li><a href="Lobby.html">Lobby</a></li><li><a href="Matchmaking.html">Matchmaking</a></li><li><a href="Network.html">Network</a></li><li><a href="Offer.html">Offer</a></li><li><a href="Player.html">Player</a></li><li><a href="Property.html">Property</a></li><li><a href="PublicCompany.html">PublicCompany</a></li><li><a href="Street.html">Street</a></li><li><a href="Tax.html">Tax</a></li><li><a href="TrainStation.html">TrainStation</a></li><li><a href="User.html">User</a></li><li><a href="UserManager.html">UserManager</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun May 03 2020 11:12:45 GMT+0200 (GMT+02:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

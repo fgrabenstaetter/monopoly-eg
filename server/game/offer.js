@@ -22,7 +22,7 @@ class Offer {
     /**
      * @param sender Player qui veut envoyer une nouvelle offre
      * @param receiver Player auquel sender veut envoyer une nouvelle offre
-     * @return true Si sender peux envoyer l'offre à receiver, false si la limite de SPAM est atteinte
+     * @returns true Si sender peux envoyer l'offre à receiver, false si la limite de SPAM est atteinte
      */
     static canSend(sender, receiver, game) {
         const periodMaxNb = 2;

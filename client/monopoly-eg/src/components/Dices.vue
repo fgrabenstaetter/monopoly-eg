@@ -248,7 +248,7 @@ export default {
             const rotations = 6;
             if ($('.dice-container').css('top') == '50px') {
                 $('.dice-container').css('top', '50%');
-                $('.dice-container').css('transform', 'translate(-50%, -50%) scale(1)');
+                $('.dice-container').removeClass('mini');
                 await this.sleep(1000);
             }
             this.showDices();
@@ -257,7 +257,7 @@ export default {
             this.rollDice(2, d2, rotations);
             await this.sleep(rotations * 400 + 800);
             $('.dice-container').css('top', '50px');
-            $('.dice-container').css('transform', 'translate(calc(-50% + 50vw - 118px), 0) scale(0.5)');
+            $('.dice-container').addClass('mini');
             if (typeof _callback !== "undefined")
                 _callback();
         }

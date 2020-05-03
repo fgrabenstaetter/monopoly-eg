@@ -112,7 +112,7 @@ class Lobby {
 
     /**
      * @param duration La durée souhaité en minutes (soit 30 soit 60 soit null pour illimité)
-     * @return false si erreur (mauvaise durée) sinon true
+     * @returns false si erreur (mauvaise durée) sinon true
      */
     changeDuration (duration) {
         if ([30, 60, null].indexOf(duration) === -1)
@@ -128,7 +128,7 @@ class Lobby {
 
     /**
      * @param nickname Le pseudo de l'utilisateur à chercher
-     * @return l'utilisateur (user) si trouvé, sinon null
+     * @returns l'utilisateur (user) si trouvé, sinon null
      */
     userByNickname(nickname) {
         for (const user of this.users) {
@@ -141,7 +141,7 @@ class Lobby {
 
     /**
      * @param id L'ID de l'utilisateur à chercher
-     * @return l'utilisateur (user) si trouvé, sinon null
+     * @returns l'utilisateur (user) si trouvé, sinon null
      */
     userByID(id) {
         for (const user of this.users) {
@@ -154,14 +154,14 @@ class Lobby {
 
     /**
      * @param user L'utilisateur qu'on veut tester hote ou non
-     * @return true si il est l'hôte, false sinon
+     * @returns true si il est l'hôte, false sinon
      */
     isHost(user) {
         return this.users[0] === user;
     }
 
     /**
-     * @return le nom du lobby (utilisé comme socket room notamment)
+     * @returns le nom du lobby (utilisé comme socket room notamment)
      */
     get name() {
         return 'lobby-' + this.id;
@@ -170,7 +170,7 @@ class Lobby {
     /**
      * @param fromID L'ID de l'utilisateur qui envoie l'invitation
      * @param toID L'ID pseudo de l'utilisateur qui doit recevoir l'invitation
-     * @return L'ID de l'invitation créée
+     * @returns L'ID de l'invitation créée
      */
     addInvitation(fromID, toID) {
         Lobby.invitations.push({
@@ -184,7 +184,7 @@ class Lobby {
 
     /*
      * @param id L'ID de l'invitation à supprimer
-     * @return L'objet invitation si trouvé, false sinon
+     * @returns L'objet invitation si trouvé, false sinon
      */
     delInvitation(id) {
         for (let i = 0, l = Lobby.invitations.length; i < l; i++) {

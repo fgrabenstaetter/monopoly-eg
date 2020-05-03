@@ -19,13 +19,14 @@ class Player {
         this.money      = Constants.GAME_PARAM.PLAYER_INITIAL_MONEY;
         this.cellPos    = 0;
         this.properties = [];
+        this.failureTime = null;
 
         this.nbJailEscapeCards    = 0;
         this.remainingTurnsInJail = 0;
     }
 
     /**
-     * @return un dictionaire JSON avec les donnees du joeur
+     * @returns un dictionaire JSON avec les donnees du joeur
      */
     toJSON () {
         let properties = [];
@@ -45,14 +46,14 @@ class Player {
     }
 
     /**
-     * @return true si le joueur est en prison, false sinon
+     * @returns true si le joueur est en prison, false sinon
      */
     get isInPrison () {
         return this.remainingTurnsInJail > 0;
     }
 
     /**
-     * @return le nombre de gares que possède le joueur
+     * @returns le nombre de gares que possède le joueur
      */
     get trainStationsNb () {
         let nb = 0;
@@ -64,7 +65,7 @@ class Player {
     }
 
     /**
-     * @return true si le joueur a toutes les compagnies, false sinon
+     * @returns true si le joueur a toutes les compagnies, false sinon
      */
     get haveAllCompanies () {
         let nb = 0;
@@ -131,7 +132,7 @@ class Player {
 
     /**
      * @param id L'ID de la propriété à chercher
-     * @return La propriété si trouvée, sinon false
+     * @returns La propriété si trouvée, sinon false
      */
     propertyByID (id) {
         for (const prop of this.properties) {
@@ -153,7 +154,7 @@ class Player {
 
     /**
      * @param color La couleur recherchée de type PROPERTY_COLOR (constants)
-     * @return true si le joueur possède toutes les rues de cette couleur, false sinon
+     * @returns true si le joueur possède toutes les rues de cette couleur, false sinon
      */
     colorMonopoly (color) {
         let nb = 0, total = 0;

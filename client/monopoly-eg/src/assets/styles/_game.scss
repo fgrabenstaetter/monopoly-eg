@@ -16,10 +16,18 @@
     top: 50%;
     left: 50%;
     display: none;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 0;
     transition: opacity 0.2s;
     transition: all 1s ease;
+
+    &.mini {
+      transform: translate(calc(-50% + 780px), 0) scale(0.5) !important;
+
+      @media (max-width: 1800px) {
+        transform: translate(calc(-50% + 50vw - 118px), 0) scale(0.5) !important;
+      }
+    }
 
     #view1,
     #view2 {
@@ -235,10 +243,44 @@
           color: white;
           font-size: 13px;
           font-weight: bold;
-          margin: 0 20px 0 5px;
+          margin: 0 5px 0 5px;
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
+          line-height: 28px;
+
+          .color {
+            display: inline-block;
+            padding: 0 7px;
+            border-radius: 5px;
+            margin: 0 5px;
+
+            &.yellow {
+              background-color: $property-yellow;
+            }
+            &.brown {
+              background-color: $property-brown;
+            }
+            &.blue {
+              background-color: $property-blue;
+            }
+            &.orange {
+              background-color: $property-orange;
+            }
+            &.cyan {
+              background-color: $property-cyan;
+              color: black;
+            }
+            &.red {
+              background-color: $property-red;
+            }
+            &.green {
+              background-color: $property-green;
+            }
+            &.purple {
+              background-color: $property-purple;
+            }
+          }
         }
 
         .bid-input {
@@ -246,13 +288,18 @@
           flex-direction: row;
           color: white;
 
+          .flex {
+            display: flex;
+            flex-direction: row;
+          }
+
           input {
             flex-grow: 10;
             border: none;
             border-radius: 5px;
             font-size: 12px;
             padding-left: 10px;
-            width: 70px;
+            width: 100px;
             margin: 0 5px;
             color: black;
           }
@@ -263,10 +310,11 @@
             border-radius: 5px;
             color: white;
             font-size: 12px;
+            padding-top: 3px;
 
             &.bid-validation {
               background-color: green;
-              margin: 0 5px 0 20px;
+              margin: 0 5px 0 10px;
             }
 
             &.bid-cancel {
@@ -1719,7 +1767,7 @@
         position: relative;
         color: #fff;
         font-size: 40px;
-        font-family: 'LilitaOne' sans-serif;;
+        font-family: "LilitaOne" sans-serif;
         text-align: center;
         text-transform: uppercase;
         background: #3d79d0;
@@ -1790,50 +1838,90 @@
       }
 
       @-webkit-keyframes main {
-        0% { -webkit-transform: scaleX(0); }
-        100% { -webkit-transform: scaleX(1); }
+        0% {
+          -webkit-transform: scaleX(0);
+        }
+        100% {
+          -webkit-transform: scaleX(1);
+        }
       }
-      
+
       @-webkit-keyframes edge {
-        0%, 50% { -webkit-transform: scaleY(0); }
-        100% { -webkit-transform: scaleY(1); }
+        0%,
+        50% {
+          -webkit-transform: scaleY(0);
+        }
+        100% {
+          -webkit-transform: scaleY(1);
+        }
       }
-      
+
       @-webkit-keyframes back {
-        0%, 75% { -webkit-transform: scaleX(0); }
-        100% { -webkit-transform: scaleX(1); }
+        0%,
+        75% {
+          -webkit-transform: scaleX(0);
+        }
+        100% {
+          -webkit-transform: scaleX(1);
+        }
       }
-      
-      
+
       @-moz-keyframes main {
-        0% { -moz-transform: scaleX(0); }
-        100% { -moz-transform: scaleX(1); }
+        0% {
+          -moz-transform: scaleX(0);
+        }
+        100% {
+          -moz-transform: scaleX(1);
+        }
       }
-      
+
       @-moz-keyframes edge {
-        0%, 50% { -moz-transform: scaleY(0); }
-        100% { -moz-transform: scaleY(1); }
+        0%,
+        50% {
+          -moz-transform: scaleY(0);
+        }
+        100% {
+          -moz-transform: scaleY(1);
+        }
       }
-      
+
       @-moz-keyframes back {
-        0%, 75% { -moz-transform: scaleX(0); }
-        100% { -moz-transform: scaleX(1); }
+        0%,
+        75% {
+          -moz-transform: scaleX(0);
+        }
+        100% {
+          -moz-transform: scaleX(1);
+        }
       }
-      
-      
+
       @keyframes main {
-        0% { transform: scaleX(0); }
-        100% { transform: scaleX(1); }
+        0% {
+          transform: scaleX(0);
+        }
+        100% {
+          transform: scaleX(1);
+        }
       }
-      
+
       @keyframes edge {
-        0%, 50% { transform: scaleY(0); }
-        100% { transform: scaleY(1); }
+        0%,
+        50% {
+          transform: scaleY(0);
+        }
+        100% {
+          transform: scaleY(1);
+        }
       }
-      
+
       @keyframes back {
-        0%, 75% { transform: scaleX(0); }
-        100% { transform: scaleX(1); }
+        0%,
+        75% {
+          transform: scaleX(0);
+        }
+        100% {
+          transform: scaleX(1);
+        }
       }
 
       .winner {

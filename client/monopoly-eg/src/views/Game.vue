@@ -145,12 +145,13 @@
                 Une enchère est lancée pour {{bid.propertyName}}
             </div>
             <div v-else class="content">
-                {{bid.launcherNickname}} lance une enchère pour {{bid.propertyName}}. Prix de départ : {{bid.startingPrice}}€
+                {{bid.launcherNickname}} lance une enchère pour <span class="color yellow">{{bid.propertyName}}</span>
             </div>
 
             <form @submit.prevent="sendBid(bid)">
                 <div class="bid-input">
-                    <input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€
+                    <div v-if="!bid.launcherNickname" class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€</div>
+                    <div v-else class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" :placeholder="'Prix min. ' + bid.startingPrice">€</div>
                     <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
                     <button :disabled="bid.disabled" class="bid-cancel" @click="rejectBid(bid)">Passer</button>
                 </div>

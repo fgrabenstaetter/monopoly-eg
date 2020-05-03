@@ -236,7 +236,7 @@ class UserManager { // abstract
 
     /**
      * @param email L'email à tester
-     * @return true si email est valide, false sinon
+     * @returns true si email est valide, false sinon
      */
     static isEmail(email) {
         const regex = /^[a-zA-Z0-9_.-]+@[A-Za-z]+\.[a-z]{2,6}/;

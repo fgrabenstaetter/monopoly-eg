@@ -147,7 +147,7 @@ class Game {
 
     /**
      * @param nickname Le pseudo du joueur recherché
-     * @return le joueur si trouvé, sinon null
+     * @returns le joueur si trouvé, sinon null
      */
     playerByNickname(nickname) {
         for (const player of this.players) {
@@ -160,7 +160,7 @@ class Game {
 
     /**
      * @param id L'IDdu joueur recherché
-     * @return le joueur si trouvé, sinon null
+     * @returns le joueur si trouvé, sinon null
      */
     playerByID(id) {
         for (const player of this.players) {
@@ -178,7 +178,7 @@ class Game {
 
     /**
      * Le jeu ne démarre que lorsque tous les joueurs sont prêts
-     * @return true si tous les joueurs sont prêts, false sinon
+     * @returns true si tous les joueurs sont prêts, false sinon
      */
     get allPlayersReady() {
         for (const player of this.players) {
@@ -190,21 +190,21 @@ class Game {
     }
 
     /**
-     * @return le timestamp de fin de partie forcé (en ms) ou null si illimité
+     * @returns le timestamp de fin de partie forcé (en ms) ou null si illimité
      */
     get forcedEndTime() {
         return this.maxDuration ? this.startedTime + this.maxDuration * 60 * 1e3 : null;
     }
 
     /**
-     * @return le joueur du tour actuel
+     * @returns le joueur du tour actuel
      */
     get curPlayer() {
         return this.players[this.turnData.playerInd];
     }
 
     /**
-     * @return la cellule sur laquelle est le joueur actuel
+     * @returns la cellule sur laquelle est le joueur actuel
      */
     get curCell() {
         return this.cells[this.curPlayer.cellPos];
@@ -278,7 +278,7 @@ class Game {
 
     /**
      * Vérifie si la partie est terminée ou non ( = un seul joueur n'est pas en faillite OU le timeout de partie a été atteint)
-     * @return true si la partie est finie, false sinon
+     * @returns true si la partie est finie, false sinon
      */
     checkEnd() {
         const gameTimeout = this.forcedEndTime && this.forcedEndTime <= Date.now();
@@ -293,23 +293,37 @@ class Game {
                 if (sum > winnerValue)
                     winnerPlayer = pl;
             }
-
             ranking.push(winnerPlayer.id);
-            let others = [];
+
+            let nonFails = [], fails = [];
+            //Les joueurs ayant perdu au moment de la fin de partie
             for (const p of this.players) {
-                if (p !== winnerPlayer) {
+                if (p !== winnerPlayer && !p.failure) {
                     let sum = p.money;
                     for (const prop of p.properties)
                         sum += prop.value;
-                    others.push({
+                    nonFails.push({
                         playerID: p.id,
                         money: sum
                     });
                 }
             }
+            nonFails.sort((a, b) => b.sum - a.sum);
+            for (const obj of nonFails) {
+                ranking.push(obj.playerID);
+            }
 
-            others.sort((a, b) => b.sum - a.sum);
-            for (const obj of others) {
+            //Les joueurs ayant perdu avant la fin de la partie, on les classe en fonction du temps de partie
+            for (const p of this.players) {
+                if (p.failure) {
+                    nonFails.push({
+                        playerID: p.id,
+                        gameTime: Date.now() - p.failureTime
+                    });
+                }
+            }
+            fails.sort((a, b) => b.sum - a.sum);
+            for (const obj of fails) {
                 ranking.push(obj.playerID);
             }
 
@@ -333,26 +347,22 @@ class Game {
 
             if (nb === this.players.length - 1) { // fin de partie
                 const winner = solo;
-                // A MODIFIER ADAPTER EN FONCTION DU TEMPS DE FAILLITE JE FAIS PLUS TARD
-                /*ranking.push(winner.id);
-                let others = [];
+                // Tout le monde a perdu donc classement juste en fonction du temps de partie (sauf winner)
+                ranking.push(winner.id);
+                let fails = [];
                 for (const p of this.players) {
                     if (p !== winner) {
-                        let sum = p.money;
-                        for (const prop of p.properties)
-                            sum += prop.value;
-                        others.push({
+                        fails.push({
                             playerID: p.id,
-                            money: sum
+                            gameTime: Date.now() - p.failureTime
                         });
                     }
                 }
-
-                others.sort((a, b) => b.sum - a.sum);
-                for (const obj of others) {
+                fails.sort((a, b) => b.sum - a.sum);
+                for (const obj of fails) {
                     ranking.push(obj.playerID);
                 }
-                console.log(ranking);*/
+
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                     type     : 'normal',
                     winnerID : winner.id,
@@ -437,7 +447,7 @@ class Game {
     /**
      * Lance les dés et joue le tour du joueur actuel (this.curPlayer)
      * @param useExitJailCard Pour savoir si le joueur souhaite utiliser une carte pour sortir de prison (dans le cas ou il en a une, utile pour le réseau)
-     * @return [int, int] le résultat des dés ou false si problème quelconque
+     * @returns [int, int] le résultat des dés ou false si problème quelconque
      */
     rollDice(useExitJailCard = false) {
         if (!this.turnData.canRollDiceAgain)
@@ -641,7 +651,7 @@ class Game {
     // = Méthodes uniquement appelées par Network après requête du joueur du tour actuel
 
     /**
-     * @return 0 succès, 1 propriété invalide, 2 propriété déjà achetée, 3 pas assez d'argent pour acheter
+     * @returns 0 succès, 1 propriété invalide, 2 propriété déjà achetée, 3 pas assez d'argent pour acheter
      */
     asyncActionBuyProperty() {
         const property = this.curCell.property;
@@ -664,8 +674,8 @@ class Game {
     }
 
     /**
-     * @param list Liste de { propertyID: int, level: int } avec level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
-     * @return 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou pas une STREET), 3 si pas assez d'argent, 4 si le joueur n'a pas le monopole pour une propriété, 5 si la propriété est hypothéquée
+     * @param list Liste de ( propertyID: int, level: int ) avec level le niveau d'amélioration souhaité (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
+     * @returns 0 si succès, 1 si requête invalide, 2 si une propriété non-valide pour amélioration (pas le propriétaire ou pas une STREET), 3 si pas assez d'argent, 4 si le joueur n'a pas le monopole pour une propriété, 5 si la propriété est hypothéquée
      */
     asyncActionUpgradeProperty(list) {
         let sum = 0;
@@ -793,14 +803,14 @@ class Game {
             clearTimeout(this.turnData.timeoutActionTimeout);
             this.turnData.timeout = setTimeout(this.nextTurn.bind(this), Constants.TURN_AUTO_ROLL_DICE_MIN_INTERVAL);
         }
-
+        player.failureTime = Date.now()
         this.GLOBAL.network.io.to(this.name).emit('gamePlayerFailureRes', { playerID: player.id, bankMoney: this.bank.money });
     }
 
     /**
      * À n'appeler que lorsque this.turnData.asyncRequestType === SHOULD_MORGAGE
      * @param player Le player a qui faire l'hypotécation forcée automatique, ou faillite
-     * @return true si succès, false si faillite
+     * @returns true si succès, false si faillite
      */
     playerAutoMortgage(player, moneyToObtain) {
         let sum = player.money;

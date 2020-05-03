@@ -25,28 +25,28 @@ class Street extends Property {
     }
 
     /**
-     * @return Le prix d'un terrain vierge de la rue
+     * @returns Le prix d'un terrain vierge de la rue
      */
     get emptyPrice () {
         return this.prices.empty;
     }
 
     /**
-     * @return Le prix d'une maison de la rue
+     * @returns Le prix d'une maison de la rue
      */
     get housePrice () {
         return this.prices.house;
     }
 
     /**
-     * @return Le prix d'un hôtel de la rue
+     * @returns Le prix d'un hôtel de la rue
      */
     get hostelPrice () {
         return this.prices.hostel;
     }
 
     /**
-     * @return Le prix d'un loyer de la rue
+     * @returns Le prix d'un loyer de la rue
      */
     get rentalPrice () {
         let price;
@@ -64,7 +64,7 @@ class Street extends Property {
     }
 
     /**
-     * @return La valeur totale de la rue
+     * @returns La valeur totale de la rue
      */
     get value () {
         let sum = this.prices.empty;
@@ -91,7 +91,7 @@ class Street extends Property {
 
     /**
      * @param level le niveau d'amélioration souhaité pour le calcul du prix (1: une maison, 2: deux maisons, 3: trois maisons, 4: quatre maisons, 5: un hôtel)
-     * @return la différence de prix pour avoir ce niveau d'amélioration (> 0 augmentation de l'amélioration, < 0 diminution de l'amélioration, == 0 même niveau)
+     * @returns la différence de prix pour avoir ce niveau d'amélioration (> 0 augmentation de l'amélioration, < 0 diminution de l'amélioration, == 0 même niveau)
      * Si diminution du niveau d'amélioration, l'argent gagné par le joueur est / 2 (prix de vente maison/hotel = prix d'achat / 2)
      */
     upgradePrice (level) {
@@ -104,7 +104,7 @@ class Street extends Property {
 
     /**
      * @param level Le niveau d'amélioration désiré
-     * @return Le prix pour atteindre ce niveau depuis 0
+     * @returns Le prix pour atteindre ce niveau depuis 0
      */
     cumulatedUpgradePrice (level) {
         if (level === 5)
