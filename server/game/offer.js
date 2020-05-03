@@ -4,6 +4,11 @@ class Offer {
 
     static idCounter = 0;
 
+    /**
+     * @param game Le jeu contenant l'offre
+     * @param id Le joueur ayant piocher la carte
+     * @return l'offre si elle a été trouvée, faux sinon
+     */
     static offerByID(game, id) {
         for (const offer of game.offers)
             if (offer.id === id)
@@ -11,6 +16,10 @@ class Offer {
         return false;
     }
 
+    /**
+     * @param offer L'offre à supprimer
+     * @returns true si l'offre a été supprimée, faux sinon
+     */
     static delOffer(offer) {
         const ind = offer.game.offers.indexOf(offer);
         if (ind === -1)

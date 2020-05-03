@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Lobby</title>
+    <title>JSDoc: Class: Card</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Lobby</h1>
+    <h1 class="page-title">Class: Card</h1>
 
     
 
@@ -28,9 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Lobby<span class="signature">(user, GLOBAL)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">Représente un Lobby</div>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Card<span class="signature">(description, effectType, effectArg1, effectArg2)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,11 +39,9 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
     
-    <h4 class="name" id="Lobby"><span class="type-signature"></span>new Lobby<span class="signature">(user, GLOBAL)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Card"><span class="type-signature"></span>new Card<span class="signature">(description, effectType, effectArg1, effectArg2)</span><span class="type-signature"></span></h4>
     
 
     
@@ -75,6 +71,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -85,7 +83,7 @@
 
         <tr>
             
-                <td class="name"><code>user</code></td>
+                <td class="name"><code>description</code></td>
             
 
             <td class="type">
@@ -95,15 +93,19 @@
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
-            <td class="description last">Utilisateur qui crée le lobby (= hôte)</td>
+            <td class="description last">La description de la carte</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>GLOBAL</code></td>
+                <td class="name"><code>effectType</code></td>
             
 
             <td class="type">
@@ -113,8 +115,60 @@
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
-            <td class="description last">L'instance globale de données du serveur</td>
+            <td class="description last">Le type de la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>effectArg1</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Effet d'une carte à 1 'effet'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>effectArg2</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">2e effet d'une carte à 2 'effets'</td>
         </tr>
 
     
@@ -155,7 +209,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line21">line 21</a>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line9">line 9</a>
     </li></ul></dd>
     
 
@@ -201,131 +255,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="invitations"><span class="type-signature"></span>invitations<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Objets d'invitation de lobby
-{ fromUserID: int, toUserID: int, invitationID: int }
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line13">line 13</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="name"><span class="type-signature"></span>name<span class="type-signature"></span></h4>
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line166">line 166</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -336,12 +265,16 @@
     
 
     
-    <h4 class="name" id="addInvitation"><span class="type-signature"></span>addInvitation<span class="signature">(fromID, toID)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="anniversary"><span class="type-signature"></span>anniversary<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Appelée si une carte de type 'anniversaire' a été piochée
+</div>
 
 
 
@@ -376,7 +309,7 @@
 
         <tr>
             
-                <td class="name"><code>fromID</code></td>
+                <td class="name"><code>game</code></td>
             
 
             <td class="type">
@@ -387,14 +320,14 @@
 
             
 
-            <td class="description last">L'ID de l'utilisateur qui envoie l'invitation</td>
+            <td class="description last">Le jeu devant executant la carte</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>toID</code></td>
+                <td class="name"><code>player</code></td>
             
 
             <td class="type">
@@ -405,7 +338,7 @@
 
             
 
-            <td class="description last">L'ID pseudo de l'utilisateur qui doit recevoir l'invitation</td>
+            <td class="description last">Le joueur ayant piocher la carte</td>
         </tr>
 
     
@@ -446,7 +379,157 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line175">line 175</a>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="execute"><span class="type-signature"></span>execute<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Execute la carte piocher par un joueur
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -475,7 +558,7 @@
 
         
 <div class="param-desc">
-    L'ID de l'invitation créée
+    l'enchère
 </div>
 
 
@@ -492,281 +575,19 @@
     
 
     
-    <h4 class="name" id="addUser"><span class="type-signature"></span>addUser<span class="signature">(user)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="gainMoney"><span class="type-signature"></span>gainMoney<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>user</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">L'objet correspond à l'utilisateur à ajouter dans le lobby</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line39">line 39</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="changeDuration"><span class="type-signature"></span>changeDuration<span class="signature">(duration)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>duration</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">La durée souhaité en minutes (soit 30 soit 60 soit null pour illimité)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line117">line 117</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    false si erreur (mauvaise durée) sinon true
+<div class="description">
+    Appelée si une carte de type 'gain de monnaie' a été piochée
 </div>
 
 
 
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="changeTargetUsersNb"><span class="type-signature"></span>changeTargetUsersNb<span class="signature">(newNb)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
 
 
 
@@ -798,7 +619,7 @@
 
         <tr>
             
-                <td class="name"><code>newNb</code></td>
+                <td class="name"><code>game</code></td>
             
 
             <td class="type">
@@ -809,7 +630,25 @@
 
             
 
-            <td class="description last">le nouveau nombre de joueur souhaité pour la partie à jouer</td>
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
         </tr>
 
     
@@ -850,7 +689,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line102">line 102</a>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -886,409 +725,19 @@
     
 
     
-    <h4 class="name" id="delete"><span class="type-signature"></span>delete<span class="signature">(network)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="goJail"><span class="type-signature"></span>goJail<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>network</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Gestionnaire de réseau dont les users seront retirés</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line91">line 91</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="delUser"><span class="type-signature"></span>delUser<span class="signature">(user)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>user</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">L'objet correspond à l'utilisateur à retirer du lobby</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line55">line 55</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="isHost"><span class="type-signature"></span>isHost<span class="signature">(user)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>user</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">L'utilisateur qu'on veut tester hote ou non</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line159">line 159</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    true si il est l'hôte, false sinon
+<div class="description">
+    Appelée si une carte de type 'aller en prison' a été piochée
 </div>
 
 
 
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="userByID"><span class="type-signature"></span>userByID<span class="signature">(id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
 
 
 
@@ -1320,7 +769,7 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>game</code></td>
             
 
             <td class="type">
@@ -1331,7 +780,25 @@
 
             
 
-            <td class="description last">L'ID de l'utilisateur à chercher</td>
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
         </tr>
 
     
@@ -1372,7 +839,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line146">line 146</a>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line133">line 133</a>
     </li></ul></dd>
     
 
@@ -1397,16 +864,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    l'utilisateur (user) si trouvé, sinon null
-</div>
-
-
-
-    
 
 
 
@@ -1418,12 +875,16 @@
     
 
     
-    <h4 class="name" id="userByNickname"><span class="type-signature"></span>userByNickname<span class="signature">(nickname)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="jailEscapeCard"><span class="type-signature"></span>jailEscapeCard<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Appelée si une carte de type 'gagner une carte sortie de prison' a été piochée
+</div>
 
 
 
@@ -1458,7 +919,7 @@
 
         <tr>
             
-                <td class="name"><code>nickname</code></td>
+                <td class="name"><code>game</code></td>
             
 
             <td class="type">
@@ -1469,7 +930,25 @@
 
             
 
-            <td class="description last">Le pseudo de l'utilisateur à chercher</td>
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
         </tr>
 
     
@@ -1510,7 +989,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_lobby.js.html">game/lobby.js</a>, <a href="game_lobby.js.html#line133">line 133</a>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -1535,16 +1014,606 @@
 
 
 
-<h5>Returns:</h5>
+
+
+
+
 
         
-<div class="param-desc">
-    l'utilisateur (user) si trouvé, sinon null
+            
+
+    
+
+    
+    <h4 class="name" id="loseMoney"><span class="type-signature"></span>loseMoney<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Appelée si une carte de type 'perte de monnaie' a été piochée
 </div>
 
 
 
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line51">line 51</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="moveAbsolute"><span class="type-signature"></span>moveAbsolute<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Appelée si une carte de type 'mouvement absolu' a été piochée
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="moveRelative"><span class="type-signature"></span>moveRelative<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Appelée si une carte de type 'mouvement relatif' a été piochée
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="repair"><span class="type-signature"></span>repair<span class="signature">(game, player)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Appelée si une carte de type 'réparation' a été piochée
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>game</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le jeu devant executant la carte</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>player</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Le joueur ayant piocher la carte</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_card.js.html">game/card.js</a>, <a href="game_card.js.html#line109">line 109</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,9 @@
 const Card = require('./card');
 
 class Deck {
+    /**
+     * @param cardsInfo Les données statiques des cartes du jeu (Chances OU Communautaires)
+     */
     constructor (cardsInfo) {
         let cards = [];
 
@@ -19,6 +22,9 @@ class Deck {
         this.shuffle();
     }
 
+    /**
+     * Mélange le deck des cartes (Chances ou Communautaires)
+     */
     shuffle() {
         for (let i = this.activeCards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -26,6 +32,11 @@ class Deck {
         }
     }
 
+    /**
+     * Piocher une carte (Chance ou Communautaire)
+     * @param game Le jeu devant executant la carte
+     * @param player Le joueur devant piocher la carte
+     */
     drawCard (game, player) {
         if (this.activeCards.length === 0) {
             this.activeCards = this.drawnCards;
