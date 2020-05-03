@@ -218,6 +218,38 @@ export default {
             'd28' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, 1.3527071475982666)
         },
 
+        /**
+         * Tableau de nom des maisons
+         * @type {array} 
+         */
+        // tabHouseCoord: {
+        //     'M1_1_1' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
+        //         'M1_1_2' : new THREE.Vector3(1.6012185049057007, -0.018597006797790527, -0.03439660370349884),
+        // //      'M1_1_3' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
+        // //      'M1_1_4' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
+        // //     'M1_2' : new THREE.Vector3(, , ),
+        // //     'M2_1' : new THREE.Vector3(, , ),
+        // //     'M2_2' : new THREE.Vector3(, , ),
+        // //     'M2_3' : new THREE.Vector3(, , ),
+        // //     'M3_1' : new THREE.Vector3(, , ),
+        // //     'M3_2' : new THREE.Vector3(, , ),
+        // //     'M3_3' : new THREE.Vector3(, , ),
+        // //     'M4_1' : new THREE.Vector3(, , ),
+        // //     'M4_2' : new THREE.Vector3(, , ),
+        // //     'M4_3' : new THREE.Vector3(, , ),
+        // //     'M5_1' : new THREE.Vector3(, , ),
+        // //     'M5_2' : new THREE.Vector3(, , ),
+        // //     'M5_3' : new THREE.Vector3(, , ),
+        // //     'M6_1' : new THREE.Vector3(, , ),
+        // //     'M6_2' : new THREE.Vector3(, , ),
+        // //     'M6_3' : new THREE.Vector3(, , ),
+        // //     'M7_1' : new THREE.Vector3(, , ),
+        // //     'M7_2' : new THREE.Vector3(, , ),
+        // //     'M7_3' : new THREE.Vector3(, , ),
+        // //     'M8_1' : new THREE.Vector3(, , ),
+        // //     'M8_2' : new THREE.Vector3(, , )
+        // },
+
         // Variables pour le rendu de la scène
         renderer: null,
         scene: null,
@@ -448,7 +480,8 @@ export default {
             this.objs[`d${cell}`] = gltf.scene;
             this.objs[`d${cell}`].traverse((o) => {
                 if (o.isMesh) {
-                    if (o.name === this.drapPlane[`d${cell}`])
+                    //console.log(o.name);
+                    if (o.name === this.drapPlane[`d${cell}`] || o.name === 'Plane11.001_0')
                         o.material.color = new THREE.Color(color);
                 }
             });
@@ -555,15 +588,24 @@ export default {
         this.housePropertyL(concatS.concat(this.tabHouse[ncase], "_", nhouse));
     },
 
+    // loaderHouseProperty(ncase, nhouse) {
+    //     //let concatS = "";
+    //     //console.log(nhouse);
+    //     this.house = '_' + nhouse;
+    //     //console.log(`${this.tabHouse[ncase]}${this.flo}`);
+    //     this.housePropertyL(`${this.tabHouse[ncase]}${this.house}`);
+    // },
+
     /**
      * @vuese
      * Fonction prinicpale - Charge une maison à la case spécifiée
      * @arg {string} houseProperty:  Nom de la maison (Ex: M3_1_2)
      */
     housePropertyL(houseProperty) {
-        this.gltfLoader.load('/assets/models/maisonPro/' + houseProperty + '.gltf', (gltf) => {
+        this.gltfLoader.load('/assets/models/maisonPro/' + houseProperty + '.gltf', (gltf) => {          
             const root = gltf.scene;
             this.objs[houseProperty] = gltf.scene;
+            //console.log(root);
             this.scene.add(root);
         });
     },

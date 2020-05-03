@@ -1,0 +1,148 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.1.45",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "base_Cube.009",
+            "rotation" : [
+                -0.7071068286895752,
+                0,
+                -0.7071068286895752,
+                6.857645473701268e-08
+            ],
+            "scale" : [
+                0.10088207572698593,
+                0.10088207572698593,
+                0.10088206082582474
+            ],
+            "translation" : [
+                1.6812185049057007,
+                -0.018597006797790527,
+                -0.03439660370349884
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Material.036",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "base_Cube.009",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "textureHotel",
+            "uri" : "textureHotel.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 5294,
+            "max" : [
+                18.08953094482422,
+                0.003920587245374918,
+                -1.7178897857666016
+            ],
+            "min" : [
+                16.858001708984375,
+                -2.3448173999786377,
+                -3.3384616374969482
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 5294,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 5294,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 6582,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 63528,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 63528,
+            "byteOffset" : 63528
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 42352,
+            "byteOffset" : 127056
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 13164,
+            "byteOffset" : 169408
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 182572,
+            "uri" : "maison.bin"
+        }
+    ]
+}
