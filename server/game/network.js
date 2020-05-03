@@ -484,6 +484,8 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (!lobby.isHost(user))
                 err = Errors.UNKNOW; // n'est pas l'hôte
+            else if (!lobby.open)
+                err = Errors.LOBBY.CLOSED;
             else {
                 lobby.changeTargetUsersNb(data.nb);
                 this.io.to(lobby.name).emit('lobbyTargetUsersNbChangedRes', { nb: lobby.targetUsersNb });
@@ -503,6 +505,8 @@ class Network {
                 err = Errors.MISSING_FIELD;
             else if (!lobby.changeDuration(data.newDuration))
                 err = Errors.LOBBY.WRONG_DURATION;
+            else if (!lobby.open)
+                err = Errors.LOBBY.CLOSED;
             else {
                 this.io.to(lobby.name).emit('lobbyDurationChangedRes', {
                     newDuration: data.newDuration
@@ -1366,10 +1370,12 @@ class Network {
 
             for (const bid of game.bids) {
                 bids.push({
-                    bidID    : bid.id,
-                    playerID : bid.player ? bid.player.id : null,
-                    text     : bid.text,
-                    price    : bid.amountAsked
+                    bidID           : bid.id,
+                    playerID        : bid.player ? bid.player.id : null,
+                    text            : bid.text,
+                    propertyID      : bid.property.id,
+                    propertyOwnerID : bid.property.owner ? bid.property.owner.id : null,
+                    price           : bid.amountAsked
                 });
             }
 
