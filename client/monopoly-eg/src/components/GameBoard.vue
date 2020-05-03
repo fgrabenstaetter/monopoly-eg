@@ -394,8 +394,9 @@ export default {
      * @arg {int} ncase: Numero de case
      */
     deleteHotel(ncase) {
-        let concatS = "";
-        this.deleteHotelD(concatS.concat(this.tabHotel[ncase]));
+        this.scene.remove(this.objs[`h${ncase}`]);
+        // let concatS = "";
+        // this.deleteHotelD(concatS.concat(this.tabHotel[ncase]));
     },
 
     /**
@@ -462,6 +463,7 @@ export default {
         });
     },
 
+
     loaderLightFlag(cell) {
         for (this.i = 1; this.i <= cell; this.i++) {
             //console.log(this.i);
@@ -489,9 +491,14 @@ export default {
      * @arg Numéro de la case
      */
     loaderHypotheque(cell) {
-        this.gltfLoader.load(`/assets/models/hypotheque/hyp${cell}.gltf`, (gltf) => {
+        this.gltfLoader.load(`/assets/models/hypotheque/hyp1.gltf`, (gltf) => {
             const root = gltf.scene;
             this.objs[`hyp${cell}`] = gltf.scene;
+            if ((cell > 0 && cell < 10) || (cell > 20 && cell < 30)) 
+                this.objs[`hyp${cell}`].children[0].position.set(this.tabCases[cell].x, this.tabCases[cell].y, this.tabCases[cell].z-0.17);
+            else 
+                this.objs[`hyp${cell}`].children[0].position.set(this.tabCases[cell].x-0.17, this.tabCases[cell].y, this.tabCases[cell].z);
+            
             this.scene.add(root);
         });
     },
@@ -567,8 +574,9 @@ export default {
      * @arg {int} ncase: Chiffre de la case 
      */
     loaderHotelProperty(ncase) {
-        let concatS = "";
-        this.hotelPropertyL(concatS.concat(this.tabHotel[ncase]));
+        //let concatS = "";
+        //this.hotelPropertyL(concatS.concat(this.tabHotel[ncase]));
+        this.hotelPropertyL(ncase);
     },
 
     /**
@@ -576,10 +584,26 @@ export default {
      * Fonction principale - Charge un hôtel à la case spécifiée
      * @arg {string} hotelPropriete: Nom de l'hôtel (Ex: H1_2)
      */
-    hotelPropertyL(hotelPropriete) {
-        this.gltfLoader.load('/assets/models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
+    // hotelPropertyL(hotelPropriete) {
+    //     this.gltfLoader.load('/assets/models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
+    //         const root = gltf.scene;
+    //         this.objs[hotelPropriete] = gltf.scene;
+    //         this.scene.add(root);
+    //     });
+    // },
+
+     hotelPropertyL(cell) {
+        this.gltfLoader.load('/assets/models/maisonPro/hotel.gltf', (gltf) => {
             const root = gltf.scene;
-            this.objs[hotelPropriete] = gltf.scene;
+            console.log(root);
+            this.objs[`h${cell}`] = gltf.scene;
+            if ((cell > 0 && cell < 10) || (cell > 20 && cell < 30)) 
+                this.objs[`h${cell}`].children[0].position.set(this.tabCases[cell].x, this.tabCases[cell].y, this.tabCases[cell].z-0.17);
+            else {
+                this.objs[`h${cell}`].children[0].rotateY(Math.PI / -2);
+                this.objs[`h${cell}`].children[0].position.set(this.tabCases[cell].x-0.17, this.tabCases[cell].y, this.tabCases[cell].z);
+            }
+
             this.scene.add(root);
         });
     },
