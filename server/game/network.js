@@ -28,6 +28,7 @@ class Network {
         if (user.socket) {
             // ancien socket toujours connecté, lui signaler
             user.socket.emit('notLoggedRes');
+            user.socket.disconnect();
         }
 
         console.log('[SOCKET] Utilisateur ' + user.nickname + ' connecté');
