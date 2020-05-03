@@ -87,7 +87,7 @@ class Bid {
             return false;
         }
 
-        if (amount <= this.amountAsked) {
+        if (amount < this.amountAsked) {
             if (this.nBidsOnProperty.length === targetMaxLen)
                 this.expired();
 
