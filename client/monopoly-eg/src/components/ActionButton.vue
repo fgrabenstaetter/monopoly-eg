@@ -89,6 +89,14 @@ export default {
          */
         progressResume() {
             $('#timer').progressResume();
+        },
+        /**
+         * @vuese
+         * Désactive le bouton
+         */
+        setDisabled() {
+            if (!$('#timer').hasClass('disabled'))
+                $('#timer').addClass('disabled');
         }
     },
     beforeDestroy() {

@@ -160,7 +160,7 @@
                     <div v-if="!bid.launcherNickname" class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€</div>
                     <div v-else class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" :placeholder="'Prix min. ' + bid.startingPrice">€</div>
                     <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
-                    <button :disabled="bid.disabled" class="bid-cancel" @click="rejectBid(bid)">Passer</button>
+                    <button :disabled="bid.disabled" type="button" class="bid-cancel" @click="rejectBid(bid)">Passer</button>
                 </div>
             </form>
           </div>
@@ -1113,6 +1113,9 @@ export default {
 
         console.log("Action déclenchée par " + this.idToNick(data.playerID) + " => " + data.actionMessage);
 
+        // Forcer la désactivation du bouton d'action
+        this.$refs.actionBtn.setDisabled();
+
         const currPlayer = this.getPlayerById(data.playerID);
         if (!currPlayer) {
             console.log('JOUEUR INTROUVABLE');
@@ -1193,7 +1196,8 @@ export default {
         });
     });
 
-    this.socket.on('gameRollDiceReq', (err) => {
+    // Retour lancer de dés
+    this.socket.on('gameRollDiceRes', (err) => {
       if (err.code !== 0) {
         this.$parent.toast(`Erreur : ${err.status}`, 'danger', 5);
       }

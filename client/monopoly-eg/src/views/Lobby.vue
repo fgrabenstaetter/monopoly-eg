@@ -331,14 +331,24 @@ export default {
         /**
          * @vuese
          * Clic sur le bouton "Jouer" : lance la partie (ou recherche une partie selon nos critères) OU annule la recherche de partie (selon l'état du bouton)
+         * Les flèches de paramètres du lobby sont également masquées durant la recherche d'une partie.
          */
         play() {
             this.audio.sfx.buttonClick.play();
             if (this.hostID === this.loggedUser.id) {
-                if (!this.playBtn.loading)
+                if (!this.playBtn.loading) {
+                    this.leftNbJ = false;
+                    this.rightNbJ = false;
+                    this.leftGameTime = false;
+                    this.rightGameTime = false;
                     this.socket.emit('lobbyPlayReq');
-                else
+                } else {
+                    this.leftNbJ = true;
+                    this.rightNbJ = true;
+                    this.leftGameTime = true;
+                    this.rightGameTime = true;
                     this.socket.emit('lobbyCancelPlayReq');
+                }
             }
         },
 
