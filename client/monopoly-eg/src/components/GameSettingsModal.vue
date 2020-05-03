@@ -11,14 +11,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div v-if="env =='game'" class="mb-4">
-                            <span>Temps restant : </span>
-                            <span v-if="$parent.gameRemainingTime">
-                                {{$parent.gameRemainingTime.min}}min
-                                {{$parent.gameRemainingTime.sec}}sec
-                            </span>
-                            <span v-else>Illimité</span>
-                        </div>
                         <ul>
                             <li>
                                 <span>Qualité graphique</span>

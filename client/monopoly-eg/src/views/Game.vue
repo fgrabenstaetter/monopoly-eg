@@ -39,6 +39,13 @@
                   data-toggle="modal"
                   data-target="#optionsModal"
                 ></i>
+
+                <div v-if="gameRemainingTime" style="position: absolute; bottom: -10px; color: #fff; opacity: 0.8;">
+                    <span>
+                        {{gameRemainingTime.min}}min
+                        {{gameRemainingTime.sec}}sec
+                    </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1424,6 +1431,7 @@ export default {
     // Ouverture d'une enchère ou nouvelle enchère d'un joueur
     this.socket.on('gameBidRes', (res) => {
         console.log('gameBidRes');
+        console.log(res);
         this.pushGameBid(res);
     });
 
