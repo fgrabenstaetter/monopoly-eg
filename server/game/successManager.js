@@ -33,6 +33,11 @@ class SuccessManager {
         }
     }
 
+    /**
+     * Récupérer tous les succès d'un joueur dans la BDD
+     * @param player Le joueur dont on doit récupérer les succès en BDD
+     * @param cb Callback d'un succès
+     */
     getPlayerAllSuccess (player, cb) {
         UserSchema.findById(player.id, (err, usr) => {
             if (err || !usr)
@@ -41,6 +46,10 @@ class SuccessManager {
         });
     }
 
+    /**
+     * Sauvegarder en BDD un succès complétée par un joueur
+     * @param player Le joueur dont on doit sauvegarder le succès
+     */
     save (player) {
         if (!SuccessManager.active)
             return;
@@ -54,6 +63,11 @@ class SuccessManager {
         });
     }
 
+    /**
+     * Vérifie si un joueur a validé un succès
+     * @param successID l'identifiant du succès devant être vérifié
+     * @param player Le joueur sur lequel la vérification est effectuée
+     */
     checkCompleted (successID, player) {
         console.log(' ___ checkCompleted() player ' + player.nickname + ' succès ' + successID)
         if (this.datas[player.id].completed.indexOf(successID) !== -1) {

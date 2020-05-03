@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: game/publicCompany.js</title>
+    <title>JSDoc: Source: game/deck.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: game/publicCompany.js</h1>
+    <h1 class="page-title">Source: game/deck.js</h1>
 
     
 
@@ -26,48 +26,62 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const Constants = require('../lib/constants');
-const Property  = require('./property');
+            <pre class="prettyprint source linenums"><code>const Card = require('./card');
 
-/**
- * Représente une carte "compagnie publique"
- */
-class PublicCompany extends Property {
+class Deck {
+    /**
+     * @param cardsInfo Les données statiques des cartes du jeu (Chances OU Communautaires)
+     */
+    constructor (cardsInfo) {
+        let cards = [];
 
-    constructor (data) {
-        super(Constants.PROPERTY_TYPE.PUBLIC_COMPANY, data);
+        for (const cardInfo of cardsInfo) {
+            let card = new Card(
+                cardInfo.description,
+                cardInfo.effectType,
+                cardInfo.effectArg1,
+                cardInfo.effectArg2
+            );
+            cards.push(card);
+        }
+        this.activeCards = cards;
+        this.drawnCards = [];
+
+        this.shuffle();
     }
 
     /**
-     * @param data L'objet correspond aux données de l'ID
+     * Mélange le deck des cartes (Chances ou Communautaires)
      */
-    load (data) {
-        this.name        = data.name;
-        this.price       = data.price;
+    shuffle() {
+        for (let i = this.activeCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.activeCards[i], this.activeCards[j]] = [this.activeCards[j], this.activeCards[i]];
+        }
     }
 
     /**
-     * @returns La valeur totale de la compagnie
+     * Piocher une carte (Chance ou Communautaire)
+     * @param game Le jeu devant executant la carte
+     * @param player Le joueur devant piocher la carte
      */
-    get value () {
-        return this.price;
-    }
-
-    /**
-     * @param diceRes [int, int] résultats des dés
-     * @returns le prix de loyer
-     */
-    rentalPrice (diceRes) {
-        const total = diceRes[0] + diceRes[1];
-        let multiplier = 4;
-        if (this.owner.haveAllCompanies)
-            multiplier = 10;
-
-        return total * multiplier;
+    drawCard (game, player) {
+        if (this.activeCards.length === 0) {
+            this.activeCards = this.drawnCards;
+            this.shuffle();
+            const card = this.activeCards.pop();
+            card.execute(game, player);
+            this.drawnCards.push(card);
+        }
+        else {
+            const card = this.activeCards.pop();
+            card.execute(game, player);
+            this.drawnCards.push(card);
+        }
     }
 }
 
-module.exports = PublicCompany;
+module.exports = Deck;
 </code></pre>
         </article>
     </section>
