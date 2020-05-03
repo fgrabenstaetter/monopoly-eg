@@ -21,7 +21,8 @@
                 class="form-control"
                 placeholder="Mot de passe"
               >
-              <button type="submit" class="btn btn-primary">CONNEXION</button>
+              <button v-if="btnLoading" class="btn btn-primary" disabled>CHARGEMENT...</button>
+              <button v-else type="submit" class="btn btn-primary">CONNEXION</button>
               <router-link class="btn btn-secondary" to="/signin">INSCRIPTION</router-link>
             </form>
           </div>
@@ -54,7 +55,10 @@ export default {
       form: {
         nickname: '',
         password: ''
-      }
+      },
+      // @vuese
+      // Indique si le bouton de connexion est en chargement
+      btnLoading: false
     };
   },
   methods: {
@@ -63,6 +67,8 @@ export default {
      * Connecte l'utilisateur en envoyant les données du formulaire de connexion à l'API. Si connexion réussie, redirection vers /lobby.
      */
     login() {
+      this.btnLoading = true;
+
       this.$http
         .post(`${this.$store.state.apiUrl}/login`, this.form)
         .then(res => {
@@ -73,11 +79,13 @@ export default {
           this.$store.dispatch("login", {jwt: res.token, user: res.user})
           .then(() => {
             this.$router.push('/lobby');
+            this.btnLoading = false;
           });
         })
         .catch(err => {
           if (err.response.status === 400)
             this.$parent.toast(err.response.data.status, 'danger', 5);
+          this.btnLoading = false;
         });
     }
   },

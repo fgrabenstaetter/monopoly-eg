@@ -12,7 +12,8 @@
                         <input v-model="form.nickname" type="text" class="form-control" placeholder="Pseudo" autofocus>
                         <input v-model="form.email" type="email" class="form-control" placeholder="Email">
                         <input v-model="form.password" type="password" class="form-control" placeholder="Mot de passe">
-                        <button type="submit" class="btn btn-primary">INSCRIPTION</button>
+                        <button v-if="btnLoading" class="btn btn-primary" disabled>CHARGEMENT...</button>
+                        <button v-else type="submit" class="btn btn-primary">INSCRIPTION</button>
                         <router-link class="btn btn-secondary" to="/login">ANNULER</router-link>
                     </form>
                 </div>
@@ -39,7 +40,10 @@ export default {
         nickname: '',
         email: '',
         password: ''
-      }
+      },
+      // @vuese
+      // Indique si le bouton d'inscription est en chargement
+      btnLoading: false
     };
   },
   methods: {
@@ -48,14 +52,18 @@ export default {
      * Inscrit l'utilisateur en envoyant les données du formulaire à l'API. Si inscription réussie, redirection vers /login.
      */
     signin() {
+      this.btnLoading = true;
+
       this.$http
         .post(`${this.$store.state.apiUrl}/register`, this.form)
         .then(() => {
           this.$router.push('/login');
+          this.btnLoading = false;
         })
         .catch(err => {
           if (err.response.status === 400)
             this.$parent.toast(err.response.data.status, 'danger', 5);
+          this.btnLoading = false;
         });
     }
   },
