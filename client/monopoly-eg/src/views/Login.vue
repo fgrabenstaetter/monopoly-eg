@@ -26,7 +26,7 @@
               <router-link class="btn btn-secondary" to="/signin">INSCRIPTION</router-link>
             </form>
           </div>
-          <a id="forgot-password" href="#">Mot de passe oublié ?</a>
+          <router-link id="forgot-password" to="/reset-password">Mot de passe oublié ?</router-link>
         </div>
       </div>
     </div>

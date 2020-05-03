@@ -17,7 +17,6 @@
                         <router-link class="btn btn-secondary" to="/login">ANNULER</router-link>
                     </form>
                 </div>
-                <a id="forgot-password" href="#">Mot de passe oublié ?</a>
             </div>
         </div>
     </div>
