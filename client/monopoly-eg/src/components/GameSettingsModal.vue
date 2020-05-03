@@ -274,10 +274,14 @@ import $ from 'jquery';
 export default {
     name: 'GameSettingsModal',
     props: {
+        // @vuese
+        // Environnement dans lequel est utilisé le composant ('lobby' ou 'game')
         env: {
             type: String,
             default: 'lobby'
         },
+        // @vuese
+        // Utilisateur actuellement connecté
         loggedUser: {
             type: Object,
             required: true
@@ -285,6 +289,8 @@ export default {
     },
     data() {
         return {
+            // @vuese
+            // Paramètres utilisateur (prennent les valeurs des paramètres de loggedUser à l'initialisation)
             userSettings: {
                 graphicsQuality: 1,
                 autoZoom: true,
@@ -298,6 +304,10 @@ export default {
         this.userSettings = this.loggedUser.settings;
     },
     methods: {
+        /**
+         * @vuese
+         * Met à jour les paramètres utilisations : en local, à distance (via socket) et en temps réel (en jeu ou dans le lobby)
+         */
         updateUserSettings() {
             this.userSettings.graphicsQuality = parseInt(this.userSettings.graphicsQuality);
             this.userSettings.autoZoom = !!this.userSettings.autoZoom;
@@ -318,9 +328,19 @@ export default {
             this.$parent.setMusicLevel(this.userSettings.musicLevel);
             this.$parent.setSfxLevel(this.userSettings.sfxLevel);
         },
+
+        /**
+         * @vuese
+         * Force la fermeture de la modal d'options
+         */
         closeModal() {
             $('#optionsModal').modal('hide');
         },
+
+        /**
+         * @vuese
+         * Lors d'un clic sur le bouton "Quitter la partie", appelle la méthode "quitGame()" du parent si elle existe
+         */
         quitGame() {
             if (typeof this.$parent.quitGame === 'function')
                 this.$parent.quitGame();
