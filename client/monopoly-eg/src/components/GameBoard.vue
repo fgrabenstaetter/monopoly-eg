@@ -187,6 +187,37 @@ export default {
             'd39' : 'Plane39_0'
         },
 
+        drapLight: { 
+            'd1' : new THREE.Vector3(1.3514562845230103, -0.0018858909606933594, 1.6896905899047852), 
+            'd2' : new THREE.Vector3(0.6791576743125916, -0.0018858909606933594, 1.6896905899047852), 
+            'd3' : new THREE.Vector3(-0.03322577476501465, -0.0018858909606933594, 1.6896905899047852), 
+            'd4' : new THREE.Vector3(-0.33810311555862427, -0.0018858909606933594, 1.6896905899047852), 
+            'd5' : new THREE.Vector3(-1.010401725769043, -0.0018858909606933594, 1.6896905899047852), 
+            'd6' : new THREE.Vector3(-1.3478100299835205, -0.0018858909606933594, 1.6896905899047852), 
+            'd7' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, 1.3527071475982666), 
+            'd8' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, 1.015750765800476), 
+            'd9' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, 0.6755693554878235), 
+            'd10' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, 0.335395872592926), 
+            'd11' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, -0.014368116855621338), 
+            'd12' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, -0.3273006081581116), 
+            'd13' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, -1.001229166984558), 
+            'd14' : new THREE.Vector3(-1.8835428953170776, -0.0018858909606933594, -1.3446118831634521), 
+            'd15' : new THREE.Vector3(-1.3478100299835205, -0.0018858909606933594, -1.8752185106277466), 
+            'd16' : new THREE.Vector3(-0.6823535561561584, -0.0018858909606933594, -1.8752185106277466), 
+            'd17' : new THREE.Vector3(-0.3403828740119934, -0.0018858909606933594, -1.8752185106277466), 
+            'd18' : new THREE.Vector3(0.011489272117614746, -0.0018858909606933594, -1.8752185106277466), 
+            'd19' : new THREE.Vector3(0.33431607484817505, -0.0018858909606933594, -1.8752185106277466), 
+            'd20' : new THREE.Vector3(0.6739761829376221, -0.0018858909606933594, -1.8752185106277466), 
+            'd21' : new THREE.Vector3(1.0119102001190186, -0.0018858909606933594, -1.8752185106277466), 
+            'd22' : new THREE.Vector3(1.3486751317977905, -0.0018858909606933594, -1.8752185106277466), 
+            'd23' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, -1.3483989238739014), 
+            'd24' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, -1.0041176080703735), 
+            'd25' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, -0.3317294120788574), 
+            'd26' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, 0.03394165635108948), 
+            'd27' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, 0.6849400997161865), 
+            'd28' : new THREE.Vector3(1.6675397157669067, -0.0018858909606933594, 1.3527071475982666)
+        },
+
         // Variables pour le rendu de la scène
         renderer: null,
         scene: null,
@@ -268,6 +299,7 @@ export default {
             for (const i in plateauObjects) {
                 this.gltfLoader.load('/assets/models/plateau/' + plateauObjects[i] + '.gltf', (gltf) => {
                     const root = gltf.scene;
+                    this.loaderLightFlag(28);
                     this.scene.add(root);
                 }, function(prog) {
                     console.log(prog);
@@ -420,14 +452,26 @@ export default {
                 }
             });
             
-            const colorLight = 0x404040;
-            const intensity = 0.1;
-            const light1 = new THREE.DirectionalLight( colorLight, intensity)
-            light1.position.set(this.objs[`d${cell}`].children[0].position.x, this.objs[`d${cell}`].children[0].position.y, 
-                                this.objs[`d${cell}`].children[0].position.z);
-            this.scene.add(light1);
+            console.log(this.objs[`d${cell}`].children[0].position);
+            // const colorLight = 0x404040;
+            // const intensity = 0.1;
+            // const light1 = new THREE.DirectionalLight( colorLight, intensity);
+            // light1.position.set(this.drapLight[`d${cell}`].x, this.drapLight[`d${cell}`].y, this.drapLight[`d${cell}`].z);
+            // this.scene.add(light1);
             this.scene.add(root);
         });
+    },
+
+    loaderLightFlag(cell) {
+        for (this.i = 1; this.i <= cell; this.i++) {
+            //console.log(this.i);
+            const colorLight = 0x404040;
+            const intensity = 0.1;
+            const light1 = new THREE.DirectionalLight( colorLight, intensity);
+            light1.position.set(this.drapLight[`d${this.i}`].x, this.drapLight[`d${this.i}`].y, this.drapLight[`d${this.i}`].z);
+            this.scene.add(light1);
+        }
+
     },
 
     /**
