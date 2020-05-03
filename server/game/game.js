@@ -362,7 +362,7 @@ class Game {
                 for (const obj of fails) {
                     ranking.push(obj.playerID);
                 }
-                console.log(ranking);
+
                 this.GLOBAL.network.io.to(this.name).emit('gameEndRes', {
                     type     : 'normal',
                     winnerID : winner.id,
