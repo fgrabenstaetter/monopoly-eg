@@ -487,14 +487,14 @@ export default {
       
       if (!this.gameTimer) {
         this.gameTimer = setInterval(() => {
-          if (this.gameRemainingTime.min >= 0 && this.gameRemainingTime.sec >= 0) {
+          if (this.gameRemainingTime.min == 0 && this.gameRemainingTime.sec == 0) {
+            clearInterval(this.gameTimer);
+          } else {
             this.$set(this.gameRemainingTime, 'sec', this.gameRemainingTime.sec - 1);
             if (this.gameRemainingTime.sec == -1) {
               this.$set(this.gameRemainingTime, 'sec', 59);
               this.$set(this.gameRemainingTime, 'min', this.gameRemainingTime.min - 1);
             }
-          } else {
-            clearInterval(this.gameTimer);
           }
         }, 1000)
       }
