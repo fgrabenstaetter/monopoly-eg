@@ -7,7 +7,7 @@
     <div class="ingame-ui-container">
       <div class="container-fluid top-bar">
         <div class="row">
-          <div class="col-md-6" style="pointer-events: none">
+          <div class="col-md-6">
             <div class="offers-container">
 
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
