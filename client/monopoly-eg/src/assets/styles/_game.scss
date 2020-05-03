@@ -244,9 +244,6 @@
           font-size: 13px;
           font-weight: bold;
           margin: 0 5px 0 5px;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
           line-height: 28px;
 
           .color {
@@ -284,6 +281,7 @@
         }
 
         .bid-input {
+          height: max-content;
           display: flex;
           flex-direction: row;
           color: white;
@@ -294,6 +292,7 @@
           }
 
           input {
+            height: max-content;
             flex-grow: 10;
             border: none;
             border-radius: 5px;
