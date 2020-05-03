@@ -1,13 +1,13 @@
 <template>
     <div>
-        <perfect-scrollbar id="msgChat" class="tchat-container">
+        <div id="msgChat" class="tchat-container">
             <div v-for="{senderUserID, content, createdTime, id} in messages" :key="id" :class="senderUserID == $parent.loggedUser.id ? 'msg-me' : 'msg-other'" :title="createdTime">
                 <div class="msg-author">
                     {{senderUserID === -1 ? '[Serveur]' : $parent.idToNick(senderUserID)}}
                 </div>
                 {{content}}
             </div>
-        </perfect-scrollbar>
+        </div>
 
         <div class="tchat-container">
             <form @submit.prevent="postMsg">
@@ -24,7 +24,6 @@
 
 <script>
 import {Howl} from 'howler'
-import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
 /**
  * @vuese
  * @group Components
@@ -40,11 +39,6 @@ export default {
             type: String,
             default: 'lobby'
         }
-    },
-    components: {
-        // @vuese
-        // Utilisé pour afficher une scrollbar dans la liste des messages
-        PerfectScrollbar
     },
     data() {
         return {
