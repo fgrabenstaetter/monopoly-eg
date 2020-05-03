@@ -832,7 +832,8 @@
               &.blue,
               &.cyan,
               &.purple,
-              &.red {
+              &.red,
+              &.orange {
                 .property {
                   color: rgba($color: white, $alpha: 0.6) !important;
                   padding: 10px 30px !important;
