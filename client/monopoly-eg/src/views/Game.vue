@@ -1210,9 +1210,9 @@ export default {
     });
 
     // Retour lancer de dés
-    this.socket.on('gameRollDiceRes', (err) => {
-      if (err.code !== 0) {
-        this.$parent.toast(`Erreur : ${err.status}`, 'danger', 5);
+    this.socket.on('gameRollDiceRes', (res) => {
+      if (res.error !== 0) {
+        this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
       }
     });
 
