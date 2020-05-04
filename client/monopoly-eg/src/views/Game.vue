@@ -11,7 +11,16 @@
             <div class="offers-container">
 
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
-                <div class="message">{{offer.buyerNickname}} propose de vous acheter {{offer.propertyName}} pour {{offer.price}}€</div>
+                <div class="message">
+                  {{offer.buyerNickname}} propose de vous acheter 
+                  <span
+                    class="color"
+                    :class="offer.property.color ? offer.property.color : offer.property.type"
+                    >
+                    {{offer.property.name}}
+                  </span>
+                  pour {{offer.price}}€
+                </div>
                 <div class="form">
                   <button @click="offerAccept(offer.offerID)">Accepter</button>
                   <button @click="rejectOffer(offer.offerID)">Refuser</button>
@@ -149,10 +158,10 @@
         <div v-for="bid in bids" :key="bid.bidID" class="bid-popup">
           <div class="bid-form">
             <div v-if="!bid.launcherNickname" class="content">
-                Une enchère est lancée pour {{bid.propertyName}}
+                Une enchère est lancée pour <span class="color" :class="bid.property.color ? bid.property.color : bid.property.type">{{bid.property.name}}</span>
             </div>
             <div v-else class="content">
-                {{bid.launcherNickname}} lance une enchère pour <span class="color yellow">{{bid.propertyName}}</span>
+                {{bid.launcherNickname}} lance une enchère pour <span class="color" :class="bid.property.color ? bid.property.color : bid.property.type">{{bid.property.name}}</span>
             </div>
 
             <form @submit.prevent="sendBid(bid)">
@@ -711,7 +720,7 @@ export default {
       if (receiver.id == this.loggedUser.id) {
         this.offers.push({
           buyerNickname: buyer.nickname,
-          propertyName: property.name,
+          property: property,
           price: offer.price,
           offerID: offer.offerID
         });
@@ -725,7 +734,8 @@ export default {
      */
     pushGameBid(bid) {
       const myPlayer = this.getPlayerById(this.loggedUser.id);
-      if (!myPlayer) return;
+      const property = this.getPropertyById(this.propertyID);
+      if (!myPlayer || !property) return;
 
       // Premier message uniquement
       if (bid.playerID == null) {
@@ -739,7 +749,7 @@ export default {
                 startingPrice: bid.price,
                 disabled: (bid.propertyOwnerID == this.loggedUser.id || myPlayer.failure),
                 myPrice: '',
-                propertyName: bid.text,
+                property: property,
                 textContent: "",
                 bidID: bid.bidID
             });
@@ -749,7 +759,7 @@ export default {
                 startingPrice: 0,
                 disabled: myPlayer.failure, // Si l'on est en faillite, on désactive par défaut l'enchère
                 myPrice: '',
-                propertyName: bid.text,
+                property: property,
                 textContent: "",
                 bidID: bid.bidID
             });
@@ -799,7 +809,7 @@ export default {
       // asyncRequestType à gérer ici
       if (data.asyncRequestType && property) {
         if (data.asyncRequestType == "canBuy") {
-          let price = data.asyncRequestArgs[0];
+          const price = data.asyncRequestArgs[0];
           let notification = {
             type: "saleCard",
             propertyID: property.id,
@@ -821,10 +831,11 @@ export default {
 
           this.turnNotifications.push(notification);
         } else if (data.asyncRequestType == "shouldMortgage") {
+          const moneyToPay = data.asyncRequestArgs[0];
           this.turnNotifications.push({
-            title: 'Attention !',
+            title: 'Plus assez d\'argent !',
             color: 'red',
-            content: 'Plus assez d\'argent : vous devez hypothéquer avant la fin de votre tour !',
+            content: `Vous devez hypothéquer avant la fin de votre tour pour payer la somme dûe de ${moneyToPay}€ !`,
             type: 'text'
           });
         } else {
