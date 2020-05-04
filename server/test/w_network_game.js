@@ -479,7 +479,7 @@ describe('Network + Game', () => {
 
             sock.on('gameBidRes', (data) => {
                 assert.strictEqual(data.playerID, null);
-                assert.strictEqual(data.price, 0);
+                assert.strictEqual(data.price, 1);
                 assert.strictEqual(data.bidID, nextBidID);
 
                 sock.off('gameBidRes');
