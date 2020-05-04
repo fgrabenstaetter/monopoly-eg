@@ -739,14 +739,24 @@ export default {
                 }
                 if (_this.tabCases[_this.vdp].x.toFixed(2) == to.x.toFixed(2) &&
                     _this.tabCases[_this.vdp].z.toFixed(2) == to.z.toFixed(2)) {
-                    if (typeof options === 'function') options();	
+                        if (_this.vdp >= 0 && _this.vdp <= 9) {
+                            pawn.rotation.set(0, -1.5707963267948966, 0);
+                        } else if (_this.vdp >= 10 && _this.vdp <= 19) {
+                            pawn.rotation.set(3.141592653589793, -4.440892098500626e-16, 3.141592653589793);
+                        } else if (_this.vdp >= 20 && _this.vdp <= 29) {
+                             pawn.rotation.set(0, 1.5707963267948966, 0);
+                        } else if (_this.vdp >= 30 && _this.vdp <= 39) {
+                            pawn.rotation.set(-0, -2.4492935982947064e-16, -0);
+                        }
+
+                        if (typeof options === 'function') options();	
                 }
                     
             });
 
         // start the tween
         tweenVector3.start();
-                
+
         // return the tween in case we want to manipulate it later on
         return tweenVector3;
     },
@@ -805,6 +815,7 @@ export default {
                 this.posPawn = i;
             }
         }
+
 
         if (this.posPawn == 7 && this.vdp == 3) {
             // Reculez de 4 cases - carte chance
