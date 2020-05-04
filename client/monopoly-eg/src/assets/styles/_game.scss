@@ -648,6 +648,39 @@
         border-radius: 10px;
         margin: 20px 0;
 
+        .color {
+          display: inline-block;
+          padding: 0 7px;
+          border-radius: 5px;
+          margin: 0 5px;
+
+          &.yellow {
+            background-color: $property-yellow;
+          }
+          &.brown {
+            background-color: $property-brown;
+          }
+          &.blue {
+            background-color: $property-blue;
+          }
+          &.orange {
+            background-color: $property-orange;
+          }
+          &.cyan {
+            background-color: $property-cyan;
+            color: black;
+          }
+          &.red {
+            background-color: $property-red;
+          }
+          &.green {
+            background-color: $property-green;
+          }
+          &.purple {
+            background-color: $property-purple;
+          }
+        }
+
         .form {
           margin: 10px auto 3px auto;
 
