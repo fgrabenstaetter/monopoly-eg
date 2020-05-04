@@ -1149,6 +1149,8 @@ class Network {
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (data.price < 0 || data.price > 1e5)
                 err = Errors.GAME.PRICE_OUT_OF_RANGE;
+            else if (prop && prop.type === Constants.PROPERTY_TYPE.STREET && prop.curUpgradeLevel > 0)
+                err = Errors.GAME.PROPERTY_NOT_EMPTY;
             else if (!Offer.canSend(player, recvr, game))
                 err = Errors.GAME.OFFER_LIMIT_REACHED;
             else {
@@ -1247,6 +1249,8 @@ class Network {
                 err = Errors.GAME.PRICE_OUT_OF_RANGE;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
+            else if (prop && prop.type === Constants.PROPERTY_TYPE.STREET && prop.curUpgradeLevel > 0)
+                err = Errors.GAME.PROPERTY_NOT_EMPTY;
             else {
                 new Bid(prop, data.initialPrice, game, true);
                 // réponse envoyée depuis le constructeur de Bid

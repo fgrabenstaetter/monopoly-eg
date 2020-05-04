@@ -93,7 +93,7 @@ class Player {
     }
 
     loseMoney (amount) {
-        if(this.money < amount) {
+        if(this.money < amount || !this.money) {
             this.money = 0;
             return false;
         } else {
