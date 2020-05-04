@@ -222,33 +222,139 @@ export default {
          * Tableau de nom des maisons
          * @type {array} 
          */
-        // tabHouseCoord: {
-        //     'M1_1_1' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
-        //         'M1_1_2' : new THREE.Vector3(1.6012185049057007, -0.018597006797790527, -0.03439660370349884),
-        // //      'M1_1_3' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
-        // //      'M1_1_4' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
-        // //     'M1_2' : new THREE.Vector3(, , ),
-        // //     'M2_1' : new THREE.Vector3(, , ),
-        // //     'M2_2' : new THREE.Vector3(, , ),
-        // //     'M2_3' : new THREE.Vector3(, , ),
-        // //     'M3_1' : new THREE.Vector3(, , ),
-        // //     'M3_2' : new THREE.Vector3(, , ),
-        // //     'M3_3' : new THREE.Vector3(, , ),
-        // //     'M4_1' : new THREE.Vector3(, , ),
-        // //     'M4_2' : new THREE.Vector3(, , ),
-        // //     'M4_3' : new THREE.Vector3(, , ),
-        // //     'M5_1' : new THREE.Vector3(, , ),
-        // //     'M5_2' : new THREE.Vector3(, , ),
-        // //     'M5_3' : new THREE.Vector3(, , ),
-        // //     'M6_1' : new THREE.Vector3(, , ),
-        // //     'M6_2' : new THREE.Vector3(, , ),
-        // //     'M6_3' : new THREE.Vector3(, , ),
-        // //     'M7_1' : new THREE.Vector3(, , ),
-        // //     'M7_2' : new THREE.Vector3(, , ),
-        // //     'M7_3' : new THREE.Vector3(, , ),
-        // //     'M8_1' : new THREE.Vector3(, , ),
-        // //     'M8_2' : new THREE.Vector3(, , )
-        // },
+        tabHouseCoord: {
+            // case 1
+            'M1_1_1' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.03439660370349884),
+            'M1_1_2' : new THREE.Vector3(1.5222, -0.018597006797790527, -0.03439660370349884),
+            'M1_1_3' : new THREE.Vector3(1.6812185049057007, -0.018597006797790527, -0.17635),
+            'M1_1_4' : new THREE.Vector3(1.5222, -0.018597006797790527, -0.17635),
+
+            // case 3
+            'M1_2_1' : new THREE.Vector3(1.0125, -0.018597006797790527, -0.03439660370349884),
+            'M1_2_2' : new THREE.Vector3(0.84647, -0.018597006797790527, -0.03439660370349884),
+            'M1_2_3' : new THREE.Vector3(1.0125, -0.018597006797790527, -0.17135),
+            'M1_2_4' : new THREE.Vector3(0.84647, -0.018597006797790527, -0.17135),
+
+            // case 6
+            'M2_1_1' : new THREE.Vector3(0.000818, -0.018597006797790527, -0.03439660370349884),
+            'M2_1_2' : new THREE.Vector3(-0.16, -0.018597006797790527, -0.03439660370349884),
+            'M2_1_3' : new THREE.Vector3(0.000818, -0.018597006797790527, -0.17135),
+            'M2_1_4' : new THREE.Vector3(-0.16, -0.018597006797790527, -0.17135),
+
+            // case 8
+            'M2_2_1' : new THREE.Vector3(-0.6696, -0.018597006797790527, -0.03439660370349884),
+            'M2_2_2' : new THREE.Vector3(-0.83269, -0.018597006797790527, -0.03439660370349884),
+            'M2_2_3' : new THREE.Vector3(-0.6696, -0.018597006797790527, -0.17135),
+            'M2_2_4' : new THREE.Vector3(-0.83269, -0.018597006797790527, -0.17135),
+
+            // case 9
+            'M2_3_1' : new THREE.Vector3(-1.0078, -0.018597006797790527, -0.03439660370349884),
+            'M2_3_2' : new THREE.Vector3(-1.1709, -0.018597006797790527, -0.03439660370349884),
+            'M2_3_3' : new THREE.Vector3(-1.0078, -0.018597006797790527, -0.17135),
+            'M2_3_4' : new THREE.Vector3(-1.1709, -0.018597006797790527, -0.17135),
+
+            // case 11
+            'M3_1_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -0.1994),
+            'M3_1_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -0.03439664840698242),
+            'M3_1_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -0.1994),
+            'M3_1_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -0.03439664840698242),
+
+            // case 13
+            'M3_2_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -0.86803),
+            'M3_2_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -0.70295),
+            'M3_2_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -0.86803),
+            'M3_2_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -0.70295),
+
+            // case 14 
+            'M3_3_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -1.2056),
+            'M3_3_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -1.0405),
+            'M3_3_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -1.2056),
+            'M3_3_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -1.0405),
+
+            // case 16
+            'M4_1_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -1.8765),
+            'M4_1_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -1.7115),
+            'M4_1_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -1.8765),
+            'M4_1_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -1.7115),
+
+            // case 18
+            'M4_2_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -2.5508),
+            'M4_2_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -2.3857),
+            'M4_2_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -2.5508),
+            'M4_2_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -2.3857),
+
+            // case 19
+            'M4_3_1' : new THREE.Vector3(-1.8134, -0.018597014248371124, -2.8879),
+            'M4_3_2' : new THREE.Vector3(-1.8134, -0.018597014248371124, -2.7228),
+            'M4_3_3' : new THREE.Vector3(-1.9697, -0.018597014248371124, -2.8879),
+            'M4_3_4' : new THREE.Vector3(-1.9697, -0.018597014248371124, -2.7228),
+
+            // case 21
+            'M5_1_1' : new THREE.Vector3(-1.0078, -0.018597014248371124, -3.5648),
+            'M5_1_2' : new THREE.Vector3(-1.1709, -0.018597014248371124, -3.5648),
+            'M5_1_3' : new THREE.Vector3(-1.0078, -0.018597014248371124, -3.7007),
+            'M5_1_4' : new THREE.Vector3(-1.1709, -0.018597014248371124, -3.7007),
+
+            // case 23
+            'M5_2_1' : new THREE.Vector3(-0.3342, -0.018597014248371124, -3.5648),
+            'M5_2_2' : new THREE.Vector3(-0.4959, -0.018597014248371124, -3.5648),
+            'M5_2_3' : new THREE.Vector3(-0.3342, -0.018597014248371124, -3.7007),
+            'M5_2_4' : new THREE.Vector3(-0.4959, -0.018597014248371124, -3.7007),
+
+            // case 24
+            'M5_3_1' : new THREE.Vector3(-0.000818, -0.018597014248371124, -3.5648),
+            'M5_3_2' : new THREE.Vector3(-0.16, -0.018597014248371124, -3.5648),
+            'M5_3_3' : new THREE.Vector3(-0.000818, -0.018597014248371124, -3.7007),
+            'M5_3_4' : new THREE.Vector3(-0.16, -0.018597014248371124, -3.7007),
+
+            // case 26
+            'M6_1_1' : new THREE.Vector3(0.6750, -0.018597014248371124, -3.5648),
+            'M6_1_2' : new THREE.Vector3(0.5133, -0.018597014248371124, -3.5648),
+            'M6_1_3' : new THREE.Vector3(0.6750, -0.018597014248371124, -3.7007),
+            'M6_1_4' : new THREE.Vector3(0.5133, -0.018597014248371124, -3.7007),
+
+            // case 27
+            'M6_2_1' : new THREE.Vector3(1.0125, -0.018597014248371124, -3.5648),
+            'M6_2_2' : new THREE.Vector3(0.84647, -0.018597014248371124, -3.5648),
+            'M6_2_3' : new THREE.Vector3(1.0125, -0.018597014248371124, -3.7007),
+            'M6_2_4' : new THREE.Vector3(0.84647, -0.018597014248371124, -3.7007),
+
+            // case 29
+            'M6_3_1' : new THREE.Vector3(1.6812185049057007, -0.018597014248371124, -3.5648),
+            'M6_3_2' : new THREE.Vector3(1.5222, -0.018597014248371124, -3.5648),
+            'M6_3_3' : new THREE.Vector3(1.6812185049057007, -0.018597014248371124, -3.7007),
+            'M6_3_4' : new THREE.Vector3(1.5222, -0.018597014248371124, -3.7007),
+
+            // case 31
+            'M7_1_1' : new THREE.Vector3(1.6812, -0.018597014248371124, -2.8879),
+            'M7_1_2' : new THREE.Vector3(1.6812, -0.018597014248371124, -2.7228),
+            'M7_1_3' : new THREE.Vector3(1.5548, -0.018597014248371124, -2.8879),
+            'M7_1_4' : new THREE.Vector3(1.5548, -0.018597014248371124, -2.7228),
+
+            // case 32
+            'M7_2_1' : new THREE.Vector3(1.6812, -0.018597014248371124, -2.5508),
+            'M7_2_2' : new THREE.Vector3(1.6812, -0.018597014248371124, -2.3857),
+            'M7_2_3' : new THREE.Vector3(1.5548, -0.018597014248371124, -2.5508),
+            'M7_2_4' : new THREE.Vector3(1.5548, -0.018597014248371124, -2.3857),
+
+            // case 34
+            'M7_3_1' : new THREE.Vector3(1.6812, -0.018597014248371124, -1.8765),
+            'M7_3_2' : new THREE.Vector3(1.6812, -0.018597014248371124, -1.7115),
+            'M7_3_3' : new THREE.Vector3(1.5548, -0.018597014248371124, -1.8765),
+            'M7_3_4' : new THREE.Vector3(1.5548, -0.018597014248371124, -1.7115),
+
+            // case 37
+            'M8_1_1' : new THREE.Vector3(1.6812, -0.018597014248371124, -0.86803),
+            'M8_1_2' : new THREE.Vector3(1.6812, -0.018597014248371124, -0.70295),
+            'M8_1_3' : new THREE.Vector3(1.5548, -0.018597014248371124, -0.86803),
+            'M8_1_4' : new THREE.Vector3(1.5548, -0.018597014248371124, -0.70295),
+            
+            // case 39
+            'M8_2_1' : new THREE.Vector3(1.6812183856964111, -0.018597014248371124, -0.1994),
+            'M8_2_2' : new THREE.Vector3(1.6812183856964111, -0.018597014248371124, -0.03439664840698242),
+            'M8_2_3' : new THREE.Vector3(1.5548, -0.018597014248371124, -0.1994),
+            'M8_2_4' : new THREE.Vector3(1.5548, -0.018597014248371124, -0.03439664840698242)
+        },
 
         // Variables pour le rendu de la scène
         renderer: null,
@@ -407,8 +513,12 @@ export default {
      * @arg {int} ncase: Numero de case (int), nhouse: Numero de maison (int)
      */
     deleteHouse(ncase, nhouse) {
-        let concatS = "";
-        this.deleteHouseD(concatS.concat(this.tabHouse[ncase], "_", nhouse));
+        // let concatS = "";
+        // this.deleteHouseD(concatS.concat(this.tabHouse[ncase], "_", nhouse));
+        //this.house = '_' + nhouse;
+        //console.log(`${this.tabHouse[ncase]}${this.house}`);
+        //this.scene.remove(`${this.tabHouse[ncase]}${this.house}`);
+        this.scene.remove(this.objs[`${this.tabHouse[ncase]}_${nhouse}`]);
     },
 
     /**
@@ -583,28 +693,44 @@ export default {
      * 	3 -> met la case en haut à droite de la case
      *  4 -> met la case en haut à gauche de la case
      */
-    loaderHouseProperty(ncase, nhouse) {
-        let concatS = "";
-        this.housePropertyL(concatS.concat(this.tabHouse[ncase], "_", nhouse));
-    },
-
     // loaderHouseProperty(ncase, nhouse) {
-    //     //let concatS = "";
-    //     //console.log(nhouse);
-    //     this.house = '_' + nhouse;
-    //     //console.log(`${this.tabHouse[ncase]}${this.flo}`);
-    //     this.housePropertyL(`${this.tabHouse[ncase]}${this.house}`);
+    //     let concatS = "";
+    //     this.housePropertyL(concatS.concat(this.tabHouse[ncase], "_", nhouse));
     // },
+
+    loaderHouseProperty(ncase, nhouse) {
+        //let concatS = "";
+        //console.log(nhouse);
+        //this.house = '_' + nhouse;
+        //console.log(`${this.tabHouse[ncase]}_${nhouse}`);
+        if ((ncase > 30 && ncase <= 39) || (ncase > 10 && ncase <= 19))
+            this.housePropertyLR(`${this.tabHouse[ncase]}_${nhouse}`);
+        else 
+            //this.housePropertyL(`${this.tabHouse[ncase]}${this.house}`);
+            this.housePropertyL(`${this.tabHouse[ncase]}_${nhouse}`);
+
+    },
 
     /**
      * @vuese
-     * Fonction prinicpale - Charge une maison à la case spécifiée
+     * Fonction principale - Charge une maison à la case spécifiée
      * @arg {string} houseProperty:  Nom de la maison (Ex: M3_1_2)
      */
     housePropertyL(houseProperty) {
-        this.gltfLoader.load('/assets/models/maisonPro/' + houseProperty + '.gltf', (gltf) => {          
+        this.gltfLoader.load('/assets/models/maisonPro/maison.gltf', (gltf) => {          
             const root = gltf.scene;
             this.objs[houseProperty] = gltf.scene;
+            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, this.tabHouseCoord[houseProperty].y, this.tabHouseCoord[houseProperty].z);
+            //console.log(root);
+            this.scene.add(root);
+        });
+    },
+
+    housePropertyLR(houseProperty) {
+        this.gltfLoader.load('/assets/models/maisonPro/maisonR.gltf', (gltf) => {          
+            const root = gltf.scene;
+            this.objs[houseProperty] = gltf.scene;
+            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, this.tabHouseCoord[houseProperty].y, this.tabHouseCoord[houseProperty].z);
             //console.log(root);
             this.scene.add(root);
         });
