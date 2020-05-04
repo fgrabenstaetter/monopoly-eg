@@ -1575,7 +1575,7 @@ export default {
 
     // En cas d'hypothèque forcée (si un paiement doit être fait)
     this.socket.on('gameForcedMortgageRes', (res) => {
-      this.$parent.toast(`Hypothèque forcée : ${res.message}`, 'danger', 5);
+      this.$parent.toast(`${res.message}`, 'success', 10);
       
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
@@ -1584,7 +1584,7 @@ export default {
       if (res.rentalOwner) {
         const rentalOwner = this.getPlayerById(res.rentalOwner.id);
         if (!rentalOwner) return;
-        this.$set(rentalOwner, 'money', res.rentalOwner.money);
+        this.setPlayerMoney(rentalOwner, res.rentalOwner.money);
       } 
     })
 
