@@ -40,6 +40,8 @@
                         <button class="btn btn-primary show-rules" href="#" role="button" aria-hidden="true" data-toggle="modal" data-target="#rulesModal">RÈGLES</button>
                         <button v-if="env == 'game'" @click="quitGame" class="btn btn-primary" href="#" role="button"
                             style="background-color: red;">QUITTER LA PARTIE</button>
+
+                        <div class="debug">Ce jeu est une preuve de concept : si vous rencontrez un bug,<br>n'hésitez pas à le signaler.<br>En cas de bug graphique, vous pouvez <a href="#">cliquer ici</a> pour recharger le jeu.</div>
                     </div>
                 </div>
             </div>
