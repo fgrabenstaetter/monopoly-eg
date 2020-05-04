@@ -279,14 +279,14 @@ export default {
           "schoolbus"
         ],
         PLAYERS_COLORS: [
-          { name: 'yellow', hex: '#FDFF00' },
           { name: 'red', hex: '#d43333' },
-          { name: 'blue', hex: '#006aff' },
-          { name: 'green', hex: '#22d406' },
-          { name: 'white', hex: '#FFFFFF' },
-          { name: 'purple', hex: '#F576F4' },
           { name: 'cyan', hex: '#59FFFF' },
-          { name: 'orange', hex: '#F8A100' }
+          { name: 'purple', hex: '#F576F4' },
+          { name: 'white', hex: '#FFFFFF' },
+          { name: 'orange', hex: '#F8A100' },
+          { name: 'green', hex: '#22d406' },
+          { name: 'blue', hex: '#006aff' },
+          { name: 'yellow', hex: '#FDFF00' }
           // "yellow",
           // "#d43333",
           // "#006aff",
@@ -959,8 +959,13 @@ export default {
         const property = this.getPropertyById(player.properties[i]);
         if (property) {
           this.$set(property, 'ownerID', null);
+
+          // Suppression drapeau + constructions
           const cell = this.getCellByProperty(property);
-          if (cell) this.$refs.gameboard.deleteFlag(cell.id);
+          if (!cell) continue;
+          this.$refs.gameboard.deleteFlag(cell.id);
+          for (let j = 1; j <= property.level; j++)
+            this.$refs.gameboard.deleteHouse(cell.id, j);
 
           if (property.isMortgaged)
             this.$refs.gameboard.deleteHypotheque(cell.id);
@@ -1168,6 +1173,13 @@ export default {
             return;
         }
 
+        // Maj nb cartes sortie de prison
+        let usedBonusJail = false;
+        if (typeof data.extra.nbJailEscapeCards !== 'undefined') {
+          usedBonusJail = currPlayer.nbJailEscapeCards > data.extra.nbJailEscapeCards;
+          currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+        }
+
         // Sortie de prison
         let leftJailWithDouble = false;
         if (currPlayer.isInJail) {
@@ -1177,12 +1189,6 @@ export default {
               currPlayer.isInJail = false;
           } else {
             // Si le joueur a fait un double ou utilise sa carte sortie de prison, il peut sortir. Sinon, il reste un tour ++ en prison
-            let usedBonusJail = false;
-            if (typeof data.extra.nbJailEscapeCards !== 'undefined') {
-              usedBonusJail = currPlayer.nbJailEscapeCards > data.extra.nbJailEscapeCards;
-              currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
-            }
-
             if (usedBonusJail) {
               currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
               this.turnNotifications.push({
