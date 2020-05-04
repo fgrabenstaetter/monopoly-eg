@@ -581,8 +581,13 @@ class Game {
                 return;
         }
 
-        if (property.isMortgaged)
-            return; // rien à faire
+        if (property.isMortgaged) {
+            if (property.owner === this.curPlayer)
+                this.setTurnActionData(null, null, this.curPlayer.nickname + ' est tombé sur sa propriété hypothéquée');
+            else if (property.owner) // appartient autre joueur
+                this.setTurnActionData(null, null, this.curPlayer.nickname + ' est tombé sur la propriété hypothéquée de ' + property.owner.nickname);
+            return;
+        }
 
         if (property.owner === this.curPlayer) {
             // Le joueur est tombé sur une de ses propriétés
