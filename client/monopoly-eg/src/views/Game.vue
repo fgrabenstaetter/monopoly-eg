@@ -1141,8 +1141,8 @@ export default {
                 this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
               currPlayer.isInJail = false;
           } else {
-            // Si le joueur a fait un double, il peut sortir. Sinon, il reste un tour ++ en prison
-            if (this.useBonusJail) {
+            // Si le joueur a fait un double ou utilise sa carte sortie de prison, il peut sortir. Sinon, il reste un tour ++ en prison
+            if (this.useBonusJail) { // DOIT ÊTRE GLOBALISÉ / RENVOYÉ PAR LE SERVEUR
               this.useBonusJail = false; // Reset
               currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
               this.turnNotifications.push({
@@ -1545,7 +1545,6 @@ export default {
 
             // Modifier "isMortgaged" dans la liste globale des propriétés
             this.$set(property, 'isMortgaged', true);
-            this.$set(property, 'level', 0);
 
             // Enlever les propriétés (le cas échéant)
             if (property.level == 5) {
@@ -1555,6 +1554,9 @@ export default {
                 gameboard.deleteHouse(cell.id, i);
               }
             }
+
+            // Remise du niveau à 0
+            this.$set(property, 'level', 0);
 
             // Cône plateau
             gameboard.loaderHypotheque(cell.id);
