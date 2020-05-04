@@ -517,6 +517,7 @@ export default {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications = [];
       this.socket.emit("gameRollDiceReq", { useExitJailCard: this.useBonusJail });
+      this.useBonusJail = false;
     },
 
     /**
@@ -880,10 +881,6 @@ export default {
           });
         }
 
-        // Nb de cartes sortie de prison si il a changé
-        if (typeof data.extra.nbJailEscapeCards !== "undefined")
-          currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
-
         if (typeof data.extra.goJail !== "undefined" && data.extra.goJail) {
           cellPos2 = null;
           currPlayer.isInJail = 1;
@@ -1142,8 +1139,13 @@ export default {
               currPlayer.isInJail = false;
           } else {
             // Si le joueur a fait un double ou utilise sa carte sortie de prison, il peut sortir. Sinon, il reste un tour ++ en prison
-            if (this.useBonusJail) { // DOIT ÊTRE GLOBALISÉ / RENVOYÉ PAR LE SERVEUR
-              this.useBonusJail = false; // Reset
+            let usedBonusJail = false;
+            if (typeof data.extra.nbJailEscapeCards !== 'undefined') {
+              usedBonusJail = currPlayer.nbJailEscapeCards > data.extra.nbJailEscapeCards;
+              currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+            }
+
+            if (usedBonusJail) {
               currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
               this.turnNotifications.push({
                 type: 'text',
