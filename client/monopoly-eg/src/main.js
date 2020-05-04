@@ -12,23 +12,6 @@ import './assets/css/fontawesome.min.css';
 import VueAnime from 'vue-animejs';
 Vue.use(VueAnime);
 
-// import VueSocketIO from 'vue-socket.io'
-
-// Vue.use(new VueSocketIO({
-//     debug: true,
-//     connection: store.getters.serverUrl,
-//     vuex: {
-//         store,
-//         actionPrefix: 'SOCKET_',
-//         mutationPrefix: 'SOCKET_'
-//     },
-//     options: {
-//       query: `token=${store.getters.jwt}`,
-//       path: '/socket.io',
-//       secure: true
-//     }
-// }))
-
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
 
