@@ -960,19 +960,19 @@ export default {
         if (property) {
           this.$set(property, 'ownerID', null);
           const cell = this.getCellByProperty(property);
-          if (cell) gameboard.deleteFlag(cell.id);
+          if (cell) this.$refs.gameboard.deleteFlag(cell.id);
 
           if (property.isMortgaged)
-            gameboard.deleteHypotheque(cell.id);
+            this.$refs.gameboard.deleteHypotheque(cell.id);
         }
       }
       this.$set(player, 'properties', []);
 
       // Suppression du pion
-      gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+      this.$refs.gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
 
       // Suppr pion
-      gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+      this.$refs.gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
 
       this.$refs.splashText.triggerCb(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311', this.execQueue);
     },
