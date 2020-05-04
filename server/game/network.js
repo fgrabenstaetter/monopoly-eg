@@ -1243,6 +1243,8 @@ class Network {
                 err = Errors.GAME.PLAYER_IN_FAILURE;
             else if (game.alreadyOneManualBid)
                 err = Errors.BID.ONE_MANUAL_MAX;
+            else if (data.initialPrice <= 0 || data.initialPrice >= 1e5)
+                err = Errors.GAME.PRICE_OUT_OF_RANGE;
             else if (!(prop = player.propertyByID(data.propertyID)))
                 err = Errors.UNKNOW;
             else {
