@@ -918,6 +918,19 @@ export default {
 
     /**
      * @vuese
+     * Renvoie le nombre de joueurs toujours en vie (qui ne sont ni déconnectés ni en faillite)
+     */
+    getNbPlayersAlive() {
+      let nb = 0;
+      for (const i in this.players) {
+        if (!this.players[i].failure && !this.players[i].hasLeft)
+          nb++;
+      }
+      return nb;
+    },
+
+    /**
+     * @vuese
      * Termine le gameActionRes (et vérifie si un double a été fait avec les dés)
      * @arg Données de 'gameActionRes'
      */
@@ -925,7 +938,9 @@ export default {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
 
-      this.execQueue();
+      // Uniquement s'il n'y a plus qu'une personne en vie
+      if (this.getNbPlayersAlive() <= 1)
+        this.execQueue();
 
       console.log("=== fin gameActionRes ===");
     },
