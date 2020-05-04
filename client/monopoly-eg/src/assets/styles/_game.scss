@@ -750,7 +750,7 @@
           font-style: normal;
           font-variant: normal;
           text-rendering: auto;
-          line-height: 1;
+          line-height: 21px;
           font-weight: 900;
           content: "\f3d1";
           margin-right: 10px;
@@ -949,6 +949,13 @@
               font-family: "LilitaOne", sans-serif;
               line-height: 25px;
             }
+          }
+
+          .info-sentence {
+            position: static;
+            margin: 10px auto;
+            font-size: 12px;
+            color: grey;
           }
 
           .houses-total-price {

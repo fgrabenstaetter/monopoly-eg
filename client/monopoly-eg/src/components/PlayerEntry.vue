@@ -27,6 +27,10 @@
             <div v-if="player.id == loggedUser.id" @click="openPropertiesEdition" class="houses-btn-container">
                 <button class="houses-btn"><i class="fas fa-home"></i>Éditer</button>
             </div>
+
+            <div v-if="player.id == loggedUser.id && propertiesEdition.open" class="info-sentence">
+                Vous ne pouvez construire que sur les propriétés dont vous avez le monopole.
+            </div>
             
             <div v-if="overviewCard" @click.self="closeOverviewCardBuySell()" class="overview-card" :class="{'mortgaged': overviewCard.isMortgaged}" style="display:block;">
                 <div
