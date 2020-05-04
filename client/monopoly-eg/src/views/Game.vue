@@ -941,6 +941,44 @@ export default {
 
     /**
      * @vuese
+     * Traite la faillite d'un joueur
+     * @arg Données reçues dans le socket
+     */
+    processPlayerFailureRes(res) {
+      console.log('gamePlayerFailureRes');
+      console.log(res);
+
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
+      
+      this.$set(player, 'failure', true);
+
+      // Toutes les propriétés sont à nouveau à vendre
+      // Suppr propriétés
+      for (const i in player.properties) {
+        const property = this.getPropertyById(player.properties[i]);
+        if (property) {
+          this.$set(property, 'ownerID', null);
+          const cell = this.getCellByProperty(property);
+          if (cell) gameboard.deleteFlag(cell.id);
+
+          if (property.isMortgaged)
+            gameboard.deleteHypotheque(cell.id);
+        }
+      }
+      this.$set(player, 'properties', []);
+
+      // Suppression du pion
+      gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+
+      // Suppr pion
+      gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
+
+      this.$refs.splashText.triggerCb(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311', this.execQueue);
+    },
+
+    /**
+     * @vuese
      * Vérifie si l'événément passé en paramètre contient un nombre ou non
      */
     isNumber(evt) {
@@ -1278,38 +1316,13 @@ export default {
     this.socket.on('gamePlayerFailureRes', (res) => {
         if (this.loading) return;
 
-        this.fnQueue.push(() => {
-          console.log('gamePlayerFailureRes');
-          console.log(res);
-
-          const player = this.getPlayerById(res.playerID);
-          if (!player) return;
-          
-          this.$set(player, 'failure', true);
-
-          // Toutes les propriétés sont à nouveau à vendre
-          // Suppr propriétés
-          for (const i in player.properties) {
-            const property = this.getPropertyById(player.properties[i]);
-            if (property) {
-              this.$set(property, 'ownerID', null);
-              const cell = this.getCellByProperty(property);
-              if (cell) gameboard.deleteFlag(cell.id);
-
-              if (property.isMortgaged)
-                gameboard.deleteHypotheque(cell.id);
-            }
-          }
-          this.$set(player, 'properties', []);
-
-          // Suppression du pion
-          gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
-
-          // Suppr pion
-          gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
-
-          this.$refs.splashText.triggerCb(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311', this.execQueue);
-        });
+        if (this.fnQueue.length == 0) {
+          this.processPlayerFailureRes(res);
+        } else {
+          this.fnQueue.push(() => {
+            this.processPlayerFailureRes(res);
+          });
+        }
     });
 
     // On a reçu une offre d'achat
