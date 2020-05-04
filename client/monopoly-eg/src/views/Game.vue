@@ -735,7 +735,7 @@ export default {
      */
     pushGameBid(bid) {
       const myPlayer = this.getPlayerById(this.loggedUser.id);
-      const property = this.getPropertyById(this.propertyID);
+      const property = this.getPropertyById(bid.propertyID);
       if (!myPlayer || !property) return;
 
       // Premier message uniquement

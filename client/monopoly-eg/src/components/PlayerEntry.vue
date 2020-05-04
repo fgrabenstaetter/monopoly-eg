@@ -307,6 +307,10 @@ export default {
          * Envoie une demande de modification de propriétés au serveur (ajouter/enlever des maisons/hotels sur nos propriétés)
          */
         submitPropertiesEdition() {
+            if (!this.isCurrent) {
+                this.$parent.$parent.toast('Vous ne pourrez finaliser l\'édition de vos propriétés que durant votre tour de jeu', 'danger', 5);
+                return;
+            }
             let list = [];
             for (const i in this.propertiesEdition.modifications) {
                 list.push({
