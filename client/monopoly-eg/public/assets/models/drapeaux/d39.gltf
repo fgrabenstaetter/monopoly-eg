@@ -1,251 +1,230 @@
 {
-  "asset": {
-    "generator": "Khronos glTF Blender I/O v1.1.45",
-    "version": "2.0"
-  },
-  "scene": 0,
-  "scenes": [
-    {
-      "name": "Scene",
-      "nodes": [
-        0
-      ]
-    }
-  ],
-  "nodes": [
-    {
-      "mesh": 0,
-      "name": "d39",
-      "rotation": [
-        0.7071067690849304,
-        0,
-        0,
-        0.7071067690849304
-      ],
-      "scale": [
-        0.03130251169204712,
-        0.03130251169204712,
-        0.02064422331750393
-      ],
-      "translation": [
-        1.6675397157669067,
-        -0.0018858909606933594,
-        1.3527071475982666
-      ]
-    }
-  ],
-  "materials": [
-    {
-      "doubleSided": true,
-      "emissiveFactor": [
-        0,
-        0,
-        0
-      ],
-      "name": "team",
-      "pbrMetallicRoughness": {
-        "baseColorTexture": {
-          "index": 0,
-          "texCoord": 0
-        },
-        "metallicFactor": 0,
-        "roughnessFactor": 0.5,
-        "baseColorFactor": [
-          1,
-          1,
-          1,
-          1
-        ]
-      },
-      "alphaMode": "OPAQUE"
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.1.45",
+        "version" : "2.0"
     },
-    {
-      "doubleSided": true,
-      "emissiveFactor": [
-        0,
-        0,
-        0
-      ],
-      "name": "mercury",
-      "pbrMetallicRoughness": {
-        "baseColorTexture": {
-          "index": 1,
-          "texCoord": 0
-        },
-        "metallicFactor": 0,
-        "roughnessFactor": 0.5,
-        "baseColorFactor": [
-          1,
-          1,
-          1,
-          1
-        ]
-      },
-      "alphaMode": "OPAQUE"
-    }
-  ],
-  "meshes": [
-    {
-      "name": "Plane39",
-      "primitives": [
+    "scene" : 0,
+    "scenes" : [
         {
-          "attributes": {
-            "POSITION": 1,
-            "NORMAL": 2,
-            "TEXCOORD_0": 3
-          },
-          "indices": 0,
-          "material": 0,
-          "mode": 4,
-          "extensions": {
-            "KHR_draco_mesh_compression": {
-              "bufferView": 0,
-              "attributes": {
-                "POSITION": 0,
-                "NORMAL": 1,
-                "TEXCOORD_0": 2
-              }
-            }
-          }
-        },
-        {
-          "attributes": {
-            "POSITION": 5,
-            "NORMAL": 6,
-            "TEXCOORD_0": 7
-          },
-          "indices": 4,
-          "material": 1,
-          "mode": 4,
-          "extensions": {
-            "KHR_draco_mesh_compression": {
-              "bufferView": 1,
-              "attributes": {
-                "POSITION": 0,
-                "NORMAL": 1,
-                "TEXCOORD_0": 2
-              }
-            }
-          }
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
         }
-      ]
-    }
-  ],
-  "textures": [
-    {
-      "source": 0
-    },
-    {
-      "source": 1
-    }
-  ],
-  "images": [
-    {
-      "mimeType": "image/png",
-      "name": "blanc",
-      "bufferView": 2
-    },
-    {
-      "mimeType": "image/png",
-      "name": "mercury",
-      "bufferView": 3
-    }
-  ],
-  "accessors": [
-    {
-      "componentType": 5123,
-      "count": 6,
-      "type": "SCALAR"
-    },
-    {
-      "componentType": 5126,
-      "count": 4,
-      "max": [
-        1.9698102474212646,
-        8.755917519920331e-7,
-        -13.646261215209961
-      ],
-      "min": [
-        -0.03018975257873535,
-        8.755917519920331e-7,
-        -15.646261215209961
-      ],
-      "type": "VEC3"
-    },
-    {
-      "componentType": 5126,
-      "count": 4,
-      "type": "VEC3"
-    },
-    {
-      "componentType": 5126,
-      "count": 4,
-      "type": "VEC2"
-    },
-    {
-      "componentType": 5123,
-      "count": 372,
-      "type": "SCALAR"
-    },
-    {
-      "componentType": 5126,
-      "count": 192,
-      "max": [
-        0.05686002969741821,
-        0.09767463058233261,
-        0.23375797271728516
-      ],
-      "min": [
-        -0.12390756607055664,
-        -0.08309347182512283,
-        -15.905001640319824
-      ],
-      "type": "VEC3"
-    },
-    {
-      "componentType": 5126,
-      "count": 192,
-      "type": "VEC3"
-    },
-    {
-      "componentType": 5126,
-      "count": 192,
-      "type": "VEC2"
-    }
-  ],
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 168
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 168,
-      "byteLength": 770
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 940,
-      "byteLength": 1047
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 1988,
-      "byteLength": 1047
-    }
-  ],
-  "buffers": [
-    {
-      "name": "d39",
-      "byteLength": 3036,
-      "uri": "data:application/octet-stream;base64,RFJBQ08CAgEBAAAABAICAgAAAR//ARH/ARH/ARED/wAAAAAAAQAAAQAJAwAAAgEBCQMAAQMBAwkCAAICAQEBAAMDATABEAMAJIIVCQAAAAD/PwAAgFD3vDUKazUWV3rBAAAAQA4GAwEBAQEBQAEA/wMAAP8BAAD/AkRACgUBAQADAwEwARADACSCKwACAAAAAQEgAAAAAP8PAAAAAAAAAAAAAAAAgD8MRFJBQ08CAgEBAAAAQHwCewEAH69WVUtVS1VLVUtVS1VLVUtVS1VLVUtVS1VL1ZdSqgUBARB8GSBQI1ZtS1cOTzcqdgdKBwhKBwhKBwh+c2mnGAk9d2OeEpeI3fG5XVmcoSEZyLyhpE0wgwP/AAAAAQABAQABAAkDAAACAQEJAwABAwEDCQIAAgIBAQEACgMBEgECAQsBAwECAQkBBgEEAQkZQEAjFx2kB/YANkbfk8cNpBRH4RSNcCIPmLjgBiAHYCQEpEgrADAWADlWJQAgPACecwsA8APQIiMHAJAL4BkKAgDUAXjQVQQA6AAarCUBAB5wYC0JAECFriIAoAUuBAUBAFuAERs5AEBJACXOMQAwE8AgrEIAYEeAEGkFAEECICMBoAgAAAAAAAD/PwAAQMP9veksqr3jen7BLhyBQQ4GAwEBBP0HVRVVFa0CB60GA1UB////////////////////u1UBA60GB60Ccxn9qgcH+AimYYU6wVUP6+rGAgqqBwfR6GGV/Eq6oExr8UqiYbLZPejQq3z6eOqii0NwhkdurYtzSnRaGZ7wSnz6dweyesdhQPpKHKQDTonHnaeO0zDV8Q4sSWaDj+HxcPobRxssSWaDj+HxDixJGVp93qj/AwAA/wEAAP8CeVIKBQEBAQWAIHURPQEtBG0E9QKANQP5Afy1Aj0BPQE9AQM9AbwXQANAL4CzQP//k90HQANhBwNA//dAQP//////////////////////////////////B0D//////////////////////////////////////2dA//9/QAOAe2zvM0qvAyU3mPnI4JcwWbtANrC7r/+eTeR6E/B5HJMqTPkQd6vP39v7Zjh0PpezfAQilcZ2wpGXG/vP19pdvGfiMHxJIqcnqjbtdJugu2SRQh1jUatmKnVijX+rKLOzJCgq+UVCspiGnDSds836usiCmvq6iCtU4e+vm3wAAAAEBIB4pYYAAAAA/w8AAAAAAAAAAAAAAACAPwwAAIlQTkcNChoKAAAADUlIRFIAAAABAAAAAQgCAAAAkHdT3gAAAAFzUkdCAK7OHOkAAAAJcEhZcwAAACcAAAAnASoJkU8AAAOkaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIj4KICAgICAgICAgPHhtcDpNb2RpZnlEYXRlPjIwMjAtMDItMThUMTY6MDI6ODA8L3htcDpNb2RpZnlEYXRlPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPlBpeGVsbWF0b3IgMy44LjY8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6Q29tcHJlc3Npb24+NTwvdGlmZjpDb21wcmVzc2lvbj4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6WVJlc29sdXRpb24+MTwvdGlmZjpZUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+MTwvdGlmZjpYUmVzb2x1dGlvbj4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjE8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpDb2xvclNwYWNlPjE8L2V4aWY6Q29sb3JTcGFjZT4KICAgICAgICAgPGV4aWY6UGl4ZWxZRGltZW5zaW9uPjE8L2V4aWY6UGl4ZWxZRGltZW5zaW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4K+78NwQAAAAxJREFUCB1j+P//PwAF/gL+n8otEwAAAABJRU5ErkJgggCJUE5HDQoaCgAAAA1JSERSAAAAAQAAAAEIAgAAAJB3U94AAAABc1JHQgCuzhzpAAAACXBIWXMAAAAnAAAAJwEqCZFPAAADpGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgICAgICAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyI+CiAgICAgICAgIDx4bXA6TW9kaWZ5RGF0ZT4yMDIwLTAyLTE4VDE2OjAyOjkwPC94bXA6TW9kaWZ5RGF0ZT4KICAgICAgICAgPHhtcDpDcmVhdG9yVG9vbD5QaXhlbG1hdG9yIDMuOC42PC94bXA6Q3JlYXRvclRvb2w+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjU8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOlJlc29sdXRpb25Vbml0PjI8L3RpZmY6UmVzb2x1dGlvblVuaXQ+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjE8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOlhSZXNvbHV0aW9uPjE8L3RpZmY6WFJlc29sdXRpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xPC9leGlmOlBpeGVsWERpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT4xPC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4xPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cru7P5IAAAAMSURBVAgdY3j9+jUABYYCwj2UY48AAAAASUVORK5CYIIA"
-    }
-  ],
-  "extensionsRequired": [
-    "KHR_draco_mesh_compression"
-  ],
-  "extensionsUsed": [
-    "KHR_draco_mesh_compression"
-  ]
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "d39",
+            "rotation" : [
+                1,
+                0,
+                0,
+                -1.3435884227419592e-07
+            ],
+            "scale" : [
+                0.03130251169204712,
+                0.020644227042794228,
+                0.031302519142627716
+            ],
+            "translation" : [
+                1.6675397157669067,
+                -0.0018860729178413749,
+                1.3527072668075562
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "blanc",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.8006561994552612,
+                    0.8006561994552612,
+                    0.8006561994552612,
+                    1
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 1
+            }
+        },
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "mercury",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Plane39",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                },
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "NORMAL" : 5,
+                        "TEXCOORD_0" : 6
+                    },
+                    "indices" : 7,
+                    "material" : 1
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "mercury.png",
+            "uri" : "mercury_png.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 6,
+            "max" : [
+                3.7025504112243652,
+                -13.646261215209961,
+                -4.958030785928713e-07
+            ],
+            "min" : [
+                -0.03018975257873535,
+                -17.789281845092773,
+                -8.755917519920331e-07
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 6,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 6,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 6,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 318,
+            "max" : [
+                0.05686002969741821,
+                0.23375797271728516,
+                0.08309383690357208
+            ],
+            "min" : [
+                -0.12390756607055664,
+                -17.97591209411621,
+                -0.09767463058233261
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 318,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 318,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 372,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 72,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 72,
+            "byteOffset" : 72
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 48,
+            "byteOffset" : 144
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 12,
+            "byteOffset" : 192
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 3816,
+            "byteOffset" : 204
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 3816,
+            "byteOffset" : 4020
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 2544,
+            "byteOffset" : 7836
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 744,
+            "byteOffset" : 10380
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 11124,
+            "uri" : "d39.bin"
+        }
+    ]
 }

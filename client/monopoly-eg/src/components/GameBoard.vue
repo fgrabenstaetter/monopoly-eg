@@ -583,7 +583,7 @@ export default {
             this.objs[`d${cell}`] = gltf.scene;
             this.objs[`d${cell}`].traverse((o) => {
                 if (o.isMesh) {
-                    //console.log(o.name);
+                    console.log(o.name);
                     if (o.name === this.drapPlane[`d${cell}`] || o.name === 'Plane11.001_0')
                         o.material.color = new THREE.Color(color);
                 }
