@@ -310,8 +310,8 @@ export default {
                 background: null,
                 sfx: {
                     notification: null,
-                    userLeft: null,
-                    userJoined: null,
+                    success: null,
+                    error: null,
                     buttonClick: null
                 }
             }

@@ -9,16 +9,13 @@
         <div class="row">
           <div class="col-md-6">
             <div class="offers-container">
-
               <div v-for="offer in offers" :key="offer.offerID" class="offer">
                 <div class="message">
-                  {{offer.buyerNickname}} propose de vous acheter 
+                  {{offer.buyerNickname}} propose de vous acheter
                   <span
                     class="color"
                     :class="offer.property.color ? offer.property.color : offer.property.type"
-                    >
-                    {{offer.property.name}}
-                  </span>
+                  >{{offer.property.name}}</span>
                   pour {{offer.price}}€
                 </div>
                 <div class="form">
@@ -26,7 +23,6 @@
                   <button @click="rejectOffer(offer.offerID)">Refuser</button>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -50,10 +46,10 @@
                 ></i>
 
                 <div v-if="gameRemainingTime" class="timer">
-                    <span>
-                        {{gameRemainingTime.min}}min
-                        {{gameRemainingTime.sec}}sec
-                    </span>
+                  <span>
+                    {{gameRemainingTime.min}}min
+                    {{gameRemainingTime.sec}}sec
+                  </span>
                 </div>
               </div>
             </div>
@@ -95,7 +91,11 @@
                         <div class="col-md-12 text-center value">
                           <p>{{notif.content}}</p>
                         </div>
-                        <button class="btn btn-primary" v-if="imCurrentPlayer" v-on:click="discardTurnNotif(index)">OK</button>
+                        <button
+                          class="btn btn-primary"
+                          v-if="imCurrentPlayer"
+                          v-on:click="discardTurnNotif(index)"
+                        >OK</button>
                       </div>
                     </div>
                   </div>
@@ -136,8 +136,16 @@
                       <div class="col-md-12 text-center value">
                         <p>Voulez-vous utiliser votre bonus « Sortir du Parlement » ?</p>
                       </div>
-                      <button v-if="imCurrentPlayer" @click="acceptUseBonusJail(index)" class="btn btn-primary accept-btn">OUI</button>
-                      <button v-if="imCurrentPlayer" @click="discardTurnNotif(index)" class="btn btn-secondary deny-btn">NON</button>
+                      <button
+                        v-if="imCurrentPlayer"
+                        @click="acceptUseBonusJail(index)"
+                        class="btn btn-primary accept-btn"
+                      >OUI</button>
+                      <button
+                        v-if="imCurrentPlayer"
+                        @click="discardTurnNotif(index)"
+                        class="btn btn-secondary deny-btn"
+                      >NON</button>
                     </div>
                   </div>
                 </div>
@@ -154,29 +162,59 @@
 
       <!-- Popup d'Enchères -->
       <div id="bid-popup-container">
-
         <div v-for="bid in bids" :key="bid.bidID" class="bid-popup">
           <div class="bid-form">
             <div v-if="!bid.launcherNickname" class="content">
-                Une enchère est lancée pour <span class="color" :class="bid.property.color ? bid.property.color : bid.property.type">{{bid.property.name}}</span>
+              Une enchère est lancée pour
+              <span
+                class="color"
+                :class="bid.property.color ? bid.property.color : bid.property.type"
+              >{{bid.property.name}}</span>
             </div>
             <div v-else class="content">
-                {{bid.launcherNickname}} lance une enchère pour <span class="color" :class="bid.property.color ? bid.property.color : bid.property.type">{{bid.property.name}}</span>
+              {{bid.launcherNickname}} lance une enchère pour
+              <span
+                class="color"
+                :class="bid.property.color ? bid.property.color : bid.property.type"
+              >{{bid.property.name}}</span>
             </div>
 
             <form @submit.prevent="sendBid(bid)">
-                <div class="bid-input">
-                    <div v-if="!bid.launcherNickname" class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" placeholder="Prix">€</div>
-                    <div v-else class="flex"><input v-model="bid.myPrice" :disabled="bid.disabled" type="text" @keypress="isNumber($event)" :placeholder="'Prix min. ' + bid.startingPrice">€</div>
-                    <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
-                    <button :disabled="bid.disabled" type="button" class="bid-cancel" @click="rejectBid(bid)">Passer</button>
+              <div class="bid-input">
+                <div v-if="!bid.launcherNickname" class="flex">
+                  <input
+                    v-model="bid.myPrice"
+                    :disabled="bid.disabled"
+                    type="text"
+                    @keypress="isNumber($event)"
+                    placeholder="Prix"
+                  />€
                 </div>
+                <div v-else class="flex">
+                  <input
+                    v-model="bid.myPrice"
+                    :disabled="bid.disabled"
+                    type="text"
+                    @keypress="isNumber($event)"
+                    :placeholder="'Prix min. ' + bid.startingPrice"
+                  />€
+                </div>
+                <button :disabled="bid.disabled" type="submit" class="bid-validation">Enchérir</button>
+                <button
+                  :disabled="bid.disabled"
+                  type="button"
+                  class="bid-cancel"
+                  @click="rejectBid(bid)"
+                >Passer</button>
+              </div>
             </form>
           </div>
 
-          <div v-if="bid.textContent" class="bid-info" style="color:#fff;font-size: 13px;font-weight: bold;text-align:left;width:100%;">
-            Résultat : {{bid.textContent}}
-          </div>
+          <div
+            v-if="bid.textContent"
+            class="bid-info"
+            style="color:#fff;font-size: 13px;font-weight: bold;text-align:left;width:100%;"
+          >Résultat : {{bid.textContent}}</div>
         </div>
       </div>
 
@@ -194,11 +232,11 @@
         </div>
       </div>
       <div v-if="endGame" class="end-game-screen">
-        <img class="trophy" src="/assets/img/ui/trophy.png">
-        <img class="avatar" src="/assets/img/ui/bus.png">
+        <img class="trophy" src="/assets/img/ui/trophy.png" />
+        <img class="avatar" :src="`/assets/img/pawns/${CST.PAWNS[endGame.winner.pawn]}.png`" />
         <div class="header">
           <div class="ribbon">
-            {{endGame.winnerNickname}}
+            {{endGame.winner.nickname}}
             <i></i>
             <i></i>
             <i></i>
@@ -226,13 +264,19 @@
     <full-screen-loader v-if="loading"></full-screen-loader>
 
     <!-- Game settings modal -->
-    <game-settings-modal v-if="gameMounted" :socket="socket" :loggedUser="loggedUser" env="game" ref="gameSettings"></game-settings-modal>
+    <game-settings-modal
+      v-if="gameMounted"
+      :socket="socket"
+      :loggedUser="loggedUser"
+      env="game"
+      ref="gameSettings"
+    ></game-settings-modal>
   </div>
 </template>
 
 <script>
 import io from "socket.io-client";
-import FullScreenLoader from '../components/FullScreenLoader';
+import FullScreenLoader from "../components/FullScreenLoader";
 import GameBoard from "../components/GameBoard";
 import GameSettingsModal from "../components/GameSettingsModal";
 import ActionButton from "../components/ActionButton";
@@ -251,14 +295,14 @@ import "odometer/themes/odometer-theme-default.css";
 export default {
   name: "Game",
   components: {
-    'full-screen-loader': FullScreenLoader,
-    'gameboard': GameBoard,
-    'action-button': ActionButton,
-    'game-settings-modal': GameSettingsModal,
-    'player-entry': PlayerEntry,
-    'dices': Dices,
-    'splash-text': SplashText,
-    'chat-io': ChatIO
+    "full-screen-loader": FullScreenLoader,
+    gameboard: GameBoard,
+    "action-button": ActionButton,
+    "game-settings-modal": GameSettingsModal,
+    "player-entry": PlayerEntry,
+    dices: Dices,
+    "splash-text": SplashText,
+    "chat-io": ChatIO
   },
   data() {
     return {
@@ -279,22 +323,14 @@ export default {
           "schoolbus"
         ],
         PLAYERS_COLORS: [
-          { name: 'red', hex: '#d43333' },
-          { name: 'cyan', hex: '#59FFFF' },
-          { name: 'purple', hex: '#F576F4' },
-          { name: 'white', hex: '#FFFFFF' },
-          { name: 'orange', hex: '#F8A100' },
-          { name: 'green', hex: '#22d406' },
-          { name: 'blue', hex: '#006aff' },
-          { name: 'yellow', hex: '#FDFF00' }
-          // "yellow",
-          // "#d43333",
-          // "#006aff",
-          // "#22d406",
-          // "white",
-          // "violet",
-          // "cyan",
-          // "orange"
+          { name: "red", hex: "#d43333" },
+          { name: "cyan", hex: "#59FFFF" },
+          { name: "purple", hex: "#F576F4" },
+          { name: "white", hex: "#FFFFFF" },
+          { name: "orange", hex: "#F8A100" },
+          { name: "green", hex: "#22d406" },
+          { name: "blue", hex: "#006aff" },
+          { name: "yellow", hex: "#FDFF00" }
         ],
         CELL_PRISON: 10
       },
@@ -350,7 +386,8 @@ export default {
         sfx: {
           rollDices: null,
           cashRegister: null,
-          buttonClick: null
+          buttonClick: null,
+          newMessage: null
         }
       },
       // @vuese
@@ -460,18 +497,18 @@ export default {
     setPlayerMoney(player, money) {
       const delta = money - player.money;
 
-      this.$set(player, 'money', money);
+      this.$set(player, "money", money);
       if (delta == 0) return;
 
       if (delta > 0) {
-        this.$set(player, 'gainMoney', delta);
+        this.$set(player, "gainMoney", delta);
         setTimeout(() => {
-          this.$set(player, 'gainMoney', null);
+          this.$set(player, "gainMoney", null);
         }, 2600);
       } else {
-        this.$set(player, 'loseMoney', delta);
+        this.$set(player, "loseMoney", delta);
         setTimeout(() => {
-          this.$set(player, 'loseMoney', null);
+          this.$set(player, "loseMoney", null);
         }, 2600);
       }
     },
@@ -487,25 +524,36 @@ export default {
       const timeMs = gameEndTime - Date.now();
 
       let seconds = Math.floor((timeMs / 1000) % 60),
-          minutes = Math.floor((timeMs / (1000 * 60)) % 60),
-          hours = Math.floor((timeMs / (1000 * 60 * 60)) % 24);
-        
+        minutes = Math.floor((timeMs / (1000 * 60)) % 60),
+        hours = Math.floor((timeMs / (1000 * 60 * 60)) % 24);
+
       minutes += 60 * hours;
 
-      this.gameRemainingTime = {min: minutes, sec: seconds};
-      
+      this.gameRemainingTime = { min: minutes, sec: seconds };
+
       if (!this.gameTimer) {
         this.gameTimer = setInterval(() => {
-          if (this.gameRemainingTime.min == 0 && this.gameRemainingTime.sec == 0) {
+          if (
+            this.gameRemainingTime.min == 0 &&
+            this.gameRemainingTime.sec == 0
+          ) {
             clearInterval(this.gameTimer);
           } else {
-            this.$set(this.gameRemainingTime, 'sec', this.gameRemainingTime.sec - 1);
+            this.$set(
+              this.gameRemainingTime,
+              "sec",
+              this.gameRemainingTime.sec - 1
+            );
             if (this.gameRemainingTime.sec == -1) {
-              this.$set(this.gameRemainingTime, 'sec', 59);
-              this.$set(this.gameRemainingTime, 'min', this.gameRemainingTime.min - 1);
+              this.$set(this.gameRemainingTime, "sec", 59);
+              this.$set(
+                this.gameRemainingTime,
+                "min",
+                this.gameRemainingTime.min - 1
+              );
             }
           }
-        }, 1000)
+        }, 1000);
       }
     },
 
@@ -516,7 +564,9 @@ export default {
     gameRollDiceReq() {
       if (!this.imCurrentPlayer) return;
       this.turnNotifications = [];
-      this.socket.emit("gameRollDiceReq", { useExitJailCard: this.useBonusJail });
+      this.socket.emit("gameRollDiceReq", {
+        useExitJailCard: this.useBonusJail
+      });
       this.useBonusJail = false;
     },
 
@@ -565,12 +615,12 @@ export default {
      * @arg L'ID de l'offre concernée (et non pas l'index !)
      */
     discardOffer(offerID) {
-        for (const i in this.offers) {
-            if (this.offers[i].offerID == offerID) {
-                this.offers.splice(i, 1);
-                return;
-            }
+      for (const i in this.offers) {
+        if (this.offers[i].offerID == offerID) {
+          this.offers.splice(i, 1);
+          return;
         }
+      }
     },
 
     /**
@@ -580,7 +630,10 @@ export default {
      */
     rejectOffer(offerID) {
       this.audio.sfx.buttonClick.play();
-      this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: false });
+      this.socket.emit("gameOfferActionReq", {
+        offerID: parseInt(offerID),
+        accept: false
+      });
       this.discardOffer(offerID);
     },
 
@@ -591,7 +644,10 @@ export default {
      */
     offerAccept(offerID) {
       this.audio.sfx.buttonClick.play();
-      this.socket.emit('gameOfferActionReq', { offerID: parseInt(offerID), accept: true });
+      this.socket.emit("gameOfferActionReq", {
+        offerID: parseInt(offerID),
+        accept: true
+      });
       this.discardOffer(offerID);
     },
 
@@ -607,15 +663,22 @@ export default {
       if (!myPlayer) return;
 
       if (myPrice <= bid.startingPrice) {
-        this.$parent.toast(`Votre enchère doit être > ${bid.startingPrice}€`, 'danger', 3);
+        this.$parent.toast(
+          `Votre enchère doit être > ${bid.startingPrice}€`,
+          "danger",
+          3
+        );
         return;
       } else if (myPrice > myPlayer.money) {
-        this.$parent.toast(`Vous n'avez pas autant d'argent !`, 'danger', 3);
+        this.$parent.toast(`Vous n'avez pas autant d'argent !`, "danger", 3);
         return;
       }
 
-      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: parseInt(myPrice) });
-      this.$set(bid, 'disabled', true);
+      this.socket.emit("gameOverbidReq", {
+        bidID: bid.bidID,
+        price: parseInt(myPrice)
+      });
+      this.$set(bid, "disabled", true);
     },
 
     /**
@@ -625,8 +688,22 @@ export default {
      */
     rejectBid(bid) {
       this.audio.sfx.buttonClick.play();
-      this.socket.emit('gameOverbidReq', { bidID: bid.bidID, price: 0 });
-      this.$set(bid, 'disabled', true);
+      this.socket.emit("gameOverbidReq", { bidID: bid.bidID, price: 0 });
+      this.$set(bid, "disabled", true);
+    },
+
+    /**
+     * @vuese
+     * Supprime une enchère de l'affichage
+     * @arg L'enchère à supprimer (objet 'bid')
+     */
+    discardBid(bid) {
+      for (const i in this.bids) {
+        if (this.bids[i].bidID == bid.bidID) {
+          this.bids.splice(i, 1);
+          return;
+        }
+      }
     },
 
     /**
@@ -649,7 +726,7 @@ export default {
      * @arg Pourcentage du volume (entier de 0 à 100)
      */
     setMusicLevel(level) {
-        this.audio.background.volume(level / 100);
+      this.audio.background.volume(level / 100);
     },
 
     /**
@@ -676,19 +753,19 @@ export default {
         src: ["/assets/audio/sfx/cash-register-youtube-gaming-sound-fx.mp3"],
         autoplay: false,
         loop: false,
-        volume: this.loggedUser.settings.sfxLevel /100
+        volume: this.loggedUser.settings.sfxLevel / 100
       });
       this.audio.sfx.buttonClick = new Howl({
-        src: ['/assets/audio/sfx/buttonClick.mp3'],
+        src: ["/assets/audio/sfx/buttonClick.mp3"],
         autoplay: false,
         loop: false,
         volume: this.loggedUser.settings.sfxLevel / 100
       });
       this.audio.sfx.newMessage = new Howl({
-                src: ['/assets/audio/sfx/when.mp3'],
-                autoplay: false,
-                loop: false,
-                volume: this.loggedUser.settings.sfxLevel / 100
+        src: ["/assets/audio/sfx/when.mp3"],
+        autoplay: false,
+        loop: false,
+        volume: this.loggedUser.settings.sfxLevel / 100
       });
     },
 
@@ -699,8 +776,8 @@ export default {
      */
     setSfxLevel(level) {
       for (let [key] of Object.entries(this.audio.sfx)) {
-        if (typeof this.audio.sfx[key].volume === 'function')
-          this.audio.sfx[key].volume(level / 100);
+          if (typeof this.audio.sfx[key].volume === 'function')
+              this.audio.sfx[key].volume(level / 100);
       }
     },
 
@@ -708,9 +785,7 @@ export default {
      * @vuese
      * Indique au serveur que l'on est prêt à commencer la partie côté client (et donc à recevoir les sockets du serveur)
      */
-    gameReady() {
-        console.log('boardReady');
-    },
+    gameReady() {},
 
     /**
      * @vuese
@@ -748,28 +823,30 @@ export default {
       if (bid.playerID == null) {
         // La propriété appartient déjà à quelqu'un
         if (bid.propertyOwnerID) {
-            const propertyOwner = this.getPlayerById(bid.propertyOwnerID);
-            if (!propertyOwner) return;
+          const propertyOwner = this.getPlayerById(bid.propertyOwnerID);
+          if (!propertyOwner) return;
 
-            this.bids.push({
-                launcherNickname: propertyOwner.nickname,
-                startingPrice: bid.price,
-                disabled: (bid.propertyOwnerID == this.loggedUser.id || myPlayer.failure),
-                myPrice: '',
-                property: property,
-                textContent: "",
-                bidID: bid.bidID
-            });
-        } else { // Enchère automatique (par de launcher)
-            this.bids.push({
-                launcherNickname: null,
-                startingPrice: 0,
-                disabled: myPlayer.failure, // Si l'on est en faillite, on désactive par défaut l'enchère
-                myPrice: '',
-                property: property,
-                textContent: "",
-                bidID: bid.bidID
-            });
+          this.bids.push({
+            launcherNickname: propertyOwner.nickname,
+            startingPrice: bid.price,
+            disabled:
+              bid.propertyOwnerID == this.loggedUser.id || myPlayer.failure,
+            myPrice: "",
+            property: property,
+            textContent: "",
+            bidID: bid.bidID
+          });
+        } else {
+          // Enchère automatique (par de launcher)
+          this.bids.push({
+            launcherNickname: null,
+            startingPrice: 0,
+            disabled: myPlayer.failure, // Si l'on est en faillite, on désactive par défaut l'enchère
+            myPrice: "",
+            property: property,
+            textContent: "",
+            bidID: bid.bidID
+          });
         }
       }
     },
@@ -780,7 +857,7 @@ export default {
      */
     quitGame() {
       this.socket.emit("gamePlayerLeavingReq");
-      this.socket.on("gamePlayerLeavingRes", res => {
+      this.socket.on("gamePlayerLeavingRes", (res) =>{
         if (res.error === 0) {
           this.$refs.gameSettings.closeModal();
           setTimeout(() => {
@@ -840,10 +917,10 @@ export default {
         } else if (data.asyncRequestType == "shouldMortgage") {
           const moneyToPay = data.asyncRequestArgs[0];
           this.turnNotifications.push({
-            title: 'Plus assez d\'argent !',
-            color: 'red',
+            title: "Plus assez d'argent !",
+            color: "red",
             content: `Vous devez hypothéquer avant la fin de votre tour pour payer la somme dûe de ${moneyToPay}€ !`,
-            type: 'text'
+            type: "text"
           });
         } else {
           afficherMessageAction = true;
@@ -857,7 +934,7 @@ export default {
         this.turnNotifications.push({
           title: null,
           content: data.actionMessage,
-          type: 'text'
+          type: "text"
         });
       }
 
@@ -880,10 +957,10 @@ export default {
 
         if (typeof data.extra.gainMoneyFromStart !== "undefined") {
           this.turnNotifications.push({
-              type: 'text',
-              title: 'Case départ',
-              color: 'green',
-              content: `${currPlayer.nickname} gagne ${this.moneyFromStart}€ en passant par la case départ`
+            type: "text",
+            title: "Case départ",
+            color: "green",
+            content: `${currPlayer.nickname} gagne ${this.moneyFromStart}€ en passant par la case départ`
           });
         }
 
@@ -929,8 +1006,7 @@ export default {
     getNbPlayersAlive() {
       let nb = 0;
       for (const i in this.players) {
-        if (!this.players[i].failure && !this.players[i].hasLeft)
-          nb++;
+        if (!this.players[i].failure && !this.players[i].hasLeft) nb++;
       }
       return nb;
     },
@@ -944,11 +1020,9 @@ export default {
       if (data.playerID === this.loggedUser.id)
         this.$refs.actionBtn.progressReset(false);
 
-      // Uniquement s'il n'y a plus qu'une personne en vie
-      if (this.getNbPlayersAlive() <= 1)
-        this.execQueue();
+      this.execQueue();
 
-      console.log("=== fin gameActionRes ===");
+      // Fin gameActionRes
     },
 
     /**
@@ -956,30 +1030,36 @@ export default {
      * Exécute la dernière fonction de la queue (le cas échéant)
      */
     execQueue() {
-      if (this.fnQueue.length > 0)
-        (this.fnQueue.shift())();
+      if (this.fnQueue.length > 0) this.fnQueue.shift()(null);
+    },
+
+    /**
+     * @vuese
+     * Exécute la dernière fonction de la queue (le cas échéant) et appelle un callback une fois l'exécution terminée
+     * @arg Callback à appeler une fois la dernière fonction de la queue exécutée
+     */
+    execQueueCb(cb) {
+      if (this.fnQueue.length > 0) this.fnQueue.shift()(cb);
+      else cb();
     },
 
     /**
      * @vuese
      * Traite la faillite d'un joueur
-     * @arg Données reçues dans le socket
+     * @arg Données reçues dans le socket ; callback à appeler une fois la faillite terminée
      */
-    processPlayerFailureRes(res) {
-      console.log('gamePlayerFailureRes');
-      console.log(res);
-
+    processPlayerFailureRes(res, cb) {
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
-      
-      this.$set(player, 'failure', true);
+
+      this.$set(player, "failure", true);
 
       // Toutes les propriétés sont à nouveau à vendre
       // Suppr propriétés
       for (const i in player.properties) {
         const property = this.getPropertyById(player.properties[i]);
         if (property) {
-          this.$set(property, 'ownerID', null);
+          this.$set(property, "ownerID", null);
 
           // Suppression drapeau + constructions
           const cell = this.getCellByProperty(property);
@@ -992,7 +1072,7 @@ export default {
             this.$refs.gameboard.deleteHypotheque(cell.id);
         }
       }
-      this.$set(player, 'properties', []);
+      this.$set(player, "properties", []);
 
       // Suppression du pion
       this.$refs.gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
@@ -1000,7 +1080,11 @@ export default {
       // Suppr pion
       this.$refs.gameboard.deletePawn(this.CST.PAWNS[player.pawn]);
 
-      this.$refs.splashText.triggerCb(`<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`, '#DB1311', this.execQueue);
+      this.$refs.splashText.triggerCb(
+        `<i class="fas fa-skull-crossbones"></i><br>${player.nickname} a fait faillite !`,
+        "#DB1311",
+        cb
+      );
     },
 
     /**
@@ -1008,8 +1092,8 @@ export default {
      * Vérifie si l'événément passé en paramètre contient un nombre ou non
      */
     isNumber(evt) {
-      evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
       if ((charCode < 48 || charCode > 57) && charCode != 13)
         evt.preventDefault();
     }
@@ -1020,10 +1104,10 @@ export default {
   },
   mounted() {
     this.socket = io.connect(this.$store.getters.serverUrl, {
-            query: "token=" + this.$store.getters.jwt,
-            path: "/socket.io",
-            secure: true
-      });
+      query: "token=" + this.$store.getters.jwt,
+      path: "/socket.io",
+      secure: true
+    });
 
     this.gameMounted = true;
 
@@ -1036,347 +1120,343 @@ export default {
     this.players = [];
     const gameboard = this.$refs.gameboard;
 
-
     this.$parent.initSocketConnexion(this.socket);
 
-    this.socket.on('gameStartedRes', (data) => {
+    this.socket.on("gameStartedRes", (data) =>{
+      this.players = data.players;
+      this.cells = data.cells;
+      this.properties = data.properties;
+      this.moneyFromStart = data.moneyFromStart;
+      this.gameEndTime = data.gameEndTime;
+      this.initGameTimer(this.gameEndTime);
 
-        this.players = data.players;
-        this.cells = data.cells;
-        this.properties = data.properties;
-        this.moneyFromStart = data.moneyFromStart;
-        this.gameEndTime = data.gameEndTime;
-        this.initGameTimer(this.gameEndTime);
+      // Level par défaut des propriétés = 0 (car non upgrade)
+      for (const i in data.properties) {
+        data.properties[i].level = 0;
+        data.properties[i].ownerID = null;
+        data.properties[i].isMortgage = 0;
+      }
 
-        console.log('Le jeu a démarré !');
-        console.log(data);
+      // Génération de la liste de joueurs
+      data.players.forEach((player) => {
+        // Champs par défaut du joueur
+        this.$set(player, "nbJailEscapeCards", 0);
+        this.$set(player, "properties", []);
+        this.$set(player, "money", data.playersMoney);
+        this.$set(player, "failure", false);
+        this.$set(player, "hasLeft", false);
+        player.cellPos = 0;
+        player.color = this.CST.PLAYERS_COLORS[player.pawn];
+        player.isInJail = false;
+        this.$refs.gameboard.loaderPawn(
+          this.CST.PAWNS[player.pawn],
+          player.cellPos.toString()
+        );
+      });
 
-        // Level par défaut des propriétés = 0 (car non upgrade)
-        for (const i in data.properties) {
-            data.properties[i].level = 0;
-            data.properties[i].ownerID = null;
-            data.properties[i].isMortgage = 0;
-        }
+      this.loading = false;
 
-        // Génération de la liste de joueurs
-        data.players.forEach((player, index) => {
-            // Champs par défaut du joueur
-            this.$set(player, 'nbJailEscapeCards', 0);
-            this.$set(player, 'properties', []);
-            this.$set(player, 'money', data.playersMoney);
-            this.$set(player, 'failure', false);
-            this.$set(player, 'hasLeft', false);
-            player.cellPos = 0;
-            player.color = this.CST.PLAYERS_COLORS[index];
-            player.isInJail = false;
-            this.$refs.gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos.toString());
-        });
-
-        this.loading = false;
-
-        this.$refs.actionBtn.progressInitialize();
+      this.$refs.actionBtn.progressInitialize();
     });
-
 
     // Données de reconnexion
-    this.socket.on('gameReconnectionRes', (res) => {
-        console.log(' --- RECONNEXION res');
-        console.log(res);
+    this.socket.on("gameReconnectionRes", (res) =>{
+      this.players = res.players;
+      this.cells = res.cells;
+      this.properties = res.properties;
+      this.moneyFromStart = res.moneyFromStart;
+      this.gameEndTime = res.gameEndTime;
+      this.initGameTimer(this.gameEndTime);
 
-        this.players = res.players;
-        this.cells = res.cells;
-        this.properties = res.properties;
-        this.moneyFromStart = res.moneyFromStart;
-        this.gameEndTime = res.gameEndTime;
-        this.initGameTimer(this.gameEndTime);
+      for (const i in this.properties) this.properties[i].ownerID = null;
 
-        for (const i in this.properties)
-            this.properties[i].ownerID = null;
+      // Génération de la liste de joueurs
+      this.players.forEach((player) => {
+        player.color = this.CST.PLAYERS_COLORS[player.pawn];
 
-        // Génération de la liste de joueurs
-        this.players.forEach((player, index) => {
-            player.color = this.CST.PLAYERS_COLORS[index];
+        if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
 
-            if (player.hasLeft || player.failure) return; // Ne pas charger son pion, propriétés, etc.
+        gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
 
-            gameboard.loaderPawn(this.CST.PAWNS[player.pawn], player.cellPos);
+        for (const i in player.properties) {
+          const propertyObj = this.getPropertyById(player.properties[i]);
+          const cell = this.getCellByProperty(propertyObj);
+          if (propertyObj && cell)
+            gameboard.loaderFlag(cell.id, player.color.hex);
 
-            for (const i in player.properties) {
-              const propertyObj = this.getPropertyById(player.properties[i]);
-              const cell = this.getCellByProperty(propertyObj)
-              if (propertyObj && cell)
-                gameboard.loaderFlag(cell.id, player.color.hex);
+          if (propertyObj.level == 5) {
+            gameboard.loaderHotelProperty(cell.id);
+          } else if (propertyObj.level != 0) {
+            for (let i = 1; i <= propertyObj.level; i++)
+              gameboard.loaderHouseProperty(cell.id, i);
+          }
 
-                if (propertyObj.level == 5) {
-                  gameboard.loaderHotelProperty(cell.id);
-                } else if (propertyObj.level != 0) {
-                  for (let i = 1; i <= propertyObj.level; i++)
-                    gameboard.loaderHouseProperty(cell.id, i);
-                }
+          if (propertyObj.isMortgaged) gameboard.loaderHypotheque(cell.id);
+        }
+      });
 
-                if (propertyObj.isMortgaged)
-                  gameboard.loaderHypotheque(cell.id);
-            }
+      res.chatMessages.forEach(msg => {
+        this.$refs.chat.messages.push({
+          senderUserID: msg.playerID,
+          content: msg.text,
+          createdTime: msg.createdTime
         });
+      });
 
-        res.chatMessages.forEach((msg) => {
-            this.$refs.chat.messages.push({
-                senderUserID: msg.playerID,
-                content: msg.text,
-                createdTime: msg.createdTime
-            });
-        });
+      res.offers.forEach(offer => {
+        this.pushGameOfferReceive(offer);
+      });
 
-        res.offers.forEach((offer) => {
-          this.pushGameOfferReceive(offer);
-        });
+      res.bids.forEach(bid => {
+        this.pushGameBid(bid);
+      });
 
-        res.bids.forEach((bid) => {
-          this.pushGameBid(bid);
-        });
+      this.$refs.actionBtn.progressInitialize();
 
-        this.$refs.actionBtn.progressInitialize();
-
-        this.loading = false;
+      this.loading = false;
     });
 
+    this.socket.on("gameTurnRes", (data) =>{
+      if (this.loading) return;
 
-    this.socket.on('gameTurnRes', (data) => {
-        if (this.loading) return;
-
-        console.log(data);
+      this.execQueueCb(() => {
         let currentTimestamp = Date.now();
-        let turnTimeSeconds = Math.floor((data.turnEndTime - currentTimestamp) / 1000);
-        console.log('Le tour se terminera dans ' + turnTimeSeconds + ' secondes (' + currentTimestamp + ' - ' + data.turnEndTime + ')');
+        let turnTimeSeconds = Math.floor(
+          (data.turnEndTime - currentTimestamp) / 1000
+        );
 
         // On vide toutes les notifications (au cas-où)
         this.turnNotifications = [];
         this.currentPlayerID = data.playerID;
-        
+
         const currPlayer = this.getPlayerById(data.playerID);
         if (currPlayer) {
-
           // afficher décompte de temps du tour
-          if (this.currentPlayerID == this.loggedUser.id) {     
-              this.$refs.actionBtn.progressReset();
-              this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est à vous de jouer !`, 'white', this.execQueue);
-              this.$refs.actionBtn.progressStart(turnTimeSeconds);
-              if(!data.canRollDiceAgain){
-                this.$refs.actionBtn.progressSetStateTerminer();
-              }
+          if (this.currentPlayerID == this.loggedUser.id) {
+            this.$refs.actionBtn.progressReset();
+            this.$refs.splashText.trigger(
+              `<img src="/assets/img/pawns/${
+                this.CST.PAWNS[currPlayer.pawn]
+              }.png" width="320"><br>C'est à vous de jouer !`,
+              "white"
+            );
+            this.$refs.actionBtn.progressStart(turnTimeSeconds);
+            if (!data.canRollDiceAgain) {
+              this.$refs.actionBtn.progressSetStateTerminer();
+            }
           } else {
-              this.$refs.splashText.triggerCb(`<img src="/assets/img/pawns/${this.CST.PAWNS[currPlayer.pawn]}.png" width="320"><br>C'est au tour de ${currPlayer.nickname} !`, 'white', this.execQueue);
-              this.$refs.actionBtn.progressFinish();
+            this.$refs.splashText.trigger(
+              `<img src="/assets/img/pawns/${
+                this.CST.PAWNS[currPlayer.pawn]
+              }.png" width="320"><br>C'est au tour de ${currPlayer.nickname} !`,
+              "white"
+            );
+            this.$refs.actionBtn.progressFinish();
           }
 
           // afficher la carte bonus sortie de parlement (le cas échéant)
-          if (currPlayer.isInJail && currPlayer.isInJail < 3 && currPlayer.nbJailEscapeCards > 0)
-            this.turnNotifications.push({ type: 'bonusJail' });
-        
+          if (
+            currPlayer.isInJail &&
+            currPlayer.isInJail < 3 &&
+            currPlayer.nbJailEscapeCards > 0
+          )
+            this.turnNotifications.push({ type: "bonusJail" });
         }
+      });
     });
 
+    this.socket.on("gameActionRes", (data) =>{
+      if (this.loading) return;
 
-    this.socket.on('gameActionRes', (data) => {
-        if (this.loading) return;
+      // Forcer la désactivation du bouton d'action
+      this.$refs.actionBtn.setDisabled();
 
-        console.log("=== gameActionRes ===");
-        console.log(data);
+      const currPlayer = this.getPlayerById(data.playerID);
+      if (!currPlayer) return;
 
-        console.log("Action déclenchée par " + this.idToNick(data.playerID) + " => " + data.actionMessage);
+      // Maj nb cartes sortie de prison
+      let usedBonusJail = false;
+      if (typeof data.extra.nbJailEscapeCards !== "undefined") {
+        usedBonusJail =
+          currPlayer.nbJailEscapeCards > data.extra.nbJailEscapeCards;
+        currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
+      }
 
-        // Forcer la désactivation du bouton d'action
-        this.$refs.actionBtn.setDisabled();
-
-        const currPlayer = this.getPlayerById(data.playerID);
-        if (!currPlayer) {
-            console.log('JOUEUR INTROUVABLE');
-            return;
-        }
-
-        // Maj nb cartes sortie de prison
-        let usedBonusJail = false;
-        if (typeof data.extra.nbJailEscapeCards !== 'undefined') {
-          usedBonusJail = currPlayer.nbJailEscapeCards > data.extra.nbJailEscapeCards;
-          currPlayer.nbJailEscapeCards = data.extra.nbJailEscapeCards;
-        }
-
-        // Sortie de prison
-        let leftJailWithDouble = false;
-        if (currPlayer.isInJail) {
-          if (currPlayer.isInJail >= 3) { // Sortie de prison
-              if (currPlayer.id == this.loggedUser.id)
-                this.$parent.toast('Votre session au parlement est terminée !', 'success', 3);
-              currPlayer.isInJail = false;
+      // Sortie de prison
+      let leftJailWithDouble = false;
+      if (currPlayer.isInJail) {
+        if (currPlayer.isInJail >= 3) {
+          // Sortie de prison
+          if (currPlayer.id == this.loggedUser.id)
+            this.$parent.toast(
+              "Votre session au parlement est terminée !",
+              "success",
+              3
+            );
+          currPlayer.isInJail = false;
+        } else {
+          // Si le joueur a fait un double ou utilise sa carte sortie de prison, il peut sortir. Sinon, il reste un tour ++ en prison
+          if (usedBonusJail) {
+            currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
+            this.turnNotifications.push({
+              type: "text",
+              title: "Bye bye",
+              color: "green",
+              content: `${currPlayer.nickname} utilise son bonus pour quitter sa session parlementaire !`
+            });
+          } else if (data.dicesRes[0] == data.dicesRes[1]) {
+            currPlayer.isInJail = false;
+            leftJailWithDouble = true;
           } else {
-            // Si le joueur a fait un double ou utilise sa carte sortie de prison, il peut sortir. Sinon, il reste un tour ++ en prison
-            if (usedBonusJail) {
-              currPlayer.isInJail = false; // Recevoir un flag du serveur serait préférable
-              this.turnNotifications.push({
-                type: 'text',
-                title: 'Bye bye',
-                color: 'green',
-                content: `${currPlayer.nickname} utilise son bonus pour quitter sa session parlementaire !`
-              });
-            } else if (data.dicesRes[0] == data.dicesRes[1]) {
-              currPlayer.isInJail = false;
-              leftJailWithDouble = true;
-            } else {
-              currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
-            }
+            currPlayer.isInJail++; // On augmente le nb de tours du joueur en prison
           }
         }
+      }
 
-        // Initialisation du bouton d'action
-        if (currPlayer.id == this.loggedUser.id) {
-            console.log("[BOUTON D'ACTION] Initialisation (dans gameActionRes)");
-            if (data.dicesRes[0] != data.dicesRes[1] || leftJailWithDouble) {
-              this.$refs.actionBtn.progressSetStateTerminer();
-            } else {
-              const turnTimeSeconds = Math.floor((data.turnEndTime - Date.now()) / 1000);
-              this.$refs.actionBtn.progressSetStateRelancer();
-              this.$refs.actionBtn.progressStart(turnTimeSeconds);
-            }
+      // Initialisation du bouton d'action
+      if (currPlayer.id == this.loggedUser.id) {
+        if (data.dicesRes[0] != data.dicesRes[1] || leftJailWithDouble) {
+          this.$refs.actionBtn.progressSetStateTerminer();
+        } else {
+          const turnTimeSeconds = Math.floor(
+            (data.turnEndTime - Date.now()) / 1000
+          );
+          this.$refs.actionBtn.progressSetStateRelancer();
+          this.$refs.actionBtn.progressStart(turnTimeSeconds);
+        }
+      }
+
+      const cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
+      const cellPos2 = data.cellPosTmp ? data.cellPos : null;
+
+      // Lancement de l'animation des dés
+      this.audio.sfx.rollDices.play();
+      this.$refs.dices.triggerDices(data.dicesRes[0], data.dicesRes[1], () => {
+        // Notification si sortie de prison grâce à un double
+        if (leftJailWithDouble) {
+          this.turnNotifications.push({
+            type: "text",
+            title: "Bye bye",
+            color: "green",
+            content: `${currPlayer.nickname} a fait un double : il peut quitter sa session parlementaire !`
+          });
         }
 
-        const totalDices = data.dicesRes[0] + data.dicesRes[1];
-        console.log(currPlayer.nickname + " a fait un " + totalDices.toString() + " avec les dés et se rend à la case " + data.cellPos);
-
-        const cellPos1 = data.cellPosTmp ? data.cellPosTmp : data.cellPos;
-        const cellPos2 = data.cellPosTmp ? data.cellPos : null;
-
-        // Lancement de l'animation des dés
-        this.audio.sfx.rollDices.play();
-        this.$refs.dices.triggerDices(data.dicesRes[0], data.dicesRes[1], () => {
-
-            // Notification si sortie de prison grâce à un double
-            if (leftJailWithDouble) {
-              this.turnNotifications.push({
-                type: 'text',
-                title: 'Bye bye',
-                color: 'green',
-                content: `${currPlayer.nickname} a fait un double : il peut quitter sa session parlementaire !`
-              });
+        // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
+        if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
+          currPlayer.cellPos = cellPos1;
+          this.$refs.actionBtn.progressPause();
+          gameboard.movement(
+            this.CST.PAWNS[currPlayer.pawn],
+            cellPos1.toString(),
+            () => {
+              this.$refs.actionBtn.progressResume();
+              this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
             }
-
-            // On ne déplace le joueur que s'il doit aller sur une nouvelle case (et s'il n'est pas en prison)
-            if (!currPlayer.isInJail && cellPos1 != currPlayer.cellPos) {
-                console.log("movement(" + this.CST.PAWNS[currPlayer.pawn] + ", " + cellPos1.toString() + ");");
-                currPlayer.cellPos = cellPos1;
-                this.$refs.actionBtn.progressPause();
-                gameboard.movement(this.CST.PAWNS[currPlayer.pawn], cellPos1.toString(), () => {
-                    this.$refs.actionBtn.progressResume();
-                    this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
-                });
-            } else {
-                this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
-            }
-        });
+          );
+        } else {
+          this.gameActionResAfterFirstMovement(data, currPlayer, cellPos2);
+        }
+      });
     });
 
     // Retour lancer de dés
-    this.socket.on('gameRollDiceRes', (res) => {
+    this.socket.on("gameRollDiceRes", (res) =>{
       if (res.error !== 0) {
-        this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
+        this.$parent.toast(`Erreur : ${res.status}`, "danger", 5);
       }
     });
 
-
     // Terrain vierge acheté
-    this.socket.on("gamePropertyBuyRes", (data) => {
-        if (this.loading) return;
+    this.socket.on("gamePropertyBuyRes", (data) =>{
+      if (this.loading) return;
 
-        console.log("gamePropertyBuyRes");
-        console.log(data);
-        if (typeof data.error !== "undefined") {
-          this.$parent.toast(`Impossible d'acheter : ${data.status}`, 'danger', 8);
-          return;
+      if (typeof data.error !== "undefined") {
+        this.$parent.toast(
+          `Impossible d'acheter : ${data.status}`,
+          "danger",
+          8
+        );
+        return;
+      }
+
+      // Suppr de la notification
+      let notifIndex;
+      for (
+        notifIndex = 0;
+        notifIndex < this.turnNotifications.length &&
+        this.turnNotifications[notifIndex].type != "saleCard";
+        notifIndex++
+      );
+      if (notifIndex < this.turnNotifications.length)
+        this.turnNotifications.splice(notifIndex, 1);
+
+      const property = this.getPropertyById(data.propertyID);
+      const cell = this.getCellByProperty(property);
+      if (property && cell) {
+        const player = this.getPlayerById(data.playerID);
+        property.ownerID = player.id;
+        player.properties.push(property.id);
+        gameboard.loaderFlag(cell.id, player.color.hex);
+
+        if (data.playerMoney != player.money) {
+          this.audio.sfx.cashRegister.play();
+          this.setPlayerMoney(player, data.playerMoney);
         }
-        
-        // Suppr de la notification
-        let notifIndex;
-        for (notifIndex = 0; notifIndex < this.turnNotifications.length && this.turnNotifications[notifIndex].type != 'saleCard'; notifIndex++);
-        if (notifIndex < this.turnNotifications.length)
-          this.turnNotifications.splice(notifIndex, 1);
 
-        const property = this.getPropertyById(data.propertyID);
-        const cell = this.getCellByProperty(property);
-        if (property && cell) {
-            const player = this.getPlayerById(data.playerID);
-            property.ownerID = player.id;
-            player.properties.push(property.id);
-            gameboard.loaderFlag(cell.id, player.color.hex);
-
-            if (data.playerMoney != player.money) {
-                this.audio.sfx.cashRegister.play();
-                this.setPlayerMoney(player, data.playerMoney);
-            }
-
-            // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
-            this.turnNotifications = [];
-        }
+        // Retirer la notificationCard chez tous les autres joueurs (après animation du bouton ACHETER)
+        this.turnNotifications = [];
+      }
     });
 
-
     // Un joueur s'est déconnecté
-    this.socket.on('gamePlayerDisconnectedRes', (data) => {
-        if (this.loading) return;
+    this.socket.on("gamePlayerDisconnectedRes", (data) =>{
+      if (this.loading) return;
 
-        console.log('gamePlayerDisconnectedRes');
-        const player = this.getPlayerById(data.playerID);
-        if (player) {
-            this.$set(player, 'disconnected', true);
-            console.log(`${player.nickname} s'est déconnecté`);
-        }
+      const player = this.getPlayerById(data.playerID);
+      if (player) {
+        this.$set(player, "disconnected", true);
+      }
     });
 
     // Un joueur s'est reconnecté
-    this.socket.on('gamePlayerReconnectedRes', (data) => {
-        if (this.loading) return;
+    this.socket.on("gamePlayerReconnectedRes", (data) =>{
+      if (this.loading) return;
 
-        const player = this.getPlayerById(data.playerID);
-        if (player)
-            this.$set(player, 'disconnected', false);
+      const player = this.getPlayerById(data.playerID);
+      if (player) this.$set(player, "disconnected", false);
     });
 
     // Player failure
-    this.socket.on('gamePlayerFailureRes', (res) => {
-        if (this.loading) return;
+    this.socket.on("gamePlayerFailureRes", (res) =>{
+      if (this.loading) return;
 
-        if (this.fnQueue.length == 0) {
-          this.processPlayerFailureRes(res);
-        } else {
-          this.fnQueue.push(() => {
-            this.processPlayerFailureRes(res);
-          });
-        }
+      this.fnQueue.push(() => {
+        this.processPlayerFailureRes(res, this.execQueue);
+      });
     });
 
     // On a reçu une offre d'achat
-    this.socket.on("gameOfferReceiveRes", (res) => {
-        this.pushGameOfferReceive(res);
+    this.socket.on("gameOfferReceiveRes", (res) =>{
+      this.pushGameOfferReceive(res);
     });
 
     // Offre accpeptée check
-    this.socket.on("gameOfferActionRes", (res) => {
-        if (res.error === 0)
-            console.log("gameOfferActionRes")
-        else
-            this.$parent.toast(`Erreur : ${res.status}`, 'danger', 5);
+    this.socket.on("gameOfferActionRes", (res) =>{
+      if (res.error !== 0)
+        this.$parent.toast(`Erreur : ${res.status}`, "danger", 5);
     });
 
     // Offre envoyée check
-    this.socket.on("gameOfferSendRes", (res) => {
-        if (res.error === 0)
-            console.log("gameOfferSendRes")
-        else // hôte uniquement
-            this.$parent.toast(`Erreur achat : ${res.status}`, 'danger', 5);
+    this.socket.on("gameOfferSendRes", (res) =>{
+      if (res.error !== 0)
+        this.$parent.toast(`Erreur achat : ${res.status}`, "danger", 5);
     });
 
     // Offre (d'achat) terminée
-    this.socket.on('gameOfferFinishedRes', (res) => {
+    this.socket.on("gameOfferFinishedRes", (res) =>{
       const buyer = this.getPlayerById(res.makerID);
-      const receiver =  this.getPlayerById(res.receiverID);
+      const receiver = this.getPlayerById(res.receiverID);
       const property = this.getPropertyById(res.propertyID);
       const cell = this.getCellByProperty(property);
 
@@ -1388,7 +1468,10 @@ export default {
       if (res.accepted) {
         // Transfert argent
         this.setPlayerMoney(buyer, parseInt(buyer.money) - parseInt(res.price));
-        this.setPlayerMoney(receiver, parseInt(receiver.money) + parseInt(res.price));
+        this.setPlayerMoney(
+          receiver,
+          parseInt(receiver.money) + parseInt(res.price)
+        );
 
         // Transfert propriétés
         for (const i in receiver.properties) {
@@ -1406,45 +1489,54 @@ export default {
 
         // Notifications
         if (receiver.id == this.loggedUser.id) {
-          this.$parent.toast(`Vous avez vendu ${property.name} à ${buyer.nickname} !`, 'success', 4);
+          this.$parent.toast(
+            `Vous avez vendu ${property.name} à ${buyer.nickname} !`,
+            "success",
+            4
+          );
         } else if (buyer.id == this.loggedUser.id) {
-          this.$parent.toast(`${receiver.nickname} a accepté de vous vendre ${property.name} pour ${res.price}€`, 'success', 5);
+          this.$parent.toast(
+            `${receiver.nickname} a accepté de vous vendre ${property.name} pour ${res.price}€`,
+            "success",
+            5
+          );
         }
       } else {
         // Notifications (de refus)
         if (receiver.id == this.loggedUser.id) {
-          this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 4);
+          this.$parent.toast(
+            `La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`,
+            "danger",
+            4
+          );
         } else if (buyer.id == this.loggedUser.id) {
-          this.$parent.toast(`${receiver.nickname} a refusé de vous vendre ${property.name} pour ${res.price}€`, 'danger', 5);
-          // this.$parent.toast(`La proposition d'achat de ${buyer.nickname} pour ${property.name} a expiré`, 'danger', 5);
+          this.$parent.toast(
+            `${receiver.nickname} a refusé de vous vendre ${property.name} pour ${res.price}€`,
+            "danger",
+            5
+          );
         }
       }
     });
 
     // Edition de mes propriétés check
-    this.socket.on('gamePropertyUpgradeRes', (res) => {
-      // alert('gamePropertyUpgradeRes');
-      console.log(res);
-      if (res.error === 0)
-        console.log('gamePropertyUpgradeRes OK');
-      else
-        this.$parent.toast(`Erreur : ${res.status}`, 'danger', 4);
+    this.socket.on("gamePropertyUpgradeRes", (res) =>{
+      if (res.error !== 0)
+        this.$parent.toast(`Erreur : ${res.status}`, "danger", 4);
     });
 
     // Edition des propriétés d'un joueur
-    this.socket.on('gamePropertyUpgradedRes', (res) => {
-      console.log('gamePropertyUpgradedRes');
-      console.log(res);
+    this.socket.on("gamePropertyUpgradedRes", (res) =>{
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
 
       if (res.list.length == 0) return;
 
       this.turnNotifications.push({
-          type: 'text',
-          title: 'Amélioration',
-          color: 'green',
-          content: `${player.nickname} a édité ses propriétés !`
+        type: "text",
+        title: "Amélioration",
+        color: "green",
+        content: `${player.nickname} a édité ses propriétés !`
       });
 
       this.setPlayerMoney(player, res.playerMoney);
@@ -1456,16 +1548,16 @@ export default {
         if (!property || !cell) continue;
 
         const oldLevel = property.level;
-        this.$set(property, 'level', edit.level); // Nouveau level
+        this.$set(property, "level", edit.level); // Nouveau level
 
         // Màj des maisons sur le plateau 3D
         if (property.level > oldLevel) {
           // Amélioration
           if (property.level == 5) {
-              for (let k = 1; k <= oldLevel; k++) {
-                gameboard.deleteHouse(cell.id, k);
-              }
-              gameboard.loaderHotelProperty(cell.id);
+            for (let k = 1; k <= oldLevel; k++) {
+              gameboard.deleteHouse(cell.id, k);
+            }
+            gameboard.loaderHotelProperty(cell.id);
           } else {
             for (let i = oldLevel + 1; i <= property.level; i++)
               gameboard.loaderHouseProperty(cell.id, i);
@@ -1473,10 +1565,10 @@ export default {
         } else {
           // Détruire les maisons / hotel
           if (oldLevel == 5) {
-              gameboard.deleteHotel(cell.id);
-              for (let k = 1; k <= property.level; k++) {
-                gameboard.loaderHouseProperty(cell.id, k);
-              }
+            gameboard.deleteHotel(cell.id);
+            for (let k = 1; k <= property.level; k++) {
+              gameboard.loaderHouseProperty(cell.id, k);
+            }
           } else {
             for (let i = oldLevel; i > property.level; i--)
               gameboard.deleteHouse(cell.id, i);
@@ -1486,141 +1578,150 @@ export default {
     });
 
     // Ouverture d'une enchère ou nouvelle enchère d'un joueur
-    this.socket.on('gameBidRes', (res) => {
-        console.log('gameBidRes');
-        console.log(res);
-        this.pushGameBid(res);
+    this.socket.on("gameBidRes", (res) =>{
+      this.pushGameBid(res);
     });
 
     // Fin d'une enchère
-    this.socket.on('gameBidEndedRes', (res) => {
-        console.log('gameBidEndedRes');
-        console.log(res);
-        let bid;
-        let bidIndex;
-        for (const i in this.bids) {
-            if (this.bids[i].bidID == res.bidID) {
-                bid = this.bids[i];
-                bidIndex = i;
-                break;
-            }
+    this.socket.on("gameBidEndedRes", (res) =>{
+      let bid;
+      for (const i in this.bids) {
+        if (this.bids[i].bidID == res.bidID) {
+          bid = this.bids[i];
+          break;
+        }
+      }
+
+      if (!bid) return;
+
+      this.$set(bid, "disabled", true);
+
+      if (res.playerID == null) {
+        this.$set(
+          bid,
+          "textContent",
+          "Enchère expirée : Le terrain n'a pas été acheté"
+        );
+      } else {
+        const property = this.getPropertyById(res.propertyID);
+        const cell = this.getCellByProperty(property);
+
+        if (!property || !cell) return;
+
+        // Suppression de la propriété de l'ancien propriétaire (le cas échéant)
+        if (res.propertyOldOwnerID) {
+          const oldOwner = this.getPlayerById(res.propertyOldOwnerID);
+          if (oldOwner) {
+            const propertyIndex = oldOwner.properties.indexOf(property.id);
+            if (propertyIndex > -1)
+              oldOwner.properties.splice(propertyIndex, 1);
+
+            gameboard.deleteFlag(cell.id);
+
+            if (res.propertyOldOwnerMoney)
+              this.setPlayerMoney(oldOwner, res.propertyOldOwnerMoney);
+          }
         }
 
-        if (!bid) return;
+        // Attribution du propriété au vainqueur de l'enchère
+        const winner = this.getPlayerById(res.playerID);
+        if (winner) {
+          this.$set(
+            bid,
+            "textContent",
+            `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`
+          );
 
-        this.$set(bid, 'disabled', true);
+          property.ownerID = res.playerID;
+          winner.properties.push(property.id);
 
-        if (res.playerID == null) {
-            this.$set(bid, 'textContent', 'Enchère expirée : Le terrain n\'a pas été acheté');
-        } else {
-            const property = this.getPropertyById(res.propertyID);
-            const cell = this.getCellByProperty(property);
+          gameboard.loaderFlag(cell.id, winner.color.hex);
 
-            if (!property || !cell) return;
-
-            // Suppression de la propriété de l'ancien propriétaire (le cas échéant)
-            if (res.propertyOldOwnerID) {
-              const oldOwner = this.getPlayerById(res.propertyOldOwnerID);
-              if (oldOwner) {
-                const propertyIndex = oldOwner.properties.indexOf(property.id);
-                if (propertyIndex > -1) oldOwner.properties.splice(propertyIndex, 1);
-                
-                gameboard.deleteFlag(cell.id);
-
-                if (res.propertyOldOwnerMoney)
-                  this.setPlayerMoney(oldOwner, res.propertyOldOwnerMoney);
-              }
-            }
-
-            // Attribution du propriété au vainqueur de l'enchère
-            const winner = this.getPlayerById(res.playerID);
-            if (winner) {
-              this.$set(bid, 'textContent', `Le joueur ${winner.nickname} a remporté l'enchère pour ${res.price}€ !`);
-
-              property.ownerID = res.playerID;
-              winner.properties.push(property.id);
-
-              gameboard.loaderFlag(cell.id, winner.color.hex);
-
-              this.setPlayerMoney(winner, res.playerMoney);
-            }
+          this.setPlayerMoney(winner, res.playerMoney);
         }
+      }
 
-        setTimeout(() => {
-            this.bids.splice(bidIndex, 1);
-        }, 5000);
+      setTimeout(() => {
+        this.discardBid(bid);
+      }, 5000);
     });
-
 
     // Enchère manuelle check
-    this.socket.on('gameManualBidRes', (res) => {
-      if (res.error === 0)
-        this.$parent.toast('Enchère créée !', 'success', 3);
+    this.socket.on("gameManualBidRes", (res) =>{
+      if (res.error === 0) this.$parent.toast("Enchère créée !", "success", 3);
       else
-        this.$parent.toast(`Erreur lors de la création de l'enchère : ${res.status}`, 'danger', 5);
+        this.$parent.toast(
+          `Erreur lors de la création de l'enchère : ${res.status}`,
+          "danger",
+          5
+        );
     });
 
-
     // Hypothèque Erreur
-    this.socket.on("gamePropertyMortgageRes", (res) => {
-        console.log("gamePropertyMortgageRes");
-        console.log(res);
-        if (res.error !== 0) {
-            this.$parent.toast(`Erreur hypothèque : ${res.status}`, 'danger', 4);
-        }
+    this.socket.on("gamePropertyMortgageRes", (res) =>{
+      if (res.error !== 0) {
+        this.$parent.toast(`Erreur hypothèque : ${res.status}`, "danger", 4);
+      }
     });
 
     // Hypothèque OK
-    this.socket.on("gamePropertyMortgagedRes", (res) => {
-        console.log("gamePropertyMortgagedRes");
-        console.log(res);
+    this.socket.on("gamePropertyMortgagedRes", (res) =>{
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
 
-        const player = this.getPlayerById(res.playerID);
-        if (!player) return;
+      this.setPlayerMoney(player, res.playerMoney);
+      let mortgagedPropertiesNames = [];
+      for (const i in res.properties) {
+        const property = this.getPropertyById(res.properties[i]);
+        const cell = this.getCellByProperty(property);
+        if (!property || !cell) continue;
 
-        this.setPlayerMoney(player, res.playerMoney);
-        let mortgagedPropertiesNames = [];
-        for (const i in res.properties) {
-            const property = this.getPropertyById(res.properties[i]);
-            const cell = this.getCellByProperty(property);
-            if (!property || ! cell) continue;
+        // Modifier "isMortgaged" dans la liste globale des propriétés
+        this.$set(property, "isMortgaged", true);
 
-            // Modifier "isMortgaged" dans la liste globale des propriétés
-            this.$set(property, 'isMortgaged', true);
-
-            // Enlever les propriétés (le cas échéant)
-            if (property.level == 5) {
-              gameboard.deleteHotel(cell.id);
-            } else if (property.level > 0) {
-              for (let i = 1; i <= property.level; i++) {
-                gameboard.deleteHouse(cell.id, i);
-              }
-            }
-
-            // Remise du niveau à 0
-            this.$set(property, 'level', 0);
-
-            // Cône plateau
-            gameboard.loaderHypotheque(cell.id);
-
-            // Ajout aux propriétés hypothéquées
-            mortgagedPropertiesNames.push(property.name);
-        }
-
-        if (player.id == this.loggedUser.id) {
-          const autoStr = res.auto ? ' automatiquement' : '';
-          if (mortgagedPropertiesNames.length == 1) {
-            this.$parent.toast(`Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`, 'success', 4);
-          } else {
-            this.$parent.toast(`Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(', ')}`, 'success', 8);
+        // Enlever les propriétés (le cas échéant)
+        if (property.level == 5) {
+          gameboard.deleteHotel(cell.id);
+        } else if (property.level > 0) {
+          for (let i = 1; i <= property.level; i++) {
+            gameboard.deleteHouse(cell.id, i);
           }
         }
+
+        // Remise du niveau à 0
+        this.$set(property, "level", 0);
+
+        // Cône plateau
+        gameboard.loaderHypotheque(cell.id);
+
+        // Ajout aux propriétés hypothéquées
+        mortgagedPropertiesNames.push(property.name);
+      }
+
+      if (player.id == this.loggedUser.id) {
+        const autoStr = res.auto ? " automatiquement" : "";
+        if (mortgagedPropertiesNames.length == 1) {
+          this.$parent.toast(
+            `Propriété ${mortgagedPropertiesNames[0]} hypothéquée${autoStr}`,
+            "success",
+            4
+          );
+        } else {
+          this.$parent.toast(
+            `Propriétés hypothéquées${autoStr} : ${mortgagedPropertiesNames.join(
+              ", "
+            )}`,
+            "success",
+            8
+          );
+        }
+      }
     });
 
     // En cas d'hypothèque forcée (si un paiement doit être fait)
-    this.socket.on('gameForcedMortgageRes', (res) => {
-      this.$parent.toast(`${res.message}`, 'success', 10);
-      
+    this.socket.on("gameForcedMortgageRes", (res) =>{
+      this.$parent.toast(`${res.message}`, "success", 10);
+
       const player = this.getPlayerById(res.playerID);
       if (!player) return;
       this.setPlayerMoney(player, res.playerMoney);
@@ -1629,110 +1730,121 @@ export default {
         const rentalOwner = this.getPlayerById(res.rentalOwner.id);
         if (!rentalOwner) return;
         this.setPlayerMoney(rentalOwner, res.rentalOwner.money);
-      } 
-    })
+      }
+    });
 
     // Faire lever l'hypothèque ERREUR
-    this.socket.on("gamePropertyUnmortgageRes", (res) => {
-        console.log("gamePropertyUnmortgageRes");
-        console.log(res);
-        if (res.error !== 0) {
-            this.$parent.toast(`Erreur rachat hypothèque : ${res.status}`, 'danger', 4);
-        }
+    this.socket.on("gamePropertyUnmortgageRes", (res) =>{
+      if (res.error !== 0) {
+        this.$parent.toast(
+          `Erreur rachat hypothèque : ${res.status}`,
+          "danger",
+          4
+        );
+      }
     });
 
     // Faire lever l'hypotheque OK
-    this.socket.on("gamePropertyUnmortgagedRes", (res) => {
-        const player = this.getPlayerById(res.playerID);
-        const property = this.getPropertyById(res.propertyID);
-        const cell = this.getCellByProperty(property);
+    this.socket.on("gamePropertyUnmortgagedRes", (res) =>{
+      const player = this.getPlayerById(res.playerID);
+      const property = this.getPropertyById(res.propertyID);
+      const cell = this.getCellByProperty(property);
 
-        if (!player || !property || !cell) return;
+      if (!player || !property || !cell) return;
 
-        this.setPlayerMoney(player, res.playerMoney);
-        this.$set(property, 'isMortgaged', false);
+      this.setPlayerMoney(player, res.playerMoney);
+      this.$set(property, "isMortgaged", false);
 
-        gameboard.deleteHypotheque(cell.id);
+      gameboard.deleteHypotheque(cell.id);
 
-        if (player.id == this.loggedUser.id)
-          this.$parent.toast(`Hypothèque levée pour ${property.name}`, 'success', 4);
+      if (player.id == this.loggedUser.id)
+        this.$parent.toast(
+          `Hypothèque levée pour ${property.name}`,
+          "success",
+          4
+        );
     });
 
-
     // Fin de partie
-    this.socket.on('gameEndRes', (res) => {
+    this.socket.on("gameEndRes", (res) =>{
       let seconds = Math.floor((res.duration / 1000) % 60),
-          minutes = Math.floor((res.duration / (1000 * 60)) % 60),
-          hours = Math.floor((res.duration / (1000 * 60 * 60)) % 24);
+        minutes = Math.floor((res.duration / (1000 * 60)) % 60),
+        hours = Math.floor((res.duration / (1000 * 60 * 60)) % 24);
 
-        let gameTime = '';
-        if (hours > 0)
-          gameTime += `${hours}h `;
+      let gameTime = "";
+      if (hours > 0) gameTime += `${hours}h `;
 
-        gameTime += `${minutes}min ${seconds}sec`;
+      gameTime += `${minutes}min ${seconds}sec`;
 
-        if (res.type == 'timeout' || this.fnQueue.length == 0) {
-          this.endGame = {
-            winnerNickname: this.idToNick(res.winnerID),
-            gameTime: gameTime,
-            endType: res.type // 'failure' (dernier en vie) ou 'timeout'
-          }
-        } else {
-          this.fnQueue.push(() => {
+      const winner = this.getPlayerById(res.winnerID);
+      if (!winner) return;
+
+      if (res.type == "timeout" && this.fnQueue.length == 0) {
+        this.endGame = {
+          winner: winner,
+          gameTime: gameTime,
+          endType: res.type
+        };
+      } else {
+        this.fnQueue.push(cb => {
+          // Affichage légèrement différé pour assurer la réception préliminaire de gameFailureRes
+          setTimeout(() => {
             this.endGame = {
-              winnerNickname: this.idToNick(res.winnerID),
+              winner: winner,
               gameTime: gameTime,
-              endType: res.type // 'failure' (dernier en vie) ou 'timeout'
-            }
-          });
-        }
+              endType: res.type
+            };
+            if (typeof cb === "function") cb();
+          }, 2000);
+        });
+      }
     });
 
     // Un joueur quitte la partie
-    this.socket.on('gamePlayerHasLeftRes', (res) => {
-        if (this.loading) return;
+    this.socket.on("gamePlayerHasLeftRes", (res) =>{
+      if (this.loading) return;
 
-        console.log("=== PLAYER LEFT ===");
-        const player = this.getPlayerById(res.playerID);
-        if (!player)  return;
+      const player = this.getPlayerById(res.playerID);
+      if (!player) return;
 
-        console.log('PLAYER LEFT IS')
-        console.log(player);
+      // Notification
+      this.$refs.chat.messages.push({
+        senderUserID: -1,
+        content: `${player.nickname} a quitté la partie :/`,
+        createdTime: new Date()
+      });
 
-        // Notification
-        this.$refs.chat.messages.push({
-            senderUserID: -1,
-            content: `${player.nickname} a quitté la partie :/`,
-            createdTime: new Date()
-        });
-
-        this.$set(player, 'hasLeft', true);
+      this.$set(player, "hasLeft", true);
     });
 
-    this.socket.on('gameSuccessCompletedRes', (data) => {
-        const html = `
+    this.socket.on("gameSuccessCompletedRes", (data) =>{
+      const html =
+        `
             <div style="display: flex; align-items: center;">
                 <i class="fas fa-trophy" style="font-size: 3em; color: orange; margin-right: 0.4em;"></i>
                 <div>
                     <div style="font-size: 1.2em; margin-bottom: 0.6em;">
                         <b>Succès validé </b>
-                        <div>` + data.description + `</div>
+                        <div>` +
+        data.description +
+        `</div>
                     </div>
-                    <i>Difficultée ` + data.difficulty + `/3</i><span style="margin-left: 2em; color:yellow; font-weight: bold">+ ` + data.exp + ` EXP
+                    <i>Difficultée ` +
+        data.difficulty +
+        `/3</i><span style="margin-left: 2em; color:yellow; font-weight: bold">+ ` +
+        data.exp +
+        ` EXP
                 </div>
             </div>
         `;
-        setTimeout( () => {
-            this.$parent.toast(html,  'success', 10);
-        }, 6e3);
+      setTimeout(() => {
+        this.$parent.toast(html, "success", 10);
+      }, 6e3);
     });
 
-
     setTimeout(() => {
-      console.log('gameReadyReq');
-      this.socket.emit('gameReadyReq');
+      this.socket.emit("gameReadyReq");
     }, 1000);
-
   }
 };
 </script>
