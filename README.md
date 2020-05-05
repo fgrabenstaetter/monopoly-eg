@@ -1,45 +1,37 @@
 # Monopoly EG
 
-Projet intégrateur de S6 de l'UFR Math Info
+Projet Intégrateur S6 - UFR de Mathématiques et d'Informatique - Université de Strasbourg
 
 ## Architecture du dépôt
 
-- / : racine
-- /server : code du serveur
-- /client : code du client (uniquement le client léger pour l'instant, càd le client web)
-- /misc : miscellaneous (= "divers" en français)
-- /misc/tests : dossier réservé aux tests
-- /misc/tests/blender : dossier réservé aux tests Blender (*i.e.* modèles, objets, scènes, screenshots, etc.)
-- /misc/tests/threejs : dossier prévu pour vos tests Three JS (*i.e.* dossiers de tests avec HTML, CSS, JS, etc.)
+- /server : code serveur
+- /client : code client
 
 ## Auteurs
 
-Team EG
+Équipe EG
 
-- Benjamin FREELING <benjaminfreeling@gmail.com>
-- Boris FLESCH <boris.flesch@gmail.com>
-- Côme FRAPPÉ—VIALATOUX <cfrappevialatoux@gmail.com>
-- Danyl EL-KABIR  <elkabirdanyl@gmail.com>
-- Dorin GUTU <doringutsu@gmail.com>
-- Edouard GU <gu.edouard67@gmail.com>
-- Florian FALKNER <falknerflorian@hotmail.fr>
-- François GRABENSTAETTER <francoisgrabenstaetter@gmail.com>
-- Matthias FOYER <matthias.foyer@gmail.com>
-- Xavier FARGEAS <xavier.fargeas@gmail.com>
+- Benjamin FREELING <benjaminfreeling@gmail.com> [Client 3D + Sockets]
+- Boris FLESCH <boris.flesch@gmail.com> [Chef de projet]
+- Côme FRAPPÉ—VIALATOUX <cfrappevialatoux@gmail.com> [Client 3D + Sockets]
+- Danyl EL-KABIR  <elkabirdanyl@gmail.com> [Serveur]
+- Dorin GUTU <doringutsu@gmail.com> [Serveur]
+- Edouard GU <gu.edouard67@gmail.com> [Client IHM]
+- Florian FALKNER <falknerflorian@hotmail.fr> [Client 3D + ThreeJS]
+- François GRABENSTAETTER <francoisgrabenstaetter@gmail.com> [Serveur]
+- Matthias FOYER <matthias.foyer@gmail.com> [Client IHM]
+- Xavier FARGEAS <xavier.fargeas@gmail.com> [Client 3D + ThreeJS]
 
 ## Utilisation
 
 ### Serveur
 
-(Testé avec nodejs LTS 12.16.3 et MongoDB 4.2.6)
+**Pré-requis** : NodeJS installé et MongoDB installé + lancé
+*Testé avec Nodejs LTS 12.16.3 et MongoDB 4.2.6*
 
-0. Avoir installé la dernière version Node LTS et MongoDB sur sa machine (et avoir le service MongoDB en cours d'exécution)
+Toutes les commandes suivantes nécessitent d'être exécutées dans le répertoire "server" : `cd server/`
 
-1. Changer de répertoire
-
-   ```bash
-   cd server/
-   ```
+#### Lancement du serveur
 
 2. Installer tous les modules via NPM
 
@@ -47,32 +39,68 @@ Team EG
    npm install
    ```
 
-3. Démarrer le serveur en mode développement/production
+3. Démarrer le serveur en mode développement / production
 
    ```bash
    npm start # mode développement
    npm start production # mode production
    ```
 
-4. Lancer les tests unitaires
+#### Lancement des tests unitaires
 
-   ```bash
-   npm test
-   ```
+```bash
+npm test
+```
+
+#### Génération de la documentation
+
+```bash
+jsdoc .js game/.js models/*.js -d doc
+```
 
 ### Client
 
-(Nécessite d’avoir lancé `npm start` et MongoDB)
+**Pré-requis** : serveur lancé et Vue.js CLI installé
 
-0. **[Pour les utilisateurs Windows]** S’assurer d’avoir correctement installé PHP
-   (cf. https://www.sitepoint.com/how-to-install-php-on-windows/)
+Toutes les commandes suivantes nécessitent d'être exécutées dans le répertoire "monopoly-eg" : `cd client/monopoly-eg/`
 
-1. Dans un terminal, se rendre dans le dossier "/client/ui"
+#### Lancement du serveur local
 
-2. Lancer la commande
+1. Installer tous les modules via NPM
 
    ```bash
-   php -S localhost:3001
+   npm install
    ```
 
-3. Accéder à l'adresse http://localhost:3001
+2. Démarrer le serveur local
+
+   ```bash
+   npm run serve
+   ```
+
+Le client est ensuite accessible à l'adresse par défaut : http://localhost:8080/
+
+#### Build du client
+
+**Client web**
+
+```bash
+npm run build
+```
+
+**Client lourd**
+
+```bash
+npm run electron:build
+```
+
+#### Génération de la documentation
+
+Vuese doit être installé globalement pour que la commande aboutisse
+
+```bash
+npm install -g vuese
+vuese gen # génère la documentation
+vuese serve --open # crée un serveur local + ouvre la documentation dans le navigateur
+```
+
