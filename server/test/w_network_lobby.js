@@ -110,7 +110,7 @@ describe('Network + Lobby', () => {
             assert.equal(data.hostID, user.id);
             done();
         });
-        clientSocket2.emit('lobbyUserLeftReq');
+        clientSocket2.emit('lobbyKickReq');
     });
 
     it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
