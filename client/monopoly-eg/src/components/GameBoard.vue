@@ -17,7 +17,7 @@ export default {
   name: 'GameBoard',
   data() {
       return {
-          /**
+         /**
          * Tableau de Pion
          * @type {array} 
          */
@@ -187,6 +187,10 @@ export default {
             'd39' : 'Plane39_0'
         },
 
+        /**
+         * Tableau avec coordonnées des drapeaux
+         * @type {array} 
+         */
         drapLight: { 
             'd1' : new THREE.Vector3(1.3514562845230103, -0.0018858909606933594, 1.6896905899047852), 
             'd2' : new THREE.Vector3(0.6791576743125916, -0.0018858909606933594, 1.6896905899047852), 
@@ -219,7 +223,7 @@ export default {
         },
 
         /**
-         * Tableau de nom des maisons
+         * Tableau avec coordonnées des maisons
          * @type {array} 
          */
         tabHouseCoord: {
@@ -507,19 +511,16 @@ export default {
         this.zoomOnOff(!!this.$parent.loggedUser.settings.autoZoom);
     },
 
+
     /**
      * @vuese
      * Supprime une maison
      * @arg {int} ncase: Numero de case (int), nhouse: Numero de maison (int)
      */
     deleteHouse(ncase, nhouse) {
-        // let concatS = "";
-        // this.deleteHouseD(concatS.concat(this.tabHouse[ncase], "_", nhouse));
-        //this.house = '_' + nhouse;
-        //console.log(`${this.tabHouse[ncase]}${this.house}`);
-        //this.scene.remove(`${this.tabHouse[ncase]}${this.house}`);
         this.scene.remove(this.objs[`${this.tabHouse[ncase]}_${nhouse}`]);
     },
+
 
     /**
      * @vuese
@@ -530,6 +531,7 @@ export default {
         this.scene.remove(this.objs[houseProperty]);
     },
 
+
     /**
      * @vuese
      * Supprime un hotel
@@ -537,9 +539,8 @@ export default {
      */
     deleteHotel(ncase) {
         this.scene.remove(this.objs[`h${ncase}`]);
-        // let concatS = "";
-        // this.deleteHotelD(concatS.concat(this.tabHotel[ncase]));
     },
+
 
     /**
      * @vuese
@@ -549,6 +550,7 @@ export default {
     deleteHotelD(hotelProperty) {
         this.scene.remove(this.objs[hotelProperty]);
     },
+
 
     /**
      * @vuese
@@ -562,22 +564,13 @@ export default {
 
     /**
      * @vuese
-     * Modifie la couleur du drapeau
-     * @arg Numéro de la case ; Couleur du drapeau (hexadecimal, ex : '#FFFFFF')
-     */
-    changeColorFlag(cell, color) {
-        this.deleteFlag(cell);
-        this.loaderFlag(cell, color);
-    },
-
-    /**
-     * @vuese
      * Supprime un drapeau
      * @arg Numéro de la case
      */
     deleteFlag(cell) {
         this.scene.remove(this.objs[`d${cell}`]);
     },
+
 
     /**
      * @vuese
@@ -597,11 +590,6 @@ export default {
             });
             
             console.log(this.objs[`d${cell}`].children[0].position);
-            // const colorLight = 0x404040;
-            // const intensity = 0.1;
-            // const light1 = new THREE.DirectionalLight( colorLight, intensity);
-            // light1.position.set(this.drapLight[`d${cell}`].x, this.drapLight[`d${cell}`].y, this.drapLight[`d${cell}`].z);
-            // this.scene.add(light1);
             this.scene.add(root);
         });
     },
@@ -609,7 +597,6 @@ export default {
 
     loaderLightFlag(cell) {
         for (this.i = 1; this.i <= cell; this.i++) {
-            //console.log(this.i);
             const colorLight = 0x404040;
             const intensity = 0.1;
             const light1 = new THREE.DirectionalLight( colorLight, intensity);
@@ -619,6 +606,7 @@ export default {
 
     },
 
+
     /**
      * @vuese
      * Efface l'hypothèque de la propriété
@@ -627,6 +615,7 @@ export default {
     deleteHypotheque(cell) {
         this.scene.remove(this.objs[`hyp${cell}`]);
     },
+
 
     /**
      * @vuese
@@ -646,6 +635,7 @@ export default {
         });
     },
 
+
     /**
      * @vuese
      * Ajoute un pion à la case qu'on veut
@@ -660,29 +650,23 @@ export default {
             this.varCase = this.tabCases[this.varMovement];
 
             let vdpx = this.varCase.x;
-            //vdpx = (Math.floor(vdpx * 100) / 100);
             let vdpz = this.varCase.z;
-            //vdpz = (Math.floor(vdpz * 100) / 100);
+
             root.position.set(vdpx, 2, vdpz);
 
-            if (vdp >= 0 && vdp <= 9) {
+            if (vdp >= 0 && vdp <= 9)
                 root.rotateY(Math.PI / -2);
-                //this.objs[pawn].position.x -= (Math.floor(0.01 * 100) / 100);
-                //console.log(this.objs[pawn].position.x );
-            } else if (vdp >= 10 && vdp <= 19) {
+            else if (vdp >= 10 && vdp <= 19)
                 root.rotateY(Math.PI);
-                //this.objs[pawn].position.z -= (Math.floor(0.01 * 100) / 100);
-            } else if (vdp >= 20 && vdp <= 29) {
+            else if (vdp >= 20 && vdp <= 29)
                 root.rotateY(Math.PI / 2);
-                //this.objs[pawn].position.x += (Math.floor(0.01 * 100) / 100);
-            } else {
-                root.rotateY(Math.PI * 2);
-                //this.objs[pawn].position.z += (Math.floor(0.01 * 100) / 100);
-            }
+            else
+                root.rotateY(Math.PI * 2);       
 
             this.scene.add(root);
         });
     },
+
 
     /**
      * @vuese
@@ -693,23 +677,14 @@ export default {
      * 	3 -> met la case en haut à droite de la case
      *  4 -> met la case en haut à gauche de la case
      */
-    // loaderHouseProperty(ncase, nhouse) {
-    //     let concatS = "";
-    //     this.housePropertyL(concatS.concat(this.tabHouse[ncase], "_", nhouse));
-    // },
-
     loaderHouseProperty(ncase, nhouse) {
-        //let concatS = "";
-        //console.log(nhouse);
-        //this.house = '_' + nhouse;
-        //console.log(`${this.tabHouse[ncase]}_${nhouse}`);
         if ((ncase > 30 && ncase <= 39) || (ncase > 10 && ncase <= 19))
             this.housePropertyLR(`${this.tabHouse[ncase]}_${nhouse}`);
         else 
-            //this.housePropertyL(`${this.tabHouse[ncase]}${this.house}`);
             this.housePropertyL(`${this.tabHouse[ncase]}_${nhouse}`);
 
     },
+
 
     /**
      * @vuese
@@ -720,21 +695,27 @@ export default {
         this.gltfLoader.load('/assets/models/maisonPro/maison.gltf', (gltf) => {          
             const root = gltf.scene;
             this.objs[houseProperty] = gltf.scene;
-            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, this.tabHouseCoord[houseProperty].y, this.tabHouseCoord[houseProperty].z);
-            //console.log(root);
+            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, 
+                                                                this.tabHouseCoord[houseProperty].y,
+                                                                this.tabHouseCoord[houseProperty].z);
+            
             this.scene.add(root);
         });
     },
+
 
     housePropertyLR(houseProperty) {
         this.gltfLoader.load('/assets/models/maisonPro/maisonR.gltf', (gltf) => {          
             const root = gltf.scene;
             this.objs[houseProperty] = gltf.scene;
-            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, this.tabHouseCoord[houseProperty].y, this.tabHouseCoord[houseProperty].z);
-            //console.log(root);
+            this.objs[houseProperty].children[0].position.set(this.tabHouseCoord[houseProperty].x, 
+                                                                this.tabHouseCoord[houseProperty].y, 
+                                                                this.tabHouseCoord[houseProperty].z);
+            
             this.scene.add(root);
         });
     },
+
 
     /**
      * @vuese
@@ -742,28 +723,18 @@ export default {
      * @arg {int} ncase: Chiffre de la case 
      */
     loaderHotelProperty(ncase) {
-        //let concatS = "";
-        //this.hotelPropertyL(concatS.concat(this.tabHotel[ncase]));
         this.hotelPropertyL(ncase);
     },
+
 
     /**
      * @vuese
      * Fonction principale - Charge un hôtel à la case spécifiée
      * @arg {string} hotelPropriete: Nom de l'hôtel (Ex: H1_2)
      */
-    // hotelPropertyL(hotelPropriete) {
-    //     this.gltfLoader.load('/assets/models/maisonPro/' + hotelPropriete + '.gltf', (gltf) => {
-    //         const root = gltf.scene;
-    //         this.objs[hotelPropriete] = gltf.scene;
-    //         this.scene.add(root);
-    //     });
-    // },
-
      hotelPropertyL(cell) {
         this.gltfLoader.load('/assets/models/maisonPro/hotel.gltf', (gltf) => {
             const root = gltf.scene;
-            console.log(root);
             this.objs[`h${cell}`] = gltf.scene;
             if ((cell > 0 && cell < 10) || (cell > 20 && cell < 30)) 
                 this.objs[`h${cell}`].children[0].position.set(this.tabCases[cell].x, this.tabCases[cell].y, this.tabCases[cell].z-0.17);
@@ -776,6 +747,7 @@ export default {
         });
     },
 
+
     /**
      * @vuese
      * Active ou désactive le zoom sur le plateau
@@ -785,6 +757,7 @@ export default {
         this.zoomOn = number;
     },
 
+
     /**
      * @vuese
      * Animation pour le déplacement des pions
@@ -792,7 +765,6 @@ export default {
      * {int} target: Les coordonnées de la case d'arrivée,
      * {int} options: Options - Callback
      */
-    /* Animates a Vector3 to the target */
     animateVector3(pawn, vectorToAnimate, target, options){
         options = options || {};
         // get targets from options or set to defaults
@@ -865,16 +837,15 @@ export default {
                 }
                 if (_this.tabCases[_this.vdp].x.toFixed(2) == to.x.toFixed(2) &&
                     _this.tabCases[_this.vdp].z.toFixed(2) == to.z.toFixed(2)) {
-                        if (_this.vdp >= 0 && _this.vdp <= 9) {
+                        if (_this.vdp >= 0 && _this.vdp <= 9)
                             pawn.rotation.set(0, -1.5707963267948966, 0);
-                        } else if (_this.vdp >= 10 && _this.vdp <= 19) {
+                        else if (_this.vdp >= 10 && _this.vdp <= 19)
                             pawn.rotation.set(3.141592653589793, -4.440892098500626e-16, 3.141592653589793);
-                        } else if (_this.vdp >= 20 && _this.vdp <= 29) {
+                        else if (_this.vdp >= 20 && _this.vdp <= 29)
                              pawn.rotation.set(0, 1.5707963267948966, 0);
-                        } else if (_this.vdp >= 30 && _this.vdp <= 39) {
+                        else if (_this.vdp >= 30 && _this.vdp <= 39)
                             pawn.rotation.set(-0, -2.4492935982947064e-16, -0);
-                        }
-
+                        
                         if (typeof options === 'function') options();	
                 }
                     
@@ -945,157 +916,157 @@ export default {
 
         if (this.posPawn == 7 && this.vdp == 3) {
             // Reculez de 4 cases - carte chance
-			console.log("Reculez de 4 cases");
+			//console.log("Reculez de 4 cases");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[3], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn == 22 && this.vdp == 18) {
             // Reculez de 4 cases - carte chance
-			console.log("Reculez de 4 cases");
+			//console.log("Reculez de 4 cases");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
 			if (this.zoomOn == 1)
                 this.tweenCamera(this.tabCases[20], 3140);
         } else if (this.posPawn == 36 && this.vdp == 32) {
             // Reculez de 4 cases - carte chance
-			console.log("Reculez de 4 cases");
+			//console.log("Reculez de 4 cases");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[32], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.vdp > this.posPawn && this.vdp < 10){
 			// Déplacement sur la route d'en bas
-			console.log("1");
+			//console.log("1");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140); 
 		} else if (this.vdp == 10 && this.posPawn < 10) {
 			// Pour aller dans le coin en bas à gauche
-			console.log("2");
+			//console.log("2");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn == 10 && this.vdp > 10 && this.vdp < 20) {
 			// Du coin en bas à gauche vers la route gauche
-			console.log("3");
+			//console.log("3");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
         } else if (this.posPawn >= 0 && this.posPawn < 10 && this.vdp > 10 && this.vdp < 22) {
 			// De la route d'en bas à la route gauche
-			console.log("4");
+			//console.log("4");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[10], 3140);
 		} else if (this.posPawn > 10 && this.posPawn < 20 && this.vdp > 10 && this.vdp < 20) {
 			// Déplacement sur la route gauche
-			console.log("5");
+			//console.log("5");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.vdp == 20 && this.posPawn < 20) {
 			// Aller dans le coin en haut à gauche
-			console.log("6");
+			//console.log("6");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn == 20 && this.vdp > 20 && this.vdp < 30) { 
 			// Du coin en haut à gauche vers la route d'en haut
-			console.log("7");
+			//console.log("7");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn >= 10 && this.posPawn < 20 && this.vdp > 20 && this.vdp <= 31) { 
 			// De la route gauche à la route d'en haut
-			console.log("8");
+			//console.log("8");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[20], 3140);
 		} else if (this.posPawn > 20 && this.posPawn < 30 && this.vdp > 20 && this.vdp < 30) { 
 			// Déplacement sur la route d'en haut
-			console.log("9");
+			//console.log("9");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.vdp == 30 && this.posPawn < 30) {
 			// Aller dans le coin en haut à droite
-			console.log("10");
+			//console.log("10");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn == 30 && this.vdp > 30) {
 			// Du coin en haut à droite vers la route de droite
-			console.log("11");
+			//console.log("11");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn >= 20 && this.posPawn < 30 && this.vdp > 30 && this.vdp <= 39) {
 			// Route d'en haut à la route de droite
-			console.log("12");
+			//console.log("12");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[30], 3140);
 		} else if (this.posPawn > 30 && this.posPawn < 39 && this.vdp >= 31 && this.vdp <= 39) { 
 			// Déplacement sur la route de droite
-			console.log("13");
+			//console.log("13");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp == 0) {
 			// Aller dans le coin en bas à droite
-			console.log("14");
+			//console.log("14");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn == 0 && this.vdp > 0) {
 			// Du coin en bas à droite vers la route d'en bas
-			console.log("15");
+			//console.log("15");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[this.vdp], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[this.vdp], 3140);
 		} else if (this.posPawn >= 30 && this.posPawn <= 39 && this.vdp >= 0 && this.vdp <= 11) {
 			// De la route de droite à la route d'en bas
-			console.log("16");
+			//console.log("16");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[0], 3140);
 		} else if (this.posPawn >= 20 && this.posPawn <= 30 && this.vdp >= 0 && this.vdp <= 10) {
 			// De la route en haut à la route d'en bas
-			console.log("17");
+			//console.log("17");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[30], 3140);
 		} else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 39) {
 			// De la route en bas à la route de droite - case 39
-			console.log("18");
+			//console.log("18");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[10], 3140);
 		} else if ((this.posPawn == 2 || this.posPawn == 7) && this.vdp == 24) {
 			// De la route en bas à la route d'en haut - case 24
-			console.log("19");
+			//console.log("19");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[10], 3140);
 		} else if ((this.posPawn == 2 || this.posPawn == 7) && (this.vdp == 0 || this.vdp == 1)) {
 			// De la route en bas à la case de départ
-			console.log("20");
+			//console.log("20");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[10], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[10], 3140);
 		} else if (this.posPawn == 22 && (this.vdp == 15 || this.vdp == 11)) {
 			// De la route en haut à la route de gauche - case 11 ou case 15
-			console.log("21");
+			//console.log("21");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[30], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[30], 3140);
 		} else if ((this.posPawn == 36 || this.posPawn == 33) && (this.vdp == 24 || this.vdp == 15 || this.vdp == 11)) {
 			// De la route a droite à la route d'en haut - case 24
-			console.log("22");
+			//console.log("22");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[0], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[0], 3140);
 		} else if (this.posPawn == 17 && (this.vdp == 0) || this.vdp == 1) {
 			// De la route à gauche à la case de départ
-			console.log("23");
+			//console.log("23");
 			this.animateVector3(this.objs[pawn], this.objs[pawn].position, this.tabCases[20], callback);
 			if (this.zoomOn == 1)
 				this.tweenCamera(this.tabCases[20], 3140);
