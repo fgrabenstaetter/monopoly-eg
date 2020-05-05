@@ -105,12 +105,12 @@ describe('Network + Lobby', () => {
         GLOBAL.lobbies.push(lobby);
         lobby.delUser(user2);
 
-        clientSocket2.emit('lobbyUserLeftRes');
         clientSocket.on('lobbyUserLeftRes', (data) => {
             assert.equal(data.userID, user2.id);
             assert.equal(data.hostID, user.id);
             done();
         });
+        clientSocket2.emit('lobbyUserLeftReq');
     });
 
     it('Changement du nombre de joueur pour la partie à chercher (matchmaking)', (done) => {
