@@ -20,7 +20,6 @@ Chat du jeu (utilisé dans le lobby et dans le jeu) Important : le parent de ce 
 |initSocket|Initialisation des sockets (appelé par le parent lorsque la connexion au socket est établie)|-|
 |postMsg|Envoi le contenu du nouveau message au serveur et vide la zone de saisie ('msg')|-|
 |scrollToBottom|Descend au bas de la zone de chat (pour afficher les derniers messages reçus)|-|
-|loadSfx|Charge les effets sonores du chat|-|
 
 <!-- @vuese:ChatIO:methods:end -->
 

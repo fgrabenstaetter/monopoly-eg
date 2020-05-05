@@ -684,6 +684,12 @@ export default {
         loop: false,
         volume: this.loggedUser.settings.sfxLevel / 100
       });
+      this.audio.sfx.newMessage = new Howl({
+                src: ['/assets/audio/sfx/when.mp3'],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+      });
     },
 
     /**
@@ -1626,7 +1632,7 @@ export default {
       } 
     })
 
-    // Faire leverl'hypothèque ERREUR
+    // Faire lever l'hypothèque ERREUR
     this.socket.on("gamePropertyUnmortgageRes", (res) => {
         console.log("gamePropertyUnmortgageRes");
         console.log(res);

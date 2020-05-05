@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import {Howl} from 'howler'
 /**
  * @vuese
  * @group Components
@@ -42,6 +41,9 @@ export default {
     },
     data() {
         return {
+            // @vuese
+            // Utilisateur connecté (chargé depuis le store Vuex)
+            loggedUser: this.$store.getters.loggedUser,
             // @vuese
             // Messages du chat
             messages: [],
@@ -64,7 +66,7 @@ export default {
             if (this.env === 'lobby') {
                 this.$parent.socket.on('lobbyChatReceiveRes', (mess) => {
                     if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
-                        this.audio.sfx.newMessage.play();
+                        this.$parent.audio.sfx.newMessage.play();
                     }
                     this.messages.push(mess);
                 });
@@ -75,7 +77,7 @@ export default {
             } else {
                 this.$parent.socket.on('gameChatReceiveRes', (mess) => {
                     if (mess.senderUserID != -1 && mess.senderUserID != this.$parent.loggedUser.id) {
-                        this.audio.sfx.newMessage.play();
+                        this.$parent.audio.sfx.newMessage.play();
                     }
                     const formatMsg = {senderUserID: mess.playerID, content: mess.text, createdTime: mess.createdTime};
                     this.messages.push(formatMsg);
@@ -108,22 +110,6 @@ export default {
             const element = this.$el.querySelector("#msgChat");
             element.scrollTop = element.scrollHeight;
         },
-
-        /**
-         * @vuese
-         * Charge les effets sonores du chat
-         */
-        loadSfx() {
-            this.audio.sfx.newMessage = new Howl({
-                src: ['/assets/audio/sfx/when.mp3'],
-                autoplay: false,
-                loop: false,
-                volume: 0.5
-            });
-        }
-    },
-    mounted() {
-        this.loadSfx();
     },
     updated() {
         this.scrollToBottom();
