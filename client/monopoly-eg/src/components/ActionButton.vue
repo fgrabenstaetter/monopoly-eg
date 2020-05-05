@@ -219,7 +219,6 @@ export default {
             $.fn.progressFinish = function(){
                 $(this).addClass('disabled');
                 $(this).attr({'data-loading': 'LANCER LES DES'});
-                console.log('finish');
                 $(this).trigger('progress-finish');
                 $(this).trigger('progress',[0, false, true]);
             };
@@ -244,8 +243,6 @@ export default {
 
             // Met la barre de progression a une valeur donne
             $.fn.progressSet = function (val) {
-                // val = val;
-                console.log('set : ' + val);
                 var finish = false;
                 if (val >= 100) {
                     finish = true;

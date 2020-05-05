@@ -5,10 +5,10 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: {
-      apiUrl: 'http://localhost:3000/api',
-      serverUrl: 'http://localhost:3000',
-      // apiUrl: 'https://egserver.singlequote.net/api',
-      // serverUrl: 'https://egserver.singlequote.net',
+      // apiUrl: 'http://localhost:3000/api',
+      // serverUrl: 'http://localhost:3000',
+      apiUrl: 'https://egserver.singlequote.net/api',
+      serverUrl: 'https://egserver.singlequote.net',
       jwt: localStorage.getItem('jwt'),
       isLoggedIn: !!localStorage.getItem('jwt'),
       pending: false,
@@ -49,7 +49,6 @@ export const store = new Vuex.Store({
     },
     actions: {
       login ({ commit }, data) {
-        console.log("LOGGING IN WITH ", data);
         commit('loggedIn', data);
       },
       logout ({ commit }) {

@@ -695,7 +695,6 @@ export default {
         this.$parent.initSocketConnexion(this.socket);
 
         this.socket.on('lobbyCreatedRes', (res) => {
-            console.log('=== LOBBY CREATED RES');
             this.hostID = this.loggedUser.id;
             this.nbPlayers = res.targetUsersNb;
             this.players = [this.loggedUser];
@@ -704,8 +703,6 @@ export default {
         });
 
         this.socket.on('lobbyJoinedRes', (res) => {
-            console.log("=== LOBBY JOINED RES");
-            console.log(res);
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
             this.hostID = res.users[0].id;
@@ -775,8 +772,6 @@ export default {
         // demande de la liste d'amis
         this.socket.emit('lobbyFriendListReq');
         this.socket.on('lobbyFriendListRes', (res) => {
-            console.log("========== lobbyFriendListRes==============")
-
             this.friends = [];
             for (const i in res.friends) {
                 res.friends[i].avatar = this.$store.getters.serverUrl + res.friends[i].avatar
@@ -791,9 +786,6 @@ export default {
         })
 
         this.socket.emit('lobbyRequestedFriendListReq');
-        this.socket.on('lobbyRequestedFriendListRes', (res) => {
-            console.log(res);
-        })
 
 
         /** Système d'interactions avec les amis
@@ -815,41 +807,23 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
-
-            console.log('lobbyUserJoinedRes');
-            console.log(res);
-
             this.audio.sfx.success.play();
 
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
-            // addPlayerInGroup(res.id, res.nickname, socketUrl + res.avatar);
-
+            
             if (this.nbPlayers < this.players.length)
                 this.nbPlayers = this.players.length;
-
-            // if (hostID === ID)
-            //     updateNbUsersArrows();
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
             this.audio.sfx.error.play();
-
-            console.log("LOBBY USER LEFT RES");
-            console.log(res);
-
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
-                console.log("J'AI ETE KICK");
                 this.socket.emit('lobbyReadyReq');
                 return;
             }
 
-            if (this.hostID !== res.hostID) {
-                // ...=> changement d'hote
-            }
-
             this.hostID = res.hostID;
-            console.log('newhost = ' + this.idToNick(res.hostID))
 
             // supprimer de la liste dans grouplist
             for (const i in this.players) {
@@ -913,18 +887,12 @@ export default {
         });
 
         this.socket.on("lobbyFriendInvitationActionRes", (res) => {
-            if (res.error === 0)
-                console.log("lobbyFriendInvitationActionRes")
-            else // hôte uniquement
+            if (res.error !== 0)
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
         this.socket.on("lobbyInvitationActionRes", (res) => {
-            console.log("lobbyInvitationActionRes");
-            console.log(res);
-            if (res.error === 0) {
-                this.socket.emit('lobbyReadyReq');
-            } else // hôte uniquement
+            if (res.error !== 0)
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
@@ -938,10 +906,7 @@ export default {
         });
 
         this.socket.on("lobbyKickRes", (res) => {
-            console.log(res);
-            if (res.error === 0)
-                console.log("lobbyKickRes")
-            else // hôte uniquement
+            if (res.error !== 0)
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
@@ -1001,8 +966,6 @@ export default {
         });
 
         this.socket.on('lobbyUserAvatarUpdatedRes', (res) => {
-            console.log('lobbyUserAvatarUpdatedRes');
-            console.log(res);
             const d = new Date();
             const timeCacheRefresh = d.getTime();
             const imgPath = this.$store.getters.serverUrl + res.path;
@@ -1031,19 +994,14 @@ export default {
         });
 
         this.socket.on('lobbyUpdateAvatarRes', (res) => {
-            console.log('lobbyUpdateAvatarRes');
-            console.log(res);
             if (res.error !== 0)
                 this.$parent.toast(res.status, 'danger', 3);
         });
-
 
         $('.modal').on('shown.bs.modal', function() {
             $(this).find('input').first().focus();
         });
 
-
-        console.log("LOBBY READY REQ");
         this.socket.emit('lobbyReadyReq');
     }
 }
