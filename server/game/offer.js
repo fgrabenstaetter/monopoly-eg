@@ -111,6 +111,7 @@ class Offer {
         });
 
         Offer.delOffer(this);
+        return true;
     }
 
     accept() {
