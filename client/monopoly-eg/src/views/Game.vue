@@ -1236,7 +1236,7 @@ export default {
             this.$refs.splashText.trigger(
               `<img src="/assets/img/pawns/${
                 this.CST.PAWNS[currPlayer.pawn]
-              }.png" height="340"><br>C'est à vous de jouer !`,
+              }.png" height="200"><br>C'est à vous de jouer !`,
               "white"
             );
             this.$refs.actionBtn.progressStart(turnTimeSeconds);
@@ -1247,7 +1247,7 @@ export default {
             this.$refs.splashText.trigger(
               `<img src="/assets/img/pawns/${
                 this.CST.PAWNS[currPlayer.pawn]
-              }.png" height="340"><br>C'est au tour de ${currPlayer.nickname} !`,
+              }.png" height="200"><br>C'est au tour de ${currPlayer.nickname} !`,
               "white"
             );
             this.$refs.actionBtn.progressFinish();

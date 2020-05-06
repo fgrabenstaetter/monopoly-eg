@@ -697,6 +697,9 @@ export default {
         this.$parent.initSocketConnexion(this.socket);
 
         this.socket.on('lobbyCreatedRes', (res) => {
+            console.log('lobbyCreatedRes');
+            console.log(res);
+
             this.hostID = this.loggedUser.id;
             this.nbPlayers = res.targetUsersNb;
             this.players = [this.loggedUser];
@@ -705,6 +708,9 @@ export default {
         });
 
         this.socket.on('lobbyJoinedRes', (res) => {
+            console.log('lobbyJoinedRes');
+            console.log(res);
+
             this.players = [];
             this.nbPlayers = res.targetUsersNb;
             this.hostID = res.users[0].id;
@@ -733,6 +739,9 @@ export default {
 
         // JOUER / ANNULER / PARTIE TROUVÉE
         this.socket.on('lobbyPlayRes', (res) => {
+            console.log('lobbyPlayRes');
+            console.log(res);
+
             if (res.error) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
                 this.playBtn.loading = false;
@@ -809,6 +818,9 @@ export default {
         /**Gestion du lobby
          */
         this.socket.on('lobbyUserJoinedRes', (res) => {
+            console.log('lobbyUserJoinedRes');
+            console.log(res);
+
             this.audio.sfx.success.play();
 
             this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
@@ -818,6 +830,9 @@ export default {
         });
 
         this.socket.on('lobbyUserLeftRes', (res) => {
+            console.log('lobbyUserLeftRes');
+            console.log(res);
+            
             this.audio.sfx.error.play();
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
@@ -853,6 +868,9 @@ export default {
         });
 
         this.socket.on('lobbyPlayRes', (res) => {
+            console.log('lobbyPlayRes');
+            console.log(res);
+            
             if (res.error !== 0) {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
                 this.playBtn.loading = false;
@@ -862,6 +880,8 @@ export default {
         });
 
         this.socket.on('lobbyGameFoundRes', () => {
+            console.log('lobbyGameFoundRes');
+
             this.stopMusic();
             setTimeout(() => {
                 this.$router.push('/game');
@@ -871,6 +891,9 @@ export default {
         /**Vérifications des Res asynchrones
         */
         this.socket.on('lobbyFriendInvitationSendRes', (res) => {
+            console.log('lobbyFriendInvitationSendRes');
+            console.log(res);
+
             if (res.error === 0) {
                 this.audio.sfx.success.play();
                 this.$parent.toast('Invitation envoyée', 'success', 3);
@@ -882,6 +905,8 @@ export default {
         });
 
         this.socket.on("lobbyInvitationRes", (res) => {
+            console.log('lobbyInvitationRes');
+            console.log(res);
             if (res.error === 0)
                 this.$parent.toast('Invitation envoyée', 'success', 3);
             else // hôte uniquement
@@ -894,6 +919,8 @@ export default {
         });
 
         this.socket.on("lobbyInvitationActionRes", (res) => {
+            console.log('lobbyInvitationActionRes');
+            console.log(res);
             if (res.error === 0)
                 this.socket.emit('lobbyReadyReq');
             else
@@ -910,6 +937,9 @@ export default {
         });
 
         this.socket.on("lobbyKickRes", (res) => {
+            console.log('lobbyKickRes');
+            console.log(res);
+
             if (res.error !== 0)
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
