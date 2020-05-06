@@ -97,7 +97,7 @@ class UserManager { // abstract
         if (!nickname || !email || !rawPassword)
             return cb(Errors.MISSING_FIELD);
 
-        if (nickname.length < 4)
+        if (nickname.length < 3 || nickname.length > 16)
             return cb(Errors.REGISTER.ERR_NICKNAME_LEN);
 
         if (rawPassword.length < 4)
