@@ -390,10 +390,12 @@ export default {
      * Rafraîchit la page dans sa totalité (utile notamment en cas de bug graphique)
      */
     refreshAll() {
-      if (process.env.IS_ELECTRON)
-        mainWindow.reload();
-      else
+      if (process.env.IS_ELECTRON) {
+        const {getCurrentWindow} = require('electron').remote;
+        getCurrentWindow().reload();
+      } else {
         this.$router.go();
+      }
     },
 
     /**

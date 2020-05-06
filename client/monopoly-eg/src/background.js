@@ -21,7 +21,7 @@ function createWindow () {
     minWidth: 1000,
     minHeight: 750,
     titleBarStyle: "hiddenInset",
-    icon: path.join(__dirname, '/icon.png'),
+    icon: 'icon.png',
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,

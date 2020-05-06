@@ -26,6 +26,7 @@
     "jquery": "^3.5.0",
     "odometer": "^0.4.8",
     "popper.js": "^1.16.1",
+    "remote": "^0.2.6",
     "serve": "^11.3.0",
     "socket.io-client": "^2.3.0",
     "socketio-file-upload": "^0.7.0",
