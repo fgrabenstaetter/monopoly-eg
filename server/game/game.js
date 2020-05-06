@@ -45,7 +45,7 @@ class Game {
         this.maxDuration         = duration; // 30 | 60 | null (durée max d'une partie en minutes ou null si illimité)
         this.ended               = false;
 
-        // this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
+        this.shouldPersist       = (Constants.ENVIRONMENT != Constants.ENVIRONMENTS.TEST);
         this.startedTime         = null; // timestamp de démarrage en ms
         // si maxDuration défini => la partie prend fin au début d'un nouveau tour lorsque le timeout est atteint uniquement
 
