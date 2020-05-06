@@ -385,6 +385,8 @@ class Network {
             if (data)
                 data.invitationID = parseInt(data.invitationID);
 
+            let flag = undefined;
+
             if (!data || isNaN(data.invitationID) || data.accept == null)
                 err = Errors.MISSING_FIELD;
             else {
@@ -420,10 +422,13 @@ class Network {
                         }
 
                         friendLobby.addUser(user);
+                        flag = true;
                     }
-                    user.socket.emit('lobbyInvitationActionRes', { error: err.code, status: err.status });
-                }
+                } else
+                    flag = false;
             }
+
+            user.socket.emit('lobbyInvitationActionRes', { error: err.code, status: err.status, accepted: flag });
         });
     }
 
@@ -715,8 +720,7 @@ class Network {
                             // Envoi temps réel (si utilisateur connecté)
                             for (const u of this.GLOBAL.users) {
                                 if (invitedUser._id == u.id) {
-                                    if (u.socket)
-                                        u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                                    u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                                     break;
                                 }
                             }
