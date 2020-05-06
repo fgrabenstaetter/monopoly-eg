@@ -1294,7 +1294,7 @@ class Network {
                 let can = true;
                 for (const cl of game.cells)  {
                     const pr = cl.property;
-                    if (pr && pr.type === Contants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
+                    if (pr && pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
                         can = false;
                         break;
                     }

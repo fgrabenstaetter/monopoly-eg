@@ -863,6 +863,7 @@ export default {
         }
       });
       this.$refs.gameSettings.closeModal();
+      this.socket.close();
       setTimeout(() => {
         this.$router.push("/lobby");
       }, 800);
@@ -1264,7 +1265,7 @@ export default {
       });
     });
 
-    this.socket.on("gameActionRes", (data) =>{
+    this.socket.on("gameActionRes", (data) => {
       if (this.loading) return;
 
       // Forcer la désactivation du bouton d'action
@@ -1786,7 +1787,7 @@ export default {
             gameTime: gameTime,
             endType: res.type
           };
-        });
+        }, 2000);
       } else {
         this.fnQueue.push(cb => {
           // Affichage légèrement différé pour assurer la réception préliminaire de gameFailureRes

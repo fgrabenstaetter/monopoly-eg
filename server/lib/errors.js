@@ -249,7 +249,7 @@ module.exports = Object.freeze({
         },
         UPGRADE_MONOPOLY_ONE_MORTGAGED: {
             code: 18,
-            status: 'Une propriété dont une propriété du même monopole est hypothéquée'
+            status: 'Une propriété du même monopole est hypothéquée'
         },
         PROPERTY_NOT_EMPTY: {
             code: 19,

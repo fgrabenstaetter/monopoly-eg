@@ -39,6 +39,17 @@ class Lobby {
     addUser(user) {
         if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
             return false;
+        
+        for (const i in this.users) {
+            console.log(`Check user ${this.users[i].nickname} (${this.users[i].id})`);
+            if (this.users[i].id == user.id) {
+                console.log(`=== ${this.users[i].nickname} retiré du lobby #${this.id} (doublon ID) ===`);
+                this.users.splice(i, 1);
+                break;
+            }
+        }
+
+        console.log(`=== ${user.nickname} (#${user.id}) ajouté au lobby #${this.id} ===`);
 
         this.users.push(user);
         if (this.users.length > this.targetUsersNb)

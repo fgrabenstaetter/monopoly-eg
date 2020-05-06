@@ -121,10 +121,10 @@ class Game {
         if (ind !== -1)
             this.GLOBAL.games.splice(ind, 1);
 
-        for (const user of users) {
-            const newLobby = new Lobby(user, this.GLOBAL);
-            this.GLOBAL.lobbies.push(newLobby);
-        }
+        // for (const user of users) {
+        //     const newLobby = new Lobby(user, this.GLOBAL);
+        //     this.GLOBAL.lobbies.push(newLobby);
+        // }
 
         this.deleteGameState();
     }
@@ -697,12 +697,7 @@ class Game {
             else if (!this.curPlayer.colorMonopoly(prop.color))
                 return 4;
 
-            // il a bien le monopole => vérifier qu'aucune propriété de la monopole n'est hypothéquée
-            for (const pr of this.curPlayer.properties) {
-                if (pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.isMortgaged)
-                    return 6;
-            }
-
+            // il a bien le monopole => vérifier qu'aucune propriété du monopole n'est hypothéquée (si le joueur souhaite construire)
             if (row.level > prop.level) {
                 for (const pr of this.curPlayer.properties) {
                     if (pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.isMortgaged)
