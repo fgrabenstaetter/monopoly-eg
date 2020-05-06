@@ -716,7 +716,8 @@ class Network {
                             // Envoi temps réel (si utilisateur connecté)
                             for (const u of this.GLOBAL.users) {
                                 if (invitedUser._id == u.id) {
-                                    u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
+                                    if (u.socket)
+                                        u.socket.emit('lobbyFriendInvitationReceivedRes', { id: user.id, nickname: user.nickname });
                                     break;
                                 }
                             }
