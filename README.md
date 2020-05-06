@@ -86,13 +86,13 @@ Le client est ensuite accessible à l'adresse par défaut : http://localhost:808
 **Client web**
 
 ```bash
-npm run build
+npm run build # Destination : dists/
 ```
 
 **Client lourd**
 
 ```bash
-npm run electron:build
+npm run electron:build # Destination : dist_electron/
 ```
 
 #### Génération de la documentation
