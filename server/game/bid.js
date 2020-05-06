@@ -115,6 +115,21 @@ class Bid {
         if (!curBid)
             return;
 
+        // verif aucune autre prop du monopole n'a de constructions
+        let can = true;
+        if (this.player && this.property) {
+            for (const cl of this.game.cells)  {
+                const pr = cl.property;
+                if (pr && pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === this.property.color && pr.curUpgradeLevel > 0) {
+                    can = false;
+                    break;
+                }
+            }
+        }
+
+        if (!can)
+            this.player = null;
+
         while (true) {
             if ((this.player && ((this.player.money < this.amountAsked) || this.player.failure)) || this.initialPropertyOwner !== this.property.owner) {
                 this.player = null;

@@ -1154,14 +1154,31 @@ class Network {
             else if (!Offer.canSend(player, recvr, game))
                 err = Errors.GAME.OFFER_LIMIT_REACHED;
             else {
-                const offer = new Offer(game, player, recvr, prop, data.price);
-                this.io.to(game.name).emit('gameOfferReceiveRes', {
-                    receiverID : offer.receiver.id,
-                    offerID    : offer.id,
-                    price      : offer.amount,
-                    propertyID : offer.property ? offer.property.id : -1,
-                    makerID    : offer.maker.id
-                });
+                // verif aucune autre prop du monopole n'a de constructions
+                let can = true;
+
+                if (prop) {
+                    for (const cl of game.cells)  {
+                        const pr = cl.property;
+                        if (pr && pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
+                            can = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!can)
+                    err = Errors.GAME.PROPERTY_MONOPOLY_CONTAINS_BUILDING;
+                else {
+                    const offer = new Offer(game, player, recvr, prop, data.price);
+                    this.io.to(game.name).emit('gameOfferReceiveRes', {
+                        receiverID : offer.receiver.id,
+                        offerID    : offer.id,
+                        price      : offer.amount,
+                        propertyID : offer.property ? offer.property.id : -1,
+                        makerID    : offer.maker.id
+                    });
+                }
             }
 
             player.socket.emit('gameOfferSendRes', { error: err.code, status: err.status });
@@ -1182,8 +1199,25 @@ class Network {
                 err = Errors.UNKNOW;
             else if (offer.maker.money < offer.amount)
                 err = Errors.GAME.NOT_ENOUGH_FOR_OFFER;
-            else if ((data.accept && !offer.accept()) || (!data.accept && !offer.expired())) // res envoyé si succès
-                err = Errors.UNKNOW;
+            else {
+                // verif aucune autre prop du monopole n'a de constructions
+                let can = true;
+
+                if (offer.property) {
+                    for (const cl of game.cells)  {
+                        const pr = cl.property;
+                        if (pr && pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === offer.property.color && pr.curUpgradeLevel > 0) {
+                            can = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!can)
+                    err = Errors.GAME.PROPERTY_MONOPOLY_CONTAINS_BUILDING;
+                else if ((data.accept && !offer.accept()) || (!data.accept && !offer.expired())) // res envoyé si succès
+                    err = Errors.UNKNOW;
+            }
 
             player.socket.emit('gameOfferActionRes', { error: err.code, status: err.status });
         });
@@ -1252,8 +1286,19 @@ class Network {
             else if (prop && prop.type === Constants.PROPERTY_TYPE.STREET && prop.curUpgradeLevel > 0)
                 err = Errors.GAME.PROPERTY_NOT_EMPTY;
             else {
-                new Bid(prop, data.initialPrice, game, true);
-                // réponse envoyée depuis le constructeur de Bid
+                // verif aucune autre prop du monopole n'a de constructions
+                let can = true;
+                for (const pr of game.properties)  {
+                    if (pr.type === Contants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
+                        can = false;
+                        break;
+                    }
+                }
+
+                if (!can)
+                    err = Errors.GAME.PROPERTY_MONOPOLY_CONTAINS_BUILDING;
+                else
+                    new Bid(prop, data.initialPrice, game, true); // réponse envoyée depuis le constructeur de Bid
             }
 
             player.socket.emit('gameManualBidRes', { error: err.code, status: err.status });

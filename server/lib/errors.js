@@ -254,6 +254,10 @@ module.exports = Object.freeze({
         PROPERTY_NOT_EMPTY: {
             code: 19,
             status: 'Cette propriété possède des maisons ou un hôtel'
+        },
+        PROPERTY_MONOPOLY_CONTAINS_BUILDING: {
+            code: 20,
+            status: 'Un terrain faisant parti d\'un monopole comportant des constructions ne peut pas être vendu'
         }
     }
 });
