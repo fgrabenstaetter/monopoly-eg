@@ -54,7 +54,7 @@ class Bank {
         property.isMortgaged = false;
         if (property.type === Constants.CELL_TYPE.STREET) {
             property.housesNb = 0;
-            property.hasHostel = false;
+            property.hostel = false;
         }
         this.properties.push(property);
     }
