@@ -1,6 +1,8 @@
 {
   "name": "monopoly-eg",
   "version": "0.9.8",
+  "author": "Equipe EG",
+  "description": "UE Projet Intégrateur - Projet Monopoly EG",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

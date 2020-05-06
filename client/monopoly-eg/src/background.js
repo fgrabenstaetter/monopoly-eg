@@ -31,7 +31,6 @@ function createWindow () {
 
   win.maximize();
   win.show();
-  win.setMenuBarVisibility(false);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -47,6 +46,10 @@ function createWindow () {
     win = null
   })
 }
+
+app.on('browser-window-created', (e, window) => {
+  window.setMenu(null);
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
