@@ -415,7 +415,11 @@ export default {
         renderer.gammaOutput = true;
         renderer.gammaFactor = 2.2;
         renderer.shadowMap.enabled = true;
-        window.addEventListener('resize', handleWindowResize, false);
+
+        if (process.env.IS_ELECTRON)
+            window.onresize = handleWindowResize;
+        else
+            window.addEventListener('resize', handleWindowResize, false);
 
         /**
          * SCENE
@@ -463,7 +467,7 @@ export default {
             const canvas = renderer.domElement;
             const width = canvas.clientWidth;
             const height = canvas.clientHeight;
-            renderer.setSize(width, height);
+            renderer.setSize(width, height, false);
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
         }

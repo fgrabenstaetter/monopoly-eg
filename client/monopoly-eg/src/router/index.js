@@ -6,11 +6,12 @@ import Signin from '../views/Signin.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import Lobby from '../views/Lobby.vue'
 import Game from '../views/Game.vue'
-import {store} from '../store/store'
+import NotFound from '../views/NotFound.vue'
+import { store } from '../store/store'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -40,20 +41,25 @@ Vue.use(VueRouter)
     path: '/game',
     name: 'Game',
     component: Game
-  }
+  },
+  {
+    path: '/404',
+    component: NotFound
+  },
+  { path: '*', redirect: '/404' }
 ]
 
 const router = new VueRouter({
   routes
-})
+});
 
-router.beforeEach((to, from, next) => {  
+router.beforeEach((to, from, next) => {
   const unrestrictedRoutes = ['Home', 'Login', 'Signin', 'ResetPassword'];
   if (!unrestrictedRoutes.includes(to.name) && !store.getters.isLoggedIn) {
     next('/login');
   } else {
     next();
   }
-})
+});
 
-export default router
+export default router;

@@ -20,9 +20,11 @@ function createWindow () {
     show: false,
     minWidth: 1000,
     minHeight: 750,
+    titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false
+      webSecurity: false,
+      devTools: false
     }
   });
 

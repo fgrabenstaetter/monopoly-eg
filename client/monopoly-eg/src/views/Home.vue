@@ -126,7 +126,7 @@ export default {
     }
   },
   mounted() {
-    this.isElectron = (typeof process.env.IS_ELECTRON !== 'undefined' && process.env.IS_ELECTRON);
+    this.isElectron = !!process.env.IS_ELECTRON;
   }
 };
 </script>
