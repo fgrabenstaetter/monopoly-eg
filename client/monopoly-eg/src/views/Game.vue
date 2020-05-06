@@ -395,7 +395,10 @@ export default {
       endGame: false,
       // @vuese
       // Queue de fonctions, utilisée si des fonctions asynchrones (events) arrivent simultanément du serveur et doivent être traités l'un après l'autre
-      fnQueue: []
+      fnQueue: [],
+      // @vuese
+      // Si aucune réponse reçue du serveur avant la fin de ce timeout, redirection automatique vers le lobby
+      connectionTimeout: null
     };
   },
   computed: {
@@ -1109,6 +1112,14 @@ export default {
       secure: true
     });
 
+    this.connectionTimeout = setTimeout(() => {
+      this.$parent.toast('Partie non trouvée', 'danger', 5);
+      this.socket.close();
+      setTimeout(() => {
+        this.$router.push("/lobby");
+      }, 800);
+    }, 15000);
+
     this.gameMounted = true;
 
     this.$refs.chat.initSocket();
@@ -1122,7 +1133,9 @@ export default {
 
     this.$parent.initSocketConnexion(this.socket);
 
-    this.socket.on("gameStartedRes", (data) =>{
+    this.socket.on("gameStartedRes", (data) => {
+      clearTimeout(this.connectionTimeout); // partie trouvée
+
       this.players = data.players;
       this.cells = data.cells;
       this.properties = data.properties;
@@ -1160,7 +1173,9 @@ export default {
     });
 
     // Données de reconnexion
-    this.socket.on("gameReconnectionRes", (res) =>{
+    this.socket.on("gameReconnectionRes", (res) => {
+      clearTimeout(this.connectionTimeout); // partie trouvée
+
       this.players = res.players;
       this.cells = res.cells;
       this.properties = res.properties;
