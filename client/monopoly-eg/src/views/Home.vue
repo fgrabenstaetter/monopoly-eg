@@ -22,8 +22,8 @@
           <p>Télécharger le client desktop</p>
           <div id="platform-icons-container">
             <a href="/assets/download/mac/monopoly-eg.dmg" :download="`Monopoly EG ${version}.dmg`"><i class="fab fa-apple"></i></a>
-            <a href="/assets/download/windows/monopoly-eg.exe" :download="`Monopoly EG ${version}.exe`"><i class="fab fa-linux"></i></a>
-            <a href="/assets/download/linux/monopoly-eg.zip" :download="`Monopoly EG ${version}.zip`"><i class="fab fa-windows"></i></a>
+            <a href="/assets/download/linux/monopoly-eg.exe" :download="`Monopoly EG ${version}.exe`"><i class="fab fa-linux"></i></a>
+            <a href="/assets/download/windows/monopoly-eg.zip" :download="`Monopoly EG ${version}.zip`"><i class="fab fa-windows"></i></a>
           </div>
         </div>
         <div class="version">Version {{version}}</div>
