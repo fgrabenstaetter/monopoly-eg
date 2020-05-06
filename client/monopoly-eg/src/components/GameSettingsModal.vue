@@ -390,6 +390,9 @@ export default {
      * Rafraîchit la page dans sa totalité (utile notamment en cas de bug graphique)
      */
     refreshAll() {
+      if (process.env.IS_ELECTRON)
+        mainWindow.reload();
+      else
         this.$router.go();
     },
 
