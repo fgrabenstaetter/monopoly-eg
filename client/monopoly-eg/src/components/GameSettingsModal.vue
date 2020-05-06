@@ -123,10 +123,10 @@
             <h2>Sommaire</h2>
             <a href="#partie">Une partie de monopoly</a>
             <a href="#double">Double</a>
-            <a href="#départ">Case départ</a>
+            <a href="#depart">Case départ</a>
             <a href="#achat">Achat de propriété</a>
-            <a href="#enchères">Enchères</a>
-            <a href="#propriétaire">Être propriétaire</a>
+            <a href="#encheres">Enchères</a>
+            <a href="#proprietaire">Être propriétaire</a>
             <a href="#arretPropri">Arrêt sur une propriété déjà achetée</a>
             <a href="#arretCompagnie">Arrêt sur les services publiques</a>
             <a href="#arretGare">Arrêt sur une gare</a>
@@ -137,7 +137,7 @@
             <a href="#maisons">Maisons</a>
             <a href="#hotels">Hôtels</a>
             <a href="#vente">Vente de propriétés</a>
-            <a href="#hypothèques">Hypothèques</a>
+            <a href="#hypotheques">Hypothèques</a>
             <a href="#faillite">Faillite</a>
             <a href="#vainqueur">Vainqueur</a>
 
@@ -159,7 +159,7 @@
               les dés.
               Si vous faites ainsi 3 doubles à la suite, vous irez immédiatement en session parlementaire.
             </p>
-            <h2 id="départ">Case départ</h2>
+            <h2 id="depart">Case départ</h2>
             <p>Chaque fois que vous passez par / que vous vous arrêtez sur la case départ, vous recevez 200€.</p>
             <h2 id="achat">Achat de propriétés</h2>
             <p>
@@ -170,14 +170,14 @@
               Si vous décidez de ne pas acheter, la propriété sera mise en enchère à la fin de votre tour.
               Vous pourrez participer aux enchères même si vous avez refusé d'acheter la propriété initialement.
             </p>
-            <h2 id="enchères">Enchères</h2>
+            <h2 id="encheres">Enchères</h2>
             <p>
               Lorsqu'une propriété est mise aux enchères, chaque joueur peut proposer un prix d'achat ou bien passer. Le
               joueur ayant proposé le prix le plus haut deviendra propriétaire. Il sera le seul joueur à payer. Proposer un
               prix de 0 revient à passer. Si tous les joueurs passent, le terrain ne sera pas vendu. Si l'enchère
               a été déclenchée par un joueur, il restera propriétaire de son terrain.
             </p>
-            <h2 id="propriétaire">Être propriétaire</h2>
+            <h2 id="proprietaire">Être propriétaire</h2>
             <p>
               Le fait d'être propriétaire vous permet de percevoir un loyer de la part de tous les joueurs qui s'arrêtent sur
               vos terrains. Vous pourrez ajouter des
@@ -263,12 +263,12 @@
               ne peut construire
               qu'un hôtel par propriété.
             </p>
-            <h2 id="#vente">Vente de propriétés</h2>
+            <h2 id="vente">Vente de propriétés</h2>
             <p>
               Vous pouvez vendre des propriétés à tout moment en lançant une vente aux enchères pour celle-ci. Vous décidez du
               prix de départ de l'enchère. Le déroulement de l'enchère est le même que décrit dans la section
               <a
-                href="#enchères"
+                href="#encheres"
               >Enchères</a>. Toutefois aucun terrain ne peut être vendu à un autre joueur s'il a des
               bâtiments construits sur un des terrains du
               même groupe. Si vous voulez vendre un terrain appartenent à un groupe, vous devez d'abord vendre tous
