@@ -421,10 +421,9 @@ class Network {
 
                         friendLobby.addUser(user);
                     }
+                    user.socket.emit('lobbyInvitationActionRes', { error: err.code, status: err.status });
                 }
             }
-
-            user.socket.emit('lobbyInvitationActionRes', { error: err.code, status: err.status });
         });
     }
 
