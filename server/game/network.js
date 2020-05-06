@@ -1288,8 +1288,9 @@ class Network {
             else {
                 // verif aucune autre prop du monopole n'a de constructions
                 let can = true;
-                for (const pr of game.properties)  {
-                    if (pr.type === Contants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
+                for (const cl of game.cells)  {
+                    const pr = cl.property;
+                    if (pr && pr.type === Contants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.curUpgradeLevel > 0) {
                         can = false;
                         break;
                     }
