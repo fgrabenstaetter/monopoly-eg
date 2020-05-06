@@ -463,7 +463,6 @@ export default {
          * @arg ID de l'invitation à accepter
          */
         acceptLobbyInvitation(id) {
-            console.log("acceptLobbyInvitation " + id);
             this.socket.emit("lobbyInvitationActionReq", { invitationID: id, accept: true });
             this.deleteLobbyInvitation(id);
         },
@@ -543,7 +542,6 @@ export default {
          * @arg ID du joueur à expulser
          */
         kickPlayerFromLobby(id) {
-            console.log("lobby kick req => ", id);
             this.socket.emit('lobbyKickReq', { userToKickID: id });
         },
 
@@ -892,7 +890,9 @@ export default {
         });
 
         this.socket.on("lobbyInvitationActionRes", (res) => {
-            if (res.error !== 0)
+            if (res.error === 0)
+                this.socket.emit('lobbyReadyReq');
+            else
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
         });
 
