@@ -73,7 +73,7 @@ Toutes les commandes suivantes nécessitent d'être exécutées dans le réperto
    ```
 
 2. Démarrer le serveur local
-*Remarque :* Les URLs du serveur connues par le client peuvent être modifiées dans /client/monopoly-eg/src/store/store.js (lignes 8 à 11)
+*Remarque :* Les URLs du serveur connues par le client peuvent être modifiées dans /client/monopoly-eg/src/store/store.js (lignes 8 à 11). Par défaut, elles pointent vers le serveur en ligne https://egserv.singlequote.net.
 
    ```bash
    npm run serve
