@@ -343,10 +343,14 @@ export default {
                     this.rightGameTime = false;
                     this.socket.emit('lobbyPlayReq');
                 } else {
-                    this.leftNbJ = true;
-                    this.rightNbJ = true;
-                    this.leftGameTime = true;
-                    this.rightGameTime = true;
+                    if (this.nbPlayers > 2)
+                        this.leftNbJ = true;
+                    if (this.nbPlayers < 8)
+                        this.rightNbJ = true;
+                    if (this.gameTime != '30 min')
+                        this.leftGameTime = true;
+                    if (this.gameTime != 'Illimité')
+                        this.rightGameTime = true;
                     this.socket.emit('lobbyCancelPlayReq');
                 }
             }
