@@ -93,7 +93,7 @@
               Ce jeu est une preuve de concept : si vous rencontrez un bug,
               <br />n'hésitez pas à le signaler.
               <br />En cas de bug graphique, vous pouvez
-              <a href="#">cliquer ici</a> pour recharger le jeu.
+              <a href="#" @click="refreshAll">cliquer ici</a> pour recharger le jeu.
             </div>
           </div>
         </div>
@@ -383,6 +383,14 @@ export default {
       // Refresh volume en direct
       this.$parent.setMusicLevel(this.userSettings.musicLevel);
       this.$parent.setSfxLevel(this.userSettings.sfxLevel);
+    },
+
+    /**
+     * @vuese
+     * Rafraîchit la page dans sa totalité (utile notamment en cas de bug graphique)
+     */
+    refreshAll() {
+        this.$router.go();
     },
 
     /**
