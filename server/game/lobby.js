@@ -39,8 +39,6 @@ class Lobby {
     addUser(user) {
         if (!this.open || this.users.indexOf(user) !== -1 || this.users.length >= this.maxUsersNb)
             return false;
-        
-        console.log(`=== ${user.nickname} ajouté au lobby ===`);
 
         this.users.push(user);
         if (this.users.length > this.targetUsersNb)
