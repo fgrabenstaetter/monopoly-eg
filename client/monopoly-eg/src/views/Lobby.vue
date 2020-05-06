@@ -312,7 +312,8 @@ export default {
                     notification: null,
                     success: null,
                     error: null,
-                    buttonClick: null
+                    buttonClick: null,
+                    newMessage: null
                 }
             }
         }
@@ -637,6 +638,12 @@ export default {
                 loop: false,
                 volume: this.loggedUser.settings.sfxLevel / 100
             });
+            this.audio.sfx.newMessage = new Howl({
+                src: ["/assets/audio/sfx/when.mp3"],
+                autoplay: false,
+                loop: false,
+                volume: this.loggedUser.settings.sfxLevel / 100
+            });
         },
 
         /**
@@ -933,11 +940,13 @@ export default {
         this.socket.on("lobbyInvitationActionRes", (res) => {
             console.log('lobbyInvitationActionRes');
             console.log(res);
-            if (res.error === 0 && res.accepted) {
-                setTimeout(() => {
-                    console.log('Envoi lobbyReadyReq');
-                    this.socket.emit('lobbyReadyReq');
-                }, 600);
+            if (res.error === 0) {
+                if (res.accepted) {
+                    setTimeout(() => {
+                        console.log('Envoi lobbyReadyReq');
+                        this.socket.emit('lobbyReadyReq');
+                    }, 600);
+                }
             } else {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
             }

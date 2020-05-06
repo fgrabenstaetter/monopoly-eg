@@ -48,13 +48,7 @@ export default {
             // Messages du chat
             messages: [],
             // Valeur de l'entrée textuelle (nouveau message)
-            msg: '',
-            // Elements audio du chat (i.e. son de notification)
-            audio: {
-                sfx: {
-                    newMessage: null
-                }
-            }
+            msg: ''
         }
     },
     methods: {
