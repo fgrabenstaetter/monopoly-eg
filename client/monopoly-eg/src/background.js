@@ -21,6 +21,7 @@ function createWindow () {
     minWidth: 1000,
     minHeight: 750,
     titleBarStyle: "hiddenInset",
+    icon: path.join(__dirname, '/icon.png'),
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -30,6 +31,7 @@ function createWindow () {
 
   win.maximize();
   win.show();
+  win.setMenuBarVisibility(false);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
