@@ -702,6 +702,13 @@ class Game {
                     return 6;
             }
 
+            if (row.level > prop.level) {
+                for (const pr of this.curPlayer.properties) {
+                    if (pr.type === Constants.PROPERTY_TYPE.STREET && pr.color === prop.color && pr.isMortgaged)
+                        return 6;
+                }
+            }
+
             sum += prop.upgradePrice(row.level);
         }
 
