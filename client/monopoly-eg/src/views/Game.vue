@@ -858,15 +858,14 @@ export default {
     quitGame() {
       this.socket.emit("gamePlayerLeavingReq");
       this.socket.on("gamePlayerLeavingRes", (res) =>{
-        if (res.error === 0) {
-          this.$refs.gameSettings.closeModal();
-          setTimeout(() => {
-            this.$router.push("/lobby");
-          }, 800);
-        } else {
+        if (res.error !== 0) {
           this.$parent.toast(res.status, "danger", 5);
         }
       });
+      this.$refs.gameSettings.closeModal();
+      setTimeout(() => {
+        this.$router.push("/lobby");
+      }, 800);
     },
 
     /**
@@ -1237,7 +1236,7 @@ export default {
             this.$refs.splashText.trigger(
               `<img src="/assets/img/pawns/${
                 this.CST.PAWNS[currPlayer.pawn]
-              }.png" width="320"><br>C'est à vous de jouer !`,
+              }.png" height="340"><br>C'est à vous de jouer !`,
               "white"
             );
             this.$refs.actionBtn.progressStart(turnTimeSeconds);
@@ -1248,7 +1247,7 @@ export default {
             this.$refs.splashText.trigger(
               `<img src="/assets/img/pawns/${
                 this.CST.PAWNS[currPlayer.pawn]
-              }.png" width="320"><br>C'est au tour de ${currPlayer.nickname} !`,
+              }.png" height="340"><br>C'est au tour de ${currPlayer.nickname} !`,
               "white"
             );
             this.$refs.actionBtn.progressFinish();
@@ -1779,12 +1778,15 @@ export default {
       const winner = this.getPlayerById(res.winnerID);
       if (!winner) return;
 
-      if (res.type == "timeout" && this.fnQueue.length == 0) {
-        this.endGame = {
-          winner: winner,
-          gameTime: gameTime,
-          endType: res.type
-        };
+      if (res.type == "timeout" || this.fnQueue.length == 0) {
+        // Affichage légèrement différé pour assurer la réception préliminaire de gameFailureRes
+        setTimeout(() => {
+          this.endGame = {
+            winner: winner,
+            gameTime: gameTime,
+            endType: res.type
+          };
+        });
       } else {
         this.fnQueue.push(cb => {
           // Affichage légèrement différé pour assurer la réception préliminaire de gameFailureRes
