@@ -97,11 +97,12 @@ class SuccessManager {
     /**
      * Appelée après chaque action de tour (lancé de dés puis action correspondante
      */
-    check () {
+    check (update = true) {
         //use game.turnData pour les données du tour qui vient de s'achever
         const player = this.game.curPlayer;
         const key = player.id;
-        this.update(this.datas[key], player);
+        if (update)
+            this.update(this.datas[key], player);
 
         for (const succ of Success) {
             if (this[succ.token](this.datas[key], player))

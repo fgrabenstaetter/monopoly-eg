@@ -390,6 +390,7 @@ class Game {
     nextTurn() {
         // si le joueur n'a pas répondu à une action asynchrone nécessaire, prendre les mesures nécéssaires
         this.asyncActionExpired();
+        this.successManager.check(false);
 
         if (this.ended)
             return;
