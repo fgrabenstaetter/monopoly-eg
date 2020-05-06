@@ -175,7 +175,7 @@
               Lorsqu'une propriété est mise aux enchères, chaque joueur peut proposer un prix d'achat ou bien passer. Le
               joueur ayant proposé le prix le plus haut deviendra propriétaire. Il sera le seul joueur à payer. Proposer un
               prix de 0 revient à passer. Si tous les joueurs passent, le terrain ne sera pas vendu. Si l'enchère
-              a été déclenchée par un joueur, il restera propriétaire de son terrain.
+              a été déclenchée par un joueur et qu'aucun des autres n'a enchérit, il restera propriétaire de son terrain.
             </p>
             <h2 id="proprietaire">Être propriétaire</h2>
             <p>
@@ -230,8 +230,7 @@
             </p>
             <p>
               Pour sortir de session parlementaire, il faut effectuer l'une des actions suivantes:
-              Utiliser une carte "fin de session parlementaire" si vous en possédez une, (vous pouvez acheter une carte "Fin
-              de session parlementaire" à un autre joueur),
+              Utiliser une carte "fin de session parlementaire" si vous en possédez une,
               Attendre 3 tours en session parlementaire en lançant les dés à chaque tour pour essayer de faire un double. En
               cas de réussite vous pourrez sortir du Parlement immédiatement et avancer.
               Si à la fin des 3 tours vous n'avez pas fait de double, la session sera terminée et vous pourrez jouer
@@ -272,9 +271,7 @@
               >Enchères</a>. Toutefois aucun terrain ne peut être vendu à un autre joueur s'il a des
               bâtiments construits sur un des terrains du
               même groupe. Si vous voulez vendre un terrain appartenent à un groupe, vous devez d'abord vendre tous
-              les batiments de ce groupe. Les maisons doivent être vendu uniformément de la même
-              façon qu'elles ont été achetées (Voir
-              <a href="#maisons">Maisons</a>).
+              les batiments de ce groupe.
             </p>
             <h2 id="hypotheques">Hypothèques</h2>
             <p>
