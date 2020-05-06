@@ -18,12 +18,12 @@
         <img id="bus" src="/assets/img/ui/bus.png">
         <img id="bateau" src="/assets/img/ui/bateau.png">
         <router-link class="btn" to="/login">JOUER !</router-link>
-        <div id="download-box">
+        <div id="download-box" v-if="!isElectron">
           <p>Télécharger le client desktop</p>
           <div id="platform-icons-container">
-            <a href="#"><i class="fab fa-apple"></i></a>
-            <a href="#"><i class="fab fa-linux"></i></a>
-            <a href="#"><i class="fab fa-windows"></i></a>
+            <a href="/assets/download/mac/monopoly-eg.dmg" :download="`Monopoly EG ${version}.dmg`"><i class="fab fa-apple"></i></a>
+            <a href="/assets/download/windows/monopoly-eg.exe" :download="`Monopoly EG ${version}.exe`"><i class="fab fa-linux"></i></a>
+            <a href="/assets/download/linux/monopoly-eg.zip" :download="`Monopoly EG ${version}.zip`"><i class="fab fa-windows"></i></a>
           </div>
         </div>
         <div class="version">Version {{version}}</div>
@@ -82,14 +82,15 @@
                           <h3>La musique</h3>
                               <p>
                                   Edouard GU<br>
+                                  Florian FALKNER<br>
                                   Boris FLESCH<br>
                               </p>
                       <h2>Remerciements</h2>
                           <p>
-                              Merci à Alicia pour nous avoir prêté une version matérielle du jeu à maintes reprises!<br>
+                              Merci à Alicia pour nous avoir prêté une version matérielle du jeu à maintes reprises !<br>
                               Merci à toute l'équipe pour avoir été solidaire, active et surtout sympathique car c'est toujours
-                              un plaisir que de travailler dans la bonne humeur!<br>
-                              Merci à Bobo qui a été un chef d'équipe formidable malgré quelques pulsions tyraniques.
+                              un plaisir que de travailler dans la bonne humeur !<br>
+                              Merci à Bobo qui a été un chef d'équipe formidable.<br>
                               Et Merci à vous d'avoir joué à notre jeu!
                           </p>
                       <h2>Contacts</h2>
@@ -118,8 +119,14 @@ export default {
     return {
       // @vuese
       // Version actuelle du client (récupéré via la config package.json)
-      version: version
+      version: version,
+      // @vuese
+      // Indique si le jeu tourne sous Electron ou non (permet la distinction client lourd / web)
+      isElectron: false
     }
+  },
+  mounted() {
+    this.isElectron = (typeof process.env.IS_ELECTRON !== 'undefined' && process.env.IS_ELECTRON);
   }
 };
 </script>
