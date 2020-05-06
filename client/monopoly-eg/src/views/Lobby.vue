@@ -477,7 +477,6 @@ export default {
          * @arg ID de l'invitation à rejeter
          */
         rejectLobbyInvitation(id) {
-            this.socket.emit("lobbyInvitationActionReq", { invitationID: id, accept: false });
             this.deleteLobbyInvitation(id);
         },
 
@@ -836,7 +835,10 @@ export default {
             this.audio.sfx.error.play();
             if (res.userID === this.loggedUser.id) {
                 // j'ai été KICK
-                this.socket.emit('lobbyReadyReq');
+                setTimeout(() => {
+                    console.log('Envoi lobbyReadyReq');
+                    this.socket.emit('lobbyReadyReq');
+                }, 600);
                 return;
             }
 
@@ -921,10 +923,14 @@ export default {
         this.socket.on("lobbyInvitationActionRes", (res) => {
             console.log('lobbyInvitationActionRes');
             console.log(res);
-            if (res.error === 0)
-                this.socket.emit('lobbyReadyReq');
-            else
+            if (res.error === 0) {
+                setTimeout(() => {
+                    console.log('Envoi lobbyReadyReq');
+                    this.socket.emit('lobbyReadyReq');
+                }, 600);
+            } else {
                 this.$parent.toast(`Erreur ${res.status}`, 'danger', 5);
+            }
         });
 
         this.socket.on("lobbyFriendInvitationAcceptedRes", (res) => {
@@ -952,7 +958,7 @@ export default {
             setTimeout(() => {
                 this.$router.push('/game');
                 this.loading = false;
-            }, 1000);
+            }, 600);
         });
 
 
@@ -1036,7 +1042,10 @@ export default {
             $(this).find('input').first().focus();
         });
 
-        this.socket.emit('lobbyReadyReq');
+        setTimeout(() => {
+            console.log('Envoi lobbyReadyReq');
+            this.socket.emit('lobbyReadyReq');
+        }, 600);
     }
 }
 </script>
