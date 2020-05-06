@@ -477,6 +477,7 @@ export default {
          * @arg ID de l'invitation à rejeter
          */
         rejectLobbyInvitation(id) {
+            this.socket.emit("lobbyInvitationActionReq", { invitationID: id, accept: false });
             this.deleteLobbyInvitation(id);
         },
 
@@ -822,7 +823,16 @@ export default {
 
             this.audio.sfx.success.play();
 
-            this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
+            let alreadyInLobby = false;
+            for (const i in this.players) {
+                if (this.players[i].id == res.id) {
+                    alreadyInLobby = true;
+                    break;
+                }
+            }
+
+            if (!alreadyInLobby)
+                this.players.push({ id: res.id, nickname: res.nickname, avatar: this.$store.getters.serverUrl + res.avatar });
             
             if (this.nbPlayers < this.players.length)
                 this.nbPlayers = this.players.length;
@@ -923,7 +933,7 @@ export default {
         this.socket.on("lobbyInvitationActionRes", (res) => {
             console.log('lobbyInvitationActionRes');
             console.log(res);
-            if (res.error === 0) {
+            if (res.error === 0 && res.accepted) {
                 setTimeout(() => {
                     console.log('Envoi lobbyReadyReq');
                     this.socket.emit('lobbyReadyReq');
