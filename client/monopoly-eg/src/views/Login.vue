@@ -83,6 +83,12 @@ export default {
           });
         })
         .catch(err => {
+          if (!err.response) {
+            this.$parent.toast('Erreur : communication avec le serveur impossible', 'danger', 4);
+            this.btnLoading = false;
+            return Promise.reject(err);
+          }
+
           if (err.response.status === 400)
             this.$parent.toast(err.response.data.status, 'danger', 5);
           this.btnLoading = false;

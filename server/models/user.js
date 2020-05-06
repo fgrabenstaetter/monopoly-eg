@@ -141,15 +141,9 @@ class UserManager { // abstract
                                 text: `Bonjour ${newUser.nickname},\n\nBienvenue sur Monopoly EG !\n\nTu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.\nPour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
                                 html: `Bonjour ${newUser.nickname},<br><br>Bienvenue sur Monopoly EG !<br><br>Tu peux jouer dès à présent en te connectant sur https://eg.singlequote.net.<br>Pour encore plus de performances \& fluidité, tu peux également télécharger notre jeu sur ton ordinateur (Windows, MacOS ou Linux) !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`
                             };
-                                
-                            emailTransporter.sendMail(mailOptions, (error, info) => {
-                                if (error)
-                                    console.log(error);
-                                else
-                                    console.log('Email inscription envoyé : ' + info.response);
-
-                                return cb(Errors.SUCCESS);
-                            });
+                            
+                            emailTransporter.sendMail(mailOptions);
+                            return cb(Errors.SUCCESS);
                         }
                     });
                 });
@@ -261,18 +255,12 @@ class UserManager { // abstract
                         from: 'Monopoly EG <projet.monopolyeg@gmail.com>',
                         to: user.email,
                         subject: 'Nouveau mot de passe - Monopoly EG',
-                        text: `Bonjour ${user.nickname},\n\nVous avez demandé à réinitialiser votre mot de passe sur Monopoly EG.\nVoici votre nouveau code confidentiel : ${newPassword}\nGardez-le bien en sécurité et modifiez-le lors de votre prochaine connexion au jeu pour renforcer la sécurité de votre compte !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
-                        html: `Bonjour ${user.nickname},<br><br>Vous avez demandé à réinitialiser votre mot de passe sur Monopoly EG.<br>Voici votre nouveau code confidentiel : <strong>${newPassword}</strong><br>Gardez-le bien en sécurité et modifiez-le lors de votre prochaine connexion au jeu pour renforcer la sécurité de votre compte !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`,
+                        text: `Bonjour ${user.nickname},\n\nTu as demandé à réinitialiser ton mot de passe sur Monopoly EG.\nVoici ton nouveau code confidentiel : ${newPassword}\nGarde-le bien en sécurité et modifie-le lors de ta prochaine connexion au jeu pour renforcer la sécurité de ton compte !\n\nA bientôt,\n\nL'équipe Monopoly EG`,
+                        html: `Bonjour ${user.nickname},<br><br>Tu as demandé à réinitialiser ton mot de passe sur Monopoly EG.<br>Voici ton nouveau code confidentiel : <strong>${newPassword}</strong><br>Garde-le bien en sécurité et modifie-le lors de ta prochaine connexion au jeu pour renforcer la sécurité de ton compte !<br><br>A bientôt,<br><br>L'équipe Monopoly EG`,
                     };
                         
-                    emailTransporter.sendMail(mailOptions, (error, info) => {
-                        if (error)
-                            console.log(error);
-                        else
-                            console.log('Email inscription envoyé : ' + info.response);
-        
-                        return cb(Errors.SUCCESS);
-                    });
+                    emailTransporter.sendMail(mailOptions);
+                    return cb(Errors.SUCCESS);
                 });
             });
         });
