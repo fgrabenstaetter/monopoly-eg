@@ -55,7 +55,7 @@ npm test
 #### Génération de la documentation
 
 ```bash
-jsdoc .js game/.js models/*.js -d doc
+jsdoc *.js game/*.js models/*.js -d doc
 ```
 
 ### Client
